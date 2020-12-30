@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from google.internal.home.foyer import v1_pb2 as google_dot_internal_dot_home_dot_foyer_dot_v1__pb2
+from . import v1_pb2 as google_dot_internal_dot_home_dot_foyer_dot_v1__pb2
 
 
 
