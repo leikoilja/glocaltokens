@@ -199,7 +199,7 @@ message GetHomeGraphResponse {
 
       message State {
         string name = 1;
-        string value = 2;
+        bytes value = 2;
       }
       repeated State states = 29;
 
