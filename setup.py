@@ -8,7 +8,7 @@ with open('HISTORY.md') as history_file:
 
 setup_args = dict(
     name='glocaltokens',
-    version='0.1.2',
+    version='0.1.3',
     description='Tool to extract Google device local authentication tokens in Python',
     long_description_content_type="text/markdown",
     long_description=README + '\n\n' + HISTORY,

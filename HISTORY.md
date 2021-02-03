@@ -1,3 +1,6 @@
+### v0.1.3
+    * Removing `jq` dependency, thanks @DurgNomis-drol
+
 ### v0.1.2
     * Removing dependency `requests==2.23.0` since `gpsoauth` is supporting newest versions
 
