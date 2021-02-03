@@ -5,7 +5,6 @@ See: https://gist.github.com/rithvikvibhu/952f83ea656c6782fbd0f1645059055d
 """
 import logging
 import grpc
-import jq
 import json
 
 from gpsoauth import perform_master_login, perform_oauth
@@ -123,7 +122,22 @@ class GLocalAuthenticationTokens:
         Returns a json of google devices with their
         local authentication tokens
         """
+
+        def extract_devices(items):
+            """
+            Replacement for jq
+            """
+            devices = []
+            for item in items:
+                if item.local_auth_token != "":
+                    device = {}
+                    device['deviceName'] = item.device_name
+                    device['localAuthToken'] = item.local_auth_token
+                    devices.append(device)
+            return devices
+            
         homegraph = self.get_homegraph()
-        homegraph_json = json.loads(MessageToJson(homegraph))
-        devices = jq.compile('.home.devices[] | {deviceName, localAuthToken}').input(homegraph_json)
-        return devices.all()
+
+        devices = extract_devices(homegraph.home.devices)
+
+        return devices

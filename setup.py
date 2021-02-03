@@ -26,7 +26,6 @@ install_requires = [
     'gpsoauth',
     'grpcio',
     'grpcio-tools',
-    'jq',
     'simplejson',
     'requests',
 ]
