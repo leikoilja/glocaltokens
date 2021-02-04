@@ -1,3 +1,6 @@
+### v0.1.4
+    * Pinning `grpcio==1.31.0` dependency to match with HomeAssistant's version
+
 ### v0.1.3
     * Removing `jq` dependency, thanks @DurgNomis-drol
 
