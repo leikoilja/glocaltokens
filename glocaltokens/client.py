@@ -5,11 +5,9 @@ See: https://gist.github.com/rithvikvibhu/952f83ea656c6782fbd0f1645059055d
 """
 import logging
 import grpc
-import json
 import datetime
 
 from gpsoauth import perform_master_login, perform_oauth
-from google.protobuf.json_format import MessageToJson
 from uuid import getnode as getmac
 
 from .google.internal.home.foyer import v1_pb2_grpc
