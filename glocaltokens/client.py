@@ -18,6 +18,9 @@ ACCESS_TOKEN_CLIENT_SIGNATURE = '24bb24c05e47e0aefa68a58a766179d9b613a600'
 ACCESS_TOKEN_SERVICE = 'oauth2:https://www.google.com/accounts/OAuthLogin'
 GOOGLE_HOME_FOYER_API = 'googlehomefoyer-pa.googleapis.com:443'
 
+ACCESS_TOKEN_DURATION = 60*60
+HOMEGRAPH_DURATION = 24*60*60
+
 
 class GLocalAuthenticationTokens:
 
@@ -48,6 +51,7 @@ class GLocalAuthenticationTokens:
         self.access_token = None
         self.homegraph = None
         self.access_token_date = None
+        self.homegraph_date = None
 
     def _create_mac_string(self, num, splitter=':'):
         mac = hex(num)[2:]
@@ -88,7 +92,8 @@ class GLocalAuthenticationTokens:
         return self.master_token
 
     def get_access_token(self):
-        if self.access_token is None or datetime.datetime.now().timestamp() - self.access_token_date.timestamp() > 3600:
+        if self.access_token is None or \
+                datetime.datetime.now().timestamp() - self.access_token_date.timestamp() > ACCESS_TOKEN_DURATION:
             res = perform_oauth(
                 self.username,
                 self.get_master_token(),
@@ -108,7 +113,8 @@ class GLocalAuthenticationTokens:
         """
         Returns the entire Google Home Foyer V2 service
         """
-        if self.homegraph is None:
+        if self.homegraph is None or \
+                datetime.datetime.now().timestamp() - self.homegraph_date.timestamp() > HOMEGRAPH_DURATION:
             scc = grpc.ssl_channel_credentials(root_certificates=None)
             tok = grpc.access_token_call_credentials(self.get_access_token())
             ccc = grpc.composite_channel_credentials(scc, tok)
@@ -118,6 +124,7 @@ class GLocalAuthenticationTokens:
                 request = v1_pb2.GetHomeGraphRequest(string1="", num2="")
                 response = rpc_service.GetHomeGraph(request)
                 self.homegraph = response
+            self.homegraph_date = datetime.datetime.now()
         return self.homegraph
 
     def get_google_devices_json(self):
