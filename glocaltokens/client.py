@@ -23,7 +23,7 @@ GOOGLE_HOME_FOYER_API = 'googlehomefoyer-pa.googleapis.com:443'
 class GLocalAuthenticationTokens:
 
     def __init__(self, username=None, password=None, master_token=None,
-            android_id=None):
+                 android_id=None):
         """
         Initialize an GLocalAuthenticationTokens instance with google account
         credentials
@@ -75,9 +75,9 @@ class GLocalAuthenticationTokens:
         """
         if not self.master_token:
             res = perform_master_login(
-                    self.username,
-                    self.password,
-                    self._get_android_id()
+                self.username,
+                self.password,
+                self._get_android_id()
             )
             if 'Token' not in res:
                 logging.exception('[!] Could not get master token.')
@@ -135,7 +135,7 @@ class GLocalAuthenticationTokens:
                     device['localAuthToken'] = item.local_auth_token
                     devices.append(device)
             return devices
-            
+
         homegraph = self.get_homegraph()
 
         devices = extract_devices(homegraph.home.devices)
