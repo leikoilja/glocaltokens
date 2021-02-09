@@ -39,6 +39,28 @@ print('\n[*] Google devices local authentication tokens')
 google_devices = client.get_google_devices_json()
 ```
 
+# Security Recommendation
+Never store the user's password nor username in plain text, if storage is necessary, generate a 
+master token and store it. Example approach:
+```python
+from glocaltokens.client import GLocalAuthenticationTokens
+
+# Using google username and password first, and only once
+client = GLocalAuthenticationTokens(
+  username='<YOUR_GOOGLE_USERNAME>',
+  password='<YOUR_GOOGLE_PASSWORD>'
+)
+
+# Get master token
+master_token = client.get_master_token()
+print('[*] Master token', master_token)
+
+
+
+"""Now store master_token somewhere"""
+
+```
+
 # Credits
 Much credits go to @rithvikvibhu(https://github.com/rithvikvibhu) for doing
 most of the heavy work like finding a way to extract master and access tokens
