@@ -6,6 +6,7 @@ See: https://gist.github.com/rithvikvibhu/952f83ea656c6782fbd0f1645059055d
 import logging
 import grpc
 import json
+import datetime
 
 from gpsoauth import perform_master_login, perform_oauth
 from google.protobuf.json_format import MessageToJson
@@ -48,6 +49,7 @@ class GLocalAuthenticationTokens:
             )
         self.access_token = None
         self.homegraph = None
+        self.access_token_date = None
 
     def _create_mac_string(self, num, splitter=':'):
         mac = hex(num)[2:]
@@ -88,7 +90,7 @@ class GLocalAuthenticationTokens:
         return self.master_token
 
     def get_access_token(self):
-        if not hasattr(self, 'access_token'):
+        if self.access_token is None or datetime.datetime.now().timestamp() - self.access_token_date.timestamp() > 3600:
             res = perform_oauth(
                 self.username,
                 self.get_master_token(),
@@ -101,13 +103,14 @@ class GLocalAuthenticationTokens:
                 logging.exception('[!] Could not get access token.')
                 return None
             self.access_token = res['Auth']
+            self.access_token_date = datetime.datetime.now()
         return self.access_token
 
     def get_homegraph(self):
         """
         Returns the entire Google Home Foyer V2 service
         """
-        if not hasattr(self, 'homegraph'):
+        if self.homegraph is None:
             scc = grpc.ssl_channel_credentials(root_certificates=None)
             tok = grpc.access_token_call_credentials(self.get_access_token())
             ccc = grpc.composite_channel_credentials(scc, tok)
