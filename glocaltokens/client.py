@@ -133,9 +133,10 @@ class GLocalAuthenticationTokens:
             devices = []
             for item in items:
                 if item.local_auth_token != "":
-                    device = {}
-                    device['deviceName'] = item.device_name
-                    device['localAuthToken'] = item.local_auth_token
+                    device = {
+                        'deviceName': item.device_name,
+                        'localAuthToken': item.local_auth_token,
+                    }
                     devices.append(device)
             return devices
 
