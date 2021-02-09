@@ -46,6 +46,8 @@ class GLocalAuthenticationTokens:
                 'You must either provide google username/password '
                 'or google master token'
             )
+        self.access_token = None
+        self.homegraph = None
 
     def _create_mac_string(self, num, splitter=':'):
         mac = hex(num)[2:]
