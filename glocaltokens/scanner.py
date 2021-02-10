@@ -1,13 +1,88 @@
 from typing import List
 
-import pychromecast
+from threading import Event
+import zeroconf
+import logging
+from uuid import UUID
 
+DISCOVER_TIMEOUT = 5
 GOOGLE_HOME_MODELS = [
     "Google Home",
     "Google Home Mini",
     "Google Nest Mini",
     "Lenovo Smart Clock"
 ]
+
+_LOGGER = logging.getLogger(__name__)
+
+
+class CastListener:
+    """
+    Zeroconf Cast Services collection.
+    Credit (pychromecast): https://github.com/home-assistant-libs/pychromecast/blob/master/pychromecast/discovery.py
+    """
+
+    def __init__(self, add_callback=None, remove_callback=None, update_callback=None):
+        self.devices = []
+        self.add_callback = add_callback
+        self.remove_callback = remove_callback
+        self.update_callback = update_callback
+
+    @property
+    def count(self):
+        """Number of discovered cast services."""
+        return len(self.devices)
+
+    def add_service(self, zconf, typ, name):
+        """ Add a service to the collection. """
+        _LOGGER.debug("add_service %s, %s", typ, name)
+        self._add_update_service(zconf, typ, name, self.add_callback)
+
+    def _add_update_service(self, zconf, typ, name, callback):
+        """ Add or update a service. """
+        service = None
+        tries = 0
+        if name.endswith("_sub._googlecast._tcp.local."):
+            _LOGGER.debug("_add_update_service ignoring %s, %s", typ, name)
+            return
+        while service is None and tries < 4:
+            try:
+                service = zconf.get_service_info(typ, name)
+            except IOError:
+                # If the zeroconf fails to receive the necessary data we abort
+                # adding the service
+                break
+            tries += 1
+
+        if not service:
+            _LOGGER.debug("_add_update_service failed to add %s, %s", typ, name)
+            return
+
+        def get_value(key):
+            """Retrieve value and decode to UTF-8."""
+            value = service.properties.get(key.encode("utf-8"))
+
+            if value is None or isinstance(value, str):
+                return value
+            return value.decode("utf-8")
+
+        addresses = service.parsed_addresses()
+        host = addresses[0] if addresses else service.server
+
+        model_name = get_value("md")
+        friendly_name = get_value("fn")
+
+        self.devices.append(
+            (
+                model_name,
+                friendly_name,
+                host,
+                service.port,
+            )
+        )
+
+        if callback:
+            callback()
 
 
 class GoogleDevice:
@@ -18,15 +93,33 @@ class GoogleDevice:
         self.model: str = model
 
 
-def discover_devices(models_list) -> List[GoogleDevice]:
-    services, browser = pychromecast.discovery.discover_chromecasts()
+def discover_devices(models_list, max_devices=None, timeout=DISCOVER_TIMEOUT) -> List[GoogleDevice]:
+    # pylint: disable=unused-argument
+    def callback():
+        """Called when zeroconf has discovered a new chromecast."""
+        if max_devices is not None and listener.count >= max_devices:
+            discover_complete.set()
+
+    discover_complete = Event()
+    listener = CastListener(callback)
+    zconf = zeroconf.Zeroconf()
+    zeroconf.ServiceBrowser(
+        zconf,
+        "_googlecast._tcp.local.",
+        listener,
+    )
+
+    # Wait for the timeout or the maximum number of devices
+    discover_complete.wait(timeout)
+
     devices = []
-    for service in services:
-        model = service[2]
-        name = service[3]
-        ip = service[4]
-        access_port = service[5]
+    for service in listener.devices:
+        model = service[0]
+        name = service[1]
+        ip = service[2]
+        access_port = service[3]
         if model in models_list:
+            print(service)
             devices.append(
                 GoogleDevice(name, ip, int(access_port), model)
             )
