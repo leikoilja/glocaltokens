@@ -4,6 +4,8 @@ for implementing master and access token fetching
 See: https://gist.github.com/rithvikvibhu/952f83ea656c6782fbd0f1645059055d
 """
 import logging
+from typing import List, Optional
+
 import grpc
 from datetime import datetime
 
@@ -12,14 +14,18 @@ from uuid import getnode as getmac
 
 from .google.internal.home.foyer import v1_pb2_grpc
 from .google.internal.home.foyer import v1_pb2
+from .scanner import (
+    discover_devices,
+    GoogleDevice,
+)
 
 ACCESS_TOKEN_APP_NAME = 'com.google.android.apps.chromecast.app'
 ACCESS_TOKEN_CLIENT_SIGNATURE = '24bb24c05e47e0aefa68a58a766179d9b613a600'
 ACCESS_TOKEN_SERVICE = 'oauth2:https://www.google.com/accounts/OAuthLogin'
 GOOGLE_HOME_FOYER_API = 'googlehomefoyer-pa.googleapis.com:443'
 
-ACCESS_TOKEN_DURATION = 60*60
-HOMEGRAPH_DURATION = 24*60*60
+ACCESS_TOKEN_DURATION = 60 * 60
+HOMEGRAPH_DURATION = 24 * 60 * 60
 
 
 class GLocalAuthenticationTokens:
@@ -130,28 +136,39 @@ class GLocalAuthenticationTokens:
             self.homegraph_date = datetime.now()
         return self.homegraph
 
-    def get_google_devices_json(self):
+    def get_google_devices_json(self, models_list: Optional[List[str]] = None):
         """
         Returns a json of google devices with their
         local authentication tokens
         """
 
-        def extract_devices(items):
+        def find_device(name, devices_list) -> Optional[GoogleDevice]:
+            for device in devices_list:
+                if device.name == name:
+                    return device
+            return None
+
+        def extract_devices(items, network_items):
             """
             Replacement for jq
             """
-            devices = []
+            devices_result = []
             for item in items:
                 if item.local_auth_token != "":
                     device = {
                         'deviceName': item.device_name,
                         'localAuthToken': item.local_auth_token,
                     }
-                    devices.append(device)
-            return devices
+                    google_device = find_device(item.device_name, network_items) if network_items is not None else None
+                    if google_device is not None:
+                        device['ip'] = google_device.ip
+                        device['port'] = google_device.port
+                    devices_result.append(device)
+            return devices_result
 
         homegraph = self.get_homegraph()
+        network_devices = discover_devices(models_list) if models_list is not None else None
 
-        devices = extract_devices(homegraph.home.devices)
+        devices = extract_devices(homegraph.home.devices, network_devices)
 
         return devices
