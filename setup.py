@@ -28,7 +28,6 @@ install_requires = [
     'grpcio-tools',
     'simplejson',
     'requests',
-    'pychromecast',
 ]
 
 if __name__ == '__main__':
