@@ -5,6 +5,7 @@ import pychromecast
 GOOGLE_HOME_MODELS = [
     "Google Home",
     "Google Home Mini",
+    "Google Nest Mini",
     "Lenovo Smart Clock"
 ]
 
