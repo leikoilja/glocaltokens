@@ -3,7 +3,6 @@ from typing import List
 from threading import Event
 import zeroconf
 import logging
-from uuid import UUID
 
 DISCOVER_TIMEOUT = 5
 GOOGLE_HOME_MODELS = [
