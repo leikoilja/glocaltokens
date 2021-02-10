@@ -69,7 +69,7 @@ class GLocalAuthenticationTokens:
         mac = mac.upper()
         return mac
 
-    def _get_android_id(self):
+    def get_android_id(self):
         if not self.android_id:
             mac_int = getmac()
             if (mac_int >> 40) % 2:
@@ -94,7 +94,7 @@ class GLocalAuthenticationTokens:
             res = perform_master_login(
                 self.username,
                 self.password,
-                self._get_android_id()
+                self.get_android_id()
             )
             if 'Token' not in res:
                 logging.exception('[!] Could not get master token.')
@@ -107,7 +107,7 @@ class GLocalAuthenticationTokens:
             res = perform_oauth(
                 self.username,
                 self.get_master_token(),
-                self._get_android_id(),
+                self.get_android_id(),
                 app=ACCESS_TOKEN_APP_NAME,
                 service=ACCESS_TOKEN_SERVICE,
                 client_sig=ACCESS_TOKEN_CLIENT_SIGNATURE
