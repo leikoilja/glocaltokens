@@ -59,7 +59,8 @@ class GLocalAuthenticationTokens:
         self.access_token_date = None
         self.homegraph_date = None
 
-    def _create_mac_string(self, num, splitter=':'):
+    @staticmethod
+    def _create_mac_string(num, splitter=':'):
         mac = hex(num)[2:]
         if mac[-1] == 'L':
             mac = mac[:-1]
