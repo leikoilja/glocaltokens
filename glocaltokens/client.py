@@ -5,7 +5,7 @@ See: https://gist.github.com/rithvikvibhu/952f83ea656c6782fbd0f1645059055d
 """
 import logging
 import grpc
-import datetime
+from datetime import datetime
 
 from gpsoauth import perform_master_login, perform_oauth
 from uuid import getnode as getmac
@@ -93,7 +93,7 @@ class GLocalAuthenticationTokens:
 
     def get_access_token(self):
         if self.access_token is None or \
-                datetime.datetime.now().timestamp() - self.access_token_date.timestamp() > ACCESS_TOKEN_DURATION:
+                datetime.now().timestamp() - self.access_token_date.timestamp() > ACCESS_TOKEN_DURATION:
             res = perform_oauth(
                 self.username,
                 self.get_master_token(),
@@ -106,7 +106,7 @@ class GLocalAuthenticationTokens:
                 logging.exception('[!] Could not get access token.')
                 return None
             self.access_token = res['Auth']
-            self.access_token_date = datetime.datetime.now()
+            self.access_token_date = datetime.now()
         return self.access_token
 
     def get_homegraph(self):
@@ -114,7 +114,7 @@ class GLocalAuthenticationTokens:
         Returns the entire Google Home Foyer V2 service
         """
         if self.homegraph is None or \
-                datetime.datetime.now().timestamp() - self.homegraph_date.timestamp() > HOMEGRAPH_DURATION:
+                datetime.now().timestamp() - self.homegraph_date.timestamp() > HOMEGRAPH_DURATION:
             scc = grpc.ssl_channel_credentials(root_certificates=None)
             tok = grpc.access_token_call_credentials(self.get_access_token())
             ccc = grpc.composite_channel_credentials(scc, tok)
@@ -124,7 +124,7 @@ class GLocalAuthenticationTokens:
                 request = v1_pb2.GetHomeGraphRequest(string1="", num2="")
                 response = rpc_service.GetHomeGraph(request)
                 self.homegraph = response
-            self.homegraph_date = datetime.datetime.now()
+            self.homegraph_date = datetime.now()
         return self.homegraph
 
     def get_google_devices_json(self):
