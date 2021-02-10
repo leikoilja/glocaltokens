@@ -75,6 +75,11 @@ class GLocalAuthenticationTokens:
             self.android_id = android_id.replace(':', '')
         return self.android_id
 
+    @staticmethod
+    def _token_has_expired(token_date: datetime, token_duration: int) -> bool:
+        """Checks if an specified token has expired"""
+        return datetime.now().timestamp() - token_date.timestamp() > token_duration
+
     def get_master_token(self):
         """
         Get google master token from username and password
@@ -92,8 +97,7 @@ class GLocalAuthenticationTokens:
         return self.master_token
 
     def get_access_token(self):
-        if self.access_token is None or \
-                datetime.now().timestamp() - self.access_token_date.timestamp() > ACCESS_TOKEN_DURATION:
+        if self.access_token is None or self._token_has_expired(self.access_token_date, ACCESS_TOKEN_DURATION):
             res = perform_oauth(
                 self.username,
                 self.get_master_token(),
@@ -113,8 +117,7 @@ class GLocalAuthenticationTokens:
         """
         Returns the entire Google Home Foyer V2 service
         """
-        if self.homegraph is None or \
-                datetime.now().timestamp() - self.homegraph_date.timestamp() > HOMEGRAPH_DURATION:
+        if self.homegraph is None or self._token_has_expired(self.homegraph_date, HOMEGRAPH_DURATION):
             scc = grpc.ssl_channel_credentials(root_certificates=None)
             tok = grpc.access_token_call_credentials(self.get_access_token())
             ccc = grpc.composite_channel_credentials(scc, tok)
