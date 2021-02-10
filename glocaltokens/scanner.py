@@ -32,6 +32,11 @@ class CastListener:
         """Number of discovered cast services."""
         return len(self.devices)
 
+    def update_service(self, zconf, typ, name):
+        """ Update a service in the collection. """
+        _LOGGER.debug("update_service %s, %s", typ, name)
+        self._add_update_service(zconf, typ, name, self.update_callback)
+
     def add_service(self, zconf, typ, name):
         """ Add a service to the collection. """
         _LOGGER.debug("add_service %s, %s", typ, name)
