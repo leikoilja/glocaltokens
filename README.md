@@ -71,3 +71,6 @@ print('[*] Master token', master_token)
 Much credits go to @rithvikvibhu(https://github.com/rithvikvibhu) for doing
 most of the heavy work like finding a way to extract master and access tokens
 (See his gist [here](https://gist.github.com/rithvikvibhu/952f83ea656c6782fbd0f1645059055d)).
+
+Also, thank you very much to the guys at `pychromecast` which provided the code required to scan 
+devices in the network.
