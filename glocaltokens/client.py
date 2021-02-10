@@ -155,6 +155,8 @@ class GLocalAuthenticationTokens:
             devices_result = []
             for item in items:
                 if item.local_auth_token != "":
+                    if models_list is not None and item.hardware.model not in models_list:
+                        continue
                     device = {
                         'deviceName': item.device_name,
                         'localAuthToken': item.local_auth_token,
