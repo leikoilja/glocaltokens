@@ -23,6 +23,12 @@ Use in your program as (see examples folder for detailed example):
 from glocaltokens.client import GLocalAuthenticationTokens
 
 # Using google username and password
+#
+# ONLY CALL THIS ONCE
+#
+# If you call this too often, google will disconnect your android devices and other weird things will happen
+#
+# Call get_google_devices_json() afterwards to get timers/alarms as oftens as you want to update.
 client = GLocalAuthenticationTokens(
   username='<YOUR_GOOGLE_USERNAME>',
   password='<YOUR_GOOGLE_PASSWORD>'
