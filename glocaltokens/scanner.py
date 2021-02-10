@@ -119,7 +119,6 @@ def discover_devices(models_list, max_devices=None, timeout=DISCOVER_TIMEOUT) ->
         ip = service[2]
         access_port = service[3]
         if model in models_list:
-            print(service)
             devices.append(
                 GoogleDevice(name, ip, int(access_port), model)
             )
