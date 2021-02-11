@@ -80,6 +80,10 @@ contribute please:
 - Push your changes to your branch
 - Open Pull Request
 
+When writting unittests please follow the good practises like:
+- Use `faker` to fake the data. See [examples](https://faker.readthedocs.io/en/master/)
+- Use `mock` to patch objects/methods. See [examples](https://realpython.com/python-mock-library/)
+
 # Credits
 Much credits go to @rithvikvibhu(https://github.com/rithvikvibhu) for doing
 most of the heavy work like finding a way to extract master and access tokens

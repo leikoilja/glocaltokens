@@ -11,12 +11,7 @@ faker = Faker()
 class GLocalAuthenticationTokensClientTests(TestCase):
     def setUp(self):
         """Setup method run before every test"""
-        client = GLocalAuthenticationTokens(
-            username=faker.word(),
-            password=faker.word(),
-            master_token=faker.word(),
-            android_id=faker.word()
-        )
+        pass
 
     def tearDown(self):
         """Teardown method run after every test"""
