@@ -150,9 +150,6 @@ class GLocalAuthenticationTokens:
             return None
 
         def extract_devices(items, network_items):
-            """
-            Replacement for jq
-            """
             devices_result = []
             for item in items:
                 if item.local_auth_token != "":
