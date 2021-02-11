@@ -143,6 +143,9 @@ class GLocalAuthenticationTokens:
         local authentication tokens
         """
 
+        if models_list is None:
+            models_list = []
+
         def find_device(name, devices_list) -> Optional[GoogleDevice]:
             for device in devices_list:
                 if device.name == name:
