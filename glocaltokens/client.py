@@ -165,8 +165,8 @@ class GLocalAuthenticationTokens:
                         'deviceName': item.device_name,
                         'localAuthToken': item.local_auth_token,
                     }
-                    google_device = find_device(item.device_name, network_items) if network_items is not None else None
-                    if google_device is not None:
+                    google_device = find_device(item.device_name, network_items) if network_items else []
+                    if google_device:
                         device['ip'] = google_device.ip
                         device['port'] = google_device.port
                     devices_result.append(device)
