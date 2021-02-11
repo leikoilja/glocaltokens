@@ -83,6 +83,8 @@ contribute please:
 When writting unittests please follow the good practises like:
 - Use `faker` to fake the data. See [examples](https://faker.readthedocs.io/en/master/)
 - Use `mock` to patch objects/methods. See [examples](https://realpython.com/python-mock-library/)
+- You can run `python -m discover -p 'test*.py'` or `tox` inside of your virtual
+  environment to test locally.
 
 # Credits
 Much credits go to @rithvikvibhu(https://github.com/rithvikvibhu) for doing
