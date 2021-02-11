@@ -1,3 +1,4 @@
+[![Glocaltokens Actions Status](https://github.com/leikoilja/glocaltokens/workflows/Running%20tests/badge.svg?branch=master)](https://github.com/leikoilja/glocaltokens/actions)
 # Google home local authentication token extraction
 
 Python 3 package to extract google home devices local authentication tokens from
