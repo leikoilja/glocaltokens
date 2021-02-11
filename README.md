@@ -45,8 +45,8 @@ print('\n[*] Google devices local authentication tokens')
 google_devices = client.get_google_devices_json()
 ```
 
-# Security Recommendation
-Never store the user's password nor username in plain text, if storage is necessary, generate a 
+## Security Recommendation
+Never store the user's password nor username in plain text, if storage is necessary, generate a
 master token and store it. Example approach:
 ```python
 from glocaltokens.client import GLocalAuthenticationTokens
@@ -66,6 +66,18 @@ print('[*] Master token', master_token)
 """Now store master_token somewhere"""
 
 ```
+
+## Contributing
+This is an open-source project and all countribution is highly welcomed. To
+contribute please:
+- Fork this repo
+- Create a new branch
+- Create a new virtual environment and install dependencies:
+`pip install -r requirements`
+- Implement your changes
+- If possible add tests for your changes
+- Push your changes to your branch
+- Open Pull Request
 
 # Credits
 Much credits go to @rithvikvibhu(https://github.com/rithvikvibhu) for doing
