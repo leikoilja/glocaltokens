@@ -142,8 +142,8 @@ class GLocalAuthenticationTokens:
         local authentication tokens
         """
 
-        if models_list is None:
-            models_list = []
+        # Set models_list to empty list if None
+        models_list = models_list if models_list else []
 
         def find_device(name, devices_list):
             for device in devices_list:
