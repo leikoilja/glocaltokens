@@ -1,5 +1,3 @@
-from typing import List
-
 from threading import Event
 import zeroconf
 import logging
@@ -90,14 +88,14 @@ class CastListener:
 
 
 class GoogleDevice:
-    def __init__(self, name: str, ip: str, port: int, model: str):
-        self.name: str = name
-        self.ip: str = ip
-        self.port: int = port
-        self.model: str = model
+    def __init__(self, name, ip, port, model):
+        self.name = name
+        self.ip = ip
+        self.port = port
+        self.model = model
 
 
-def discover_devices(models_list, max_devices=None, timeout=DISCOVER_TIMEOUT) -> List[GoogleDevice]:
+def discover_devices(models_list, max_devices=None, timeout=DISCOVER_TIMEOUT):
     # pylint: disable=unused-argument
     def callback():
         """Called when zeroconf has discovered a new chromecast."""

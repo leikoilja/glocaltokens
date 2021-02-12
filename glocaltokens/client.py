@@ -4,7 +4,6 @@ for implementing master and access token fetching
 See: https://gist.github.com/rithvikvibhu/952f83ea656c6782fbd0f1645059055d
 """
 import logging
-from typing import List, Optional
 
 import grpc
 from datetime import datetime
@@ -83,7 +82,7 @@ class GLocalAuthenticationTokens:
         return self.android_id
 
     @staticmethod
-    def _token_has_expired(token_date: datetime, token_duration: int) -> bool:
+    def _token_has_expired(token_date, token_duration):
         """Checks if an specified token has expired"""
         return datetime.now().timestamp() - token_date.timestamp() > token_duration
 
@@ -137,7 +136,7 @@ class GLocalAuthenticationTokens:
             self.homegraph_date = datetime.now()
         return self.homegraph
 
-    def get_google_devices_json(self, models_list: Optional[List[str]] = None):
+    def get_google_devices_json(self, models_list=None):
         """
         Returns a json of google devices with their
         local authentication tokens
@@ -146,7 +145,7 @@ class GLocalAuthenticationTokens:
         if models_list is None:
             models_list = []
 
-        def find_device(name, devices_list) -> Optional[GoogleDevice]:
+        def find_device(name, devices_list):
             for device in devices_list:
                 if device.name == name:
                     return device
@@ -160,7 +159,7 @@ class GLocalAuthenticationTokens:
                     # If models_list is empty, the check should be omitted, and accept all items.
                     if models_list and item.hardware.model not in models_list:
                         continue
-      
+
                     device = {
                         'deviceName': item.device_name,
                         'localAuthToken': item.local_auth_token,
