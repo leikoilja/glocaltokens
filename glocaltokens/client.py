@@ -158,7 +158,7 @@ class GLocalAuthenticationTokens:
                 if item.local_auth_token != "":
                     # This checks if the current item is a valid model, only if there are models in models_list.
                     # If models_list is empty, the check should be omitted, and accept all items.
-                    if len(models_list) > 0 and item.hardware.model not in models_list:
+                    if models_list and item.hardware.model not in models_list:
                         continue
       
                     device = {
@@ -175,7 +175,7 @@ class GLocalAuthenticationTokens:
             return devices_result
 
         homegraph = self.get_homegraph()
-        network_devices = discover_devices(models_list) if len(models_list) > 0 else []
+        network_devices = discover_devices(models_list) if models_list else []
 
         devices = extract_devices(homegraph.home.devices, network_devices)
 
