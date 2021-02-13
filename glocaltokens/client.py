@@ -68,7 +68,7 @@ class GLocalAuthenticationTokens:
         self.homegraph_date = None
 
     @staticmethod
-    def _create_mac_string(num, splitter=':'):
+    def _create_mac_string(num, splitter=":"):
         mac = hex(num)[2:]
         if mac[-1] == "L":
             mac = mac[:-1]
@@ -105,7 +105,7 @@ class GLocalAuthenticationTokens:
         """
         if not self.master_token:
             res = perform_master_login(
-                self.username, self.password, self._get_android_id()
+                self.username, self.password, self.get_android_id()
             )
             if "Token" not in res:
                 LOGGER.error("[!] Could not get master token.")
