@@ -153,7 +153,7 @@ class GLocalAuthenticationTokens:
             self.homegraph_date = datetime.now()
         return self.homegraph
 
-    def get_google_devices_json(self, models_list=None):
+    def get_google_devices(self, models_list=None):
         """
         Returns a list of google devices with their local authentication tokens, and IP and ports if set in models_list.
 
