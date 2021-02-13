@@ -2,6 +2,9 @@ from threading import Event
 import zeroconf
 import logging
 
+from .utils import network as net_utils
+from .utils import type as type_utils
+
 DISCOVER_TIMEOUT = 5
 GOOGLE_HOME_MODELS = [
     "Google Home",
@@ -89,10 +92,26 @@ class CastListener:
 
 class GoogleDevice:
     def __init__(self, name, ip, port, model):
+        if not net_utils.is_valid_ipv4_address(ip) and not net_utils.is_valid_ipv4_address(ip):
+            _LOGGER.error("ip must be a valid IP address")
+            return
+
+        if not type_utils.is_integer(port):
+            _LOGGER.error("port must be an integer value")
+            return
+
         self.name = name
-        self.ip = ip
+        self.ip = int(ip)
         self.port = port
         self.model = model
+
+        if self.port < 0:
+            _LOGGER.error("Port must be a positive number")
+            return
+
+        if self.port > 65535:
+            _LOGGER.error("Port must be less than 65535")
+            return
 
 
 def discover_devices(models_list, max_devices=None, timeout=DISCOVER_TIMEOUT):
