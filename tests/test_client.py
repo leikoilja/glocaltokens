@@ -27,7 +27,7 @@ class GLocalAuthenticationTokensClientTests(TestCase):
             username=username,
             password=password,
             master_token=master_token,
-            android_id=android_id
+            android_id=android_id,
         )
         self.assertEqual(username, client.username)
         self.assertEqual(password, client.password)
@@ -39,35 +39,26 @@ class GLocalAuthenticationTokensClientTests(TestCase):
         self.assertIsNone(client.access_token_date)
         self.assertIsNone(client.homegraph_date)
 
-    @patch('glocaltokens.client.logging.exception')
+    @patch("glocaltokens.client.LOGGER.error")
     def test_initialization__valid(self, mock):
 
         # Without username and password
-        GLocalAuthenticationTokens(
-            username=faker.word(),
-            password=faker.word(),
-        )
+        GLocalAuthenticationTokens(username=faker.word(), password=faker.word())
         self.assertEqual(mock.call_count, 0)
 
         # Without master_token
-        GLocalAuthenticationTokens(
-            master_token=faker.word()
-        )
+        GLocalAuthenticationTokens(master_token=faker.word())
         self.assertEqual(mock.call_count, 0)
 
-    @patch('glocaltokens.client.logging.exception')
+    @patch("glocaltokens.client.LOGGER.error")
     def test_initialization__invalid(self, mock):
 
         # Without username
-        GLocalAuthenticationTokens(
-            password=faker.word(),
-        )
+        GLocalAuthenticationTokens(password=faker.word())
         self.assertEqual(mock.call_count, 1)
 
         # Without password
-        GLocalAuthenticationTokens(
-            username=faker.word(),
-        )
+        GLocalAuthenticationTokens(username=faker.word())
         self.assertEqual(mock.call_count, 2)
 
         # Without username and password
