@@ -101,8 +101,8 @@ class GoogleDevice:
             return
 
         self.name = name
-        self.ip = int(ip)
-        self.port = port
+        self.ip = ip
+        self.port = int(port)
         self.model = model
 
         if self.port < 0:
