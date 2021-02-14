@@ -2,10 +2,14 @@ from faker import Faker
 from mock import patch
 from unittest import TestCase
 
+from token_provider import AASETProvider as aas_et_provider
+
 from glocaltokens.client import GLocalAuthenticationTokens
+from glocaltokens.client import Device
 
 
 faker = Faker()
+faker.add_provider(aas_et_provider)
 
 
 class GLocalAuthenticationTokensClientTests(TestCase):
@@ -34,21 +38,37 @@ class GLocalAuthenticationTokensClientTests(TestCase):
         self.assertEqual(master_token, client.master_token)
         self.assertEqual(android_id, client.android_id)
 
+        self.assertIs(client.username, str)
+        self.assertIs(client.password, str)
+        self.assertIs(client.master_token, str)
+        self.assertIs(client.android_id, str)
+
         self.assertIsNone(client.access_token)
         self.assertIsNone(client.homegraph)
         self.assertIsNone(client.access_token_date)
         self.assertIsNone(client.homegraph_date)
 
+        # Test get_android_id
+        client = GLocalAuthenticationTokens(username, password)
+        android_id = client.get_android_id()
+        self.assertIsNotNone(android_id)
+        self.assertIs(android_id, str)
+
     @patch("glocaltokens.client.LOGGER.error")
     def test_initialization__valid(self, mock):
-
-        # Without username and password
+        # --- GLocalAuthenticationTokens initialization --- #
+        # With username and password
         GLocalAuthenticationTokens(username=faker.word(), password=faker.word())
         self.assertEqual(mock.call_count, 0)
 
-        # Without master_token
+        # With master_token
         GLocalAuthenticationTokens(master_token=faker.word())
         self.assertEqual(mock.call_count, 0)
+
+        # --- client.Device initialization --- #
+        # With ip and port
+        # TODO: local_auth_token doesn't follow aas_et
+        Device(device_name=faker.word(), local_auth_token=faker.aas_et)
 
     @patch("glocaltokens.client.LOGGER.error")
     def test_initialization__invalid(self, mock):
