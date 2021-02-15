@@ -1,5 +1,5 @@
 import socket
-import type as type_utils
+import glocaltokens.utils.type as type_utils
 
 
 def is_valid_ipv4_address(address):
