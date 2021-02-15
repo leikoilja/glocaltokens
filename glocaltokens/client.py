@@ -37,7 +37,7 @@ LOGGER = logging.getLogger(__name__)
 
 class GLocalAuthenticationTokens:
     def __init__(
-        self, username=None, password=None, master_token=None, android_id=None
+            self, username=None, password=None, master_token=None, android_id=None
     ):
         """
         Initialize an GLocalAuthenticationTokens instance with google account
@@ -74,7 +74,7 @@ class GLocalAuthenticationTokens:
             mac = mac[:-1]
         pad = max(12 - len(mac), 0)
         mac = "0" * pad + mac
-        mac = splitter.join([mac[x : x + 2] for x in range(0, 12, 2)])
+        mac = splitter.join([mac[x: x + 2] for x in range(0, 12, 2)])
         mac = mac.upper()
         return mac
 
@@ -116,7 +116,7 @@ class GLocalAuthenticationTokens:
 
     def get_access_token(self):
         if self.access_token is None or self._token_has_expired(
-            self.access_token_date, ACCESS_TOKEN_DURATION
+                self.access_token_date, ACCESS_TOKEN_DURATION
         ):
             res = perform_oauth(
                 self.username,
@@ -139,7 +139,7 @@ class GLocalAuthenticationTokens:
         Returns the entire Google Home Foyer V2 service
         """
         if self.homegraph is None or self._token_has_expired(
-            self.homegraph_date, HOMEGRAPH_DURATION
+                self.homegraph_date, HOMEGRAPH_DURATION
         ):
             scc = grpc.ssl_channel_credentials(root_certificates=None)
             tok = grpc.access_token_call_credentials(self.get_access_token())
@@ -199,7 +199,7 @@ class GLocalAuthenticationTokens:
 
         return devices
 
-    def get_google_devices_json(self, models_list: Optional[List[str]] = None, indent: int = 2):
+    def get_google_devices_json(self, models_list=None, indent=2):
         """
         Returns a json list of google devices with their local authentication tokens, and IP and ports if set in
         models_list.
