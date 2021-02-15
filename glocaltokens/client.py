@@ -81,7 +81,8 @@ class Device:
 
 class GLocalAuthenticationTokens:
     def __init__(
-            self, username: str = None, password: str = None, master_token: str = None, android_id: str = None
+            self, username: Optional[str] = None, password: Optional[str] = None,
+            master_token: Optional[str] = None, android_id: Optional[str] = None
     ):
         """
         Initialize an GLocalAuthenticationTokens instance with google account
@@ -96,10 +97,10 @@ class GLocalAuthenticationTokens:
                 if not set;
 
         """
-        self.username = username
-        self.password = password
-        self.master_token = master_token
-        self.android_id = android_id
+        self.username: Optional[str] = username
+        self.password: Optional[str] = password
+        self.master_token: Optional[str] = master_token
+        self.android_id: Optional[str] = android_id
         if (not self.username or not self.password) and not self.master_token:
             LOGGER.error(
                 "You must either provide google username/password "
