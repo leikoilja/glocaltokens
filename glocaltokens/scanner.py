@@ -93,7 +93,7 @@ class CastListener:
 
 
 class GoogleDevice:
-    def __init__(self, name, ip, port, model):
+    def __init__(self, name: str, ip: str, port: int, model: str):
         if not net_utils.is_valid_ipv4_address(ip) and not net_utils.is_valid_ipv4_address(ip):
             _LOGGER.error("ip must be a valid IP address")
             return
@@ -104,19 +104,19 @@ class GoogleDevice:
 
         self.name = name
         self.ip = ip
-        self.port = int(port)
+        self.port = port
         self.model = model
 
-        if self.port < 0:
+        if port < 0:
             _LOGGER.error("Port must be a positive number")
             return
 
-        if self.port > 65535:
+        if port > 65535:
             _LOGGER.error("Port must be less than 65535")
             return
 
 
-def discover_devices(models_list: Optional[str], max_devices=None, timeout=DISCOVER_TIMEOUT):
+def discover_devices(models_list: Optional[str], max_devices: Optional[int] = None, timeout: int = DISCOVER_TIMEOUT):
     # pylint: disable=unused-argument
     def callback():
         """Called when zeroconf has discovered a new chromecast."""
