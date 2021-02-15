@@ -38,10 +38,10 @@ class GLocalAuthenticationTokensClientTests(TestCase):
         self.assertEqual(master_token, client.master_token)
         self.assertEqual(android_id, client.android_id)
 
-        self.assertIs(client.username, str)
-        self.assertIs(client.password, str)
-        self.assertIs(client.master_token, str)
-        self.assertIs(client.android_id, str)
+        self.assertTrue(type(client.username) == str)
+        self.assertTrue(type(client.password) == str)
+        self.assertTrue(type(client.master_token) == str)
+        self.assertTrue(type(client.android_id) == str)
 
         self.assertIsNone(client.access_token)
         self.assertIsNone(client.homegraph)
@@ -52,7 +52,7 @@ class GLocalAuthenticationTokensClientTests(TestCase):
         client = GLocalAuthenticationTokens(username, password)
         android_id = client.get_android_id()
         self.assertIsNotNone(android_id)
-        self.assertIs(android_id, str)
+        self.assertTrue(type(client.android_id) == str)
 
     @patch("glocaltokens.client.LOGGER.error")
     def test_initialization__valid(self, mock):
