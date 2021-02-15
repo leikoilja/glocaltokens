@@ -3,25 +3,22 @@ import logging
 from datetime import datetime
 from typing import List, Optional
 from uuid import getnode as getmac
+from uuid import uuid4
 
 import grpc
 from gpsoauth import perform_master_login, perform_oauth
-from uuid import uuid4
 
 from .const import (
-    ACCESS_TOKEN_DURATION,
     ACCESS_TOKEN_APP_NAME,
-    ACCESS_TOKEN_SERVICE,
     ACCESS_TOKEN_CLIENT_SIGNATURE,
+    ACCESS_TOKEN_DURATION,
+    ACCESS_TOKEN_SERVICE,
     ANDROID_ID_LENGTH,
     GOOGLE_HOME_FOYER_API,
     HOMEGRAPH_DURATION,
 )
-
-from .google.internal.home.foyer import v1_pb2_grpc
-from .google.internal.home.foyer import v1_pb2
-from .scanner import discover_devices, GoogleDevice
-
+from .google.internal.home.foyer import v1_pb2, v1_pb2_grpc
+from .scanner import GoogleDevice, discover_devices
 
 DEBUG = False
 
