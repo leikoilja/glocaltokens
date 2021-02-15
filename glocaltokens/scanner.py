@@ -1,6 +1,7 @@
-from threading import Event
-import zeroconf
 import logging
+from threading import Event
+
+import zeroconf
 
 from .utils import network as net_utils
 from .utils import type as type_utils
@@ -10,7 +11,7 @@ GOOGLE_HOME_MODELS = [
     "Google Home",
     "Google Home Mini",
     "Google Nest Mini",
-    "Lenovo Smart Clock"
+    "Lenovo Smart Clock",
 ]
 
 _LOGGER = logging.getLogger(__name__)
@@ -77,14 +78,7 @@ class CastListener:
         model_name = get_value("md")
         friendly_name = get_value("fn")
 
-        self.devices.append(
-            (
-                model_name,
-                friendly_name,
-                host,
-                service.port,
-            )
-        )
+        self.devices.append((model_name, friendly_name, host, service.port))
 
         if callback:
             callback()
@@ -92,7 +86,9 @@ class CastListener:
 
 class GoogleDevice:
     def __init__(self, name, ip, port, model):
-        if not net_utils.is_valid_ipv4_address(ip) and not net_utils.is_valid_ipv6_address(ip):
+        if not net_utils.is_valid_ipv4_address(
+            ip
+        ) and not net_utils.is_valid_ipv6_address(ip):
             _LOGGER.error("ip must be a valid IP address")
             return
 
@@ -120,11 +116,7 @@ def discover_devices(models_list, max_devices=None, timeout=DISCOVER_TIMEOUT):
     discover_complete = Event()
     listener = CastListener(callback)
     zconf = zeroconf.Zeroconf()
-    zeroconf.ServiceBrowser(
-        zconf,
-        "_googlecast._tcp.local.",
-        listener,
-    )
+    zeroconf.ServiceBrowser(zconf, "_googlecast._tcp.local.", listener)
 
     # Wait for the timeout or the maximum number of devices
     discover_complete.wait(timeout)
@@ -136,7 +128,5 @@ def discover_devices(models_list, max_devices=None, timeout=DISCOVER_TIMEOUT):
         ip = service[2]
         access_port = service[3]
         if model in models_list:
-            devices.append(
-                GoogleDevice(name, ip, int(access_port), model)
-            )
+            devices.append(GoogleDevice(name, ip, int(access_port), model))
     return devices

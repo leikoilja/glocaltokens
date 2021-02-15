@@ -1,9 +1,9 @@
-from faker import Faker
-from mock import patch
 from unittest import TestCase
 
-from glocaltokens.client import GLocalAuthenticationTokens
+from faker import Faker
+from mock import patch
 
+from glocaltokens.client import GLocalAuthenticationTokens
 
 faker = Faker()
 

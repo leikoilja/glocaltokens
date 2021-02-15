@@ -63,7 +63,7 @@ google_devices_select_2 = client.get_google_devices_json([
 ```
 
 ### Predefined models list
-There are some pre-defined models list in [`scanner.py`](/glocaltokens/scanner.py), feel free to 
+There are some pre-defined models list in [`scanner.py`](/glocaltokens/scanner.py), feel free to
 add new lists, or add models to a list with a pull-request.
 #### `GOOGLE_HOME_MODELS`:
 - Google Home
