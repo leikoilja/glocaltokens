@@ -20,6 +20,7 @@ from .scanner import (
     GoogleDevice,
 )
 from .utils import network as net_utils
+from .utils import token as token_utils
 
 ACCESS_TOKEN_APP_NAME = "com.google.android.apps.chromecast.app"
 ACCESS_TOKEN_CLIENT_SIGNATURE = "24bb24c05e47e0aefa68a58a766179d9b613a600"
@@ -45,6 +46,25 @@ class Device:
         self.device_name = device_name
         self.local_auth_token = local_auth_token
         self.google_device = google_device
+
+        if not self.local_auth_token:
+            LOGGER.error(
+                "local_auth_token not set"
+            )
+            return
+
+        if not self.device_name:
+            LOGGER.error(
+                "device_name not set"
+            )
+            return
+
+        if not token_utils.is_local_auth_token(self.local_auth_token):
+            LOGGER.error(
+                "local_auth_token doesn't follow the correct format."
+            )
+            return
+
         if google_device:
             self.ip = google_device.ip
             self.port = google_device.port
@@ -105,6 +125,11 @@ class GLocalAuthenticationTokens:
             LOGGER.error(
                 "You must either provide google username/password "
                 "or google master token"
+            )
+            return
+        if self.master_token and not token_utils.is_aas_et(self.master_token):
+            LOGGER.error(
+                "master_token doesn't follow the AAS_ET format"
             )
             return
         self.access_token: Optional[str] = None
