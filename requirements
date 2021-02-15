@@ -53,3 +53,4 @@ urllib3==1.26.3
 virtualenv==20.4.2
 wcwidth==0.2.5
 webencodings==0.5.1
+zeroconf==0.28.8
