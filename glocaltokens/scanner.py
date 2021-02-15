@@ -105,12 +105,8 @@ class GoogleDevice:
         self.port = int(port)
         self.model = model
 
-        if self.port < 0:
-            _LOGGER.error("Port must be a positive number")
-            return
-
-        if self.port > 65535:
-            _LOGGER.error("Port must be less than 65535")
+        if not 0 <= self.port <= 65535:
+            _LOGGER.error("Port is out of the valid range: [0,65535]")
             return
 
 
