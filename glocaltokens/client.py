@@ -165,7 +165,7 @@ class GLocalAuthenticationTokens:
         return self.android_id
 
     @staticmethod
-    def _token_has_expired(token_date: datetime, token_duration: int) -> bool:
+    def _token_has_expired(token_date, token_duration):
         """Checks if an specified token has expired"""
         return datetime.now().timestamp() - token_date.timestamp() > token_duration
 
@@ -274,6 +274,7 @@ class GLocalAuthenticationTokens:
         :param models_list The list of accepted model names.
         :param indent The indentation for the json formatting.
         """
+        
         devices_json = [
             device.dict() for device in self.get_google_devices(models_list)
         ]
