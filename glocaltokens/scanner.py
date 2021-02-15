@@ -102,7 +102,7 @@ class GoogleDevice:
 
         self.name = name
         self.ip = ip
-        self.port = int(port)
+        self.port = port
         self.model = model
 
         if not 0 <= self.port <= 65535:
