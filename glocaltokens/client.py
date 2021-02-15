@@ -3,22 +3,17 @@ Credits to rithvikvibhu (https://github.com/rithvikvibhu)
 for implementing master and access token fetching
 See: https://gist.github.com/rithvikvibhu/952f83ea656c6782fbd0f1645059055d
 """
-import logging
 import json
-from typing import List, Optional
-
-import grpc
+import logging
 from datetime import datetime
-
-from gpsoauth import perform_master_login, perform_oauth
+from typing import List, Optional
 from uuid import getnode as getmac
 
-from .google.internal.home.foyer import v1_pb2_grpc
-from .google.internal.home.foyer import v1_pb2
-from .scanner import (
-    discover_devices,
-    GoogleDevice,
-)
+import grpc
+from gpsoauth import perform_master_login, perform_oauth
+
+from .google.internal.home.foyer import v1_pb2, v1_pb2_grpc
+from .scanner import GoogleDevice, discover_devices
 
 ACCESS_TOKEN_APP_NAME = "com.google.android.apps.chromecast.app"
 ACCESS_TOKEN_CLIENT_SIGNATURE = "24bb24c05e47e0aefa68a58a766179d9b613a600"
@@ -37,7 +32,7 @@ LOGGER = logging.getLogger(__name__)
 
 class GLocalAuthenticationTokens:
     def __init__(
-            self, username=None, password=None, master_token=None, android_id=None
+        self, username=None, password=None, master_token=None, android_id=None
     ):
         """
         Initialize an GLocalAuthenticationTokens instance with google account
@@ -74,7 +69,7 @@ class GLocalAuthenticationTokens:
             mac = mac[:-1]
         pad = max(12 - len(mac), 0)
         mac = "0" * pad + mac
-        mac = splitter.join([mac[x: x + 2] for x in range(0, 12, 2)])
+        mac = splitter.join([mac[x : x + 2] for x in range(0, 12, 2)])
         mac = mac.upper()
         return mac
 
@@ -116,7 +111,7 @@ class GLocalAuthenticationTokens:
 
     def get_access_token(self):
         if self.access_token is None or self._token_has_expired(
-                self.access_token_date, ACCESS_TOKEN_DURATION
+            self.access_token_date, ACCESS_TOKEN_DURATION
         ):
             res = perform_oauth(
                 self.username,
@@ -139,7 +134,7 @@ class GLocalAuthenticationTokens:
         Returns the entire Google Home Foyer V2 service
         """
         if self.homegraph is None or self._token_has_expired(
-                self.homegraph_date, HOMEGRAPH_DURATION
+            self.homegraph_date, HOMEGRAPH_DURATION
         ):
             scc = grpc.ssl_channel_credentials(root_certificates=None)
             tok = grpc.access_token_call_credentials(self.get_access_token())
@@ -182,12 +177,15 @@ class GLocalAuthenticationTokens:
                         "deviceName": item.device_name,
                         "localAuthToken": item.local_auth_token,
                     }
-                    google_device = find_device(item.device_name, network_items) if network_items else []
+                    google_device = (
+                        find_device(item.device_name, network_items)
+                        if network_items
+                        else []
+                    )
                     if google_device:
-                        device.update({
-                            'ip': google_device.ip,
-                            'port': google_device.port
-                        })
+                        device.update(
+                            {"ip": google_device.ip, "port": google_device.port}
+                        )
                     devices_result.append(device)
             return devices_result
 
