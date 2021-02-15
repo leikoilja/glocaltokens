@@ -28,6 +28,7 @@ install_requires = [
     'grpcio-tools',
     'simplejson',
     'requests',
+    'zeroconf',
 ]
 
 if __name__ == '__main__':
