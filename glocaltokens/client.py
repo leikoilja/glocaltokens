@@ -4,6 +4,9 @@ for implementing master and access token fetching
 See: https://gist.github.com/rithvikvibhu/952f83ea656c6782fbd0f1645059055d
 """
 import logging
+import json
+from typing import List, Optional
+
 import grpc
 from datetime import datetime
 
@@ -12,6 +15,10 @@ from uuid import getnode as getmac
 
 from .google.internal.home.foyer import v1_pb2_grpc
 from .google.internal.home.foyer import v1_pb2
+from .scanner import (
+    discover_devices,
+    GoogleDevice,
+)
 
 ACCESS_TOKEN_APP_NAME = "com.google.android.apps.chromecast.app"
 ACCESS_TOKEN_CLIENT_SIGNATURE = "24bb24c05e47e0aefa68a58a766179d9b613a600"
@@ -30,7 +37,7 @@ LOGGER = logging.getLogger(__name__)
 
 class GLocalAuthenticationTokens:
     def __init__(
-        self, username=None, password=None, master_token=None, android_id=None
+            self, username=None, password=None, master_token=None, android_id=None
     ):
         """
         Initialize an GLocalAuthenticationTokens instance with google account
@@ -60,17 +67,18 @@ class GLocalAuthenticationTokens:
         self.access_token_date = None
         self.homegraph_date = None
 
-    def _create_mac_string(self, num, splitter=":"):
+    @staticmethod
+    def _create_mac_string(num, splitter=":"):
         mac = hex(num)[2:]
         if mac[-1] == "L":
             mac = mac[:-1]
         pad = max(12 - len(mac), 0)
         mac = "0" * pad + mac
-        mac = splitter.join([mac[x : x + 2] for x in range(0, 12, 2)])
+        mac = splitter.join([mac[x: x + 2] for x in range(0, 12, 2)])
         mac = mac.upper()
         return mac
 
-    def _get_android_id(self):
+    def get_android_id(self):
         if not self.android_id:
             mac_int = getmac()
             if (mac_int >> 40) % 2:
@@ -87,7 +95,7 @@ class GLocalAuthenticationTokens:
         return self.android_id
 
     @staticmethod
-    def _token_has_expired(token_date: datetime, token_duration: int) -> bool:
+    def _token_has_expired(token_date, token_duration):
         """Checks if an specified token has expired"""
         return datetime.now().timestamp() - token_date.timestamp() > token_duration
 
@@ -97,7 +105,7 @@ class GLocalAuthenticationTokens:
         """
         if not self.master_token:
             res = perform_master_login(
-                self.username, self.password, self._get_android_id()
+                self.username, self.password, self.get_android_id()
             )
             if "Token" not in res:
                 LOGGER.error("[!] Could not get master token.")
@@ -108,12 +116,12 @@ class GLocalAuthenticationTokens:
 
     def get_access_token(self):
         if self.access_token is None or self._token_has_expired(
-            self.access_token_date, ACCESS_TOKEN_DURATION
+                self.access_token_date, ACCESS_TOKEN_DURATION
         ):
             res = perform_oauth(
                 self.username,
                 self.get_master_token(),
-                self._get_android_id(),
+                self.get_android_id(),
                 app=ACCESS_TOKEN_APP_NAME,
                 service=ACCESS_TOKEN_SERVICE,
                 client_sig=ACCESS_TOKEN_CLIENT_SIGNATURE,
@@ -131,7 +139,7 @@ class GLocalAuthenticationTokens:
         Returns the entire Google Home Foyer V2 service
         """
         if self.homegraph is None or self._token_has_expired(
-            self.homegraph_date, HOMEGRAPH_DURATION
+                self.homegraph_date, HOMEGRAPH_DURATION
         ):
             scc = grpc.ssl_channel_credentials(root_certificates=None)
             tok = grpc.access_token_call_credentials(self.get_access_token())
@@ -145,28 +153,59 @@ class GLocalAuthenticationTokens:
             self.homegraph_date = datetime.now()
         return self.homegraph
 
-    def get_google_devices_json(self):
+    def get_google_devices(self, models_list=None):
         """
-        Returns a json of google devices with their
-        local authentication tokens
+        Returns a list of google devices with their local authentication tokens, and IP and ports if set in models_list.
+
+        :param models_list The list of accepted model names.
         """
 
-        def extract_devices(items):
-            """
-            Replacement for jq
-            """
-            devices = []
+        # Set models_list to empty list if None
+        models_list = models_list if models_list else []
+
+        def find_device(name, devices_list):
+            for device in devices_list:
+                if device.name == name:
+                    return device
+            return None
+
+        def extract_devices(items, network_items):
+            devices_result = []
             for item in items:
                 if item.local_auth_token != "":
+                    # This checks if the current item is a valid model, only if there are models in models_list.
+                    # If models_list is empty, the check should be omitted, and accept all items.
+                    if models_list and item.hardware.model not in models_list:
+                        continue
+
                     device = {
                         "deviceName": item.device_name,
                         "localAuthToken": item.local_auth_token,
                     }
-                    devices.append(device)
-            return devices
+                    google_device = find_device(item.device_name, network_items) if network_items else []
+                    if google_device:
+                        device.update({
+                            'ip': google_device.ip,
+                            'port': google_device.port
+                        })
+                    devices_result.append(device)
+            return devices_result
 
         homegraph = self.get_homegraph()
+        network_devices = discover_devices(models_list) if models_list else []
 
-        devices = extract_devices(homegraph.home.devices)
+        devices = extract_devices(homegraph.home.devices, network_devices)
         LOGGER.debug("Google Home devices: {}".format(devices))
+
         return devices
+
+    def get_google_devices_json(self, models_list=None, indent=2):
+        """
+        Returns a json list of google devices with their local authentication tokens, and IP and ports if set in
+        models_list.
+
+        :param models_list The list of accepted model names.
+        :param indent The indentation for the json formatting.
+        """
+        devices = self.get_google_devices(models_list)
+        return json.dumps(devices, indent=indent)
