@@ -69,7 +69,7 @@ add new lists, or add models to a list with a pull-request.
 - Google Home
 - Google Home Mini
 - Google Nest Mini
-- Lenovo Smart Cloc
+- Lenovo Smart Clock
 
 ## Security Recommendation
 
