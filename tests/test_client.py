@@ -11,6 +11,7 @@ from glocaltokens.client import (
     GLocalAuthenticationTokens,
     Device
 )
+from glocaltokens.const import ANDROID_ID_LENGTH
 
 faker = Faker()
 faker.add_provider(TokenProvider)
@@ -20,7 +21,9 @@ faker.add_provider(internet)
 class GLocalAuthenticationTokensClientTests(TypeTestMixin, TestCase):
     def setUp(self):
         """Setup method run before every test"""
-        pass
+        self.client = GLocalAuthenticationTokens(
+            username=faker.word(), password=faker.word()
+        )
 
     def tearDown(self):
         """Teardown method run after every test"""
@@ -105,3 +108,19 @@ class GLocalAuthenticationTokensClientTests(TypeTestMixin, TestCase):
         # With only port
         Device(device_name=faker.word(), local_auth_token=faker.local_auth_token(), port=faker.port_number())
         self.assertEqual(mock.call_count, 7)
+        
+    def test_get_android_id(self):
+        android_id = self.client.get_android_id()
+        self.assertTrue(len(android_id) == ANDROID_ID_LENGTH)
+
+        # Make sure we get the same ID when called further
+        self.assertEqual(android_id, self.client.get_android_id())
+
+    def test_generate_mac_string(self):
+        mac_string = GLocalAuthenticationTokens._generate_mac_string()
+        self.assertTrue(len(mac_string) == ANDROID_ID_LENGTH)
+
+        # Make sure we get different generated mac string
+        self.assertNotEqual(
+            mac_string, GLocalAuthenticationTokens._generate_mac_string()
+        )
