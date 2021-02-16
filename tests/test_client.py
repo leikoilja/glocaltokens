@@ -54,11 +54,6 @@ class GLocalAuthenticationTokensClientTests(TypeTestMixin, TestCase):
 
         self.assertIsAASET(client.master_token)
 
-        # Test get_android_id
-        android_id = client.get_android_id()
-        self.assertIsNotNone(android_id)
-        self.assertIsString(client.android_id)
-
     @patch("glocaltokens.client.LOGGER.error")
     def test_initialization__valid(self, mock):
         # --- GLocalAuthenticationTokens initialization --- #
@@ -115,6 +110,8 @@ class GLocalAuthenticationTokensClientTests(TypeTestMixin, TestCase):
     def test_get_android_id(self):
         android_id = self.client.get_android_id()
         self.assertTrue(len(android_id) == ANDROID_ID_LENGTH)
+
+        self.assertIsString(android_id)
 
         # Make sure we get the same ID when called further
         self.assertEqual(android_id, self.client.get_android_id())
