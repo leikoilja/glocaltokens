@@ -88,7 +88,7 @@ class Device:
     def __str__(self) -> str:
         return str(self.dict())
 
-    def dict(self) -> []:
+    def dict(self) -> Dict[str, Any]:
         return {
             "device_name": self.device_name,
             "local_auth_token": self.local_auth_token,
