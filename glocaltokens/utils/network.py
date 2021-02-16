@@ -10,7 +10,7 @@ def is_valid_ipv4_address(address):
             socket.inet_aton(address)
         except socket.error:
             return False
-        return address.count('.') == 3
+        return address.count(".") == 3
     except socket.error:  # not a valid address
         return False
 

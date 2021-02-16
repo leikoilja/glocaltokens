@@ -1,7 +1,8 @@
+from unittest import TestCase
+
 from faker import Faker
 from faker.providers import internet
 from mock import patch
-from unittest import TestCase
 
 from tests.factory.providers import TokenProvider
 from tests.factory.mixin import TypeTestMixin
@@ -10,7 +11,6 @@ from glocaltokens.client import (
     GLocalAuthenticationTokens,
     Device
 )
-
 
 faker = Faker()
 faker.add_provider(TokenProvider)

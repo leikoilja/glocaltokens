@@ -1,11 +1,11 @@
+from unittest import TestCase
+
 from faker import Faker
 from faker.providers import internet as internet_provider
 from faker.providers import python as python_provider
 from mock import patch
-from unittest import TestCase
 
 from glocaltokens.scanner import GoogleDevice
-
 
 faker = Faker()
 faker.add_provider(internet_provider)
@@ -35,7 +35,9 @@ class GLocalAuthenticationTokensClientTests(TestCase):
 
     @patch("glocaltokens.scanner._LOGGER.error")
     def test_initialization__valid(self, mock):
-        GoogleDevice(faker.word(), faker.ipv4_private(), faker.port_number(), faker.word())
+        GoogleDevice(
+            faker.word(), faker.ipv4_private(), faker.port_number(), faker.word()
+        )
         self.assertEqual(mock.call_count, 0)
 
     @patch("glocaltokens.scanner._LOGGER.error")
@@ -53,10 +55,19 @@ class GLocalAuthenticationTokensClientTests(TestCase):
         self.assertEqual(mock.call_count, 3)
 
         # With negative port
-        GoogleDevice(faker.word(), faker.ipv4_private(), faker.pyint(min_value=-9999, max_value=-1), faker.word())
+        GoogleDevice(
+            faker.word(),
+            faker.ipv4_private(),
+            faker.pyint(min_value=-9999, max_value=-1),
+            faker.word(),
+        )
         self.assertEqual(mock.call_count, 4)
 
         # With greater port
-        GoogleDevice(faker.word(), faker.ipv4_private(), faker.pyint(min_value=65535, max_value=999999), faker.word())
+        GoogleDevice(
+            faker.word(),
+            faker.ipv4_private(),
+            faker.pyint(min_value=65535, max_value=999999),
+            faker.word(),
+        )
         self.assertEqual(mock.call_count, 5)
-

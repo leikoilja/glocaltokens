@@ -1,8 +1,8 @@
+import logging
 from threading import Event
 from typing import Optional
 
 import zeroconf
-import logging
 
 from .utils import network as net_utils
 from .utils import type as type_utils
@@ -12,7 +12,7 @@ GOOGLE_HOME_MODELS = [
     "Google Home",
     "Google Home Mini",
     "Google Nest Mini",
-    "Lenovo Smart Clock"
+    "Lenovo Smart Clock",
 ]
 
 _LOGGER = logging.getLogger(__name__)
@@ -79,14 +79,7 @@ class CastListener:
         model_name = get_value("md")
         friendly_name = get_value("fn")
 
-        self.devices.append(
-            (
-                model_name,
-                friendly_name,
-                host,
-                service.port,
-            )
-        )
+        self.devices.append((model_name, friendly_name, host, service.port))
 
         if callback:
             callback()
@@ -122,11 +115,7 @@ def discover_devices(models_list, max_devices=None, timeout=DISCOVER_TIMEOUT):
     discover_complete = Event()
     listener = CastListener(callback)
     zconf = zeroconf.Zeroconf()
-    zeroconf.ServiceBrowser(
-        zconf,
-        "_googlecast._tcp.local.",
-        listener,
-    )
+    zeroconf.ServiceBrowser(zconf, "_googlecast._tcp.local.", listener)
 
     # Wait for the timeout or the maximum number of devices
     discover_complete.wait(timeout)

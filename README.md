@@ -1,4 +1,13 @@
-[![Glocaltokens Actions Status](https://github.com/leikoilja/glocaltokens/workflows/Running%20tests/badge.svg?branch=master)](https://github.com/leikoilja/glocaltokens/actions)
+[![GitHub Workflow Status][workflow-shield]][workflow]
+[![Contributors][contributors-shield]][contributors]
+[![PyPI][pypi-shield]][pypi]
+
+[![Open Issues][issues-shield]][issues]
+[![Open Pull-Requests][pr-shield]][pr]
+
+[![GitHub Release][releases-shield]][releases]
+[![GitHub Activity][commits-shield]][commits]
+[![License][license-shield]][license]
 
 # Google home local authentication token extraction
 
@@ -63,7 +72,7 @@ google_devices_select_2 = client.get_google_devices_json([
 ```
 
 ### Predefined models list
-There are some pre-defined models list in [`scanner.py`](/glocaltokens/scanner.py), feel free to 
+There are some pre-defined models list in [`scanner.py`](/glocaltokens/scanner.py), feel free to
 add new lists, or add models to a list with a pull-request.
 #### `GOOGLE_HOME_MODELS`:
 - Google Home
@@ -119,3 +128,28 @@ extract master and access tokens
 (See his gist [here](https://gist.github.com/rithvikvibhu/952f83ea656c6782fbd0f1645059055d)).
 
 Also, thank you very much to the guys at `pychromecast` which provided the code required to scan devices in the network.
+
+
+[workflow-shield]: https://img.shields.io/github/workflow/status/leikoilja/glocaltokens/Running%20tests?style=for-the-badge
+[workflow]: https://github.com/leikoilja/glocaltokens/actions
+
+[pypi-shield]: https://img.shields.io/pypi/v/glocaltokens?style=for-the-badge
+[pypi]: https://pypi.org/project/glocaltokens/
+
+[issues-shield]: https://img.shields.io/github/issues/leikoilja/glocaltokens?style=for-the-badge
+[issues]: https://github.com/leikoilja/glocaltokens/issues
+
+[pr-shield]: https://img.shields.io/github/issues-pr/leikoilja/glocaltokens?style=for-the-badge
+[pr]: https://github.com/leikoilja/glocaltokens/pulls
+
+[commits-shield]: https://img.shields.io/github/commit-activity/y/leikoilja/glocaltokens?style=for-the-badge
+[commits]: https://github.com/leikoilja/glocaltokens/commits/main
+
+[contributors-shield]: https://img.shields.io/github/contributors/leikoilja/glocaltokens?style=for-the-badge
+[contributors]: https://github.com/leikoilja/glocaltokens/graphs/contributors
+
+[license]: https://github.com/leikoilja/glocaltokens/blob/main/LICENSE
+[license-shield]: https://img.shields.io/github/license/leikoilja/glocaltokens.svg?style=for-the-badge
+
+[releases-shield]: https://img.shields.io/github/release/leikoilja/glocaltokens.svg?style=for-the-badge
+[releases]: https://github.com/leikoilja/glocaltokens/releases

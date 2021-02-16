@@ -3,15 +3,15 @@ Credits to rithvikvibhu (https://github.com/rithvikvibhu)
 for implementing master and access token fetching
 See: https://gist.github.com/rithvikvibhu/952f83ea656c6782fbd0f1645059055d
 """
-import logging
 import json
 from typing import List, Optional, Dict, Any
+import logging
+from datetime import datetime
+from typing import List, Optional
+from uuid import getnode as getmac
 
 import grpc
-from datetime import datetime
-
 from gpsoauth import perform_master_login, perform_oauth
-from uuid import getnode as getmac
 
 from .google.internal.home.foyer import v1_pb2_grpc
 from .google.internal.home.foyer import v1_pb2
@@ -144,7 +144,7 @@ class GLocalAuthenticationTokens:
             mac = mac[:-1]
         pad = max(12 - len(mac), 0)
         mac = "0" * pad + mac
-        mac = splitter.join([mac[x: x + 2] for x in range(0, 12, 2)])
+        mac = splitter.join([mac[x : x + 2] for x in range(0, 12, 2)])
         mac = mac.upper()
         return mac
 
@@ -186,7 +186,7 @@ class GLocalAuthenticationTokens:
 
     def get_access_token(self) -> Optional[str]:
         if self.access_token is None or self._token_has_expired(
-                self.access_token_date, ACCESS_TOKEN_DURATION
+            self.access_token_date, ACCESS_TOKEN_DURATION
         ):
             res = perform_oauth(
                 self.username,
@@ -209,7 +209,7 @@ class GLocalAuthenticationTokens:
         Returns the entire Google Home Foyer V2 service
         """
         if self.homegraph is None or self._token_has_expired(
-                self.homegraph_date, HOMEGRAPH_DURATION
+            self.homegraph_date, HOMEGRAPH_DURATION
         ):
             scc = grpc.ssl_channel_credentials(root_certificates=None)
             tok = grpc.access_token_call_credentials(self.get_access_token())
