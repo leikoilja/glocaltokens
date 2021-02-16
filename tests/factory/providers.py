@@ -6,7 +6,7 @@ fake = Faker()
 
 
 class TokenProvider(BaseProvider):
-    def aas_et(self):
+    def token_aas_et(self):
         return generate_token(216, prefix="aas_et/")
 
     def local_auth_token(self):

@@ -29,7 +29,7 @@ class GLocalAuthenticationTokensClientTests(TestCase):
     def test_initialization(self):
         username = faker.word()
         password = faker.word()
-        master_token = faker.aas_et()
+        master_token = faker.token_aas_et()
         android_id = faker.word()
 
         client = GLocalAuthenticationTokens(
@@ -69,7 +69,7 @@ class GLocalAuthenticationTokensClientTests(TestCase):
         self.assertEqual(mock.call_count, 0)
 
         # With master_token
-        GLocalAuthenticationTokens(master_token=faker.aas_et())
+        GLocalAuthenticationTokens(master_token=faker.token_aas_et())
         self.assertEqual(mock.call_count, 0)
 
         # --- client.Device initialization --- #
