@@ -1,25 +1,27 @@
 [![Glocaltokens Actions Status](https://github.com/leikoilja/glocaltokens/workflows/Running%20tests/badge.svg?branch=master)](https://github.com/leikoilja/glocaltokens/actions)
+
 # Google home local authentication token extraction
 
-Python 3 package to extract google home devices local authentication tokens from
-google servers. These local authentication tokens are needed to control Google
-Home devices(See @rithvikvibhu's [Google Home (2.0) API](https://rithvikvibhu.github.io/GHLocalApi/)).
+Python 3 package to extract google home devices local authentication tokens from google servers. These local
+authentication tokens are needed to control Google Home devices(See
+@rithvikvibhu's [Google Home (2.0) API](https://rithvikvibhu.github.io/GHLocalApi/)).
 
 Please note:
-Once you have local google authentication tokens they only live about 1 day
-long. After that you will need to obtain new ones. You will probably need to
-run the script repeatedly storing the tokens somewhere convenient.
+Once you have local google authentication tokens they only live about 1 day long. After that you will need to obtain new
+ones. You will probably need to run the script repeatedly storing the tokens somewhere convenient.
 
 ## Quickstart
 
 Note: the package was written and tested on Python 3.
 
 - Install the python package
+
 ```
 pip install glocaltokens
 ```
 
 Use in your program as (see examples folder for detailed example):
+
 ```Python
 from glocaltokens.client import GLocalAuthenticationTokens
 
@@ -44,11 +46,36 @@ print("\n[*] Access token (lives 1 hour)", client.get_access_token())
 # Get google device local authentication tokens (live about 1 day)
 print("\n[*] Google devices local authentication tokens")
 google_devices = client.get_google_devices_json()
+
+# You can also select specific models to select when calling get_google_devices or get_google_devices_json with the models_list parameter.
+# For example, we have pre-defined a constant with some Google Home Models (WARNING! Not all of them may be present)
+# This could be used this way
+from glocaltokens.scanner import GOOGLE_HOME_MODELS
+
+google_devices_select = client.get_google_devices_json(GOOGLE_HOME_MODELS)
+
+# But if you need to select just a set of models, or add new models, you can use a list of str
+google_devices_select_2 = client.get_google_devices_json([
+    f"Google Home",
+    f"Google Home Mini",
+    f"Google Nest Mini",
+])
 ```
 
+### Predefined models list
+There are some pre-defined models list in [`scanner.py`](/glocaltokens/scanner.py), feel free to 
+add new lists, or add models to a list with a pull-request.
+#### `GOOGLE_HOME_MODELS`:
+- Google Home
+- Google Home Mini
+- Google Nest Mini
+- Lenovo Smart Clock
+
 ## Security Recommendation
-Never store the user's password nor username in plain text, if storage is necessary, generate a
-master token and store it. Example approach:
+
+Never store the user's password nor username in plain text, if storage is necessary, generate a master token and store
+it. Example approach:
+
 ```python
 from glocaltokens.client import GLocalAuthenticationTokens
 
@@ -62,31 +89,33 @@ client = GLocalAuthenticationTokens(
 master_token = client.get_master_token()
 print("[*] Master token", master_token)
 
-
-
 """Now store master_token somewhere"""
 
 ```
 
 ## Contributing
-This is an open-source project and all countribution is highly welcomed. To
-contribute please:
+
+This is an open-source project and all countribution is highly welcomed. To contribute please:
+
 - Fork this repo
 - Create a new branch
 - Create a new virtual environment and install dependencies:
-`pip install -r requirements`
+  `pip install -r requirements`
 - Implement your changes
 - If possible add tests for your changes
 - Push your changes to your branch
 - Open Pull Request
 
 When writting unittests please follow the good practises like:
+
 - Use `faker` to fake the data. See [examples](https://faker.readthedocs.io/en/master/)
 - Use `mock` to patch objects/methods. See [examples](https://realpython.com/python-mock-library/)
-- You can run `python -m discover -p 'test*.py'` or `tox` inside of your virtual
-  environment to test locally.
+- You can run `python -m discover -p 'test*.py'` or `tox` inside of your virtual environment to test locally.
 
 # Credits
-Much credits go to @rithvikvibhu(https://github.com/rithvikvibhu) for doing
-most of the heavy work like finding a way to extract master and access tokens
+
+Much credits go to @rithvikvibhu(https://github.com/rithvikvibhu) for doing most of the heavy work like finding a way to
+extract master and access tokens
 (See his gist [here](https://gist.github.com/rithvikvibhu/952f83ea656c6782fbd0f1645059055d)).
+
+Also, thank you very much to the guys at `pychromecast` which provided the code required to scan devices in the network.

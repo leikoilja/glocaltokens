@@ -107,16 +107,12 @@ class GoogleDevice:
         self.port = port
         self.model = model
 
-        if port < 0:
-            _LOGGER.error("Port must be a positive number")
-            return
-
-        if port > 65535:
-            _LOGGER.error("Port must be less than 65535")
+        if not 0 <= self.port <= 65535:
+            _LOGGER.error("Port is out of the valid range: [0,65535]")
             return
 
 
-def discover_devices(models_list: Optional[str], max_devices: Optional[int] = None, timeout: int = DISCOVER_TIMEOUT):
+def discover_devices(models_list, max_devices=None, timeout=DISCOVER_TIMEOUT):
     # pylint: disable=unused-argument
     def callback():
         """Called when zeroconf has discovered a new chromecast."""
