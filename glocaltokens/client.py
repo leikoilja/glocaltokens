@@ -1,27 +1,24 @@
-"""
-Credits to rithvikvibhu (https://github.com/rithvikvibhu)
-for implementing master and access token fetching
-See: https://gist.github.com/rithvikvibhu/952f83ea656c6782fbd0f1645059055d
-"""
 import json
 import logging
 from datetime import datetime
 from typing import List, Optional
 from uuid import getnode as getmac
+from uuid import uuid4
 
 import grpc
 from gpsoauth import perform_master_login, perform_oauth
 
+from .const import (
+    ACCESS_TOKEN_APP_NAME,
+    ACCESS_TOKEN_CLIENT_SIGNATURE,
+    ACCESS_TOKEN_DURATION,
+    ACCESS_TOKEN_SERVICE,
+    ANDROID_ID_LENGTH,
+    GOOGLE_HOME_FOYER_API,
+    HOMEGRAPH_DURATION,
+)
 from .google.internal.home.foyer import v1_pb2, v1_pb2_grpc
 from .scanner import GoogleDevice, discover_devices
-
-ACCESS_TOKEN_APP_NAME = "com.google.android.apps.chromecast.app"
-ACCESS_TOKEN_CLIENT_SIGNATURE = "24bb24c05e47e0aefa68a58a766179d9b613a600"
-ACCESS_TOKEN_SERVICE = "oauth2:https://www.google.com/accounts/OAuthLogin"
-GOOGLE_HOME_FOYER_API = "googlehomefoyer-pa.googleapis.com:443"
-
-ACCESS_TOKEN_DURATION = 60 * 60
-HOMEGRAPH_DURATION = 24 * 60 * 60
 
 DEBUG = False
 
@@ -63,30 +60,16 @@ class GLocalAuthenticationTokens:
         self.homegraph_date = None
 
     @staticmethod
-    def _create_mac_string(num, splitter=":"):
-        mac = hex(num)[2:]
-        if mac[-1] == "L":
-            mac = mac[:-1]
-        pad = max(12 - len(mac), 0)
-        mac = "0" * pad + mac
-        mac = splitter.join([mac[x : x + 2] for x in range(0, 12, 2)])
-        mac = mac.upper()
-        return mac
+    def _generate_mac_string():
+        """Generate random 14 char long string"""
+        random_uuid = uuid4()
+        random_string = str(random_uuid).replace("-", "")[:ANDROID_ID_LENGTH]
+        mac_string = random_string.upper()
+        return mac_string
 
     def get_android_id(self):
         if not self.android_id:
-            mac_int = getmac()
-            if (mac_int >> 40) % 2:
-                LOGGER.error(
-                    "a valid MAC could not be determined. "
-                    "Provide an android_id (and be "
-                    "sure to provide the same one on future runs)."
-                )
-                return
-
-            android_id = self._create_mac_string(mac_int)
-            self.android_id = android_id.replace(":", "")
-        LOGGER.debug("Android ID: {}".format(self.android_id))
+            self.android_id = self._generate_mac_string()
         return self.android_id
 
     @staticmethod
