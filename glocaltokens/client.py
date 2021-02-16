@@ -77,7 +77,7 @@ class Device:
             self.ip = ip
             self.port = port
 
-        if self.ip and not net_utils.is_valid_ipv4_address(self.ip) and not net_utils.is_valid_ipv4_address(self.ip):
+        if self.ip and not net_utils.is_valid_ipv4_address(self.ip) and not net_utils.is_valid_ipv6_address(self.ip):
             LOGGER.error("ip must be a valid IP address")
             return
 
