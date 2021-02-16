@@ -1,15 +1,20 @@
 from unittest import TestCase
 
 from faker import Faker
+from faker.providers import internet
 from mock import patch
 
-from glocaltokens.client import GLocalAuthenticationTokens
+from glocaltokens.client import Device, GLocalAuthenticationTokens
 from glocaltokens.const import ANDROID_ID_LENGTH
+from tests.factory.mixin import TypeTestMixin
+from tests.factory.providers import TokenProvider
 
 faker = Faker()
+faker.add_provider(TokenProvider)
+faker.add_provider(internet)
 
 
-class GLocalAuthenticationTokensClientTests(TestCase):
+class GLocalAuthenticationTokensClientTests(TypeTestMixin, TestCase):
     def setUp(self):
         """Setup method run before every test"""
         self.client = GLocalAuthenticationTokens(
@@ -23,7 +28,7 @@ class GLocalAuthenticationTokensClientTests(TestCase):
     def test_initialization(self):
         username = faker.word()
         password = faker.word()
-        master_token = faker.word()
+        master_token = faker.token_aas_et()
         android_id = faker.word()
 
         client = GLocalAuthenticationTokens(
@@ -37,25 +42,35 @@ class GLocalAuthenticationTokensClientTests(TestCase):
         self.assertEqual(master_token, client.master_token)
         self.assertEqual(android_id, client.android_id)
 
+        self.assertIsString(client.username)
+        self.assertIsString(client.password)
+        self.assertIsString(client.master_token)
+        self.assertIsString(client.android_id)
+
         self.assertIsNone(client.access_token)
         self.assertIsNone(client.homegraph)
         self.assertIsNone(client.access_token_date)
         self.assertIsNone(client.homegraph_date)
 
+        self.assertIsAASET(client.master_token)
+
     @patch("glocaltokens.client.LOGGER.error")
     def test_initialization__valid(self, mock):
-
-        # Without username and password
+        # --- GLocalAuthenticationTokens initialization --- #
+        # With username and password
         GLocalAuthenticationTokens(username=faker.word(), password=faker.word())
         self.assertEqual(mock.call_count, 0)
 
-        # Without master_token
-        GLocalAuthenticationTokens(master_token=faker.word())
+        # With master_token
+        GLocalAuthenticationTokens(master_token=faker.token_aas_et())
         self.assertEqual(mock.call_count, 0)
+
+        # --- client.Device initialization --- #
+        # With ip and port
+        Device(device_name=faker.word(), local_auth_token=faker.local_auth_token())
 
     @patch("glocaltokens.client.LOGGER.error")
     def test_initialization__invalid(self, mock):
-
         # Without username
         GLocalAuthenticationTokens(password=faker.word())
         self.assertEqual(mock.call_count, 1)
@@ -68,9 +83,35 @@ class GLocalAuthenticationTokensClientTests(TestCase):
         GLocalAuthenticationTokens()
         self.assertEqual(mock.call_count, 3)
 
+        # With invalid master_token
+        GLocalAuthenticationTokens(master_token=faker.word())
+        self.assertEqual(mock.call_count, 4)
+
+        # Invalid local_auth_token
+        Device(device_name=faker.word(), local_auth_token=faker.word())
+        self.assertEqual(mock.call_count, 5)
+
+        # With only ip
+        Device(
+            device_name=faker.word(),
+            local_auth_token=faker.local_auth_token(),
+            ip=faker.ipv4_private(),
+        )
+        self.assertEqual(mock.call_count, 6)
+
+        # With only port
+        Device(
+            device_name=faker.word(),
+            local_auth_token=faker.local_auth_token(),
+            port=faker.port_number(),
+        )
+        self.assertEqual(mock.call_count, 7)
+
     def test_get_android_id(self):
         android_id = self.client.get_android_id()
         self.assertTrue(len(android_id) == ANDROID_ID_LENGTH)
+
+        self.assertIsString(android_id)
 
         # Make sure we get the same ID when called further
         self.assertEqual(android_id, self.client.get_android_id())

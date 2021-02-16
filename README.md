@@ -42,18 +42,18 @@ from glocaltokens.client import GLocalAuthenticationTokens
 #
 # Call get_google_devices_json() afterwards to get timers/alarms as oftens as you want to update.
 client = GLocalAuthenticationTokens(
-    username='<YOUR_GOOGLE_USERNAME>',
-    password='<YOUR_GOOGLE_PASSWORD>'
+  username="<YOUR_GOOGLE_USERNAME>",
+  password="<YOUR_GOOGLE_PASSWORD>"
 )
 
 # Get master token
-print('[*] Master token', client.get_master_token())
+print("[*] Master token", client.get_master_token())
 
 # Get access token (lives 1 hour)
-print('\n[*] Access token (lives 1 hour)', client.get_access_token())
+print("\n[*] Access token (lives 1 hour)", client.get_access_token())
 
 # Get google device local authentication tokens (live about 1 day)
-print('\n[*] Google devices local authentication tokens')
+print("\n[*] Google devices local authentication tokens")
 google_devices = client.get_google_devices_json()
 
 # You can also select specific models to select when calling get_google_devices or get_google_devices_json with the models_list parameter.
@@ -90,13 +90,13 @@ from glocaltokens.client import GLocalAuthenticationTokens
 
 # Using google username and password first, and only once
 client = GLocalAuthenticationTokens(
-    username='<YOUR_GOOGLE_USERNAME>',
-    password='<YOUR_GOOGLE_PASSWORD>'
+  username="<YOUR_GOOGLE_USERNAME>",
+  password="<YOUR_GOOGLE_PASSWORD>"
 )
 
 # Get master token
 master_token = client.get_master_token()
-print('[*] Master token', master_token)
+print("[*] Master token", master_token)
 
 """Now store master_token somewhere"""
 

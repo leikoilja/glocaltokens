@@ -1,4 +1,4 @@
-def is_numeric(variable):
+def is_numeric(variable) -> bool:
     """Checks if a variable is numeric"""
     return is_integer(variable) or is_float(variable)
 

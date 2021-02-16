@@ -1,5 +1,6 @@
 import logging
 from threading import Event
+from typing import Optional
 
 import zeroconf
 
@@ -85,7 +86,7 @@ class CastListener:
 
 
 class GoogleDevice:
-    def __init__(self, name, ip, port, model):
+    def __init__(self, name: str, ip: str, port: int, model: str):
         if not net_utils.is_valid_ipv4_address(
             ip
         ) and not net_utils.is_valid_ipv6_address(ip):
@@ -127,6 +128,6 @@ def discover_devices(models_list, max_devices=None, timeout=DISCOVER_TIMEOUT):
         name = service[1]
         ip = service[2]
         access_port = service[3]
-        if model in models_list:
+        if not models_list or model in models_list:
             devices.append(GoogleDevice(name, ip, int(access_port), model))
     return devices
