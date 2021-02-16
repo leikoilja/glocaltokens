@@ -5,7 +5,7 @@ See: https://gist.github.com/rithvikvibhu/952f83ea656c6782fbd0f1645059055d
 """
 import logging
 import json
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 
 import grpc
 from datetime import datetime
