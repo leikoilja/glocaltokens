@@ -94,7 +94,7 @@ class CastListener:
 
 class GoogleDevice:
     def __init__(self, name: str, ip: str, port: int, model: str):
-        if not net_utils.is_valid_ipv4_address(ip) and not net_utils.is_valid_ipv4_address(ip):
+        if not net_utils.is_valid_ipv4_address(ip) and not net_utils.is_valid_ipv6_address(ip):
             _LOGGER.error("ip must be a valid IP address")
             return
 
