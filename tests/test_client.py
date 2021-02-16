@@ -4,14 +4,10 @@ from faker import Faker
 from faker.providers import internet
 from mock import patch
 
-from tests.factory.providers import TokenProvider
-from tests.factory.mixin import TypeTestMixin
-
-from glocaltokens.client import (
-    GLocalAuthenticationTokens,
-    Device
-)
+from glocaltokens.client import Device, GLocalAuthenticationTokens
 from glocaltokens.const import ANDROID_ID_LENGTH
+from tests.factory.mixin import TypeTestMixin
+from tests.factory.providers import TokenProvider
 
 faker = Faker()
 faker.add_provider(TokenProvider)
@@ -59,7 +55,6 @@ class GLocalAuthenticationTokensClientTests(TypeTestMixin, TestCase):
         self.assertIsAASET(client.master_token)
 
         # Test get_android_id
-        client = GLocalAuthenticationTokens(username, password)
         android_id = client.get_android_id()
         self.assertIsNotNone(android_id)
         self.assertIsString(client.android_id)
@@ -102,13 +97,21 @@ class GLocalAuthenticationTokensClientTests(TypeTestMixin, TestCase):
         self.assertEqual(mock.call_count, 5)
 
         # With only ip
-        Device(device_name=faker.word(), local_auth_token=faker.local_auth_token(), ip=faker.ipv4_private())
+        Device(
+            device_name=faker.word(),
+            local_auth_token=faker.local_auth_token(),
+            ip=faker.ipv4_private(),
+        )
         self.assertEqual(mock.call_count, 6)
 
         # With only port
-        Device(device_name=faker.word(), local_auth_token=faker.local_auth_token(), port=faker.port_number())
+        Device(
+            device_name=faker.word(),
+            local_auth_token=faker.local_auth_token(),
+            port=faker.port_number(),
+        )
         self.assertEqual(mock.call_count, 7)
-        
+
     def test_get_android_id(self):
         android_id = self.client.get_android_id()
         self.assertTrue(len(android_id) == ANDROID_ID_LENGTH)
