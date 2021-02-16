@@ -1,22 +1,13 @@
 import json
-from typing import List, Optional, Dict, Any
 import logging
 from datetime import datetime
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 from uuid import getnode as getmac
 from uuid import uuid4
 
 import grpc
 from gpsoauth import perform_master_login, perform_oauth
 
-from .google.internal.home.foyer import v1_pb2_grpc
-from .google.internal.home.foyer import v1_pb2
-from .scanner import (
-    discover_devices,
-    GoogleDevice,
-)
-from .utils import network as net_utils
-from .utils import token as token_utils
 from .const import (
     ACCESS_TOKEN_APP_NAME,
     ACCESS_TOKEN_CLIENT_SIGNATURE,
@@ -26,6 +17,10 @@ from .const import (
     GOOGLE_HOME_FOYER_API,
     HOMEGRAPH_DURATION,
 )
+from .google.internal.home.foyer import v1_pb2, v1_pb2_grpc
+from .scanner import GoogleDevice, discover_devices
+from .utils import network as net_utils
+from .utils import token as token_utils
 
 DEBUG = False
 
@@ -35,8 +30,14 @@ LOGGER = logging.getLogger(__name__)
 
 
 class Device:
-    def __init__(self, device_name: str, local_auth_token: str, google_device: Optional[GoogleDevice] = None,
-                 ip: Optional[str] = None, port: Optional[int] = None):
+    def __init__(
+        self,
+        device_name: str,
+        local_auth_token: str,
+        google_device: Optional[GoogleDevice] = None,
+        ip: Optional[str] = None,
+        port: Optional[int] = None,
+    ):
         """
         Initializes a Device. Can set or google_device or ip and port
         """
@@ -45,21 +46,15 @@ class Device:
         self.google_device = google_device
 
         if not self.local_auth_token:
-            LOGGER.error(
-                "local_auth_token not set"
-            )
+            LOGGER.error("local_auth_token not set")
             return
 
         if not self.device_name:
-            LOGGER.error(
-                "device_name not set"
-            )
+            LOGGER.error("device_name not set")
             return
 
         if not token_utils.is_local_auth_token(self.local_auth_token):
-            LOGGER.error(
-                "local_auth_token doesn't follow the correct format."
-            )
+            LOGGER.error("local_auth_token doesn't follow the correct format.")
             return
 
         if google_device:
@@ -74,7 +69,11 @@ class Device:
             self.ip = ip
             self.port = port
 
-        if self.ip and not net_utils.is_valid_ipv4_address(self.ip) and not net_utils.is_valid_ipv6_address(self.ip):
+        if (
+            self.ip
+            and not net_utils.is_valid_ipv4_address(self.ip)
+            and not net_utils.is_valid_ipv6_address(self.ip)
+        ):
             LOGGER.error("ip must be a valid IP address")
             return
 
@@ -89,17 +88,17 @@ class Device:
         return {
             "device_name": self.device_name,
             "local_auth_token": self.local_auth_token,
-            "google_device": {
-                "ip": self.ip,
-                "port": self.port,
-            },
+            "google_device": {"ip": self.ip, "port": self.port},
         }
 
 
 class GLocalAuthenticationTokens:
     def __init__(
-            self, username: Optional[str] = None, password: Optional[str] = None,
-            master_token: Optional[str] = None, android_id: Optional[str] = None
+        self,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+        master_token: Optional[str] = None,
+        android_id: Optional[str] = None,
     ):
         """
         Initialize an GLocalAuthenticationTokens instance with google account
@@ -125,9 +124,7 @@ class GLocalAuthenticationTokens:
             )
             return
         if self.master_token and not token_utils.is_aas_et(self.master_token):
-            LOGGER.error(
-                "master_token doesn't follow the AAS_ET format"
-            )
+            LOGGER.error("master_token doesn't follow the AAS_ET format")
             return
         self.access_token: Optional[str] = None
         self.homegraph = None
@@ -231,13 +228,13 @@ class GLocalAuthenticationTokens:
                     if models_list and item.hardware.model not in models_list:
                         continue
 
-                    google_device = find_device(item.device_name, network_items) if network_items else None
+                    google_device = (
+                        find_device(item.device_name, network_items)
+                        if network_items
+                        else None
+                    )
                     devices_result.append(
-                        Device(
-                            item.device_name,
-                            item.local_auth_token,
-                            google_device
-                        )
+                        Device(item.device_name, item.local_auth_token, google_device)
                     )
             return devices_result
 
@@ -249,7 +246,9 @@ class GLocalAuthenticationTokens:
 
         return devices
 
-    def get_google_devices_json(self, models_list: Optional[List[str]] = None, indent: int = 2) -> str:
+    def get_google_devices_json(
+        self, models_list: Optional[List[str]] = None, indent: int = 2
+    ) -> str:
         """
         Returns a json list of google devices with their local authentication tokens, and IP and ports if set in
         models_list.
@@ -257,7 +256,7 @@ class GLocalAuthenticationTokens:
         :param models_list The list of accepted model names.
         :param indent The indentation for the json formatting.
         """
-        
+
         devices_json = [
             device.dict() for device in self.get_google_devices(models_list)
         ]

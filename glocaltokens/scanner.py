@@ -87,7 +87,9 @@ class CastListener:
 
 class GoogleDevice:
     def __init__(self, name: str, ip: str, port: int, model: str):
-        if not net_utils.is_valid_ipv4_address(ip) and not net_utils.is_valid_ipv6_address(ip):
+        if not net_utils.is_valid_ipv4_address(
+            ip
+        ) and not net_utils.is_valid_ipv6_address(ip):
             _LOGGER.error("ip must be a valid IP address")
             return
 
@@ -127,7 +129,5 @@ def discover_devices(models_list, max_devices=None, timeout=DISCOVER_TIMEOUT):
         ip = service[2]
         access_port = service[3]
         if not models_list or model in models_list:
-            devices.append(
-                GoogleDevice(name, ip, int(access_port), model)
-            )
+            devices.append(GoogleDevice(name, ip, int(access_port), model))
     return devices

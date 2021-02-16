@@ -1,5 +1,6 @@
 from faker import Faker
 from faker.providers import BaseProvider
+
 from glocaltokens.utils.token import generate as generate_token
 
 fake = Faker()

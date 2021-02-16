@@ -11,4 +11,8 @@ def is_local_auth_token(token: str) -> bool:
 
 
 def generate(length: int, prefix: str = "", suffix: str = "") -> str:
-    return prefix + "".join(random.choice(string.ascii_letters) for x in range(length)) + suffix
+    return (
+        prefix
+        + "".join(random.choice(string.ascii_letters) for x in range(length))
+        + suffix
+    )
