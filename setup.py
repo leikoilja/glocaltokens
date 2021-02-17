@@ -28,7 +28,7 @@ install_requires = [
     # grpcio is pinned by HomeAssistant
     # See https://github.com/home-assistant/core/blob/6e67b943da09a13409e1a61ec34ed7144e1093c3/script/gen_requirements_all.py
     "grpcio==1.31.0",
-    "grpcio-tools",
+    "grpcio-tools==1.31.0",
     "simplejson",
     "requests",
     "zeroconf",
