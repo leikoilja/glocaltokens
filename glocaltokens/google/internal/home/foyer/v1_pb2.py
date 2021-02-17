@@ -6,3612 +6,6054 @@ from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
 from google.protobuf import reflection as _reflection
 from google.protobuf import symbol_database as _symbol_database
+
 # @@protoc_insertion_point(imports)
 
 _sym_db = _symbol_database.Default()
 
 
-
-
 DESCRIPTOR = _descriptor.FileDescriptor(
-  name='google/internal/home/foyer/v1.proto',
-  package='google.internal.home.foyer.v1',
-  syntax='proto3',
-  serialized_options=None,
-  create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n#google/internal/home/foyer/v1.proto\x12\x1dgoogle.internal.home.foyer.v1\"\x06\n\x04None\"\xf4\x06\n\x1cGetAssistantRoutinesResponse\x12M\n\x02p1\x18\x01 \x03(\x0b\x32\x41.google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1\x12M\n\x02p2\x18\x02 \x01(\x0b\x32\x41.google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part2\x1a\x8a\x05\n\x05Part1\x12\x14\n\x0croutine_name\x18\x01 \x01(\t\x12\\\n\x08workflow\x18\x03 \x01(\x0b\x32J.google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow\x12\x0f\n\x07string4\x18\x04 \x01(\t\x12\x0f\n\x07string5\x18\x05 \x01(\t\x1a\xea\x03\n\x08WorkFlow\x12\x0c\n\x04type\x18\x01 \x01(\t\x12\x61\n\x05wf_s1\x18\x02 \x01(\x0b\x32R.google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1\x1a\xec\x02\n\x07WF_Sub1\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12q\n\x08wf_s1_s1\x18\x02 \x01(\x0b\x32_.google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.WF_Sub1_Sub1\x1a\xdc\x01\n\x0cWF_Sub1_Sub1\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12x\n\x07routine\x18\x02 \x01(\x0b\x32g.google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.WF_Sub1_Sub1.Routine\x1a\x41\n\x07Routine\x12\x12\n\nroutine_id\x18\x01 \x01(\t\x12\x0c\n\x04num2\x18\x02 \x01(\r\x12\x14\n\x0croutine_name\x18\x03 \x01(\t\x1a)\n\x05Part2\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12\x0f\n\x07string3\x18\x03 \x01(\t\"4\n\x13GetHomeGraphRequest\x12\x0f\n\x07string1\x18\x03 \x01(\t\x12\x0c\n\x04num2\x18\x04 \x01(\t\"\xc8\x37\n\x14GetHomeGraphResponse\x12\x12\n\ntimestamp1\x18\x01 \x01(\x04\x12\x46\n\x04home\x18\x02 \x01(\x0b\x32\x38.google.internal.home.foyer.v1.GetHomeGraphResponse.Home\x12I\n\x06groups\x18\x03 \x03(\x0b\x32\x39.google.internal.home.foyer.v1.GetHomeGraphResponse.Group\x12P\n\nroom_types\x18\x04 \x03(\x0b\x32<.google.internal.home.foyer.v1.GetHomeGraphResponse.RoomType\x12\x0f\n\x07string5\x18\x05 \x01(\t\x12\r\n\x05\x62ool6\x18\x06 \x01(\x08\x12T\n\x0c\x64\x65vice_types\x18\x07 \x03(\x0b\x32>.google.internal.home.foyer.v1.GetHomeGraphResponse.DeviceType\x12V\n\rproject_types\x18\t \x03(\x0b\x32?.google.internal.home.foyer.v1.GetHomeGraphResponse.ProjectType\x12P\n\tmessage11\x18\x0b \x03(\x0b\x32=.google.internal.home.foyer.v1.GetHomeGraphResponse.Message11\x12R\n\x0blinked_apps\x18\x0c \x03(\x0b\x32=.google.internal.home.foyer.v1.GetHomeGraphResponse.LinkedApp\x1a\xce\'\n\x04Home\x12\x0f\n\x07home_id\x18\x01 \x01(\t\x12\x11\n\thome_name\x18\x02 \x01(\t\x12S\n\x08location\x18\x03 \x01(\x0b\x32\x41.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Location\x12Y\n\x0clinked_users\x18\x04 \x03(\x0b\x32\x43.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.LinkedUser\x12L\n\x05rooms\x18\x06 \x03(\x0b\x32=.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Room\x12P\n\x07\x64\x65vices\x18\x07 \x03(\x0b\x32?.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device\x12U\n\tmessage11\x18\x0b \x01(\x0b\x32\x42.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message11\x12\x10\n\x08string12\x18\x0c \x01(\t\x12U\n\tmessage13\x18\r \x01(\x0b\x32\x42.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13\x12\x11\n\tmessage14\x18\x0e \x01(\t\x12U\n\tmessage15\x18\x0f \x01(\x0b\x32\x42.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15\x1a\xd9\x01\n\x08Location\x12\x0f\n\x07\x61\x64\x64ress\x18\x01 \x01(\t\x12\x62\n\x0b\x63oordinates\x18\x02 \x01(\x0b\x32M.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Location.Coordinates\x12\x12\n\ntimestamp5\x18\x05 \x01(\x04\x12\x10\n\x08timezone\x18\x06 \x01(\t\x1a\x32\n\x0b\x43oordinates\x12\x10\n\x08latitude\x18\x01 \x01(\x01\x12\x11\n\tlongitude\x18\x02 \x01(\x01\x1a#\n\nLinkedUser\x12\x15\n\remail_address\x18\x01 \x01(\t\x1a\x9e\x01\n\x04Room\x12\x0f\n\x07room_id\x18\x01 \x01(\t\x12\x11\n\troom_name\x18\x03 \x01(\t\x12X\n\x08\x63\x61tegory\x18\x04 \x01(\x0b\x32\x46.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Room.Category\x1a\x18\n\x08\x43\x61tegory\x12\x0c\n\x04name\x18\x01 \x01(\t\x1a\xbf\x18\n\x06\x44\x65vice\x12_\n\x0b\x64\x65vice_info\x18\x01 \x01(\x0b\x32J.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.DeviceInfo\x12\x13\n\x0b\x64\x65vice_name\x18\x04 \x01(\t\x12\x13\n\x0b\x64\x65vice_type\x18\x06 \x01(\t\x12\x0e\n\x06traits\x18\x07 \x03(\t\x12\x0e\n\x06suffix\x18\n \x01(\t\x12\\\n\tmessage12\x18\x0c \x01(\x0b\x32I.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message12\x12\\\n\tmessage15\x18\x0f \x01(\x0b\x32I.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message15\x12Z\n\x08hardware\x18\x11 \x01(\x0b\x32H.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Hardware\x12\\\n\tmessage18\x18\x12 \x01(\x0b\x32I.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message18\x12\x13\n\x0btimestamp19\x18\x13 \x01(\x04\x12\\\n\tmessage20\x18\x14 \x01(\x0b\x32I.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20\x12\\\n\tmessage25\x18\x19 \x01(\x0b\x32I.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message25\x12`\n\x0clinked_users\x18\x1a \x03(\x0b\x32J.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.LinkedUser\x12\x18\n\x10local_auth_token\x18\x1c \x01(\t\x12U\n\x06states\x18\x1d \x03(\x0b\x32\x45.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.State\x12\\\n\tmessage30\x18\x1e \x01(\x0b\x32I.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30\x12\\\n\tmessage34\x18\" \x01(\x0b\x32I.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message34\x12\r\n\x05num37\x18% \x01(\r\x12\x10\n\x08string41\x18) \x01(\t\x12\x10\n\x08string42\x18* \x01(\t\x1a\xc5\x01\n\nDeviceInfo\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12l\n\x0cproject_info\x18\x02 \x01(\x0b\x32V.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.DeviceInfo.ProjectInfo\x1a\x36\n\x0bProjectInfo\x12\x16\n\x0e\x61pi_project_id\x18\x01 \x01(\t\x12\x0f\n\x07string2\x18\x02 \x01(\t\x1aq\n\tMessage12\x12\x0c\n\x04num2\x18\x02 \x01(\r\x12\x0c\n\x04num4\x18\x04 \x01(\r\x12\x0c\n\x04num5\x18\x05 \x01(\r\x12\r\n\x05num37\x18% \x01(\r\x12\r\n\x05num38\x18& \x01(\r\x12\r\n\x05num45\x18- \x01(\r\x12\r\n\x05num46\x18. \x01(\r\x1a\x43\n\tMessage15\x12\x0c\n\x04num1\x18\x01 \x01(\x04\x12\x0c\n\x04num5\x18\x05 \x01(\x04\x12\x0c\n\x04num6\x18\x06 \x01(\x04\x12\x0c\n\x04num7\x18\x07 \x01(\x04\x1a\x19\n\x08Hardware\x12\r\n\x05model\x18\x02 \x01(\t\x1a \n\tMessage18\x12\x13\n\x0b\x64\x65vice_name\x18\x02 \x01(\t\x1a\x88\x08\n\tMessage20\x12\x64\n\x08message1\x18\x01 \x03(\x0b\x32R.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1\x1a\x94\x07\n\x08Message1\x12\x0b\n\x03key\x18\x01 \x01(\t\x12g\n\x05value\x18\x02 \x01(\x0b\x32X.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value\x1a\x91\x06\n\x05Value\x12s\n\x08message6\x18\x06 \x01(\x0b\x32\x61.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6\x1a\x92\x05\n\x08Message6\x12|\n\x08message1\x18\x01 \x01(\x0b\x32j.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1\x1a\x87\x04\n\x08Message1\x12\x85\x01\n\x08message5\x18\x05 \x01(\x0b\x32s.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5\x1a\xf2\x02\n\x08Message5\x12\x8e\x01\n\x08message1\x18\x01 \x03(\x0b\x32|.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5.Message1\x1a\xd4\x01\n\x08Message1\x12\x12\n\ncapability\x18\x01 \x01(\t\x12\x98\x01\n\x08message2\x18\x02 \x01(\x0b\x32\x85\x01.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5.Message1.Message2\x1a\x19\n\x08Message2\x12\r\n\x05\x62ool4\x18\x04 \x01(\x08\x1a)\n\tMessage25\x12\r\n\x05\x62ool1\x18\x01 \x01(\x08\x12\r\n\x05\x62ool2\x18\x02 \x01(\x08\x1a#\n\nLinkedUser\x12\x15\n\remail_address\x18\x01 \x01(\t\x1a$\n\x05State\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x0c\x1a\xa6\x02\n\tMessage30\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x64\n\x08message2\x18\x02 \x01(\x0b\x32R.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30.Message2\x1a\xa5\x01\n\x08Message2\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12m\n\x08message2\x18\x02 \x01(\x0b\x32[.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30.Message2.Message2\x1a\x19\n\x08Message2\x12\r\n\x05\x62ool4\x18\x04 \x01(\x08\x1a\x1a\n\tMessage34\x12\r\n\x05\x62ool1\x18\x01 \x01(\x08\x1a\x1a\n\tMessage11\x12\r\n\x05\x62ool1\x18\x01 \x01(\x08\x1a\xe8\x03\n\tMessage13\x12]\n\x08message1\x18\x01 \x01(\x0b\x32K.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1\x12\x14\n\x0c\x64uo_call_url\x18\x02 \x01(\t\x12\x18\n\x10\x64uo_phone_number\x18\x03 \x01(\t\x1a\xcb\x02\n\x08Message1\x12k\n\x0b\x64\x65vice_info\x18\x01 \x01(\x0b\x32V.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1.DeviceInfo\x1a\xd1\x01\n\nDeviceInfo\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12x\n\x0cproject_info\x18\x02 \x01(\x0b\x32\x62.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1.DeviceInfo.ProjectInfo\x1a\x36\n\x0bProjectInfo\x12\x16\n\x0e\x61pi_project_id\x18\x01 \x01(\t\x12\x0f\n\x07string2\x18\x02 \x01(\t\x1a\xbc\x02\n\tMessage15\x12\r\n\x05\x62ool1\x18\x01 \x01(\x08\x12\x0f\n\x07string2\x18\x02 \x01(\t\x12]\n\x08message3\x18\x03 \x03(\x0b\x32K.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15.Message3\x12\r\n\x05\x62ool4\x18\x04 \x01(\x08\x1a\xa0\x01\n\x08Message3\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12\x66\n\x08message2\x18\x02 \x01(\x0b\x32T.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15.Message3.Message2\x1a\x1b\n\x08Message2\x12\x0f\n\x07string1\x18\x01 \x01(\t\x1a\x8b\x08\n\x05Group\x12Y\n\x0b\x64\x65vice_info\x18\x01 \x01(\x0b\x32\x44.google.internal.home.foyer.v1.GetHomeGraphResponse.Group.DeviceInfo\x12\x12\n\ngroup_nmae\x18\x04 \x01(\t\x12\x13\n\x0b\x64\x65vice_type\x18\x06 \x01(\t\x12\x0e\n\x06traits\x18\x07 \x01(\t\x12\x0e\n\x06suffix\x18\n \x01(\t\x12V\n\tmessage12\x18\x0c \x01(\x0b\x32\x43.google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message12\x12V\n\tmessage15\x18\x0f \x01(\x0b\x32\x43.google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message15\x12V\n\tmessage17\x18\x11 \x01(\x0b\x32\x43.google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message17\x12V\n\tmessage18\x18\x12 \x01(\x0b\x32\x43.google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message18\x12\x13\n\x0btimestamp19\x18\x13 \x01(\x04\x12V\n\tmessage34\x18\" \x01(\x0b\x32\x43.google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message34\x1a\xac\x01\n\nDeviceInfo\x12\x66\n\x0cproject_info\x18\x02 \x01(\x0b\x32P.google.internal.home.foyer.v1.GetHomeGraphResponse.Group.DeviceInfo.ProjectInfo\x1a\x36\n\x0bProjectInfo\x12\x16\n\x0e\x61pi_project_id\x18\x01 \x01(\t\x12\x0f\n\x07string2\x18\x02 \x01(\t\x1aI\n\tMessage12\x12\r\n\x05\x62ool3\x18\x03 \x01(\x08\x12\r\n\x05\x62ool4\x18\x04 \x01(\x08\x12\x0e\n\x06\x62ool37\x18% \x01(\x08\x12\x0e\n\x06\x62ool38\x18& \x01(\x08\x1a\x38\n\tMessage15\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12\x0c\n\x04num5\x18\x05 \x01(\x04\x12\x0c\n\x04num6\x18\x06 \x01(\r\x1a \n\tMessage17\x12\x13\n\x0bgroup_model\x18\x02 \x01(\t\x1a\x1f\n\tMessage18\x12\x12\n\ngroup_name\x18\x02 \x01(\t\x1a\x1a\n\tMessage34\x12\r\n\x05\x62ool1\x18\x01 \x01(\x08\x1a&\n\x08RoomType\x12\x0c\n\x04\x63ode\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x1a(\n\nDeviceType\x12\x0c\n\x04\x63ode\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x1a)\n\x0bProjectType\x12\x0c\n\x04\x63ode\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x1a\x8d\x01\n\tMessage11\x12\x0c\n\x04name\x18\x01 \x01(\t\x12X\n\x08message2\x18\x02 \x01(\x0b\x32\x46.google.internal.home.foyer.v1.GetHomeGraphResponse.Message11.Message2\x1a\x18\n\x08Message2\x12\x0c\n\x04num2\x18\x02 \x01(\r\x1aW\n\tLinkedApp\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12\x0f\n\x07string2\x18\x02 \x01(\t\x12\x0c\n\x04num3\x18\x03 \x01(\r\x12\x0c\n\x04num4\x18\x04 \x01(\r\x12\x0c\n\x04num5\x18\x05 \x01(\r\"\xdf\x02\n!GetAssistantDeviceSettingsRequest\x12`\n\x0b\x64\x65vice_info\x18\x01 \x01(\x0b\x32K.google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest.DeviceInfo\x12\x0f\n\x07string2\x18\x02 \x01(\t\x1a\xc6\x01\n\nDeviceInfo\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12m\n\x0cproject_info\x18\x02 \x01(\x0b\x32W.google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest.DeviceInfo.ProjectInfo\x1a\x36\n\x0bProjectInfo\x12\x16\n\x0e\x61pi_project_id\x18\x01 \x01(\t\x12\x0f\n\x07string2\x18\x02 \x01(\t\"\xe6\x01\n\"GetAssistantDeviceSettingsResponse\x12\\\n\x08message1\x18\x01 \x01(\x0b\x32J.google.internal.home.foyer.v1.GetAssistantDeviceSettingsResponse.Message1\x1a\x62\n\x08Message1\x12\x0c\n\x04num1\x18\x01 \x01(\r\x12\x0c\n\x04num2\x18\x02 \x01(\r\x12\x0c\n\x04num4\x18\x04 \x01(\r\x12\x0c\n\x04num5\x18\x05 \x01(\r\x12\x0c\n\x04num6\x18\x06 \x01(\r\x12\x10\n\x08string10\x18\n \x01(\t\"\xa7\x05\n$UpdateAssistantDeviceSettingsRequest\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12\x63\n\x0b\x64\x65vice_info\x18\x02 \x01(\x0b\x32N.google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.DeviceInfo\x12\x63\n\x0bupdate_data\x18\x03 \x01(\x0b\x32N.google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.UpdateData\x1a\xc9\x01\n\nDeviceInfo\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12p\n\x0cproject_info\x18\x02 \x01(\x0b\x32Z.google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.DeviceInfo.ProjectInfo\x1a\x36\n\x0bProjectInfo\x12\x16\n\x0e\x61pi_project_id\x18\x01 \x01(\t\x12\x0f\n\x07string2\x18\x02 \x01(\t\x1a\xd7\x01\n\nUpdateData\x12i\n\x08message1\x18\x01 \x01(\x0b\x32W.google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.UpdateData.Message1\x1a^\n\x08Message1\x12\x1f\n\x17youtube_restricted_mode\x18\x04 \x01(\r\x12!\n\x19youtube_tv_content_filter\x18\x05 \x01(\r\x12\x0e\n\x06locale\x18\n \x01(\t\"8\n%UpdateAssistantDeviceSettingsResponse\x12\x0f\n\x07string1\x18\x01 \x01(\t2\x90\x01\n\x12HomeControlService\x12z\n\x14GetAssistantRoutines\x12#.google.internal.home.foyer.v1.None\x1a;.google.internal.home.foyer.v1.GetAssistantRoutinesResponse0\x01\x32\x8c\x01\n\x11StructuresService\x12w\n\x0cGetHomeGraph\x12\x32.google.internal.home.foyer.v1.GetHomeGraphRequest\x1a\x33.google.internal.home.foyer.v1.GetHomeGraphResponse2\xe9\x02\n\x12HomeDevicesService\x12\xa3\x01\n\x1aGetAssistantDeviceSettings\x12@.google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest\x1a\x41.google.internal.home.foyer.v1.GetAssistantDeviceSettingsResponse0\x01\x12\xac\x01\n\x1dUpdateAssistantDeviceSettings\x12\x43.google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest\x1a\x44.google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsResponse0\x01\x62\x06proto3'
+    name="google/internal/home/foyer/v1.proto",
+    package="google.internal.home.foyer.v1",
+    syntax="proto3",
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+    serialized_pb=b'\n#google/internal/home/foyer/v1.proto\x12\x1dgoogle.internal.home.foyer.v1"\x06\n\x04None"\xf4\x06\n\x1cGetAssistantRoutinesResponse\x12M\n\x02p1\x18\x01 \x03(\x0b\x32\x41.google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1\x12M\n\x02p2\x18\x02 \x01(\x0b\x32\x41.google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part2\x1a\x8a\x05\n\x05Part1\x12\x14\n\x0croutine_name\x18\x01 \x01(\t\x12\\\n\x08workflow\x18\x03 \x01(\x0b\x32J.google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow\x12\x0f\n\x07string4\x18\x04 \x01(\t\x12\x0f\n\x07string5\x18\x05 \x01(\t\x1a\xea\x03\n\x08WorkFlow\x12\x0c\n\x04type\x18\x01 \x01(\t\x12\x61\n\x05wf_s1\x18\x02 \x01(\x0b\x32R.google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1\x1a\xec\x02\n\x07WF_Sub1\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12q\n\x08wf_s1_s1\x18\x02 \x01(\x0b\x32_.google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.WF_Sub1_Sub1\x1a\xdc\x01\n\x0cWF_Sub1_Sub1\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12x\n\x07routine\x18\x02 \x01(\x0b\x32g.google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.WF_Sub1_Sub1.Routine\x1a\x41\n\x07Routine\x12\x12\n\nroutine_id\x18\x01 \x01(\t\x12\x0c\n\x04num2\x18\x02 \x01(\r\x12\x14\n\x0croutine_name\x18\x03 \x01(\t\x1a)\n\x05Part2\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12\x0f\n\x07string3\x18\x03 \x01(\t"4\n\x13GetHomeGraphRequest\x12\x0f\n\x07string1\x18\x03 \x01(\t\x12\x0c\n\x04num2\x18\x04 \x01(\t"\xc8\x37\n\x14GetHomeGraphResponse\x12\x12\n\ntimestamp1\x18\x01 \x01(\x04\x12\x46\n\x04home\x18\x02 \x01(\x0b\x32\x38.google.internal.home.foyer.v1.GetHomeGraphResponse.Home\x12I\n\x06groups\x18\x03 \x03(\x0b\x32\x39.google.internal.home.foyer.v1.GetHomeGraphResponse.Group\x12P\n\nroom_types\x18\x04 \x03(\x0b\x32<.google.internal.home.foyer.v1.GetHomeGraphResponse.RoomType\x12\x0f\n\x07string5\x18\x05 \x01(\t\x12\r\n\x05\x62ool6\x18\x06 \x01(\x08\x12T\n\x0c\x64\x65vice_types\x18\x07 \x03(\x0b\x32>.google.internal.home.foyer.v1.GetHomeGraphResponse.DeviceType\x12V\n\rproject_types\x18\t \x03(\x0b\x32?.google.internal.home.foyer.v1.GetHomeGraphResponse.ProjectType\x12P\n\tmessage11\x18\x0b \x03(\x0b\x32=.google.internal.home.foyer.v1.GetHomeGraphResponse.Message11\x12R\n\x0blinked_apps\x18\x0c \x03(\x0b\x32=.google.internal.home.foyer.v1.GetHomeGraphResponse.LinkedApp\x1a\xce\'\n\x04Home\x12\x0f\n\x07home_id\x18\x01 \x01(\t\x12\x11\n\thome_name\x18\x02 \x01(\t\x12S\n\x08location\x18\x03 \x01(\x0b\x32\x41.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Location\x12Y\n\x0clinked_users\x18\x04 \x03(\x0b\x32\x43.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.LinkedUser\x12L\n\x05rooms\x18\x06 \x03(\x0b\x32=.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Room\x12P\n\x07\x64\x65vices\x18\x07 \x03(\x0b\x32?.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device\x12U\n\tmessage11\x18\x0b \x01(\x0b\x32\x42.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message11\x12\x10\n\x08string12\x18\x0c \x01(\t\x12U\n\tmessage13\x18\r \x01(\x0b\x32\x42.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13\x12\x11\n\tmessage14\x18\x0e \x01(\t\x12U\n\tmessage15\x18\x0f \x01(\x0b\x32\x42.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15\x1a\xd9\x01\n\x08Location\x12\x0f\n\x07\x61\x64\x64ress\x18\x01 \x01(\t\x12\x62\n\x0b\x63oordinates\x18\x02 \x01(\x0b\x32M.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Location.Coordinates\x12\x12\n\ntimestamp5\x18\x05 \x01(\x04\x12\x10\n\x08timezone\x18\x06 \x01(\t\x1a\x32\n\x0b\x43oordinates\x12\x10\n\x08latitude\x18\x01 \x01(\x01\x12\x11\n\tlongitude\x18\x02 \x01(\x01\x1a#\n\nLinkedUser\x12\x15\n\remail_address\x18\x01 \x01(\t\x1a\x9e\x01\n\x04Room\x12\x0f\n\x07room_id\x18\x01 \x01(\t\x12\x11\n\troom_name\x18\x03 \x01(\t\x12X\n\x08\x63\x61tegory\x18\x04 \x01(\x0b\x32\x46.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Room.Category\x1a\x18\n\x08\x43\x61tegory\x12\x0c\n\x04name\x18\x01 \x01(\t\x1a\xbf\x18\n\x06\x44\x65vice\x12_\n\x0b\x64\x65vice_info\x18\x01 \x01(\x0b\x32J.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.DeviceInfo\x12\x13\n\x0b\x64\x65vice_name\x18\x04 \x01(\t\x12\x13\n\x0b\x64\x65vice_type\x18\x06 \x01(\t\x12\x0e\n\x06traits\x18\x07 \x03(\t\x12\x0e\n\x06suffix\x18\n \x01(\t\x12\\\n\tmessage12\x18\x0c \x01(\x0b\x32I.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message12\x12\\\n\tmessage15\x18\x0f \x01(\x0b\x32I.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message15\x12Z\n\x08hardware\x18\x11 \x01(\x0b\x32H.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Hardware\x12\\\n\tmessage18\x18\x12 \x01(\x0b\x32I.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message18\x12\x13\n\x0btimestamp19\x18\x13 \x01(\x04\x12\\\n\tmessage20\x18\x14 \x01(\x0b\x32I.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20\x12\\\n\tmessage25\x18\x19 \x01(\x0b\x32I.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message25\x12`\n\x0clinked_users\x18\x1a \x03(\x0b\x32J.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.LinkedUser\x12\x18\n\x10local_auth_token\x18\x1c \x01(\t\x12U\n\x06states\x18\x1d \x03(\x0b\x32\x45.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.State\x12\\\n\tmessage30\x18\x1e \x01(\x0b\x32I.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30\x12\\\n\tmessage34\x18" \x01(\x0b\x32I.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message34\x12\r\n\x05num37\x18% \x01(\r\x12\x10\n\x08string41\x18) \x01(\t\x12\x10\n\x08string42\x18* \x01(\t\x1a\xc5\x01\n\nDeviceInfo\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12l\n\x0cproject_info\x18\x02 \x01(\x0b\x32V.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.DeviceInfo.ProjectInfo\x1a\x36\n\x0bProjectInfo\x12\x16\n\x0e\x61pi_project_id\x18\x01 \x01(\t\x12\x0f\n\x07string2\x18\x02 \x01(\t\x1aq\n\tMessage12\x12\x0c\n\x04num2\x18\x02 \x01(\r\x12\x0c\n\x04num4\x18\x04 \x01(\r\x12\x0c\n\x04num5\x18\x05 \x01(\r\x12\r\n\x05num37\x18% \x01(\r\x12\r\n\x05num38\x18& \x01(\r\x12\r\n\x05num45\x18- \x01(\r\x12\r\n\x05num46\x18. \x01(\r\x1a\x43\n\tMessage15\x12\x0c\n\x04num1\x18\x01 \x01(\x04\x12\x0c\n\x04num5\x18\x05 \x01(\x04\x12\x0c\n\x04num6\x18\x06 \x01(\x04\x12\x0c\n\x04num7\x18\x07 \x01(\x04\x1a\x19\n\x08Hardware\x12\r\n\x05model\x18\x02 \x01(\t\x1a \n\tMessage18\x12\x13\n\x0b\x64\x65vice_name\x18\x02 \x01(\t\x1a\x88\x08\n\tMessage20\x12\x64\n\x08message1\x18\x01 \x03(\x0b\x32R.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1\x1a\x94\x07\n\x08Message1\x12\x0b\n\x03key\x18\x01 \x01(\t\x12g\n\x05value\x18\x02 \x01(\x0b\x32X.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value\x1a\x91\x06\n\x05Value\x12s\n\x08message6\x18\x06 \x01(\x0b\x32\x61.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6\x1a\x92\x05\n\x08Message6\x12|\n\x08message1\x18\x01 \x01(\x0b\x32j.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1\x1a\x87\x04\n\x08Message1\x12\x85\x01\n\x08message5\x18\x05 \x01(\x0b\x32s.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5\x1a\xf2\x02\n\x08Message5\x12\x8e\x01\n\x08message1\x18\x01 \x03(\x0b\x32|.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5.Message1\x1a\xd4\x01\n\x08Message1\x12\x12\n\ncapability\x18\x01 \x01(\t\x12\x98\x01\n\x08message2\x18\x02 \x01(\x0b\x32\x85\x01.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5.Message1.Message2\x1a\x19\n\x08Message2\x12\r\n\x05\x62ool4\x18\x04 \x01(\x08\x1a)\n\tMessage25\x12\r\n\x05\x62ool1\x18\x01 \x01(\x08\x12\r\n\x05\x62ool2\x18\x02 \x01(\x08\x1a#\n\nLinkedUser\x12\x15\n\remail_address\x18\x01 \x01(\t\x1a$\n\x05State\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x0c\x1a\xa6\x02\n\tMessage30\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x64\n\x08message2\x18\x02 \x01(\x0b\x32R.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30.Message2\x1a\xa5\x01\n\x08Message2\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12m\n\x08message2\x18\x02 \x01(\x0b\x32[.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30.Message2.Message2\x1a\x19\n\x08Message2\x12\r\n\x05\x62ool4\x18\x04 \x01(\x08\x1a\x1a\n\tMessage34\x12\r\n\x05\x62ool1\x18\x01 \x01(\x08\x1a\x1a\n\tMessage11\x12\r\n\x05\x62ool1\x18\x01 \x01(\x08\x1a\xe8\x03\n\tMessage13\x12]\n\x08message1\x18\x01 \x01(\x0b\x32K.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1\x12\x14\n\x0c\x64uo_call_url\x18\x02 \x01(\t\x12\x18\n\x10\x64uo_phone_number\x18\x03 \x01(\t\x1a\xcb\x02\n\x08Message1\x12k\n\x0b\x64\x65vice_info\x18\x01 \x01(\x0b\x32V.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1.DeviceInfo\x1a\xd1\x01\n\nDeviceInfo\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12x\n\x0cproject_info\x18\x02 \x01(\x0b\x32\x62.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1.DeviceInfo.ProjectInfo\x1a\x36\n\x0bProjectInfo\x12\x16\n\x0e\x61pi_project_id\x18\x01 \x01(\t\x12\x0f\n\x07string2\x18\x02 \x01(\t\x1a\xbc\x02\n\tMessage15\x12\r\n\x05\x62ool1\x18\x01 \x01(\x08\x12\x0f\n\x07string2\x18\x02 \x01(\t\x12]\n\x08message3\x18\x03 \x03(\x0b\x32K.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15.Message3\x12\r\n\x05\x62ool4\x18\x04 \x01(\x08\x1a\xa0\x01\n\x08Message3\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12\x66\n\x08message2\x18\x02 \x01(\x0b\x32T.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15.Message3.Message2\x1a\x1b\n\x08Message2\x12\x0f\n\x07string1\x18\x01 \x01(\t\x1a\x8b\x08\n\x05Group\x12Y\n\x0b\x64\x65vice_info\x18\x01 \x01(\x0b\x32\x44.google.internal.home.foyer.v1.GetHomeGraphResponse.Group.DeviceInfo\x12\x12\n\ngroup_nmae\x18\x04 \x01(\t\x12\x13\n\x0b\x64\x65vice_type\x18\x06 \x01(\t\x12\x0e\n\x06traits\x18\x07 \x01(\t\x12\x0e\n\x06suffix\x18\n \x01(\t\x12V\n\tmessage12\x18\x0c \x01(\x0b\x32\x43.google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message12\x12V\n\tmessage15\x18\x0f \x01(\x0b\x32\x43.google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message15\x12V\n\tmessage17\x18\x11 \x01(\x0b\x32\x43.google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message17\x12V\n\tmessage18\x18\x12 \x01(\x0b\x32\x43.google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message18\x12\x13\n\x0btimestamp19\x18\x13 \x01(\x04\x12V\n\tmessage34\x18" \x01(\x0b\x32\x43.google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message34\x1a\xac\x01\n\nDeviceInfo\x12\x66\n\x0cproject_info\x18\x02 \x01(\x0b\x32P.google.internal.home.foyer.v1.GetHomeGraphResponse.Group.DeviceInfo.ProjectInfo\x1a\x36\n\x0bProjectInfo\x12\x16\n\x0e\x61pi_project_id\x18\x01 \x01(\t\x12\x0f\n\x07string2\x18\x02 \x01(\t\x1aI\n\tMessage12\x12\r\n\x05\x62ool3\x18\x03 \x01(\x08\x12\r\n\x05\x62ool4\x18\x04 \x01(\x08\x12\x0e\n\x06\x62ool37\x18% \x01(\x08\x12\x0e\n\x06\x62ool38\x18& \x01(\x08\x1a\x38\n\tMessage15\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12\x0c\n\x04num5\x18\x05 \x01(\x04\x12\x0c\n\x04num6\x18\x06 \x01(\r\x1a \n\tMessage17\x12\x13\n\x0bgroup_model\x18\x02 \x01(\t\x1a\x1f\n\tMessage18\x12\x12\n\ngroup_name\x18\x02 \x01(\t\x1a\x1a\n\tMessage34\x12\r\n\x05\x62ool1\x18\x01 \x01(\x08\x1a&\n\x08RoomType\x12\x0c\n\x04\x63ode\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x1a(\n\nDeviceType\x12\x0c\n\x04\x63ode\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x1a)\n\x0bProjectType\x12\x0c\n\x04\x63ode\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x1a\x8d\x01\n\tMessage11\x12\x0c\n\x04name\x18\x01 \x01(\t\x12X\n\x08message2\x18\x02 \x01(\x0b\x32\x46.google.internal.home.foyer.v1.GetHomeGraphResponse.Message11.Message2\x1a\x18\n\x08Message2\x12\x0c\n\x04num2\x18\x02 \x01(\r\x1aW\n\tLinkedApp\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12\x0f\n\x07string2\x18\x02 \x01(\t\x12\x0c\n\x04num3\x18\x03 \x01(\r\x12\x0c\n\x04num4\x18\x04 \x01(\r\x12\x0c\n\x04num5\x18\x05 \x01(\r"\xdf\x02\n!GetAssistantDeviceSettingsRequest\x12`\n\x0b\x64\x65vice_info\x18\x01 \x01(\x0b\x32K.google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest.DeviceInfo\x12\x0f\n\x07string2\x18\x02 \x01(\t\x1a\xc6\x01\n\nDeviceInfo\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12m\n\x0cproject_info\x18\x02 \x01(\x0b\x32W.google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest.DeviceInfo.ProjectInfo\x1a\x36\n\x0bProjectInfo\x12\x16\n\x0e\x61pi_project_id\x18\x01 \x01(\t\x12\x0f\n\x07string2\x18\x02 \x01(\t"\xe6\x01\n"GetAssistantDeviceSettingsResponse\x12\\\n\x08message1\x18\x01 \x01(\x0b\x32J.google.internal.home.foyer.v1.GetAssistantDeviceSettingsResponse.Message1\x1a\x62\n\x08Message1\x12\x0c\n\x04num1\x18\x01 \x01(\r\x12\x0c\n\x04num2\x18\x02 \x01(\r\x12\x0c\n\x04num4\x18\x04 \x01(\r\x12\x0c\n\x04num5\x18\x05 \x01(\r\x12\x0c\n\x04num6\x18\x06 \x01(\r\x12\x10\n\x08string10\x18\n \x01(\t"\xa7\x05\n$UpdateAssistantDeviceSettingsRequest\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12\x63\n\x0b\x64\x65vice_info\x18\x02 \x01(\x0b\x32N.google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.DeviceInfo\x12\x63\n\x0bupdate_data\x18\x03 \x01(\x0b\x32N.google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.UpdateData\x1a\xc9\x01\n\nDeviceInfo\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12p\n\x0cproject_info\x18\x02 \x01(\x0b\x32Z.google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.DeviceInfo.ProjectInfo\x1a\x36\n\x0bProjectInfo\x12\x16\n\x0e\x61pi_project_id\x18\x01 \x01(\t\x12\x0f\n\x07string2\x18\x02 \x01(\t\x1a\xd7\x01\n\nUpdateData\x12i\n\x08message1\x18\x01 \x01(\x0b\x32W.google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.UpdateData.Message1\x1a^\n\x08Message1\x12\x1f\n\x17youtube_restricted_mode\x18\x04 \x01(\r\x12!\n\x19youtube_tv_content_filter\x18\x05 \x01(\r\x12\x0e\n\x06locale\x18\n \x01(\t"8\n%UpdateAssistantDeviceSettingsResponse\x12\x0f\n\x07string1\x18\x01 \x01(\t2\x90\x01\n\x12HomeControlService\x12z\n\x14GetAssistantRoutines\x12#.google.internal.home.foyer.v1.None\x1a;.google.internal.home.foyer.v1.GetAssistantRoutinesResponse0\x01\x32\x8c\x01\n\x11StructuresService\x12w\n\x0cGetHomeGraph\x12\x32.google.internal.home.foyer.v1.GetHomeGraphRequest\x1a\x33.google.internal.home.foyer.v1.GetHomeGraphResponse2\xe9\x02\n\x12HomeDevicesService\x12\xa3\x01\n\x1aGetAssistantDeviceSettings\x12@.google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest\x1a\x41.google.internal.home.foyer.v1.GetAssistantDeviceSettingsResponse0\x01\x12\xac\x01\n\x1dUpdateAssistantDeviceSettings\x12\x43.google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest\x1a\x44.google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsResponse0\x01\x62\x06proto3',
 )
 
 
-
-
 _NONE = _descriptor.Descriptor(
-  name='None',
-  full_name='google.internal.home.foyer.v1.None',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=70,
-  serialized_end=76,
+    name="None",
+    full_name="google.internal.home.foyer.v1.None",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=70,
+    serialized_end=76,
 )
 
 
 _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1_WF_SUB1_SUB1_ROUTINE = _descriptor.Descriptor(
-  name='Routine',
-  full_name='google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.WF_Sub1_Sub1.Routine',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='routine_id', full_name='google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.WF_Sub1_Sub1.Routine.routine_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='num2', full_name='google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.WF_Sub1_Sub1.Routine.num2', index=1,
-      number=2, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='routine_name', full_name='google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.WF_Sub1_Sub1.Routine.routine_name', index=2,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=855,
-  serialized_end=920,
+    name="Routine",
+    full_name="google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.WF_Sub1_Sub1.Routine",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="routine_id",
+            full_name="google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.WF_Sub1_Sub1.Routine.routine_id",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="num2",
+            full_name="google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.WF_Sub1_Sub1.Routine.num2",
+            index=1,
+            number=2,
+            type=13,
+            cpp_type=3,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="routine_name",
+            full_name="google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.WF_Sub1_Sub1.Routine.routine_name",
+            index=2,
+            number=3,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=855,
+    serialized_end=920,
 )
 
 _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1_WF_SUB1_SUB1 = _descriptor.Descriptor(
-  name='WF_Sub1_Sub1',
-  full_name='google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.WF_Sub1_Sub1',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='string1', full_name='google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.WF_Sub1_Sub1.string1', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='routine', full_name='google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.WF_Sub1_Sub1.routine', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1_WF_SUB1_SUB1_ROUTINE, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=700,
-  serialized_end=920,
+    name="WF_Sub1_Sub1",
+    full_name="google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.WF_Sub1_Sub1",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="string1",
+            full_name="google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.WF_Sub1_Sub1.string1",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="routine",
+            full_name="google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.WF_Sub1_Sub1.routine",
+            index=1,
+            number=2,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[
+        _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1_WF_SUB1_SUB1_ROUTINE
+    ],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=700,
+    serialized_end=920,
 )
 
 _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1 = _descriptor.Descriptor(
-  name='WF_Sub1',
-  full_name='google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='string1', full_name='google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.string1', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='wf_s1_s1', full_name='google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.wf_s1_s1', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1_WF_SUB1_SUB1, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=556,
-  serialized_end=920,
+    name="WF_Sub1",
+    full_name="google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="string1",
+            full_name="google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.string1",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="wf_s1_s1",
+            full_name="google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.wf_s1_s1",
+            index=1,
+            number=2,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[_GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1_WF_SUB1_SUB1],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=556,
+    serialized_end=920,
 )
 
 _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW = _descriptor.Descriptor(
-  name='WorkFlow',
-  full_name='google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='type', full_name='google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.type', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='wf_s1', full_name='google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.wf_s1', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=430,
-  serialized_end=920,
+    name="WorkFlow",
+    full_name="google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="type",
+            full_name="google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.type",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="wf_s1",
+            full_name="google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.wf_s1",
+            index=1,
+            number=2,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[_GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=430,
+    serialized_end=920,
 )
 
 _GETASSISTANTROUTINESRESPONSE_PART1 = _descriptor.Descriptor(
-  name='Part1',
-  full_name='google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='routine_name', full_name='google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.routine_name', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='workflow', full_name='google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.workflow', index=1,
-      number=3, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='string4', full_name='google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.string4', index=2,
-      number=4, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='string5', full_name='google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.string5', index=3,
-      number=5, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=270,
-  serialized_end=920,
+    name="Part1",
+    full_name="google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="routine_name",
+            full_name="google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.routine_name",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="workflow",
+            full_name="google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.workflow",
+            index=1,
+            number=3,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="string4",
+            full_name="google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.string4",
+            index=2,
+            number=4,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="string5",
+            full_name="google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.string5",
+            index=3,
+            number=5,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[_GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=270,
+    serialized_end=920,
 )
 
 _GETASSISTANTROUTINESRESPONSE_PART2 = _descriptor.Descriptor(
-  name='Part2',
-  full_name='google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part2',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='string1', full_name='google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part2.string1', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='string3', full_name='google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part2.string3', index=1,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=922,
-  serialized_end=963,
+    name="Part2",
+    full_name="google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part2",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="string1",
+            full_name="google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part2.string1",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="string3",
+            full_name="google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part2.string3",
+            index=1,
+            number=3,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=922,
+    serialized_end=963,
 )
 
 _GETASSISTANTROUTINESRESPONSE = _descriptor.Descriptor(
-  name='GetAssistantRoutinesResponse',
-  full_name='google.internal.home.foyer.v1.GetAssistantRoutinesResponse',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='p1', full_name='google.internal.home.foyer.v1.GetAssistantRoutinesResponse.p1', index=0,
-      number=1, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='p2', full_name='google.internal.home.foyer.v1.GetAssistantRoutinesResponse.p2', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETASSISTANTROUTINESRESPONSE_PART1, _GETASSISTANTROUTINESRESPONSE_PART2, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=79,
-  serialized_end=963,
+    name="GetAssistantRoutinesResponse",
+    full_name="google.internal.home.foyer.v1.GetAssistantRoutinesResponse",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="p1",
+            full_name="google.internal.home.foyer.v1.GetAssistantRoutinesResponse.p1",
+            index=0,
+            number=1,
+            type=11,
+            cpp_type=10,
+            label=3,
+            has_default_value=False,
+            default_value=[],
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="p2",
+            full_name="google.internal.home.foyer.v1.GetAssistantRoutinesResponse.p2",
+            index=1,
+            number=2,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[
+        _GETASSISTANTROUTINESRESPONSE_PART1,
+        _GETASSISTANTROUTINESRESPONSE_PART2,
+    ],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=79,
+    serialized_end=963,
 )
 
 
 _GETHOMEGRAPHREQUEST = _descriptor.Descriptor(
-  name='GetHomeGraphRequest',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphRequest',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='string1', full_name='google.internal.home.foyer.v1.GetHomeGraphRequest.string1', index=0,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='num2', full_name='google.internal.home.foyer.v1.GetHomeGraphRequest.num2', index=1,
-      number=4, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=965,
-  serialized_end=1017,
+    name="GetHomeGraphRequest",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphRequest",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="string1",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphRequest.string1",
+            index=0,
+            number=3,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="num2",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphRequest.num2",
+            index=1,
+            number=4,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=965,
+    serialized_end=1017,
 )
 
 
 _GETHOMEGRAPHRESPONSE_HOME_LOCATION_COORDINATES = _descriptor.Descriptor(
-  name='Coordinates',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Location.Coordinates',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='latitude', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Location.Coordinates.latitude', index=0,
-      number=1, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='longitude', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Location.Coordinates.longitude', index=1,
-      number=2, type=1, cpp_type=5, label=1,
-      has_default_value=False, default_value=float(0),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=2512,
-  serialized_end=2562,
+    name="Coordinates",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Location.Coordinates",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="latitude",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Location.Coordinates.latitude",
+            index=0,
+            number=1,
+            type=1,
+            cpp_type=5,
+            label=1,
+            has_default_value=False,
+            default_value=float(0),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="longitude",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Location.Coordinates.longitude",
+            index=1,
+            number=2,
+            type=1,
+            cpp_type=5,
+            label=1,
+            has_default_value=False,
+            default_value=float(0),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=2512,
+    serialized_end=2562,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_LOCATION = _descriptor.Descriptor(
-  name='Location',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Location',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='address', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Location.address', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='coordinates', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Location.coordinates', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='timestamp5', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Location.timestamp5', index=2,
-      number=5, type=4, cpp_type=4, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='timezone', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Location.timezone', index=3,
-      number=6, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETHOMEGRAPHRESPONSE_HOME_LOCATION_COORDINATES, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=2345,
-  serialized_end=2562,
+    name="Location",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Location",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="address",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Location.address",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="coordinates",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Location.coordinates",
+            index=1,
+            number=2,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="timestamp5",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Location.timestamp5",
+            index=2,
+            number=5,
+            type=4,
+            cpp_type=4,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="timezone",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Location.timezone",
+            index=3,
+            number=6,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[_GETHOMEGRAPHRESPONSE_HOME_LOCATION_COORDINATES],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=2345,
+    serialized_end=2562,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_LINKEDUSER = _descriptor.Descriptor(
-  name='LinkedUser',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.LinkedUser',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='email_address', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.LinkedUser.email_address', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=2564,
-  serialized_end=2599,
+    name="LinkedUser",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.LinkedUser",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="email_address",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.LinkedUser.email_address",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        )
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=2564,
+    serialized_end=2599,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_ROOM_CATEGORY = _descriptor.Descriptor(
-  name='Category',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Room.Category',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='name', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Room.Category.name', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=2736,
-  serialized_end=2760,
+    name="Category",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Room.Category",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="name",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Room.Category.name",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        )
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=2736,
+    serialized_end=2760,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_ROOM = _descriptor.Descriptor(
-  name='Room',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Room',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='room_id', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Room.room_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='room_name', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Room.room_name', index=1,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='category', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Room.category', index=2,
-      number=4, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETHOMEGRAPHRESPONSE_HOME_ROOM_CATEGORY, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=2602,
-  serialized_end=2760,
+    name="Room",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Room",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="room_id",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Room.room_id",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="room_name",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Room.room_name",
+            index=1,
+            number=3,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="category",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Room.category",
+            index=2,
+            number=4,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[_GETHOMEGRAPHRESPONSE_HOME_ROOM_CATEGORY],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=2602,
+    serialized_end=2760,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_DEVICEINFO_PROJECTINFO = _descriptor.Descriptor(
-  name='ProjectInfo',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.DeviceInfo.ProjectInfo',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='api_project_id', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.DeviceInfo.ProjectInfo.api_project_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='string2', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.DeviceInfo.ProjectInfo.string2', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=4121,
-  serialized_end=4175,
+    name="ProjectInfo",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.DeviceInfo.ProjectInfo",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="api_project_id",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.DeviceInfo.ProjectInfo.api_project_id",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="string2",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.DeviceInfo.ProjectInfo.string2",
+            index=1,
+            number=2,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=4121,
+    serialized_end=4175,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_DEVICEINFO = _descriptor.Descriptor(
-  name='DeviceInfo',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.DeviceInfo',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='device_id', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.DeviceInfo.device_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='project_info', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.DeviceInfo.project_info', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETHOMEGRAPHRESPONSE_HOME_DEVICE_DEVICEINFO_PROJECTINFO, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=3978,
-  serialized_end=4175,
+    name="DeviceInfo",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.DeviceInfo",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="device_id",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.DeviceInfo.device_id",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="project_info",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.DeviceInfo.project_info",
+            index=1,
+            number=2,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[_GETHOMEGRAPHRESPONSE_HOME_DEVICE_DEVICEINFO_PROJECTINFO],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=3978,
+    serialized_end=4175,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE12 = _descriptor.Descriptor(
-  name='Message12',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message12',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='num2', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message12.num2', index=0,
-      number=2, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='num4', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message12.num4', index=1,
-      number=4, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='num5', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message12.num5', index=2,
-      number=5, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='num37', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message12.num37', index=3,
-      number=37, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='num38', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message12.num38', index=4,
-      number=38, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='num45', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message12.num45', index=5,
-      number=45, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='num46', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message12.num46', index=6,
-      number=46, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=4177,
-  serialized_end=4290,
+    name="Message12",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message12",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="num2",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message12.num2",
+            index=0,
+            number=2,
+            type=13,
+            cpp_type=3,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="num4",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message12.num4",
+            index=1,
+            number=4,
+            type=13,
+            cpp_type=3,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="num5",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message12.num5",
+            index=2,
+            number=5,
+            type=13,
+            cpp_type=3,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="num37",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message12.num37",
+            index=3,
+            number=37,
+            type=13,
+            cpp_type=3,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="num38",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message12.num38",
+            index=4,
+            number=38,
+            type=13,
+            cpp_type=3,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="num45",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message12.num45",
+            index=5,
+            number=45,
+            type=13,
+            cpp_type=3,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="num46",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message12.num46",
+            index=6,
+            number=46,
+            type=13,
+            cpp_type=3,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=4177,
+    serialized_end=4290,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE15 = _descriptor.Descriptor(
-  name='Message15',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message15',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='num1', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message15.num1', index=0,
-      number=1, type=4, cpp_type=4, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='num5', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message15.num5', index=1,
-      number=5, type=4, cpp_type=4, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='num6', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message15.num6', index=2,
-      number=6, type=4, cpp_type=4, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='num7', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message15.num7', index=3,
-      number=7, type=4, cpp_type=4, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=4292,
-  serialized_end=4359,
+    name="Message15",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message15",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="num1",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message15.num1",
+            index=0,
+            number=1,
+            type=4,
+            cpp_type=4,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="num5",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message15.num5",
+            index=1,
+            number=5,
+            type=4,
+            cpp_type=4,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="num6",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message15.num6",
+            index=2,
+            number=6,
+            type=4,
+            cpp_type=4,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="num7",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message15.num7",
+            index=3,
+            number=7,
+            type=4,
+            cpp_type=4,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=4292,
+    serialized_end=4359,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_HARDWARE = _descriptor.Descriptor(
-  name='Hardware',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Hardware',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='model', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Hardware.model', index=0,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=4361,
-  serialized_end=4386,
+    name="Hardware",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Hardware",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="model",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Hardware.model",
+            index=0,
+            number=2,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        )
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=4361,
+    serialized_end=4386,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE18 = _descriptor.Descriptor(
-  name='Message18',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message18',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='device_name', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message18.device_name', index=0,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=4388,
-  serialized_end=4420,
+    name="Message18",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message18",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="device_name",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message18.device_name",
+            index=0,
+            number=2,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        )
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=4388,
+    serialized_end=4420,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5_MESSAGE1_MESSAGE2 = _descriptor.Descriptor(
-  name='Message2',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5.Message1.Message2',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='bool4', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5.Message1.Message2.bool4', index=0,
-      number=4, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=5430,
-  serialized_end=5455,
+    name="Message2",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5.Message1.Message2",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="bool4",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5.Message1.Message2.bool4",
+            index=0,
+            number=4,
+            type=8,
+            cpp_type=7,
+            label=1,
+            has_default_value=False,
+            default_value=False,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        )
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=5430,
+    serialized_end=5455,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5_MESSAGE1 = _descriptor.Descriptor(
-  name='Message1',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5.Message1',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='capability', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5.Message1.capability', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='message2', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5.Message1.message2', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5_MESSAGE1_MESSAGE2, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=5243,
-  serialized_end=5455,
+    name="Message1",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5.Message1",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="capability",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5.Message1.capability",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="message2",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5.Message1.message2",
+            index=1,
+            number=2,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[
+        _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5_MESSAGE1_MESSAGE2
+    ],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=5243,
+    serialized_end=5455,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5 = _descriptor.Descriptor(
-  name='Message5',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='message1', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5.message1', index=0,
-      number=1, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5_MESSAGE1, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=5085,
-  serialized_end=5455,
+    name="Message5",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="message1",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5.message1",
+            index=0,
+            number=1,
+            type=11,
+            cpp_type=10,
+            label=3,
+            has_default_value=False,
+            default_value=[],
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        )
+    ],
+    extensions=[],
+    nested_types=[
+        _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5_MESSAGE1
+    ],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=5085,
+    serialized_end=5455,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1 = _descriptor.Descriptor(
-  name='Message1',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='message5', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.message5', index=0,
-      number=5, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=4936,
-  serialized_end=5455,
+    name="Message1",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="message5",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.message5",
+            index=0,
+            number=5,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        )
+    ],
+    extensions=[],
+    nested_types=[
+        _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5
+    ],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=4936,
+    serialized_end=5455,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6 = _descriptor.Descriptor(
-  name='Message6',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='message1', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.message1', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=4797,
-  serialized_end=5455,
+    name="Message6",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="message1",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.message1",
+            index=0,
+            number=1,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        )
+    ],
+    extensions=[],
+    nested_types=[
+        _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1
+    ],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=4797,
+    serialized_end=5455,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE = _descriptor.Descriptor(
-  name='Value',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='message6', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.message6', index=0,
-      number=6, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=4670,
-  serialized_end=5455,
+    name="Value",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="message6",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.message6",
+            index=0,
+            number=6,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        )
+    ],
+    extensions=[],
+    nested_types=[_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=4670,
+    serialized_end=5455,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1 = _descriptor.Descriptor(
-  name='Message1',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='key', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.key', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='value', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.value', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=4539,
-  serialized_end=5455,
+    name="Message1",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="key",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.key",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="value",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.value",
+            index=1,
+            number=2,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=4539,
+    serialized_end=5455,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20 = _descriptor.Descriptor(
-  name='Message20',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='message1', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.message1', index=0,
-      number=1, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=4423,
-  serialized_end=5455,
+    name="Message20",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="message1",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.message1",
+            index=0,
+            number=1,
+            type=11,
+            cpp_type=10,
+            label=3,
+            has_default_value=False,
+            default_value=[],
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        )
+    ],
+    extensions=[],
+    nested_types=[_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=4423,
+    serialized_end=5455,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE25 = _descriptor.Descriptor(
-  name='Message25',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message25',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='bool1', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message25.bool1', index=0,
-      number=1, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='bool2', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message25.bool2', index=1,
-      number=2, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=5457,
-  serialized_end=5498,
+    name="Message25",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message25",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="bool1",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message25.bool1",
+            index=0,
+            number=1,
+            type=8,
+            cpp_type=7,
+            label=1,
+            has_default_value=False,
+            default_value=False,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="bool2",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message25.bool2",
+            index=1,
+            number=2,
+            type=8,
+            cpp_type=7,
+            label=1,
+            has_default_value=False,
+            default_value=False,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=5457,
+    serialized_end=5498,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_LINKEDUSER = _descriptor.Descriptor(
-  name='LinkedUser',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.LinkedUser',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='email_address', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.LinkedUser.email_address', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=2564,
-  serialized_end=2599,
+    name="LinkedUser",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.LinkedUser",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="email_address",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.LinkedUser.email_address",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        )
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=2564,
+    serialized_end=2599,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_STATE = _descriptor.Descriptor(
-  name='State',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.State',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='name', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.State.name', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='value', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.State.value', index=1,
-      number=2, type=12, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"",
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=5537,
-  serialized_end=5573,
+    name="State",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.State",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="name",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.State.name",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="value",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.State.value",
+            index=1,
+            number=2,
+            type=12,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"",
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=5537,
+    serialized_end=5573,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30_MESSAGE2_MESSAGE2 = _descriptor.Descriptor(
-  name='Message2',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30.Message2.Message2',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='bool4', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30.Message2.Message2.bool4', index=0,
-      number=4, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=5430,
-  serialized_end=5455,
+    name="Message2",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30.Message2.Message2",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="bool4",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30.Message2.Message2.bool4",
+            index=0,
+            number=4,
+            type=8,
+            cpp_type=7,
+            label=1,
+            has_default_value=False,
+            default_value=False,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        )
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=5430,
+    serialized_end=5455,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30_MESSAGE2 = _descriptor.Descriptor(
-  name='Message2',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30.Message2',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='string1', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30.Message2.string1', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='message2', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30.Message2.message2', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30_MESSAGE2_MESSAGE2, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=5705,
-  serialized_end=5870,
+    name="Message2",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30.Message2",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="string1",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30.Message2.string1",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="message2",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30.Message2.message2",
+            index=1,
+            number=2,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30_MESSAGE2_MESSAGE2],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=5705,
+    serialized_end=5870,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30 = _descriptor.Descriptor(
-  name='Message30',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='key', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30.key', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='message2', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30.message2', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30_MESSAGE2, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=5576,
-  serialized_end=5870,
+    name="Message30",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="key",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30.key",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="message2",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30.message2",
+            index=1,
+            number=2,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30_MESSAGE2],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=5576,
+    serialized_end=5870,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE34 = _descriptor.Descriptor(
-  name='Message34',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message34',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='bool1', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message34.bool1', index=0,
-      number=1, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=5872,
-  serialized_end=5898,
+    name="Message34",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message34",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="bool1",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message34.bool1",
+            index=0,
+            number=1,
+            type=8,
+            cpp_type=7,
+            label=1,
+            has_default_value=False,
+            default_value=False,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        )
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=5872,
+    serialized_end=5898,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE = _descriptor.Descriptor(
-  name='Device',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='device_info', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.device_info', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='device_name', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.device_name', index=1,
-      number=4, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='device_type', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.device_type', index=2,
-      number=6, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='traits', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.traits', index=3,
-      number=7, type=9, cpp_type=9, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='suffix', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.suffix', index=4,
-      number=10, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='message12', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.message12', index=5,
-      number=12, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='message15', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.message15', index=6,
-      number=15, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='hardware', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.hardware', index=7,
-      number=17, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='message18', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.message18', index=8,
-      number=18, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='timestamp19', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.timestamp19', index=9,
-      number=19, type=4, cpp_type=4, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='message20', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.message20', index=10,
-      number=20, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='message25', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.message25', index=11,
-      number=25, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='linked_users', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.linked_users', index=12,
-      number=26, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='local_auth_token', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.local_auth_token', index=13,
-      number=28, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='states', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.states', index=14,
-      number=29, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='message30', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.message30', index=15,
-      number=30, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='message34', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.message34', index=16,
-      number=34, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='num37', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.num37', index=17,
-      number=37, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='string41', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.string41', index=18,
-      number=41, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='string42', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.string42', index=19,
-      number=42, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETHOMEGRAPHRESPONSE_HOME_DEVICE_DEVICEINFO, _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE12, _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE15, _GETHOMEGRAPHRESPONSE_HOME_DEVICE_HARDWARE, _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE18, _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20, _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE25, _GETHOMEGRAPHRESPONSE_HOME_DEVICE_LINKEDUSER, _GETHOMEGRAPHRESPONSE_HOME_DEVICE_STATE, _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30, _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE34, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=2763,
-  serialized_end=5898,
+    name="Device",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="device_info",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.device_info",
+            index=0,
+            number=1,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="device_name",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.device_name",
+            index=1,
+            number=4,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="device_type",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.device_type",
+            index=2,
+            number=6,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="traits",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.traits",
+            index=3,
+            number=7,
+            type=9,
+            cpp_type=9,
+            label=3,
+            has_default_value=False,
+            default_value=[],
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="suffix",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.suffix",
+            index=4,
+            number=10,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="message12",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.message12",
+            index=5,
+            number=12,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="message15",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.message15",
+            index=6,
+            number=15,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="hardware",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.hardware",
+            index=7,
+            number=17,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="message18",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.message18",
+            index=8,
+            number=18,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="timestamp19",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.timestamp19",
+            index=9,
+            number=19,
+            type=4,
+            cpp_type=4,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="message20",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.message20",
+            index=10,
+            number=20,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="message25",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.message25",
+            index=11,
+            number=25,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="linked_users",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.linked_users",
+            index=12,
+            number=26,
+            type=11,
+            cpp_type=10,
+            label=3,
+            has_default_value=False,
+            default_value=[],
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="local_auth_token",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.local_auth_token",
+            index=13,
+            number=28,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="states",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.states",
+            index=14,
+            number=29,
+            type=11,
+            cpp_type=10,
+            label=3,
+            has_default_value=False,
+            default_value=[],
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="message30",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.message30",
+            index=15,
+            number=30,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="message34",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.message34",
+            index=16,
+            number=34,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="num37",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.num37",
+            index=17,
+            number=37,
+            type=13,
+            cpp_type=3,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="string41",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.string41",
+            index=18,
+            number=41,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="string42",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.string42",
+            index=19,
+            number=42,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[
+        _GETHOMEGRAPHRESPONSE_HOME_DEVICE_DEVICEINFO,
+        _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE12,
+        _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE15,
+        _GETHOMEGRAPHRESPONSE_HOME_DEVICE_HARDWARE,
+        _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE18,
+        _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20,
+        _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE25,
+        _GETHOMEGRAPHRESPONSE_HOME_DEVICE_LINKEDUSER,
+        _GETHOMEGRAPHRESPONSE_HOME_DEVICE_STATE,
+        _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30,
+        _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE34,
+    ],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=2763,
+    serialized_end=5898,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_MESSAGE11 = _descriptor.Descriptor(
-  name='Message11',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message11',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='bool1', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message11.bool1', index=0,
-      number=1, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=5900,
-  serialized_end=5926,
+    name="Message11",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message11",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="bool1",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message11.bool1",
+            index=0,
+            number=1,
+            type=8,
+            cpp_type=7,
+            label=1,
+            has_default_value=False,
+            default_value=False,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        )
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=5900,
+    serialized_end=5926,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1_DEVICEINFO_PROJECTINFO = _descriptor.Descriptor(
-  name='ProjectInfo',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1.DeviceInfo.ProjectInfo',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='api_project_id', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1.DeviceInfo.ProjectInfo.api_project_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='string2', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1.DeviceInfo.ProjectInfo.string2', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=4121,
-  serialized_end=4175,
+    name="ProjectInfo",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1.DeviceInfo.ProjectInfo",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="api_project_id",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1.DeviceInfo.ProjectInfo.api_project_id",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="string2",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1.DeviceInfo.ProjectInfo.string2",
+            index=1,
+            number=2,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=4121,
+    serialized_end=4175,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1_DEVICEINFO = _descriptor.Descriptor(
-  name='DeviceInfo',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1.DeviceInfo',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='device_id', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1.DeviceInfo.device_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='project_info', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1.DeviceInfo.project_info', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1_DEVICEINFO_PROJECTINFO, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=6208,
-  serialized_end=6417,
+    name="DeviceInfo",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1.DeviceInfo",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="device_id",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1.DeviceInfo.device_id",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="project_info",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1.DeviceInfo.project_info",
+            index=1,
+            number=2,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[_GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1_DEVICEINFO_PROJECTINFO],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=6208,
+    serialized_end=6417,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1 = _descriptor.Descriptor(
-  name='Message1',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='device_info', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1.device_info', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1_DEVICEINFO, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=6086,
-  serialized_end=6417,
+    name="Message1",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="device_info",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1.device_info",
+            index=0,
+            number=1,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        )
+    ],
+    extensions=[],
+    nested_types=[_GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1_DEVICEINFO],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=6086,
+    serialized_end=6417,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13 = _descriptor.Descriptor(
-  name='Message13',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='message1', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.message1', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='duo_call_url', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.duo_call_url', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='duo_phone_number', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.duo_phone_number', index=2,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=5929,
-  serialized_end=6417,
+    name="Message13",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="message1",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.message1",
+            index=0,
+            number=1,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="duo_call_url",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.duo_call_url",
+            index=1,
+            number=2,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="duo_phone_number",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.duo_phone_number",
+            index=2,
+            number=3,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[_GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=5929,
+    serialized_end=6417,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_MESSAGE15_MESSAGE3_MESSAGE2 = _descriptor.Descriptor(
-  name='Message2',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15.Message3.Message2',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='string1', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15.Message3.Message2.string1', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=5705,
-  serialized_end=5732,
+    name="Message2",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15.Message3.Message2",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="string1",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15.Message3.Message2.string1",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        )
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=5705,
+    serialized_end=5732,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_MESSAGE15_MESSAGE3 = _descriptor.Descriptor(
-  name='Message3',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15.Message3',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='string1', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15.Message3.string1', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='message2', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15.Message3.message2', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETHOMEGRAPHRESPONSE_HOME_MESSAGE15_MESSAGE3_MESSAGE2, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=6576,
-  serialized_end=6736,
+    name="Message3",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15.Message3",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="string1",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15.Message3.string1",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="message2",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15.Message3.message2",
+            index=1,
+            number=2,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[_GETHOMEGRAPHRESPONSE_HOME_MESSAGE15_MESSAGE3_MESSAGE2],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=6576,
+    serialized_end=6736,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_MESSAGE15 = _descriptor.Descriptor(
-  name='Message15',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='bool1', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15.bool1', index=0,
-      number=1, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='string2', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15.string2', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='message3', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15.message3', index=2,
-      number=3, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='bool4', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15.bool4', index=3,
-      number=4, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETHOMEGRAPHRESPONSE_HOME_MESSAGE15_MESSAGE3, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=6420,
-  serialized_end=6736,
+    name="Message15",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="bool1",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15.bool1",
+            index=0,
+            number=1,
+            type=8,
+            cpp_type=7,
+            label=1,
+            has_default_value=False,
+            default_value=False,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="string2",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15.string2",
+            index=1,
+            number=2,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="message3",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15.message3",
+            index=2,
+            number=3,
+            type=11,
+            cpp_type=10,
+            label=3,
+            has_default_value=False,
+            default_value=[],
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="bool4",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15.bool4",
+            index=3,
+            number=4,
+            type=8,
+            cpp_type=7,
+            label=1,
+            has_default_value=False,
+            default_value=False,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[_GETHOMEGRAPHRESPONSE_HOME_MESSAGE15_MESSAGE3],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=6420,
+    serialized_end=6736,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME = _descriptor.Descriptor(
-  name='Home',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='home_id', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.home_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='home_name', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.home_name', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='location', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.location', index=2,
-      number=3, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='linked_users', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.linked_users', index=3,
-      number=4, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='rooms', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.rooms', index=4,
-      number=6, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='devices', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.devices', index=5,
-      number=7, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='message11', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.message11', index=6,
-      number=11, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='string12', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.string12', index=7,
-      number=12, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='message13', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.message13', index=8,
-      number=13, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='message14', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.message14', index=9,
-      number=14, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='message15', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Home.message15', index=10,
-      number=15, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETHOMEGRAPHRESPONSE_HOME_LOCATION, _GETHOMEGRAPHRESPONSE_HOME_LINKEDUSER, _GETHOMEGRAPHRESPONSE_HOME_ROOM, _GETHOMEGRAPHRESPONSE_HOME_DEVICE, _GETHOMEGRAPHRESPONSE_HOME_MESSAGE11, _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13, _GETHOMEGRAPHRESPONSE_HOME_MESSAGE15, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1666,
-  serialized_end=6736,
+    name="Home",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="home_id",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.home_id",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="home_name",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.home_name",
+            index=1,
+            number=2,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="location",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.location",
+            index=2,
+            number=3,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="linked_users",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.linked_users",
+            index=3,
+            number=4,
+            type=11,
+            cpp_type=10,
+            label=3,
+            has_default_value=False,
+            default_value=[],
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="rooms",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.rooms",
+            index=4,
+            number=6,
+            type=11,
+            cpp_type=10,
+            label=3,
+            has_default_value=False,
+            default_value=[],
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="devices",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.devices",
+            index=5,
+            number=7,
+            type=11,
+            cpp_type=10,
+            label=3,
+            has_default_value=False,
+            default_value=[],
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="message11",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.message11",
+            index=6,
+            number=11,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="string12",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.string12",
+            index=7,
+            number=12,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="message13",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.message13",
+            index=8,
+            number=13,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="message14",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.message14",
+            index=9,
+            number=14,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="message15",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Home.message15",
+            index=10,
+            number=15,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[
+        _GETHOMEGRAPHRESPONSE_HOME_LOCATION,
+        _GETHOMEGRAPHRESPONSE_HOME_LINKEDUSER,
+        _GETHOMEGRAPHRESPONSE_HOME_ROOM,
+        _GETHOMEGRAPHRESPONSE_HOME_DEVICE,
+        _GETHOMEGRAPHRESPONSE_HOME_MESSAGE11,
+        _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13,
+        _GETHOMEGRAPHRESPONSE_HOME_MESSAGE15,
+    ],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=1666,
+    serialized_end=6736,
 )
 
 _GETHOMEGRAPHRESPONSE_GROUP_DEVICEINFO_PROJECTINFO = _descriptor.Descriptor(
-  name='ProjectInfo',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.DeviceInfo.ProjectInfo',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='api_project_id', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.DeviceInfo.ProjectInfo.api_project_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='string2', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.DeviceInfo.ProjectInfo.string2', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=4121,
-  serialized_end=4175,
+    name="ProjectInfo",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.DeviceInfo.ProjectInfo",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="api_project_id",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.DeviceInfo.ProjectInfo.api_project_id",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="string2",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.DeviceInfo.ProjectInfo.string2",
+            index=1,
+            number=2,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=4121,
+    serialized_end=4175,
 )
 
 _GETHOMEGRAPHRESPONSE_GROUP_DEVICEINFO = _descriptor.Descriptor(
-  name='DeviceInfo',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.DeviceInfo',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='project_info', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.DeviceInfo.project_info', index=0,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETHOMEGRAPHRESPONSE_GROUP_DEVICEINFO_PROJECTINFO, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=7374,
-  serialized_end=7546,
+    name="DeviceInfo",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.DeviceInfo",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="project_info",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.DeviceInfo.project_info",
+            index=0,
+            number=2,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        )
+    ],
+    extensions=[],
+    nested_types=[_GETHOMEGRAPHRESPONSE_GROUP_DEVICEINFO_PROJECTINFO],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=7374,
+    serialized_end=7546,
 )
 
 _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE12 = _descriptor.Descriptor(
-  name='Message12',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message12',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='bool3', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message12.bool3', index=0,
-      number=3, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='bool4', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message12.bool4', index=1,
-      number=4, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='bool37', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message12.bool37', index=2,
-      number=37, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='bool38', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message12.bool38', index=3,
-      number=38, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=7548,
-  serialized_end=7621,
+    name="Message12",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message12",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="bool3",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message12.bool3",
+            index=0,
+            number=3,
+            type=8,
+            cpp_type=7,
+            label=1,
+            has_default_value=False,
+            default_value=False,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="bool4",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message12.bool4",
+            index=1,
+            number=4,
+            type=8,
+            cpp_type=7,
+            label=1,
+            has_default_value=False,
+            default_value=False,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="bool37",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message12.bool37",
+            index=2,
+            number=37,
+            type=8,
+            cpp_type=7,
+            label=1,
+            has_default_value=False,
+            default_value=False,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="bool38",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message12.bool38",
+            index=3,
+            number=38,
+            type=8,
+            cpp_type=7,
+            label=1,
+            has_default_value=False,
+            default_value=False,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=7548,
+    serialized_end=7621,
 )
 
 _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE15 = _descriptor.Descriptor(
-  name='Message15',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message15',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='string1', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message15.string1', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='num5', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message15.num5', index=1,
-      number=5, type=4, cpp_type=4, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='num6', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message15.num6', index=2,
-      number=6, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=7623,
-  serialized_end=7679,
+    name="Message15",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message15",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="string1",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message15.string1",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="num5",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message15.num5",
+            index=1,
+            number=5,
+            type=4,
+            cpp_type=4,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="num6",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message15.num6",
+            index=2,
+            number=6,
+            type=13,
+            cpp_type=3,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=7623,
+    serialized_end=7679,
 )
 
 _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE17 = _descriptor.Descriptor(
-  name='Message17',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message17',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='group_model', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message17.group_model', index=0,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=7681,
-  serialized_end=7713,
+    name="Message17",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message17",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="group_model",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message17.group_model",
+            index=0,
+            number=2,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        )
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=7681,
+    serialized_end=7713,
 )
 
 _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE18 = _descriptor.Descriptor(
-  name='Message18',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message18',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='group_name', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message18.group_name', index=0,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=7715,
-  serialized_end=7746,
+    name="Message18",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message18",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="group_name",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message18.group_name",
+            index=0,
+            number=2,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        )
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=7715,
+    serialized_end=7746,
 )
 
 _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE34 = _descriptor.Descriptor(
-  name='Message34',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message34',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='bool1', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message34.bool1', index=0,
-      number=1, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=5872,
-  serialized_end=5898,
+    name="Message34",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message34",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="bool1",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message34.bool1",
+            index=0,
+            number=1,
+            type=8,
+            cpp_type=7,
+            label=1,
+            has_default_value=False,
+            default_value=False,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        )
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=5872,
+    serialized_end=5898,
 )
 
 _GETHOMEGRAPHRESPONSE_GROUP = _descriptor.Descriptor(
-  name='Group',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='device_info', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.device_info', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='group_nmae', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.group_nmae', index=1,
-      number=4, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='device_type', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.device_type', index=2,
-      number=6, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='traits', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.traits', index=3,
-      number=7, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='suffix', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.suffix', index=4,
-      number=10, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='message12', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.message12', index=5,
-      number=12, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='message15', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.message15', index=6,
-      number=15, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='message17', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.message17', index=7,
-      number=17, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='message18', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.message18', index=8,
-      number=18, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='timestamp19', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.timestamp19', index=9,
-      number=19, type=4, cpp_type=4, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='message34', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Group.message34', index=10,
-      number=34, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETHOMEGRAPHRESPONSE_GROUP_DEVICEINFO, _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE12, _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE15, _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE17, _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE18, _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE34, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=6739,
-  serialized_end=7774,
+    name="Group",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="device_info",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.device_info",
+            index=0,
+            number=1,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="group_nmae",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.group_nmae",
+            index=1,
+            number=4,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="device_type",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.device_type",
+            index=2,
+            number=6,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="traits",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.traits",
+            index=3,
+            number=7,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="suffix",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.suffix",
+            index=4,
+            number=10,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="message12",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.message12",
+            index=5,
+            number=12,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="message15",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.message15",
+            index=6,
+            number=15,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="message17",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.message17",
+            index=7,
+            number=17,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="message18",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.message18",
+            index=8,
+            number=18,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="timestamp19",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.timestamp19",
+            index=9,
+            number=19,
+            type=4,
+            cpp_type=4,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="message34",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Group.message34",
+            index=10,
+            number=34,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[
+        _GETHOMEGRAPHRESPONSE_GROUP_DEVICEINFO,
+        _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE12,
+        _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE15,
+        _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE17,
+        _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE18,
+        _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE34,
+    ],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=6739,
+    serialized_end=7774,
 )
 
 _GETHOMEGRAPHRESPONSE_ROOMTYPE = _descriptor.Descriptor(
-  name='RoomType',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.RoomType',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='code', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.RoomType.code', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='name', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.RoomType.name', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=7776,
-  serialized_end=7814,
+    name="RoomType",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.RoomType",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="code",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.RoomType.code",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="name",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.RoomType.name",
+            index=1,
+            number=2,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=7776,
+    serialized_end=7814,
 )
 
 _GETHOMEGRAPHRESPONSE_DEVICETYPE = _descriptor.Descriptor(
-  name='DeviceType',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.DeviceType',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='code', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.DeviceType.code', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='name', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.DeviceType.name', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=7816,
-  serialized_end=7856,
+    name="DeviceType",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.DeviceType",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="code",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.DeviceType.code",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="name",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.DeviceType.name",
+            index=1,
+            number=2,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=7816,
+    serialized_end=7856,
 )
 
 _GETHOMEGRAPHRESPONSE_PROJECTTYPE = _descriptor.Descriptor(
-  name='ProjectType',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.ProjectType',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='code', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.ProjectType.code', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='name', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.ProjectType.name', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=7858,
-  serialized_end=7899,
+    name="ProjectType",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.ProjectType",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="code",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.ProjectType.code",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="name",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.ProjectType.name",
+            index=1,
+            number=2,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=7858,
+    serialized_end=7899,
 )
 
 _GETHOMEGRAPHRESPONSE_MESSAGE11_MESSAGE2 = _descriptor.Descriptor(
-  name='Message2',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Message11.Message2',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='num2', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Message11.Message2.num2', index=0,
-      number=2, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=8019,
-  serialized_end=8043,
+    name="Message2",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Message11.Message2",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="num2",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Message11.Message2.num2",
+            index=0,
+            number=2,
+            type=13,
+            cpp_type=3,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        )
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=8019,
+    serialized_end=8043,
 )
 
 _GETHOMEGRAPHRESPONSE_MESSAGE11 = _descriptor.Descriptor(
-  name='Message11',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Message11',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='name', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Message11.name', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='message2', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.Message11.message2', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETHOMEGRAPHRESPONSE_MESSAGE11_MESSAGE2, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=7902,
-  serialized_end=8043,
+    name="Message11",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Message11",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="name",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Message11.name",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="message2",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.Message11.message2",
+            index=1,
+            number=2,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[_GETHOMEGRAPHRESPONSE_MESSAGE11_MESSAGE2],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=7902,
+    serialized_end=8043,
 )
 
 _GETHOMEGRAPHRESPONSE_LINKEDAPP = _descriptor.Descriptor(
-  name='LinkedApp',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.LinkedApp',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='string1', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.LinkedApp.string1', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='string2', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.LinkedApp.string2', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='num3', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.LinkedApp.num3', index=2,
-      number=3, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='num4', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.LinkedApp.num4', index=3,
-      number=4, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='num5', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.LinkedApp.num5', index=4,
-      number=5, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=8045,
-  serialized_end=8132,
+    name="LinkedApp",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.LinkedApp",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="string1",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.LinkedApp.string1",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="string2",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.LinkedApp.string2",
+            index=1,
+            number=2,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="num3",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.LinkedApp.num3",
+            index=2,
+            number=3,
+            type=13,
+            cpp_type=3,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="num4",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.LinkedApp.num4",
+            index=3,
+            number=4,
+            type=13,
+            cpp_type=3,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="num5",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.LinkedApp.num5",
+            index=4,
+            number=5,
+            type=13,
+            cpp_type=3,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=8045,
+    serialized_end=8132,
 )
 
 _GETHOMEGRAPHRESPONSE = _descriptor.Descriptor(
-  name='GetHomeGraphResponse',
-  full_name='google.internal.home.foyer.v1.GetHomeGraphResponse',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='timestamp1', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.timestamp1', index=0,
-      number=1, type=4, cpp_type=4, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='home', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.home', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='groups', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.groups', index=2,
-      number=3, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='room_types', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.room_types', index=3,
-      number=4, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='string5', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.string5', index=4,
-      number=5, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='bool6', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.bool6', index=5,
-      number=6, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='device_types', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.device_types', index=6,
-      number=7, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='project_types', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.project_types', index=7,
-      number=9, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='message11', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.message11', index=8,
-      number=11, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='linked_apps', full_name='google.internal.home.foyer.v1.GetHomeGraphResponse.linked_apps', index=9,
-      number=12, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETHOMEGRAPHRESPONSE_HOME, _GETHOMEGRAPHRESPONSE_GROUP, _GETHOMEGRAPHRESPONSE_ROOMTYPE, _GETHOMEGRAPHRESPONSE_DEVICETYPE, _GETHOMEGRAPHRESPONSE_PROJECTTYPE, _GETHOMEGRAPHRESPONSE_MESSAGE11, _GETHOMEGRAPHRESPONSE_LINKEDAPP, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1020,
-  serialized_end=8132,
+    name="GetHomeGraphResponse",
+    full_name="google.internal.home.foyer.v1.GetHomeGraphResponse",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="timestamp1",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.timestamp1",
+            index=0,
+            number=1,
+            type=4,
+            cpp_type=4,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="home",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.home",
+            index=1,
+            number=2,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="groups",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.groups",
+            index=2,
+            number=3,
+            type=11,
+            cpp_type=10,
+            label=3,
+            has_default_value=False,
+            default_value=[],
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="room_types",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.room_types",
+            index=3,
+            number=4,
+            type=11,
+            cpp_type=10,
+            label=3,
+            has_default_value=False,
+            default_value=[],
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="string5",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.string5",
+            index=4,
+            number=5,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="bool6",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.bool6",
+            index=5,
+            number=6,
+            type=8,
+            cpp_type=7,
+            label=1,
+            has_default_value=False,
+            default_value=False,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="device_types",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.device_types",
+            index=6,
+            number=7,
+            type=11,
+            cpp_type=10,
+            label=3,
+            has_default_value=False,
+            default_value=[],
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="project_types",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.project_types",
+            index=7,
+            number=9,
+            type=11,
+            cpp_type=10,
+            label=3,
+            has_default_value=False,
+            default_value=[],
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="message11",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.message11",
+            index=8,
+            number=11,
+            type=11,
+            cpp_type=10,
+            label=3,
+            has_default_value=False,
+            default_value=[],
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="linked_apps",
+            full_name="google.internal.home.foyer.v1.GetHomeGraphResponse.linked_apps",
+            index=9,
+            number=12,
+            type=11,
+            cpp_type=10,
+            label=3,
+            has_default_value=False,
+            default_value=[],
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[
+        _GETHOMEGRAPHRESPONSE_HOME,
+        _GETHOMEGRAPHRESPONSE_GROUP,
+        _GETHOMEGRAPHRESPONSE_ROOMTYPE,
+        _GETHOMEGRAPHRESPONSE_DEVICETYPE,
+        _GETHOMEGRAPHRESPONSE_PROJECTTYPE,
+        _GETHOMEGRAPHRESPONSE_MESSAGE11,
+        _GETHOMEGRAPHRESPONSE_LINKEDAPP,
+    ],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=1020,
+    serialized_end=8132,
 )
 
 
 _GETASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO_PROJECTINFO = _descriptor.Descriptor(
-  name='ProjectInfo',
-  full_name='google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest.DeviceInfo.ProjectInfo',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='api_project_id', full_name='google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest.DeviceInfo.ProjectInfo.api_project_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='string2', full_name='google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest.DeviceInfo.ProjectInfo.string2', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=4121,
-  serialized_end=4175,
+    name="ProjectInfo",
+    full_name="google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest.DeviceInfo.ProjectInfo",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="api_project_id",
+            full_name="google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest.DeviceInfo.ProjectInfo.api_project_id",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="string2",
+            full_name="google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest.DeviceInfo.ProjectInfo.string2",
+            index=1,
+            number=2,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=4121,
+    serialized_end=4175,
 )
 
 _GETASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO = _descriptor.Descriptor(
-  name='DeviceInfo',
-  full_name='google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest.DeviceInfo',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='device_id', full_name='google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest.DeviceInfo.device_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='project_info', full_name='google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest.DeviceInfo.project_info', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO_PROJECTINFO, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=8288,
-  serialized_end=8486,
+    name="DeviceInfo",
+    full_name="google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest.DeviceInfo",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="device_id",
+            full_name="google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest.DeviceInfo.device_id",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="project_info",
+            full_name="google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest.DeviceInfo.project_info",
+            index=1,
+            number=2,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[_GETASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO_PROJECTINFO],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=8288,
+    serialized_end=8486,
 )
 
 _GETASSISTANTDEVICESETTINGSREQUEST = _descriptor.Descriptor(
-  name='GetAssistantDeviceSettingsRequest',
-  full_name='google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='device_info', full_name='google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest.device_info', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='string2', full_name='google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest.string2', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=8135,
-  serialized_end=8486,
+    name="GetAssistantDeviceSettingsRequest",
+    full_name="google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="device_info",
+            full_name="google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest.device_info",
+            index=0,
+            number=1,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="string2",
+            full_name="google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest.string2",
+            index=1,
+            number=2,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[_GETASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=8135,
+    serialized_end=8486,
 )
 
 
 _GETASSISTANTDEVICESETTINGSRESPONSE_MESSAGE1 = _descriptor.Descriptor(
-  name='Message1',
-  full_name='google.internal.home.foyer.v1.GetAssistantDeviceSettingsResponse.Message1',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='num1', full_name='google.internal.home.foyer.v1.GetAssistantDeviceSettingsResponse.Message1.num1', index=0,
-      number=1, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='num2', full_name='google.internal.home.foyer.v1.GetAssistantDeviceSettingsResponse.Message1.num2', index=1,
-      number=2, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='num4', full_name='google.internal.home.foyer.v1.GetAssistantDeviceSettingsResponse.Message1.num4', index=2,
-      number=4, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='num5', full_name='google.internal.home.foyer.v1.GetAssistantDeviceSettingsResponse.Message1.num5', index=3,
-      number=5, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='num6', full_name='google.internal.home.foyer.v1.GetAssistantDeviceSettingsResponse.Message1.num6', index=4,
-      number=6, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='string10', full_name='google.internal.home.foyer.v1.GetAssistantDeviceSettingsResponse.Message1.string10', index=5,
-      number=10, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=8621,
-  serialized_end=8719,
+    name="Message1",
+    full_name="google.internal.home.foyer.v1.GetAssistantDeviceSettingsResponse.Message1",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="num1",
+            full_name="google.internal.home.foyer.v1.GetAssistantDeviceSettingsResponse.Message1.num1",
+            index=0,
+            number=1,
+            type=13,
+            cpp_type=3,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="num2",
+            full_name="google.internal.home.foyer.v1.GetAssistantDeviceSettingsResponse.Message1.num2",
+            index=1,
+            number=2,
+            type=13,
+            cpp_type=3,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="num4",
+            full_name="google.internal.home.foyer.v1.GetAssistantDeviceSettingsResponse.Message1.num4",
+            index=2,
+            number=4,
+            type=13,
+            cpp_type=3,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="num5",
+            full_name="google.internal.home.foyer.v1.GetAssistantDeviceSettingsResponse.Message1.num5",
+            index=3,
+            number=5,
+            type=13,
+            cpp_type=3,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="num6",
+            full_name="google.internal.home.foyer.v1.GetAssistantDeviceSettingsResponse.Message1.num6",
+            index=4,
+            number=6,
+            type=13,
+            cpp_type=3,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="string10",
+            full_name="google.internal.home.foyer.v1.GetAssistantDeviceSettingsResponse.Message1.string10",
+            index=5,
+            number=10,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=8621,
+    serialized_end=8719,
 )
 
 _GETASSISTANTDEVICESETTINGSRESPONSE = _descriptor.Descriptor(
-  name='GetAssistantDeviceSettingsResponse',
-  full_name='google.internal.home.foyer.v1.GetAssistantDeviceSettingsResponse',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='message1', full_name='google.internal.home.foyer.v1.GetAssistantDeviceSettingsResponse.message1', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_GETASSISTANTDEVICESETTINGSRESPONSE_MESSAGE1, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=8489,
-  serialized_end=8719,
+    name="GetAssistantDeviceSettingsResponse",
+    full_name="google.internal.home.foyer.v1.GetAssistantDeviceSettingsResponse",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="message1",
+            full_name="google.internal.home.foyer.v1.GetAssistantDeviceSettingsResponse.message1",
+            index=0,
+            number=1,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        )
+    ],
+    extensions=[],
+    nested_types=[_GETASSISTANTDEVICESETTINGSRESPONSE_MESSAGE1],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=8489,
+    serialized_end=8719,
 )
 
 
 _UPDATEASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO_PROJECTINFO = _descriptor.Descriptor(
-  name='ProjectInfo',
-  full_name='google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.DeviceInfo.ProjectInfo',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='api_project_id', full_name='google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.DeviceInfo.ProjectInfo.api_project_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='string2', full_name='google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.DeviceInfo.ProjectInfo.string2', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=4121,
-  serialized_end=4175,
+    name="ProjectInfo",
+    full_name="google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.DeviceInfo.ProjectInfo",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="api_project_id",
+            full_name="google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.DeviceInfo.ProjectInfo.api_project_id",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="string2",
+            full_name="google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.DeviceInfo.ProjectInfo.string2",
+            index=1,
+            number=2,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=4121,
+    serialized_end=4175,
 )
 
 _UPDATEASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO = _descriptor.Descriptor(
-  name='DeviceInfo',
-  full_name='google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.DeviceInfo',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='device_id', full_name='google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.DeviceInfo.device_id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='project_info', full_name='google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.DeviceInfo.project_info', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_UPDATEASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO_PROJECTINFO, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=8982,
-  serialized_end=9183,
+    name="DeviceInfo",
+    full_name="google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.DeviceInfo",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="device_id",
+            full_name="google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.DeviceInfo.device_id",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="project_info",
+            full_name="google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.DeviceInfo.project_info",
+            index=1,
+            number=2,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[_UPDATEASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO_PROJECTINFO],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=8982,
+    serialized_end=9183,
 )
 
 _UPDATEASSISTANTDEVICESETTINGSREQUEST_UPDATEDATA_MESSAGE1 = _descriptor.Descriptor(
-  name='Message1',
-  full_name='google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.UpdateData.Message1',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='youtube_restricted_mode', full_name='google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.UpdateData.Message1.youtube_restricted_mode', index=0,
-      number=4, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='youtube_tv_content_filter', full_name='google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.UpdateData.Message1.youtube_tv_content_filter', index=1,
-      number=5, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='locale', full_name='google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.UpdateData.Message1.locale', index=2,
-      number=10, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=9307,
-  serialized_end=9401,
+    name="Message1",
+    full_name="google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.UpdateData.Message1",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="youtube_restricted_mode",
+            full_name="google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.UpdateData.Message1.youtube_restricted_mode",
+            index=0,
+            number=4,
+            type=13,
+            cpp_type=3,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="youtube_tv_content_filter",
+            full_name="google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.UpdateData.Message1.youtube_tv_content_filter",
+            index=1,
+            number=5,
+            type=13,
+            cpp_type=3,
+            label=1,
+            has_default_value=False,
+            default_value=0,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="locale",
+            full_name="google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.UpdateData.Message1.locale",
+            index=2,
+            number=10,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=9307,
+    serialized_end=9401,
 )
 
 _UPDATEASSISTANTDEVICESETTINGSREQUEST_UPDATEDATA = _descriptor.Descriptor(
-  name='UpdateData',
-  full_name='google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.UpdateData',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='message1', full_name='google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.UpdateData.message1', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_UPDATEASSISTANTDEVICESETTINGSREQUEST_UPDATEDATA_MESSAGE1, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=9186,
-  serialized_end=9401,
+    name="UpdateData",
+    full_name="google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.UpdateData",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="message1",
+            full_name="google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.UpdateData.message1",
+            index=0,
+            number=1,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        )
+    ],
+    extensions=[],
+    nested_types=[_UPDATEASSISTANTDEVICESETTINGSREQUEST_UPDATEDATA_MESSAGE1],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=9186,
+    serialized_end=9401,
 )
 
 _UPDATEASSISTANTDEVICESETTINGSREQUEST = _descriptor.Descriptor(
-  name='UpdateAssistantDeviceSettingsRequest',
-  full_name='google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='string1', full_name='google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.string1', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='device_info', full_name='google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.device_info', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='update_data', full_name='google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.update_data', index=2,
-      number=3, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[_UPDATEASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO, _UPDATEASSISTANTDEVICESETTINGSREQUEST_UPDATEDATA, ],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=8722,
-  serialized_end=9401,
+    name="UpdateAssistantDeviceSettingsRequest",
+    full_name="google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="string1",
+            full_name="google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.string1",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="device_info",
+            full_name="google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.device_info",
+            index=1,
+            number=2,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="update_data",
+            full_name="google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.update_data",
+            index=2,
+            number=3,
+            type=11,
+            cpp_type=10,
+            label=1,
+            has_default_value=False,
+            default_value=None,
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+    extensions=[],
+    nested_types=[
+        _UPDATEASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO,
+        _UPDATEASSISTANTDEVICESETTINGSREQUEST_UPDATEDATA,
+    ],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=8722,
+    serialized_end=9401,
 )
 
 
 _UPDATEASSISTANTDEVICESETTINGSRESPONSE = _descriptor.Descriptor(
-  name='UpdateAssistantDeviceSettingsResponse',
-  full_name='google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsResponse',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='string1', full_name='google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsResponse.string1', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=9403,
-  serialized_end=9459,
+    name="UpdateAssistantDeviceSettingsResponse",
+    full_name="google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsResponse",
+    filename=None,
+    file=DESCRIPTOR,
+    containing_type=None,
+    create_key=_descriptor._internal_create_key,
+    fields=[
+        _descriptor.FieldDescriptor(
+            name="string1",
+            full_name="google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsResponse.string1",
+            index=0,
+            number=1,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=b"".decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        )
+    ],
+    extensions=[],
+    nested_types=[],
+    enum_types=[],
+    serialized_options=None,
+    is_extendable=False,
+    syntax="proto3",
+    extension_ranges=[],
+    oneofs=[],
+    serialized_start=9403,
+    serialized_end=9459,
 )
 
-_GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1_WF_SUB1_SUB1_ROUTINE.containing_type = _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1_WF_SUB1_SUB1
-_GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1_WF_SUB1_SUB1.fields_by_name['routine'].message_type = _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1_WF_SUB1_SUB1_ROUTINE
-_GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1_WF_SUB1_SUB1.containing_type = _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1
-_GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1.fields_by_name['wf_s1_s1'].message_type = _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1_WF_SUB1_SUB1
-_GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1.containing_type = _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW
-_GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW.fields_by_name['wf_s1'].message_type = _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1
-_GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW.containing_type = _GETASSISTANTROUTINESRESPONSE_PART1
-_GETASSISTANTROUTINESRESPONSE_PART1.fields_by_name['workflow'].message_type = _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW
+_GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1_WF_SUB1_SUB1_ROUTINE.containing_type = (
+    _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1_WF_SUB1_SUB1
+)
+_GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1_WF_SUB1_SUB1.fields_by_name[
+    "routine"
+].message_type = (
+    _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1_WF_SUB1_SUB1_ROUTINE
+)
+_GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1_WF_SUB1_SUB1.containing_type = (
+    _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1
+)
+_GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1.fields_by_name[
+    "wf_s1_s1"
+].message_type = _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1_WF_SUB1_SUB1
+_GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1.containing_type = (
+    _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW
+)
+_GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW.fields_by_name[
+    "wf_s1"
+].message_type = _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1
+_GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW.containing_type = (
+    _GETASSISTANTROUTINESRESPONSE_PART1
+)
+_GETASSISTANTROUTINESRESPONSE_PART1.fields_by_name[
+    "workflow"
+].message_type = _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW
 _GETASSISTANTROUTINESRESPONSE_PART1.containing_type = _GETASSISTANTROUTINESRESPONSE
 _GETASSISTANTROUTINESRESPONSE_PART2.containing_type = _GETASSISTANTROUTINESRESPONSE
-_GETASSISTANTROUTINESRESPONSE.fields_by_name['p1'].message_type = _GETASSISTANTROUTINESRESPONSE_PART1
-_GETASSISTANTROUTINESRESPONSE.fields_by_name['p2'].message_type = _GETASSISTANTROUTINESRESPONSE_PART2
-_GETHOMEGRAPHRESPONSE_HOME_LOCATION_COORDINATES.containing_type = _GETHOMEGRAPHRESPONSE_HOME_LOCATION
-_GETHOMEGRAPHRESPONSE_HOME_LOCATION.fields_by_name['coordinates'].message_type = _GETHOMEGRAPHRESPONSE_HOME_LOCATION_COORDINATES
+_GETASSISTANTROUTINESRESPONSE.fields_by_name[
+    "p1"
+].message_type = _GETASSISTANTROUTINESRESPONSE_PART1
+_GETASSISTANTROUTINESRESPONSE.fields_by_name[
+    "p2"
+].message_type = _GETASSISTANTROUTINESRESPONSE_PART2
+_GETHOMEGRAPHRESPONSE_HOME_LOCATION_COORDINATES.containing_type = (
+    _GETHOMEGRAPHRESPONSE_HOME_LOCATION
+)
+_GETHOMEGRAPHRESPONSE_HOME_LOCATION.fields_by_name[
+    "coordinates"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_LOCATION_COORDINATES
 _GETHOMEGRAPHRESPONSE_HOME_LOCATION.containing_type = _GETHOMEGRAPHRESPONSE_HOME
 _GETHOMEGRAPHRESPONSE_HOME_LINKEDUSER.containing_type = _GETHOMEGRAPHRESPONSE_HOME
-_GETHOMEGRAPHRESPONSE_HOME_ROOM_CATEGORY.containing_type = _GETHOMEGRAPHRESPONSE_HOME_ROOM
-_GETHOMEGRAPHRESPONSE_HOME_ROOM.fields_by_name['category'].message_type = _GETHOMEGRAPHRESPONSE_HOME_ROOM_CATEGORY
+_GETHOMEGRAPHRESPONSE_HOME_ROOM_CATEGORY.containing_type = (
+    _GETHOMEGRAPHRESPONSE_HOME_ROOM
+)
+_GETHOMEGRAPHRESPONSE_HOME_ROOM.fields_by_name[
+    "category"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_ROOM_CATEGORY
 _GETHOMEGRAPHRESPONSE_HOME_ROOM.containing_type = _GETHOMEGRAPHRESPONSE_HOME
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE_DEVICEINFO_PROJECTINFO.containing_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_DEVICEINFO
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE_DEVICEINFO.fields_by_name['project_info'].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_DEVICEINFO_PROJECTINFO
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE_DEVICEINFO.containing_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE12.containing_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE15.containing_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE_HARDWARE.containing_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE18.containing_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE_DEVICEINFO_PROJECTINFO.containing_type = (
+    _GETHOMEGRAPHRESPONSE_HOME_DEVICE_DEVICEINFO
+)
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE_DEVICEINFO.fields_by_name[
+    "project_info"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_DEVICEINFO_PROJECTINFO
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE_DEVICEINFO.containing_type = (
+    _GETHOMEGRAPHRESPONSE_HOME_DEVICE
+)
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE12.containing_type = (
+    _GETHOMEGRAPHRESPONSE_HOME_DEVICE
+)
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE15.containing_type = (
+    _GETHOMEGRAPHRESPONSE_HOME_DEVICE
+)
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE_HARDWARE.containing_type = (
+    _GETHOMEGRAPHRESPONSE_HOME_DEVICE
+)
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE18.containing_type = (
+    _GETHOMEGRAPHRESPONSE_HOME_DEVICE
+)
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5_MESSAGE1_MESSAGE2.containing_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5_MESSAGE1
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5_MESSAGE1.fields_by_name['message2'].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5_MESSAGE1_MESSAGE2
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5_MESSAGE1.fields_by_name[
+    "message2"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5_MESSAGE1_MESSAGE2
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5_MESSAGE1.containing_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5.fields_by_name['message1'].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5_MESSAGE1
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5.containing_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1.fields_by_name['message5'].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1.containing_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6.fields_by_name['message1'].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6.containing_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE.fields_by_name['message6'].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE.containing_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1.fields_by_name['value'].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1.containing_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20.fields_by_name['message1'].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20.containing_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE25.containing_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE_LINKEDUSER.containing_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE_STATE.containing_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30_MESSAGE2_MESSAGE2.containing_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30_MESSAGE2
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30_MESSAGE2.fields_by_name['message2'].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30_MESSAGE2_MESSAGE2
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30_MESSAGE2.containing_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30.fields_by_name['message2'].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30_MESSAGE2
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30.containing_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE34.containing_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE.fields_by_name['device_info'].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_DEVICEINFO
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE.fields_by_name['message12'].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE12
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE.fields_by_name['message15'].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE15
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE.fields_by_name['hardware'].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_HARDWARE
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE.fields_by_name['message18'].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE18
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE.fields_by_name['message20'].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE.fields_by_name['message25'].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE25
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE.fields_by_name['linked_users'].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_LINKEDUSER
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE.fields_by_name['states'].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_STATE
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE.fields_by_name['message30'].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30
-_GETHOMEGRAPHRESPONSE_HOME_DEVICE.fields_by_name['message34'].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE34
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5.fields_by_name[
+    "message1"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5_MESSAGE1
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5.containing_type = (
+    _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1
+)
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1.fields_by_name[
+    "message5"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1.containing_type = (
+    _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6
+)
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6.fields_by_name[
+    "message1"
+].message_type = (
+    _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1
+)
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6.containing_type = (
+    _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE
+)
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE.fields_by_name[
+    "message6"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE.containing_type = (
+    _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1
+)
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1.fields_by_name[
+    "value"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1.containing_type = (
+    _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20
+)
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20.fields_by_name[
+    "message1"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20.containing_type = (
+    _GETHOMEGRAPHRESPONSE_HOME_DEVICE
+)
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE25.containing_type = (
+    _GETHOMEGRAPHRESPONSE_HOME_DEVICE
+)
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE_LINKEDUSER.containing_type = (
+    _GETHOMEGRAPHRESPONSE_HOME_DEVICE
+)
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE_STATE.containing_type = (
+    _GETHOMEGRAPHRESPONSE_HOME_DEVICE
+)
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30_MESSAGE2_MESSAGE2.containing_type = (
+    _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30_MESSAGE2
+)
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30_MESSAGE2.fields_by_name[
+    "message2"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30_MESSAGE2_MESSAGE2
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30_MESSAGE2.containing_type = (
+    _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30
+)
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30.fields_by_name[
+    "message2"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30_MESSAGE2
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30.containing_type = (
+    _GETHOMEGRAPHRESPONSE_HOME_DEVICE
+)
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE34.containing_type = (
+    _GETHOMEGRAPHRESPONSE_HOME_DEVICE
+)
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE.fields_by_name[
+    "device_info"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_DEVICEINFO
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE.fields_by_name[
+    "message12"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE12
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE.fields_by_name[
+    "message15"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE15
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE.fields_by_name[
+    "hardware"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_HARDWARE
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE.fields_by_name[
+    "message18"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE18
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE.fields_by_name[
+    "message20"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE.fields_by_name[
+    "message25"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE25
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE.fields_by_name[
+    "linked_users"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_LINKEDUSER
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE.fields_by_name[
+    "states"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_STATE
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE.fields_by_name[
+    "message30"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30
+_GETHOMEGRAPHRESPONSE_HOME_DEVICE.fields_by_name[
+    "message34"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE34
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE.containing_type = _GETHOMEGRAPHRESPONSE_HOME
 _GETHOMEGRAPHRESPONSE_HOME_MESSAGE11.containing_type = _GETHOMEGRAPHRESPONSE_HOME
-_GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1_DEVICEINFO_PROJECTINFO.containing_type = _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1_DEVICEINFO
-_GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1_DEVICEINFO.fields_by_name['project_info'].message_type = _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1_DEVICEINFO_PROJECTINFO
-_GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1_DEVICEINFO.containing_type = _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1
-_GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1.fields_by_name['device_info'].message_type = _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1_DEVICEINFO
-_GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1.containing_type = _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13
-_GETHOMEGRAPHRESPONSE_HOME_MESSAGE13.fields_by_name['message1'].message_type = _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1
+_GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1_DEVICEINFO_PROJECTINFO.containing_type = (
+    _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1_DEVICEINFO
+)
+_GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1_DEVICEINFO.fields_by_name[
+    "project_info"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1_DEVICEINFO_PROJECTINFO
+_GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1_DEVICEINFO.containing_type = (
+    _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1
+)
+_GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1.fields_by_name[
+    "device_info"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1_DEVICEINFO
+_GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1.containing_type = (
+    _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13
+)
+_GETHOMEGRAPHRESPONSE_HOME_MESSAGE13.fields_by_name[
+    "message1"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1
 _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13.containing_type = _GETHOMEGRAPHRESPONSE_HOME
-_GETHOMEGRAPHRESPONSE_HOME_MESSAGE15_MESSAGE3_MESSAGE2.containing_type = _GETHOMEGRAPHRESPONSE_HOME_MESSAGE15_MESSAGE3
-_GETHOMEGRAPHRESPONSE_HOME_MESSAGE15_MESSAGE3.fields_by_name['message2'].message_type = _GETHOMEGRAPHRESPONSE_HOME_MESSAGE15_MESSAGE3_MESSAGE2
-_GETHOMEGRAPHRESPONSE_HOME_MESSAGE15_MESSAGE3.containing_type = _GETHOMEGRAPHRESPONSE_HOME_MESSAGE15
-_GETHOMEGRAPHRESPONSE_HOME_MESSAGE15.fields_by_name['message3'].message_type = _GETHOMEGRAPHRESPONSE_HOME_MESSAGE15_MESSAGE3
+_GETHOMEGRAPHRESPONSE_HOME_MESSAGE15_MESSAGE3_MESSAGE2.containing_type = (
+    _GETHOMEGRAPHRESPONSE_HOME_MESSAGE15_MESSAGE3
+)
+_GETHOMEGRAPHRESPONSE_HOME_MESSAGE15_MESSAGE3.fields_by_name[
+    "message2"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_MESSAGE15_MESSAGE3_MESSAGE2
+_GETHOMEGRAPHRESPONSE_HOME_MESSAGE15_MESSAGE3.containing_type = (
+    _GETHOMEGRAPHRESPONSE_HOME_MESSAGE15
+)
+_GETHOMEGRAPHRESPONSE_HOME_MESSAGE15.fields_by_name[
+    "message3"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_MESSAGE15_MESSAGE3
 _GETHOMEGRAPHRESPONSE_HOME_MESSAGE15.containing_type = _GETHOMEGRAPHRESPONSE_HOME
-_GETHOMEGRAPHRESPONSE_HOME.fields_by_name['location'].message_type = _GETHOMEGRAPHRESPONSE_HOME_LOCATION
-_GETHOMEGRAPHRESPONSE_HOME.fields_by_name['linked_users'].message_type = _GETHOMEGRAPHRESPONSE_HOME_LINKEDUSER
-_GETHOMEGRAPHRESPONSE_HOME.fields_by_name['rooms'].message_type = _GETHOMEGRAPHRESPONSE_HOME_ROOM
-_GETHOMEGRAPHRESPONSE_HOME.fields_by_name['devices'].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE
-_GETHOMEGRAPHRESPONSE_HOME.fields_by_name['message11'].message_type = _GETHOMEGRAPHRESPONSE_HOME_MESSAGE11
-_GETHOMEGRAPHRESPONSE_HOME.fields_by_name['message13'].message_type = _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13
-_GETHOMEGRAPHRESPONSE_HOME.fields_by_name['message15'].message_type = _GETHOMEGRAPHRESPONSE_HOME_MESSAGE15
+_GETHOMEGRAPHRESPONSE_HOME.fields_by_name[
+    "location"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_LOCATION
+_GETHOMEGRAPHRESPONSE_HOME.fields_by_name[
+    "linked_users"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_LINKEDUSER
+_GETHOMEGRAPHRESPONSE_HOME.fields_by_name[
+    "rooms"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_ROOM
+_GETHOMEGRAPHRESPONSE_HOME.fields_by_name[
+    "devices"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_DEVICE
+_GETHOMEGRAPHRESPONSE_HOME.fields_by_name[
+    "message11"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_MESSAGE11
+_GETHOMEGRAPHRESPONSE_HOME.fields_by_name[
+    "message13"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13
+_GETHOMEGRAPHRESPONSE_HOME.fields_by_name[
+    "message15"
+].message_type = _GETHOMEGRAPHRESPONSE_HOME_MESSAGE15
 _GETHOMEGRAPHRESPONSE_HOME.containing_type = _GETHOMEGRAPHRESPONSE
-_GETHOMEGRAPHRESPONSE_GROUP_DEVICEINFO_PROJECTINFO.containing_type = _GETHOMEGRAPHRESPONSE_GROUP_DEVICEINFO
-_GETHOMEGRAPHRESPONSE_GROUP_DEVICEINFO.fields_by_name['project_info'].message_type = _GETHOMEGRAPHRESPONSE_GROUP_DEVICEINFO_PROJECTINFO
+_GETHOMEGRAPHRESPONSE_GROUP_DEVICEINFO_PROJECTINFO.containing_type = (
+    _GETHOMEGRAPHRESPONSE_GROUP_DEVICEINFO
+)
+_GETHOMEGRAPHRESPONSE_GROUP_DEVICEINFO.fields_by_name[
+    "project_info"
+].message_type = _GETHOMEGRAPHRESPONSE_GROUP_DEVICEINFO_PROJECTINFO
 _GETHOMEGRAPHRESPONSE_GROUP_DEVICEINFO.containing_type = _GETHOMEGRAPHRESPONSE_GROUP
 _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE12.containing_type = _GETHOMEGRAPHRESPONSE_GROUP
 _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE15.containing_type = _GETHOMEGRAPHRESPONSE_GROUP
 _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE17.containing_type = _GETHOMEGRAPHRESPONSE_GROUP
 _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE18.containing_type = _GETHOMEGRAPHRESPONSE_GROUP
 _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE34.containing_type = _GETHOMEGRAPHRESPONSE_GROUP
-_GETHOMEGRAPHRESPONSE_GROUP.fields_by_name['device_info'].message_type = _GETHOMEGRAPHRESPONSE_GROUP_DEVICEINFO
-_GETHOMEGRAPHRESPONSE_GROUP.fields_by_name['message12'].message_type = _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE12
-_GETHOMEGRAPHRESPONSE_GROUP.fields_by_name['message15'].message_type = _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE15
-_GETHOMEGRAPHRESPONSE_GROUP.fields_by_name['message17'].message_type = _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE17
-_GETHOMEGRAPHRESPONSE_GROUP.fields_by_name['message18'].message_type = _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE18
-_GETHOMEGRAPHRESPONSE_GROUP.fields_by_name['message34'].message_type = _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE34
+_GETHOMEGRAPHRESPONSE_GROUP.fields_by_name[
+    "device_info"
+].message_type = _GETHOMEGRAPHRESPONSE_GROUP_DEVICEINFO
+_GETHOMEGRAPHRESPONSE_GROUP.fields_by_name[
+    "message12"
+].message_type = _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE12
+_GETHOMEGRAPHRESPONSE_GROUP.fields_by_name[
+    "message15"
+].message_type = _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE15
+_GETHOMEGRAPHRESPONSE_GROUP.fields_by_name[
+    "message17"
+].message_type = _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE17
+_GETHOMEGRAPHRESPONSE_GROUP.fields_by_name[
+    "message18"
+].message_type = _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE18
+_GETHOMEGRAPHRESPONSE_GROUP.fields_by_name[
+    "message34"
+].message_type = _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE34
 _GETHOMEGRAPHRESPONSE_GROUP.containing_type = _GETHOMEGRAPHRESPONSE
 _GETHOMEGRAPHRESPONSE_ROOMTYPE.containing_type = _GETHOMEGRAPHRESPONSE
 _GETHOMEGRAPHRESPONSE_DEVICETYPE.containing_type = _GETHOMEGRAPHRESPONSE
 _GETHOMEGRAPHRESPONSE_PROJECTTYPE.containing_type = _GETHOMEGRAPHRESPONSE
-_GETHOMEGRAPHRESPONSE_MESSAGE11_MESSAGE2.containing_type = _GETHOMEGRAPHRESPONSE_MESSAGE11
-_GETHOMEGRAPHRESPONSE_MESSAGE11.fields_by_name['message2'].message_type = _GETHOMEGRAPHRESPONSE_MESSAGE11_MESSAGE2
+_GETHOMEGRAPHRESPONSE_MESSAGE11_MESSAGE2.containing_type = (
+    _GETHOMEGRAPHRESPONSE_MESSAGE11
+)
+_GETHOMEGRAPHRESPONSE_MESSAGE11.fields_by_name[
+    "message2"
+].message_type = _GETHOMEGRAPHRESPONSE_MESSAGE11_MESSAGE2
 _GETHOMEGRAPHRESPONSE_MESSAGE11.containing_type = _GETHOMEGRAPHRESPONSE
 _GETHOMEGRAPHRESPONSE_LINKEDAPP.containing_type = _GETHOMEGRAPHRESPONSE
-_GETHOMEGRAPHRESPONSE.fields_by_name['home'].message_type = _GETHOMEGRAPHRESPONSE_HOME
-_GETHOMEGRAPHRESPONSE.fields_by_name['groups'].message_type = _GETHOMEGRAPHRESPONSE_GROUP
-_GETHOMEGRAPHRESPONSE.fields_by_name['room_types'].message_type = _GETHOMEGRAPHRESPONSE_ROOMTYPE
-_GETHOMEGRAPHRESPONSE.fields_by_name['device_types'].message_type = _GETHOMEGRAPHRESPONSE_DEVICETYPE
-_GETHOMEGRAPHRESPONSE.fields_by_name['project_types'].message_type = _GETHOMEGRAPHRESPONSE_PROJECTTYPE
-_GETHOMEGRAPHRESPONSE.fields_by_name['message11'].message_type = _GETHOMEGRAPHRESPONSE_MESSAGE11
-_GETHOMEGRAPHRESPONSE.fields_by_name['linked_apps'].message_type = _GETHOMEGRAPHRESPONSE_LINKEDAPP
-_GETASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO_PROJECTINFO.containing_type = _GETASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO
-_GETASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO.fields_by_name['project_info'].message_type = _GETASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO_PROJECTINFO
-_GETASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO.containing_type = _GETASSISTANTDEVICESETTINGSREQUEST
-_GETASSISTANTDEVICESETTINGSREQUEST.fields_by_name['device_info'].message_type = _GETASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO
-_GETASSISTANTDEVICESETTINGSRESPONSE_MESSAGE1.containing_type = _GETASSISTANTDEVICESETTINGSRESPONSE
-_GETASSISTANTDEVICESETTINGSRESPONSE.fields_by_name['message1'].message_type = _GETASSISTANTDEVICESETTINGSRESPONSE_MESSAGE1
-_UPDATEASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO_PROJECTINFO.containing_type = _UPDATEASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO
-_UPDATEASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO.fields_by_name['project_info'].message_type = _UPDATEASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO_PROJECTINFO
-_UPDATEASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO.containing_type = _UPDATEASSISTANTDEVICESETTINGSREQUEST
-_UPDATEASSISTANTDEVICESETTINGSREQUEST_UPDATEDATA_MESSAGE1.containing_type = _UPDATEASSISTANTDEVICESETTINGSREQUEST_UPDATEDATA
-_UPDATEASSISTANTDEVICESETTINGSREQUEST_UPDATEDATA.fields_by_name['message1'].message_type = _UPDATEASSISTANTDEVICESETTINGSREQUEST_UPDATEDATA_MESSAGE1
-_UPDATEASSISTANTDEVICESETTINGSREQUEST_UPDATEDATA.containing_type = _UPDATEASSISTANTDEVICESETTINGSREQUEST
-_UPDATEASSISTANTDEVICESETTINGSREQUEST.fields_by_name['device_info'].message_type = _UPDATEASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO
-_UPDATEASSISTANTDEVICESETTINGSREQUEST.fields_by_name['update_data'].message_type = _UPDATEASSISTANTDEVICESETTINGSREQUEST_UPDATEDATA
-DESCRIPTOR.message_types_by_name['None'] = _NONE
-DESCRIPTOR.message_types_by_name['GetAssistantRoutinesResponse'] = _GETASSISTANTROUTINESRESPONSE
-DESCRIPTOR.message_types_by_name['GetHomeGraphRequest'] = _GETHOMEGRAPHREQUEST
-DESCRIPTOR.message_types_by_name['GetHomeGraphResponse'] = _GETHOMEGRAPHRESPONSE
-DESCRIPTOR.message_types_by_name['GetAssistantDeviceSettingsRequest'] = _GETASSISTANTDEVICESETTINGSREQUEST
-DESCRIPTOR.message_types_by_name['GetAssistantDeviceSettingsResponse'] = _GETASSISTANTDEVICESETTINGSRESPONSE
-DESCRIPTOR.message_types_by_name['UpdateAssistantDeviceSettingsRequest'] = _UPDATEASSISTANTDEVICESETTINGSREQUEST
-DESCRIPTOR.message_types_by_name['UpdateAssistantDeviceSettingsResponse'] = _UPDATEASSISTANTDEVICESETTINGSRESPONSE
+_GETHOMEGRAPHRESPONSE.fields_by_name["home"].message_type = _GETHOMEGRAPHRESPONSE_HOME
+_GETHOMEGRAPHRESPONSE.fields_by_name[
+    "groups"
+].message_type = _GETHOMEGRAPHRESPONSE_GROUP
+_GETHOMEGRAPHRESPONSE.fields_by_name[
+    "room_types"
+].message_type = _GETHOMEGRAPHRESPONSE_ROOMTYPE
+_GETHOMEGRAPHRESPONSE.fields_by_name[
+    "device_types"
+].message_type = _GETHOMEGRAPHRESPONSE_DEVICETYPE
+_GETHOMEGRAPHRESPONSE.fields_by_name[
+    "project_types"
+].message_type = _GETHOMEGRAPHRESPONSE_PROJECTTYPE
+_GETHOMEGRAPHRESPONSE.fields_by_name[
+    "message11"
+].message_type = _GETHOMEGRAPHRESPONSE_MESSAGE11
+_GETHOMEGRAPHRESPONSE.fields_by_name[
+    "linked_apps"
+].message_type = _GETHOMEGRAPHRESPONSE_LINKEDAPP
+_GETASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO_PROJECTINFO.containing_type = (
+    _GETASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO
+)
+_GETASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO.fields_by_name[
+    "project_info"
+].message_type = _GETASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO_PROJECTINFO
+_GETASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO.containing_type = (
+    _GETASSISTANTDEVICESETTINGSREQUEST
+)
+_GETASSISTANTDEVICESETTINGSREQUEST.fields_by_name[
+    "device_info"
+].message_type = _GETASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO
+_GETASSISTANTDEVICESETTINGSRESPONSE_MESSAGE1.containing_type = (
+    _GETASSISTANTDEVICESETTINGSRESPONSE
+)
+_GETASSISTANTDEVICESETTINGSRESPONSE.fields_by_name[
+    "message1"
+].message_type = _GETASSISTANTDEVICESETTINGSRESPONSE_MESSAGE1
+_UPDATEASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO_PROJECTINFO.containing_type = (
+    _UPDATEASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO
+)
+_UPDATEASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO.fields_by_name[
+    "project_info"
+].message_type = _UPDATEASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO_PROJECTINFO
+_UPDATEASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO.containing_type = (
+    _UPDATEASSISTANTDEVICESETTINGSREQUEST
+)
+_UPDATEASSISTANTDEVICESETTINGSREQUEST_UPDATEDATA_MESSAGE1.containing_type = (
+    _UPDATEASSISTANTDEVICESETTINGSREQUEST_UPDATEDATA
+)
+_UPDATEASSISTANTDEVICESETTINGSREQUEST_UPDATEDATA.fields_by_name[
+    "message1"
+].message_type = _UPDATEASSISTANTDEVICESETTINGSREQUEST_UPDATEDATA_MESSAGE1
+_UPDATEASSISTANTDEVICESETTINGSREQUEST_UPDATEDATA.containing_type = (
+    _UPDATEASSISTANTDEVICESETTINGSREQUEST
+)
+_UPDATEASSISTANTDEVICESETTINGSREQUEST.fields_by_name[
+    "device_info"
+].message_type = _UPDATEASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO
+_UPDATEASSISTANTDEVICESETTINGSREQUEST.fields_by_name[
+    "update_data"
+].message_type = _UPDATEASSISTANTDEVICESETTINGSREQUEST_UPDATEDATA
+DESCRIPTOR.message_types_by_name["None"] = _NONE
+DESCRIPTOR.message_types_by_name[
+    "GetAssistantRoutinesResponse"
+] = _GETASSISTANTROUTINESRESPONSE
+DESCRIPTOR.message_types_by_name["GetHomeGraphRequest"] = _GETHOMEGRAPHREQUEST
+DESCRIPTOR.message_types_by_name["GetHomeGraphResponse"] = _GETHOMEGRAPHRESPONSE
+DESCRIPTOR.message_types_by_name[
+    "GetAssistantDeviceSettingsRequest"
+] = _GETASSISTANTDEVICESETTINGSREQUEST
+DESCRIPTOR.message_types_by_name[
+    "GetAssistantDeviceSettingsResponse"
+] = _GETASSISTANTDEVICESETTINGSRESPONSE
+DESCRIPTOR.message_types_by_name[
+    "UpdateAssistantDeviceSettingsRequest"
+] = _UPDATEASSISTANTDEVICESETTINGSREQUEST
+DESCRIPTOR.message_types_by_name[
+    "UpdateAssistantDeviceSettingsResponse"
+] = _UPDATEASSISTANTDEVICESETTINGSRESPONSE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
-globals()['None'] = _reflection.GeneratedProtocolMessageType('None', (_message.Message,), {
-  'DESCRIPTOR' : _NONE,
-  '__module__' : 'google.internal.home.foyer.v1_pb2'
-  # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.None)
-  })
-_sym_db.RegisterMessage(globals()['None'])
+globals()["None"] = _reflection.GeneratedProtocolMessageType(
+    "None",
+    (_message.Message,),
+    {
+        "DESCRIPTOR": _NONE,
+        "__module__": "google.internal.home.foyer.v1_pb2"
+        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.None)
+    },
+)
+_sym_db.RegisterMessage(globals()["None"])
 
-GetAssistantRoutinesResponse = _reflection.GeneratedProtocolMessageType('GetAssistantRoutinesResponse', (_message.Message,), {
-
-  'Part1' : _reflection.GeneratedProtocolMessageType('Part1', (_message.Message,), {
-
-    'WorkFlow' : _reflection.GeneratedProtocolMessageType('WorkFlow', (_message.Message,), {
-
-      'WF_Sub1' : _reflection.GeneratedProtocolMessageType('WF_Sub1', (_message.Message,), {
-
-        'WF_Sub1_Sub1' : _reflection.GeneratedProtocolMessageType('WF_Sub1_Sub1', (_message.Message,), {
-
-          'Routine' : _reflection.GeneratedProtocolMessageType('Routine', (_message.Message,), {
-            'DESCRIPTOR' : _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1_WF_SUB1_SUB1_ROUTINE,
-            '__module__' : 'google.internal.home.foyer.v1_pb2'
-            # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.WF_Sub1_Sub1.Routine)
-            })
-          ,
-          'DESCRIPTOR' : _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1_WF_SUB1_SUB1,
-          '__module__' : 'google.internal.home.foyer.v1_pb2'
-          # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.WF_Sub1_Sub1)
-          })
-        ,
-        'DESCRIPTOR' : _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1,
-        '__module__' : 'google.internal.home.foyer.v1_pb2'
-        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1)
-        })
-      ,
-      'DESCRIPTOR' : _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW,
-      '__module__' : 'google.internal.home.foyer.v1_pb2'
-      # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow)
-      })
-    ,
-    'DESCRIPTOR' : _GETASSISTANTROUTINESRESPONSE_PART1,
-    '__module__' : 'google.internal.home.foyer.v1_pb2'
-    # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1)
-    })
-  ,
-
-  'Part2' : _reflection.GeneratedProtocolMessageType('Part2', (_message.Message,), {
-    'DESCRIPTOR' : _GETASSISTANTROUTINESRESPONSE_PART2,
-    '__module__' : 'google.internal.home.foyer.v1_pb2'
-    # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part2)
-    })
-  ,
-  'DESCRIPTOR' : _GETASSISTANTROUTINESRESPONSE,
-  '__module__' : 'google.internal.home.foyer.v1_pb2'
-  # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetAssistantRoutinesResponse)
-  })
+GetAssistantRoutinesResponse = _reflection.GeneratedProtocolMessageType(
+    "GetAssistantRoutinesResponse",
+    (_message.Message,),
+    {
+        "Part1": _reflection.GeneratedProtocolMessageType(
+            "Part1",
+            (_message.Message,),
+            {
+                "WorkFlow": _reflection.GeneratedProtocolMessageType(
+                    "WorkFlow",
+                    (_message.Message,),
+                    {
+                        "WF_Sub1": _reflection.GeneratedProtocolMessageType(
+                            "WF_Sub1",
+                            (_message.Message,),
+                            {
+                                "WF_Sub1_Sub1": _reflection.GeneratedProtocolMessageType(
+                                    "WF_Sub1_Sub1",
+                                    (_message.Message,),
+                                    {
+                                        "Routine": _reflection.GeneratedProtocolMessageType(
+                                            "Routine",
+                                            (_message.Message,),
+                                            {
+                                                "DESCRIPTOR": _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1_WF_SUB1_SUB1_ROUTINE,
+                                                "__module__": "google.internal.home.foyer.v1_pb2"
+                                                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.WF_Sub1_Sub1.Routine)
+                                            },
+                                        ),
+                                        "DESCRIPTOR": _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1_WF_SUB1_SUB1,
+                                        "__module__": "google.internal.home.foyer.v1_pb2"
+                                        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.WF_Sub1_Sub1)
+                                    },
+                                ),
+                                "DESCRIPTOR": _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1,
+                                "__module__": "google.internal.home.foyer.v1_pb2"
+                                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1)
+                            },
+                        ),
+                        "DESCRIPTOR": _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW,
+                        "__module__": "google.internal.home.foyer.v1_pb2"
+                        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow)
+                    },
+                ),
+                "DESCRIPTOR": _GETASSISTANTROUTINESRESPONSE_PART1,
+                "__module__": "google.internal.home.foyer.v1_pb2"
+                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1)
+            },
+        ),
+        "Part2": _reflection.GeneratedProtocolMessageType(
+            "Part2",
+            (_message.Message,),
+            {
+                "DESCRIPTOR": _GETASSISTANTROUTINESRESPONSE_PART2,
+                "__module__": "google.internal.home.foyer.v1_pb2"
+                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part2)
+            },
+        ),
+        "DESCRIPTOR": _GETASSISTANTROUTINESRESPONSE,
+        "__module__": "google.internal.home.foyer.v1_pb2"
+        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetAssistantRoutinesResponse)
+    },
+)
 _sym_db.RegisterMessage(GetAssistantRoutinesResponse)
 _sym_db.RegisterMessage(GetAssistantRoutinesResponse.Part1)
 _sym_db.RegisterMessage(GetAssistantRoutinesResponse.Part1.WorkFlow)
 _sym_db.RegisterMessage(GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1)
-_sym_db.RegisterMessage(GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.WF_Sub1_Sub1)
-_sym_db.RegisterMessage(GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.WF_Sub1_Sub1.Routine)
+_sym_db.RegisterMessage(
+    GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.WF_Sub1_Sub1
+)
+_sym_db.RegisterMessage(
+    GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.WF_Sub1_Sub1.Routine
+)
 _sym_db.RegisterMessage(GetAssistantRoutinesResponse.Part2)
 
-GetHomeGraphRequest = _reflection.GeneratedProtocolMessageType('GetHomeGraphRequest', (_message.Message,), {
-  'DESCRIPTOR' : _GETHOMEGRAPHREQUEST,
-  '__module__' : 'google.internal.home.foyer.v1_pb2'
-  # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphRequest)
-  })
+GetHomeGraphRequest = _reflection.GeneratedProtocolMessageType(
+    "GetHomeGraphRequest",
+    (_message.Message,),
+    {
+        "DESCRIPTOR": _GETHOMEGRAPHREQUEST,
+        "__module__": "google.internal.home.foyer.v1_pb2"
+        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphRequest)
+    },
+)
 _sym_db.RegisterMessage(GetHomeGraphRequest)
 
-GetHomeGraphResponse = _reflection.GeneratedProtocolMessageType('GetHomeGraphResponse', (_message.Message,), {
-
-  'Home' : _reflection.GeneratedProtocolMessageType('Home', (_message.Message,), {
-
-    'Location' : _reflection.GeneratedProtocolMessageType('Location', (_message.Message,), {
-
-      'Coordinates' : _reflection.GeneratedProtocolMessageType('Coordinates', (_message.Message,), {
-        'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_LOCATION_COORDINATES,
-        '__module__' : 'google.internal.home.foyer.v1_pb2'
-        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Location.Coordinates)
-        })
-      ,
-      'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_LOCATION,
-      '__module__' : 'google.internal.home.foyer.v1_pb2'
-      # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Location)
-      })
-    ,
-
-    'LinkedUser' : _reflection.GeneratedProtocolMessageType('LinkedUser', (_message.Message,), {
-      'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_LINKEDUSER,
-      '__module__' : 'google.internal.home.foyer.v1_pb2'
-      # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.LinkedUser)
-      })
-    ,
-
-    'Room' : _reflection.GeneratedProtocolMessageType('Room', (_message.Message,), {
-
-      'Category' : _reflection.GeneratedProtocolMessageType('Category', (_message.Message,), {
-        'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_ROOM_CATEGORY,
-        '__module__' : 'google.internal.home.foyer.v1_pb2'
-        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Room.Category)
-        })
-      ,
-      'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_ROOM,
-      '__module__' : 'google.internal.home.foyer.v1_pb2'
-      # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Room)
-      })
-    ,
-
-    'Device' : _reflection.GeneratedProtocolMessageType('Device', (_message.Message,), {
-
-      'DeviceInfo' : _reflection.GeneratedProtocolMessageType('DeviceInfo', (_message.Message,), {
-
-        'ProjectInfo' : _reflection.GeneratedProtocolMessageType('ProjectInfo', (_message.Message,), {
-          'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_DEVICE_DEVICEINFO_PROJECTINFO,
-          '__module__' : 'google.internal.home.foyer.v1_pb2'
-          # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.DeviceInfo.ProjectInfo)
-          })
-        ,
-        'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_DEVICE_DEVICEINFO,
-        '__module__' : 'google.internal.home.foyer.v1_pb2'
-        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.DeviceInfo)
-        })
-      ,
-
-      'Message12' : _reflection.GeneratedProtocolMessageType('Message12', (_message.Message,), {
-        'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE12,
-        '__module__' : 'google.internal.home.foyer.v1_pb2'
-        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message12)
-        })
-      ,
-
-      'Message15' : _reflection.GeneratedProtocolMessageType('Message15', (_message.Message,), {
-        'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE15,
-        '__module__' : 'google.internal.home.foyer.v1_pb2'
-        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message15)
-        })
-      ,
-
-      'Hardware' : _reflection.GeneratedProtocolMessageType('Hardware', (_message.Message,), {
-        'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_DEVICE_HARDWARE,
-        '__module__' : 'google.internal.home.foyer.v1_pb2'
-        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Hardware)
-        })
-      ,
-
-      'Message18' : _reflection.GeneratedProtocolMessageType('Message18', (_message.Message,), {
-        'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE18,
-        '__module__' : 'google.internal.home.foyer.v1_pb2'
-        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message18)
-        })
-      ,
-
-      'Message20' : _reflection.GeneratedProtocolMessageType('Message20', (_message.Message,), {
-
-        'Message1' : _reflection.GeneratedProtocolMessageType('Message1', (_message.Message,), {
-
-          'Value' : _reflection.GeneratedProtocolMessageType('Value', (_message.Message,), {
-
-            'Message6' : _reflection.GeneratedProtocolMessageType('Message6', (_message.Message,), {
-
-              'Message1' : _reflection.GeneratedProtocolMessageType('Message1', (_message.Message,), {
-
-                'Message5' : _reflection.GeneratedProtocolMessageType('Message5', (_message.Message,), {
-
-                  'Message1' : _reflection.GeneratedProtocolMessageType('Message1', (_message.Message,), {
-
-                    'Message2' : _reflection.GeneratedProtocolMessageType('Message2', (_message.Message,), {
-                      'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5_MESSAGE1_MESSAGE2,
-                      '__module__' : 'google.internal.home.foyer.v1_pb2'
-                      # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5.Message1.Message2)
-                      })
-                    ,
-                    'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5_MESSAGE1,
-                    '__module__' : 'google.internal.home.foyer.v1_pb2'
-                    # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5.Message1)
-                    })
-                  ,
-                  'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5,
-                  '__module__' : 'google.internal.home.foyer.v1_pb2'
-                  # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5)
-                  })
-                ,
-                'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1,
-                '__module__' : 'google.internal.home.foyer.v1_pb2'
-                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1)
-                })
-              ,
-              'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6,
-              '__module__' : 'google.internal.home.foyer.v1_pb2'
-              # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6)
-              })
-            ,
-            'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE,
-            '__module__' : 'google.internal.home.foyer.v1_pb2'
-            # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value)
-            })
-          ,
-          'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1,
-          '__module__' : 'google.internal.home.foyer.v1_pb2'
-          # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1)
-          })
-        ,
-        'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20,
-        '__module__' : 'google.internal.home.foyer.v1_pb2'
-        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20)
-        })
-      ,
-
-      'Message25' : _reflection.GeneratedProtocolMessageType('Message25', (_message.Message,), {
-        'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE25,
-        '__module__' : 'google.internal.home.foyer.v1_pb2'
-        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message25)
-        })
-      ,
-
-      'LinkedUser' : _reflection.GeneratedProtocolMessageType('LinkedUser', (_message.Message,), {
-        'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_DEVICE_LINKEDUSER,
-        '__module__' : 'google.internal.home.foyer.v1_pb2'
-        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.LinkedUser)
-        })
-      ,
-
-      'State' : _reflection.GeneratedProtocolMessageType('State', (_message.Message,), {
-        'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_DEVICE_STATE,
-        '__module__' : 'google.internal.home.foyer.v1_pb2'
-        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.State)
-        })
-      ,
-
-      'Message30' : _reflection.GeneratedProtocolMessageType('Message30', (_message.Message,), {
-
-        'Message2' : _reflection.GeneratedProtocolMessageType('Message2', (_message.Message,), {
-
-          'Message2' : _reflection.GeneratedProtocolMessageType('Message2', (_message.Message,), {
-            'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30_MESSAGE2_MESSAGE2,
-            '__module__' : 'google.internal.home.foyer.v1_pb2'
-            # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30.Message2.Message2)
-            })
-          ,
-          'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30_MESSAGE2,
-          '__module__' : 'google.internal.home.foyer.v1_pb2'
-          # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30.Message2)
-          })
-        ,
-        'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30,
-        '__module__' : 'google.internal.home.foyer.v1_pb2'
-        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30)
-        })
-      ,
-
-      'Message34' : _reflection.GeneratedProtocolMessageType('Message34', (_message.Message,), {
-        'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE34,
-        '__module__' : 'google.internal.home.foyer.v1_pb2'
-        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message34)
-        })
-      ,
-      'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_DEVICE,
-      '__module__' : 'google.internal.home.foyer.v1_pb2'
-      # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device)
-      })
-    ,
-
-    'Message11' : _reflection.GeneratedProtocolMessageType('Message11', (_message.Message,), {
-      'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_MESSAGE11,
-      '__module__' : 'google.internal.home.foyer.v1_pb2'
-      # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message11)
-      })
-    ,
-
-    'Message13' : _reflection.GeneratedProtocolMessageType('Message13', (_message.Message,), {
-
-      'Message1' : _reflection.GeneratedProtocolMessageType('Message1', (_message.Message,), {
-
-        'DeviceInfo' : _reflection.GeneratedProtocolMessageType('DeviceInfo', (_message.Message,), {
-
-          'ProjectInfo' : _reflection.GeneratedProtocolMessageType('ProjectInfo', (_message.Message,), {
-            'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1_DEVICEINFO_PROJECTINFO,
-            '__module__' : 'google.internal.home.foyer.v1_pb2'
-            # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1.DeviceInfo.ProjectInfo)
-            })
-          ,
-          'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1_DEVICEINFO,
-          '__module__' : 'google.internal.home.foyer.v1_pb2'
-          # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1.DeviceInfo)
-          })
-        ,
-        'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1,
-        '__module__' : 'google.internal.home.foyer.v1_pb2'
-        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1)
-        })
-      ,
-      'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13,
-      '__module__' : 'google.internal.home.foyer.v1_pb2'
-      # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13)
-      })
-    ,
-
-    'Message15' : _reflection.GeneratedProtocolMessageType('Message15', (_message.Message,), {
-
-      'Message3' : _reflection.GeneratedProtocolMessageType('Message3', (_message.Message,), {
-
-        'Message2' : _reflection.GeneratedProtocolMessageType('Message2', (_message.Message,), {
-          'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_MESSAGE15_MESSAGE3_MESSAGE2,
-          '__module__' : 'google.internal.home.foyer.v1_pb2'
-          # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15.Message3.Message2)
-          })
-        ,
-        'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_MESSAGE15_MESSAGE3,
-        '__module__' : 'google.internal.home.foyer.v1_pb2'
-        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15.Message3)
-        })
-      ,
-      'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME_MESSAGE15,
-      '__module__' : 'google.internal.home.foyer.v1_pb2'
-      # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15)
-      })
-    ,
-    'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_HOME,
-    '__module__' : 'google.internal.home.foyer.v1_pb2'
-    # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home)
-    })
-  ,
-
-  'Group' : _reflection.GeneratedProtocolMessageType('Group', (_message.Message,), {
-
-    'DeviceInfo' : _reflection.GeneratedProtocolMessageType('DeviceInfo', (_message.Message,), {
-
-      'ProjectInfo' : _reflection.GeneratedProtocolMessageType('ProjectInfo', (_message.Message,), {
-        'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_GROUP_DEVICEINFO_PROJECTINFO,
-        '__module__' : 'google.internal.home.foyer.v1_pb2'
-        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Group.DeviceInfo.ProjectInfo)
-        })
-      ,
-      'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_GROUP_DEVICEINFO,
-      '__module__' : 'google.internal.home.foyer.v1_pb2'
-      # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Group.DeviceInfo)
-      })
-    ,
-
-    'Message12' : _reflection.GeneratedProtocolMessageType('Message12', (_message.Message,), {
-      'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE12,
-      '__module__' : 'google.internal.home.foyer.v1_pb2'
-      # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message12)
-      })
-    ,
-
-    'Message15' : _reflection.GeneratedProtocolMessageType('Message15', (_message.Message,), {
-      'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE15,
-      '__module__' : 'google.internal.home.foyer.v1_pb2'
-      # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message15)
-      })
-    ,
-
-    'Message17' : _reflection.GeneratedProtocolMessageType('Message17', (_message.Message,), {
-      'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE17,
-      '__module__' : 'google.internal.home.foyer.v1_pb2'
-      # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message17)
-      })
-    ,
-
-    'Message18' : _reflection.GeneratedProtocolMessageType('Message18', (_message.Message,), {
-      'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE18,
-      '__module__' : 'google.internal.home.foyer.v1_pb2'
-      # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message18)
-      })
-    ,
-
-    'Message34' : _reflection.GeneratedProtocolMessageType('Message34', (_message.Message,), {
-      'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE34,
-      '__module__' : 'google.internal.home.foyer.v1_pb2'
-      # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message34)
-      })
-    ,
-    'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_GROUP,
-    '__module__' : 'google.internal.home.foyer.v1_pb2'
-    # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Group)
-    })
-  ,
-
-  'RoomType' : _reflection.GeneratedProtocolMessageType('RoomType', (_message.Message,), {
-    'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_ROOMTYPE,
-    '__module__' : 'google.internal.home.foyer.v1_pb2'
-    # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.RoomType)
-    })
-  ,
-
-  'DeviceType' : _reflection.GeneratedProtocolMessageType('DeviceType', (_message.Message,), {
-    'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_DEVICETYPE,
-    '__module__' : 'google.internal.home.foyer.v1_pb2'
-    # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.DeviceType)
-    })
-  ,
-
-  'ProjectType' : _reflection.GeneratedProtocolMessageType('ProjectType', (_message.Message,), {
-    'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_PROJECTTYPE,
-    '__module__' : 'google.internal.home.foyer.v1_pb2'
-    # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.ProjectType)
-    })
-  ,
-
-  'Message11' : _reflection.GeneratedProtocolMessageType('Message11', (_message.Message,), {
-
-    'Message2' : _reflection.GeneratedProtocolMessageType('Message2', (_message.Message,), {
-      'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_MESSAGE11_MESSAGE2,
-      '__module__' : 'google.internal.home.foyer.v1_pb2'
-      # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Message11.Message2)
-      })
-    ,
-    'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_MESSAGE11,
-    '__module__' : 'google.internal.home.foyer.v1_pb2'
-    # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Message11)
-    })
-  ,
-
-  'LinkedApp' : _reflection.GeneratedProtocolMessageType('LinkedApp', (_message.Message,), {
-    'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE_LINKEDAPP,
-    '__module__' : 'google.internal.home.foyer.v1_pb2'
-    # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.LinkedApp)
-    })
-  ,
-  'DESCRIPTOR' : _GETHOMEGRAPHRESPONSE,
-  '__module__' : 'google.internal.home.foyer.v1_pb2'
-  # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse)
-  })
+GetHomeGraphResponse = _reflection.GeneratedProtocolMessageType(
+    "GetHomeGraphResponse",
+    (_message.Message,),
+    {
+        "Home": _reflection.GeneratedProtocolMessageType(
+            "Home",
+            (_message.Message,),
+            {
+                "Location": _reflection.GeneratedProtocolMessageType(
+                    "Location",
+                    (_message.Message,),
+                    {
+                        "Coordinates": _reflection.GeneratedProtocolMessageType(
+                            "Coordinates",
+                            (_message.Message,),
+                            {
+                                "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_LOCATION_COORDINATES,
+                                "__module__": "google.internal.home.foyer.v1_pb2"
+                                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Location.Coordinates)
+                            },
+                        ),
+                        "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_LOCATION,
+                        "__module__": "google.internal.home.foyer.v1_pb2"
+                        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Location)
+                    },
+                ),
+                "LinkedUser": _reflection.GeneratedProtocolMessageType(
+                    "LinkedUser",
+                    (_message.Message,),
+                    {
+                        "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_LINKEDUSER,
+                        "__module__": "google.internal.home.foyer.v1_pb2"
+                        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.LinkedUser)
+                    },
+                ),
+                "Room": _reflection.GeneratedProtocolMessageType(
+                    "Room",
+                    (_message.Message,),
+                    {
+                        "Category": _reflection.GeneratedProtocolMessageType(
+                            "Category",
+                            (_message.Message,),
+                            {
+                                "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_ROOM_CATEGORY,
+                                "__module__": "google.internal.home.foyer.v1_pb2"
+                                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Room.Category)
+                            },
+                        ),
+                        "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_ROOM,
+                        "__module__": "google.internal.home.foyer.v1_pb2"
+                        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Room)
+                    },
+                ),
+                "Device": _reflection.GeneratedProtocolMessageType(
+                    "Device",
+                    (_message.Message,),
+                    {
+                        "DeviceInfo": _reflection.GeneratedProtocolMessageType(
+                            "DeviceInfo",
+                            (_message.Message,),
+                            {
+                                "ProjectInfo": _reflection.GeneratedProtocolMessageType(
+                                    "ProjectInfo",
+                                    (_message.Message,),
+                                    {
+                                        "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_DEVICE_DEVICEINFO_PROJECTINFO,
+                                        "__module__": "google.internal.home.foyer.v1_pb2"
+                                        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.DeviceInfo.ProjectInfo)
+                                    },
+                                ),
+                                "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_DEVICE_DEVICEINFO,
+                                "__module__": "google.internal.home.foyer.v1_pb2"
+                                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.DeviceInfo)
+                            },
+                        ),
+                        "Message12": _reflection.GeneratedProtocolMessageType(
+                            "Message12",
+                            (_message.Message,),
+                            {
+                                "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE12,
+                                "__module__": "google.internal.home.foyer.v1_pb2"
+                                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message12)
+                            },
+                        ),
+                        "Message15": _reflection.GeneratedProtocolMessageType(
+                            "Message15",
+                            (_message.Message,),
+                            {
+                                "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE15,
+                                "__module__": "google.internal.home.foyer.v1_pb2"
+                                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message15)
+                            },
+                        ),
+                        "Hardware": _reflection.GeneratedProtocolMessageType(
+                            "Hardware",
+                            (_message.Message,),
+                            {
+                                "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_DEVICE_HARDWARE,
+                                "__module__": "google.internal.home.foyer.v1_pb2"
+                                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Hardware)
+                            },
+                        ),
+                        "Message18": _reflection.GeneratedProtocolMessageType(
+                            "Message18",
+                            (_message.Message,),
+                            {
+                                "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE18,
+                                "__module__": "google.internal.home.foyer.v1_pb2"
+                                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message18)
+                            },
+                        ),
+                        "Message20": _reflection.GeneratedProtocolMessageType(
+                            "Message20",
+                            (_message.Message,),
+                            {
+                                "Message1": _reflection.GeneratedProtocolMessageType(
+                                    "Message1",
+                                    (_message.Message,),
+                                    {
+                                        "Value": _reflection.GeneratedProtocolMessageType(
+                                            "Value",
+                                            (_message.Message,),
+                                            {
+                                                "Message6": _reflection.GeneratedProtocolMessageType(
+                                                    "Message6",
+                                                    (_message.Message,),
+                                                    {
+                                                        "Message1": _reflection.GeneratedProtocolMessageType(
+                                                            "Message1",
+                                                            (_message.Message,),
+                                                            {
+                                                                "Message5": _reflection.GeneratedProtocolMessageType(
+                                                                    "Message5",
+                                                                    (_message.Message,),
+                                                                    {
+                                                                        "Message1": _reflection.GeneratedProtocolMessageType(
+                                                                            "Message1",
+                                                                            (
+                                                                                _message.Message,
+                                                                            ),
+                                                                            {
+                                                                                "Message2": _reflection.GeneratedProtocolMessageType(
+                                                                                    "Message2",
+                                                                                    (
+                                                                                        _message.Message,
+                                                                                    ),
+                                                                                    {
+                                                                                        "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5_MESSAGE1_MESSAGE2,
+                                                                                        "__module__": "google.internal.home.foyer.v1_pb2"
+                                                                                        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5.Message1.Message2)
+                                                                                    },
+                                                                                ),
+                                                                                "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5_MESSAGE1,
+                                                                                "__module__": "google.internal.home.foyer.v1_pb2"
+                                                                                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5.Message1)
+                                                                            },
+                                                                        ),
+                                                                        "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5,
+                                                                        "__module__": "google.internal.home.foyer.v1_pb2"
+                                                                        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5)
+                                                                    },
+                                                                ),
+                                                                "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1,
+                                                                "__module__": "google.internal.home.foyer.v1_pb2"
+                                                                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1)
+                                                            },
+                                                        ),
+                                                        "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6,
+                                                        "__module__": "google.internal.home.foyer.v1_pb2"
+                                                        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6)
+                                                    },
+                                                ),
+                                                "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE,
+                                                "__module__": "google.internal.home.foyer.v1_pb2"
+                                                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value)
+                                            },
+                                        ),
+                                        "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1,
+                                        "__module__": "google.internal.home.foyer.v1_pb2"
+                                        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1)
+                                    },
+                                ),
+                                "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20,
+                                "__module__": "google.internal.home.foyer.v1_pb2"
+                                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20)
+                            },
+                        ),
+                        "Message25": _reflection.GeneratedProtocolMessageType(
+                            "Message25",
+                            (_message.Message,),
+                            {
+                                "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE25,
+                                "__module__": "google.internal.home.foyer.v1_pb2"
+                                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message25)
+                            },
+                        ),
+                        "LinkedUser": _reflection.GeneratedProtocolMessageType(
+                            "LinkedUser",
+                            (_message.Message,),
+                            {
+                                "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_DEVICE_LINKEDUSER,
+                                "__module__": "google.internal.home.foyer.v1_pb2"
+                                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.LinkedUser)
+                            },
+                        ),
+                        "State": _reflection.GeneratedProtocolMessageType(
+                            "State",
+                            (_message.Message,),
+                            {
+                                "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_DEVICE_STATE,
+                                "__module__": "google.internal.home.foyer.v1_pb2"
+                                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.State)
+                            },
+                        ),
+                        "Message30": _reflection.GeneratedProtocolMessageType(
+                            "Message30",
+                            (_message.Message,),
+                            {
+                                "Message2": _reflection.GeneratedProtocolMessageType(
+                                    "Message2",
+                                    (_message.Message,),
+                                    {
+                                        "Message2": _reflection.GeneratedProtocolMessageType(
+                                            "Message2",
+                                            (_message.Message,),
+                                            {
+                                                "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30_MESSAGE2_MESSAGE2,
+                                                "__module__": "google.internal.home.foyer.v1_pb2"
+                                                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30.Message2.Message2)
+                                            },
+                                        ),
+                                        "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30_MESSAGE2,
+                                        "__module__": "google.internal.home.foyer.v1_pb2"
+                                        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30.Message2)
+                                    },
+                                ),
+                                "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30,
+                                "__module__": "google.internal.home.foyer.v1_pb2"
+                                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30)
+                            },
+                        ),
+                        "Message34": _reflection.GeneratedProtocolMessageType(
+                            "Message34",
+                            (_message.Message,),
+                            {
+                                "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE34,
+                                "__module__": "google.internal.home.foyer.v1_pb2"
+                                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message34)
+                            },
+                        ),
+                        "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_DEVICE,
+                        "__module__": "google.internal.home.foyer.v1_pb2"
+                        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device)
+                    },
+                ),
+                "Message11": _reflection.GeneratedProtocolMessageType(
+                    "Message11",
+                    (_message.Message,),
+                    {
+                        "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_MESSAGE11,
+                        "__module__": "google.internal.home.foyer.v1_pb2"
+                        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message11)
+                    },
+                ),
+                "Message13": _reflection.GeneratedProtocolMessageType(
+                    "Message13",
+                    (_message.Message,),
+                    {
+                        "Message1": _reflection.GeneratedProtocolMessageType(
+                            "Message1",
+                            (_message.Message,),
+                            {
+                                "DeviceInfo": _reflection.GeneratedProtocolMessageType(
+                                    "DeviceInfo",
+                                    (_message.Message,),
+                                    {
+                                        "ProjectInfo": _reflection.GeneratedProtocolMessageType(
+                                            "ProjectInfo",
+                                            (_message.Message,),
+                                            {
+                                                "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1_DEVICEINFO_PROJECTINFO,
+                                                "__module__": "google.internal.home.foyer.v1_pb2"
+                                                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1.DeviceInfo.ProjectInfo)
+                                            },
+                                        ),
+                                        "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1_DEVICEINFO,
+                                        "__module__": "google.internal.home.foyer.v1_pb2"
+                                        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1.DeviceInfo)
+                                    },
+                                ),
+                                "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1,
+                                "__module__": "google.internal.home.foyer.v1_pb2"
+                                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1)
+                            },
+                        ),
+                        "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13,
+                        "__module__": "google.internal.home.foyer.v1_pb2"
+                        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13)
+                    },
+                ),
+                "Message15": _reflection.GeneratedProtocolMessageType(
+                    "Message15",
+                    (_message.Message,),
+                    {
+                        "Message3": _reflection.GeneratedProtocolMessageType(
+                            "Message3",
+                            (_message.Message,),
+                            {
+                                "Message2": _reflection.GeneratedProtocolMessageType(
+                                    "Message2",
+                                    (_message.Message,),
+                                    {
+                                        "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_MESSAGE15_MESSAGE3_MESSAGE2,
+                                        "__module__": "google.internal.home.foyer.v1_pb2"
+                                        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15.Message3.Message2)
+                                    },
+                                ),
+                                "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_MESSAGE15_MESSAGE3,
+                                "__module__": "google.internal.home.foyer.v1_pb2"
+                                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15.Message3)
+                            },
+                        ),
+                        "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME_MESSAGE15,
+                        "__module__": "google.internal.home.foyer.v1_pb2"
+                        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15)
+                    },
+                ),
+                "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_HOME,
+                "__module__": "google.internal.home.foyer.v1_pb2"
+                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Home)
+            },
+        ),
+        "Group": _reflection.GeneratedProtocolMessageType(
+            "Group",
+            (_message.Message,),
+            {
+                "DeviceInfo": _reflection.GeneratedProtocolMessageType(
+                    "DeviceInfo",
+                    (_message.Message,),
+                    {
+                        "ProjectInfo": _reflection.GeneratedProtocolMessageType(
+                            "ProjectInfo",
+                            (_message.Message,),
+                            {
+                                "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_GROUP_DEVICEINFO_PROJECTINFO,
+                                "__module__": "google.internal.home.foyer.v1_pb2"
+                                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Group.DeviceInfo.ProjectInfo)
+                            },
+                        ),
+                        "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_GROUP_DEVICEINFO,
+                        "__module__": "google.internal.home.foyer.v1_pb2"
+                        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Group.DeviceInfo)
+                    },
+                ),
+                "Message12": _reflection.GeneratedProtocolMessageType(
+                    "Message12",
+                    (_message.Message,),
+                    {
+                        "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE12,
+                        "__module__": "google.internal.home.foyer.v1_pb2"
+                        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message12)
+                    },
+                ),
+                "Message15": _reflection.GeneratedProtocolMessageType(
+                    "Message15",
+                    (_message.Message,),
+                    {
+                        "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE15,
+                        "__module__": "google.internal.home.foyer.v1_pb2"
+                        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message15)
+                    },
+                ),
+                "Message17": _reflection.GeneratedProtocolMessageType(
+                    "Message17",
+                    (_message.Message,),
+                    {
+                        "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE17,
+                        "__module__": "google.internal.home.foyer.v1_pb2"
+                        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message17)
+                    },
+                ),
+                "Message18": _reflection.GeneratedProtocolMessageType(
+                    "Message18",
+                    (_message.Message,),
+                    {
+                        "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE18,
+                        "__module__": "google.internal.home.foyer.v1_pb2"
+                        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message18)
+                    },
+                ),
+                "Message34": _reflection.GeneratedProtocolMessageType(
+                    "Message34",
+                    (_message.Message,),
+                    {
+                        "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE34,
+                        "__module__": "google.internal.home.foyer.v1_pb2"
+                        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message34)
+                    },
+                ),
+                "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_GROUP,
+                "__module__": "google.internal.home.foyer.v1_pb2"
+                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Group)
+            },
+        ),
+        "RoomType": _reflection.GeneratedProtocolMessageType(
+            "RoomType",
+            (_message.Message,),
+            {
+                "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_ROOMTYPE,
+                "__module__": "google.internal.home.foyer.v1_pb2"
+                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.RoomType)
+            },
+        ),
+        "DeviceType": _reflection.GeneratedProtocolMessageType(
+            "DeviceType",
+            (_message.Message,),
+            {
+                "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_DEVICETYPE,
+                "__module__": "google.internal.home.foyer.v1_pb2"
+                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.DeviceType)
+            },
+        ),
+        "ProjectType": _reflection.GeneratedProtocolMessageType(
+            "ProjectType",
+            (_message.Message,),
+            {
+                "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_PROJECTTYPE,
+                "__module__": "google.internal.home.foyer.v1_pb2"
+                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.ProjectType)
+            },
+        ),
+        "Message11": _reflection.GeneratedProtocolMessageType(
+            "Message11",
+            (_message.Message,),
+            {
+                "Message2": _reflection.GeneratedProtocolMessageType(
+                    "Message2",
+                    (_message.Message,),
+                    {
+                        "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_MESSAGE11_MESSAGE2,
+                        "__module__": "google.internal.home.foyer.v1_pb2"
+                        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Message11.Message2)
+                    },
+                ),
+                "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_MESSAGE11,
+                "__module__": "google.internal.home.foyer.v1_pb2"
+                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.Message11)
+            },
+        ),
+        "LinkedApp": _reflection.GeneratedProtocolMessageType(
+            "LinkedApp",
+            (_message.Message,),
+            {
+                "DESCRIPTOR": _GETHOMEGRAPHRESPONSE_LINKEDAPP,
+                "__module__": "google.internal.home.foyer.v1_pb2"
+                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse.LinkedApp)
+            },
+        ),
+        "DESCRIPTOR": _GETHOMEGRAPHRESPONSE,
+        "__module__": "google.internal.home.foyer.v1_pb2"
+        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetHomeGraphResponse)
+    },
+)
 _sym_db.RegisterMessage(GetHomeGraphResponse)
 _sym_db.RegisterMessage(GetHomeGraphResponse.Home)
 _sym_db.RegisterMessage(GetHomeGraphResponse.Home.Location)
@@ -3629,11 +6071,21 @@ _sym_db.RegisterMessage(GetHomeGraphResponse.Home.Device.Message18)
 _sym_db.RegisterMessage(GetHomeGraphResponse.Home.Device.Message20)
 _sym_db.RegisterMessage(GetHomeGraphResponse.Home.Device.Message20.Message1)
 _sym_db.RegisterMessage(GetHomeGraphResponse.Home.Device.Message20.Message1.Value)
-_sym_db.RegisterMessage(GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6)
-_sym_db.RegisterMessage(GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1)
-_sym_db.RegisterMessage(GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5)
-_sym_db.RegisterMessage(GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5.Message1)
-_sym_db.RegisterMessage(GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5.Message1.Message2)
+_sym_db.RegisterMessage(
+    GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6
+)
+_sym_db.RegisterMessage(
+    GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1
+)
+_sym_db.RegisterMessage(
+    GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5
+)
+_sym_db.RegisterMessage(
+    GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5.Message1
+)
+_sym_db.RegisterMessage(
+    GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5.Message1.Message2
+)
 _sym_db.RegisterMessage(GetHomeGraphResponse.Home.Device.Message25)
 _sym_db.RegisterMessage(GetHomeGraphResponse.Home.Device.LinkedUser)
 _sym_db.RegisterMessage(GetHomeGraphResponse.Home.Device.State)
@@ -3645,7 +6097,9 @@ _sym_db.RegisterMessage(GetHomeGraphResponse.Home.Message11)
 _sym_db.RegisterMessage(GetHomeGraphResponse.Home.Message13)
 _sym_db.RegisterMessage(GetHomeGraphResponse.Home.Message13.Message1)
 _sym_db.RegisterMessage(GetHomeGraphResponse.Home.Message13.Message1.DeviceInfo)
-_sym_db.RegisterMessage(GetHomeGraphResponse.Home.Message13.Message1.DeviceInfo.ProjectInfo)
+_sym_db.RegisterMessage(
+    GetHomeGraphResponse.Home.Message13.Message1.DeviceInfo.ProjectInfo
+)
 _sym_db.RegisterMessage(GetHomeGraphResponse.Home.Message15)
 _sym_db.RegisterMessage(GetHomeGraphResponse.Home.Message15.Message3)
 _sym_db.RegisterMessage(GetHomeGraphResponse.Home.Message15.Message3.Message2)
@@ -3664,177 +6118,209 @@ _sym_db.RegisterMessage(GetHomeGraphResponse.Message11)
 _sym_db.RegisterMessage(GetHomeGraphResponse.Message11.Message2)
 _sym_db.RegisterMessage(GetHomeGraphResponse.LinkedApp)
 
-GetAssistantDeviceSettingsRequest = _reflection.GeneratedProtocolMessageType('GetAssistantDeviceSettingsRequest', (_message.Message,), {
-
-  'DeviceInfo' : _reflection.GeneratedProtocolMessageType('DeviceInfo', (_message.Message,), {
-
-    'ProjectInfo' : _reflection.GeneratedProtocolMessageType('ProjectInfo', (_message.Message,), {
-      'DESCRIPTOR' : _GETASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO_PROJECTINFO,
-      '__module__' : 'google.internal.home.foyer.v1_pb2'
-      # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest.DeviceInfo.ProjectInfo)
-      })
-    ,
-    'DESCRIPTOR' : _GETASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO,
-    '__module__' : 'google.internal.home.foyer.v1_pb2'
-    # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest.DeviceInfo)
-    })
-  ,
-  'DESCRIPTOR' : _GETASSISTANTDEVICESETTINGSREQUEST,
-  '__module__' : 'google.internal.home.foyer.v1_pb2'
-  # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest)
-  })
+GetAssistantDeviceSettingsRequest = _reflection.GeneratedProtocolMessageType(
+    "GetAssistantDeviceSettingsRequest",
+    (_message.Message,),
+    {
+        "DeviceInfo": _reflection.GeneratedProtocolMessageType(
+            "DeviceInfo",
+            (_message.Message,),
+            {
+                "ProjectInfo": _reflection.GeneratedProtocolMessageType(
+                    "ProjectInfo",
+                    (_message.Message,),
+                    {
+                        "DESCRIPTOR": _GETASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO_PROJECTINFO,
+                        "__module__": "google.internal.home.foyer.v1_pb2"
+                        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest.DeviceInfo.ProjectInfo)
+                    },
+                ),
+                "DESCRIPTOR": _GETASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO,
+                "__module__": "google.internal.home.foyer.v1_pb2"
+                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest.DeviceInfo)
+            },
+        ),
+        "DESCRIPTOR": _GETASSISTANTDEVICESETTINGSREQUEST,
+        "__module__": "google.internal.home.foyer.v1_pb2"
+        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest)
+    },
+)
 _sym_db.RegisterMessage(GetAssistantDeviceSettingsRequest)
 _sym_db.RegisterMessage(GetAssistantDeviceSettingsRequest.DeviceInfo)
 _sym_db.RegisterMessage(GetAssistantDeviceSettingsRequest.DeviceInfo.ProjectInfo)
 
-GetAssistantDeviceSettingsResponse = _reflection.GeneratedProtocolMessageType('GetAssistantDeviceSettingsResponse', (_message.Message,), {
-
-  'Message1' : _reflection.GeneratedProtocolMessageType('Message1', (_message.Message,), {
-    'DESCRIPTOR' : _GETASSISTANTDEVICESETTINGSRESPONSE_MESSAGE1,
-    '__module__' : 'google.internal.home.foyer.v1_pb2'
-    # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetAssistantDeviceSettingsResponse.Message1)
-    })
-  ,
-  'DESCRIPTOR' : _GETASSISTANTDEVICESETTINGSRESPONSE,
-  '__module__' : 'google.internal.home.foyer.v1_pb2'
-  # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetAssistantDeviceSettingsResponse)
-  })
+GetAssistantDeviceSettingsResponse = _reflection.GeneratedProtocolMessageType(
+    "GetAssistantDeviceSettingsResponse",
+    (_message.Message,),
+    {
+        "Message1": _reflection.GeneratedProtocolMessageType(
+            "Message1",
+            (_message.Message,),
+            {
+                "DESCRIPTOR": _GETASSISTANTDEVICESETTINGSRESPONSE_MESSAGE1,
+                "__module__": "google.internal.home.foyer.v1_pb2"
+                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetAssistantDeviceSettingsResponse.Message1)
+            },
+        ),
+        "DESCRIPTOR": _GETASSISTANTDEVICESETTINGSRESPONSE,
+        "__module__": "google.internal.home.foyer.v1_pb2"
+        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.GetAssistantDeviceSettingsResponse)
+    },
+)
 _sym_db.RegisterMessage(GetAssistantDeviceSettingsResponse)
 _sym_db.RegisterMessage(GetAssistantDeviceSettingsResponse.Message1)
 
-UpdateAssistantDeviceSettingsRequest = _reflection.GeneratedProtocolMessageType('UpdateAssistantDeviceSettingsRequest', (_message.Message,), {
-
-  'DeviceInfo' : _reflection.GeneratedProtocolMessageType('DeviceInfo', (_message.Message,), {
-
-    'ProjectInfo' : _reflection.GeneratedProtocolMessageType('ProjectInfo', (_message.Message,), {
-      'DESCRIPTOR' : _UPDATEASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO_PROJECTINFO,
-      '__module__' : 'google.internal.home.foyer.v1_pb2'
-      # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.DeviceInfo.ProjectInfo)
-      })
-    ,
-    'DESCRIPTOR' : _UPDATEASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO,
-    '__module__' : 'google.internal.home.foyer.v1_pb2'
-    # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.DeviceInfo)
-    })
-  ,
-
-  'UpdateData' : _reflection.GeneratedProtocolMessageType('UpdateData', (_message.Message,), {
-
-    'Message1' : _reflection.GeneratedProtocolMessageType('Message1', (_message.Message,), {
-      'DESCRIPTOR' : _UPDATEASSISTANTDEVICESETTINGSREQUEST_UPDATEDATA_MESSAGE1,
-      '__module__' : 'google.internal.home.foyer.v1_pb2'
-      # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.UpdateData.Message1)
-      })
-    ,
-    'DESCRIPTOR' : _UPDATEASSISTANTDEVICESETTINGSREQUEST_UPDATEDATA,
-    '__module__' : 'google.internal.home.foyer.v1_pb2'
-    # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.UpdateData)
-    })
-  ,
-  'DESCRIPTOR' : _UPDATEASSISTANTDEVICESETTINGSREQUEST,
-  '__module__' : 'google.internal.home.foyer.v1_pb2'
-  # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest)
-  })
+UpdateAssistantDeviceSettingsRequest = _reflection.GeneratedProtocolMessageType(
+    "UpdateAssistantDeviceSettingsRequest",
+    (_message.Message,),
+    {
+        "DeviceInfo": _reflection.GeneratedProtocolMessageType(
+            "DeviceInfo",
+            (_message.Message,),
+            {
+                "ProjectInfo": _reflection.GeneratedProtocolMessageType(
+                    "ProjectInfo",
+                    (_message.Message,),
+                    {
+                        "DESCRIPTOR": _UPDATEASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO_PROJECTINFO,
+                        "__module__": "google.internal.home.foyer.v1_pb2"
+                        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.DeviceInfo.ProjectInfo)
+                    },
+                ),
+                "DESCRIPTOR": _UPDATEASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO,
+                "__module__": "google.internal.home.foyer.v1_pb2"
+                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.DeviceInfo)
+            },
+        ),
+        "UpdateData": _reflection.GeneratedProtocolMessageType(
+            "UpdateData",
+            (_message.Message,),
+            {
+                "Message1": _reflection.GeneratedProtocolMessageType(
+                    "Message1",
+                    (_message.Message,),
+                    {
+                        "DESCRIPTOR": _UPDATEASSISTANTDEVICESETTINGSREQUEST_UPDATEDATA_MESSAGE1,
+                        "__module__": "google.internal.home.foyer.v1_pb2"
+                        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.UpdateData.Message1)
+                    },
+                ),
+                "DESCRIPTOR": _UPDATEASSISTANTDEVICESETTINGSREQUEST_UPDATEDATA,
+                "__module__": "google.internal.home.foyer.v1_pb2"
+                # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.UpdateData)
+            },
+        ),
+        "DESCRIPTOR": _UPDATEASSISTANTDEVICESETTINGSREQUEST,
+        "__module__": "google.internal.home.foyer.v1_pb2"
+        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest)
+    },
+)
 _sym_db.RegisterMessage(UpdateAssistantDeviceSettingsRequest)
 _sym_db.RegisterMessage(UpdateAssistantDeviceSettingsRequest.DeviceInfo)
 _sym_db.RegisterMessage(UpdateAssistantDeviceSettingsRequest.DeviceInfo.ProjectInfo)
 _sym_db.RegisterMessage(UpdateAssistantDeviceSettingsRequest.UpdateData)
 _sym_db.RegisterMessage(UpdateAssistantDeviceSettingsRequest.UpdateData.Message1)
 
-UpdateAssistantDeviceSettingsResponse = _reflection.GeneratedProtocolMessageType('UpdateAssistantDeviceSettingsResponse', (_message.Message,), {
-  'DESCRIPTOR' : _UPDATEASSISTANTDEVICESETTINGSRESPONSE,
-  '__module__' : 'google.internal.home.foyer.v1_pb2'
-  # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsResponse)
-  })
+UpdateAssistantDeviceSettingsResponse = _reflection.GeneratedProtocolMessageType(
+    "UpdateAssistantDeviceSettingsResponse",
+    (_message.Message,),
+    {
+        "DESCRIPTOR": _UPDATEASSISTANTDEVICESETTINGSRESPONSE,
+        "__module__": "google.internal.home.foyer.v1_pb2"
+        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsResponse)
+    },
+)
 _sym_db.RegisterMessage(UpdateAssistantDeviceSettingsResponse)
 
 
-
 _HOMECONTROLSERVICE = _descriptor.ServiceDescriptor(
-  name='HomeControlService',
-  full_name='google.internal.home.foyer.v1.HomeControlService',
-  file=DESCRIPTOR,
-  index=0,
-  serialized_options=None,
-  create_key=_descriptor._internal_create_key,
-  serialized_start=9462,
-  serialized_end=9606,
-  methods=[
-  _descriptor.MethodDescriptor(
-    name='GetAssistantRoutines',
-    full_name='google.internal.home.foyer.v1.HomeControlService.GetAssistantRoutines',
+    name="HomeControlService",
+    full_name="google.internal.home.foyer.v1.HomeControlService",
+    file=DESCRIPTOR,
     index=0,
-    containing_service=None,
-    input_type=_NONE,
-    output_type=_GETASSISTANTROUTINESRESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
-  ),
-])
+    serialized_start=9462,
+    serialized_end=9606,
+    methods=[
+        _descriptor.MethodDescriptor(
+            name="GetAssistantRoutines",
+            full_name="google.internal.home.foyer.v1.HomeControlService.GetAssistantRoutines",
+            index=0,
+            containing_service=None,
+            input_type=_NONE,
+            output_type=_GETASSISTANTROUTINESRESPONSE,
+            serialized_options=None,
+            create_key=_descriptor._internal_create_key,
+        )
+    ],
+)
 _sym_db.RegisterServiceDescriptor(_HOMECONTROLSERVICE)
 
-DESCRIPTOR.services_by_name['HomeControlService'] = _HOMECONTROLSERVICE
+DESCRIPTOR.services_by_name["HomeControlService"] = _HOMECONTROLSERVICE
 
 
 _STRUCTURESSERVICE = _descriptor.ServiceDescriptor(
-  name='StructuresService',
-  full_name='google.internal.home.foyer.v1.StructuresService',
-  file=DESCRIPTOR,
-  index=1,
-  serialized_options=None,
-  create_key=_descriptor._internal_create_key,
-  serialized_start=9609,
-  serialized_end=9749,
-  methods=[
-  _descriptor.MethodDescriptor(
-    name='GetHomeGraph',
-    full_name='google.internal.home.foyer.v1.StructuresService.GetHomeGraph',
-    index=0,
-    containing_service=None,
-    input_type=_GETHOMEGRAPHREQUEST,
-    output_type=_GETHOMEGRAPHRESPONSE,
+    name="StructuresService",
+    full_name="google.internal.home.foyer.v1.StructuresService",
+    file=DESCRIPTOR,
+    index=1,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
-  ),
-])
+    serialized_start=9609,
+    serialized_end=9749,
+    methods=[
+        _descriptor.MethodDescriptor(
+            name="GetHomeGraph",
+            full_name="google.internal.home.foyer.v1.StructuresService.GetHomeGraph",
+            index=0,
+            containing_service=None,
+            input_type=_GETHOMEGRAPHREQUEST,
+            output_type=_GETHOMEGRAPHRESPONSE,
+            serialized_options=None,
+            create_key=_descriptor._internal_create_key,
+        )
+    ],
+)
 _sym_db.RegisterServiceDescriptor(_STRUCTURESSERVICE)
 
-DESCRIPTOR.services_by_name['StructuresService'] = _STRUCTURESSERVICE
+DESCRIPTOR.services_by_name["StructuresService"] = _STRUCTURESSERVICE
 
 
 _HOMEDEVICESSERVICE = _descriptor.ServiceDescriptor(
-  name='HomeDevicesService',
-  full_name='google.internal.home.foyer.v1.HomeDevicesService',
-  file=DESCRIPTOR,
-  index=2,
-  serialized_options=None,
-  create_key=_descriptor._internal_create_key,
-  serialized_start=9752,
-  serialized_end=10113,
-  methods=[
-  _descriptor.MethodDescriptor(
-    name='GetAssistantDeviceSettings',
-    full_name='google.internal.home.foyer.v1.HomeDevicesService.GetAssistantDeviceSettings',
-    index=0,
-    containing_service=None,
-    input_type=_GETASSISTANTDEVICESETTINGSREQUEST,
-    output_type=_GETASSISTANTDEVICESETTINGSRESPONSE,
+    name="HomeDevicesService",
+    full_name="google.internal.home.foyer.v1.HomeDevicesService",
+    file=DESCRIPTOR,
+    index=2,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
-  ),
-  _descriptor.MethodDescriptor(
-    name='UpdateAssistantDeviceSettings',
-    full_name='google.internal.home.foyer.v1.HomeDevicesService.UpdateAssistantDeviceSettings',
-    index=1,
-    containing_service=None,
-    input_type=_UPDATEASSISTANTDEVICESETTINGSREQUEST,
-    output_type=_UPDATEASSISTANTDEVICESETTINGSRESPONSE,
-    serialized_options=None,
-    create_key=_descriptor._internal_create_key,
-  ),
-])
+    serialized_start=9752,
+    serialized_end=10113,
+    methods=[
+        _descriptor.MethodDescriptor(
+            name="GetAssistantDeviceSettings",
+            full_name="google.internal.home.foyer.v1.HomeDevicesService.GetAssistantDeviceSettings",
+            index=0,
+            containing_service=None,
+            input_type=_GETASSISTANTDEVICESETTINGSREQUEST,
+            output_type=_GETASSISTANTDEVICESETTINGSRESPONSE,
+            serialized_options=None,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.MethodDescriptor(
+            name="UpdateAssistantDeviceSettings",
+            full_name="google.internal.home.foyer.v1.HomeDevicesService.UpdateAssistantDeviceSettings",
+            index=1,
+            containing_service=None,
+            input_type=_UPDATEASSISTANTDEVICESETTINGSREQUEST,
+            output_type=_UPDATEASSISTANTDEVICESETTINGSRESPONSE,
+            serialized_options=None,
+            create_key=_descriptor._internal_create_key,
+        ),
+    ],
+)
 _sym_db.RegisterServiceDescriptor(_HOMEDEVICESSERVICE)
 
-DESCRIPTOR.services_by_name['HomeDevicesService'] = _HOMEDEVICESSERVICE
+DESCRIPTOR.services_by_name["HomeDevicesService"] = _HOMEDEVICESSERVICE
 
 # @@protoc_insertion_point(module_scope)
