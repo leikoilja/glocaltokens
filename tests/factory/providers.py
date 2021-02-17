@@ -7,8 +7,11 @@ fake = Faker()
 
 
 class TokenProvider(BaseProvider):
-    def token_aas_et(self):
+    def master_token(self):
         return generate_token(216, prefix="aas_et/")
+
+    def access_token(self):
+        return generate_token(315, prefix="ya29.")
 
     def local_auth_token(self):
         return generate_token(108)
