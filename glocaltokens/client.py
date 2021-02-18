@@ -202,11 +202,14 @@ class GLocalAuthenticationTokens:
             self.homegraph_date = datetime.now()
         return self.homegraph
 
-    def get_google_devices(self, models_list: Optional[List[str]] = None) -> [Device]:
+    def get_google_devices(
+        self, models_list: Optional[List[str]] = None, disable_discovery: bool = False
+    ) -> [Device]:
         """
         Returns a list of google devices with their local authentication tokens, and IP and ports if set in models_list.
 
-        :param models_list The list of accepted model names.
+        models_list: The list of accepted model names.
+        disable_discovery: Whether or not the device's IP and port should be searched for in the network.
         """
 
         # Set models_list to empty list if None
@@ -241,17 +244,24 @@ class GLocalAuthenticationTokens:
         return devices
 
     def get_google_devices_json(
-        self, models_list: Optional[List[str]] = None, indent: int = 2
+        self,
+        models_list: Optional[List[str]] = None,
+        indent: int = 2,
+        disable_discovery: bool = False,
     ) -> str:
         """
         Returns a json list of google devices with their local authentication tokens, and IP and ports if set in
         models_list.
 
-        :param models_list The list of accepted model names.
-        :param indent The indentation for the json formatting.
+        models_list The list of accepted model names.
+        indent The indentation for the json formatting.
+        disable_discovery: Whether or not the device's IP and port should be searched for in the network.
         """
 
         devices_json = [
-            device.dict() for device in self.get_google_devices(models_list)
+            device.dict()
+            for device in self.get_google_devices(
+                models_list=models_list, disable_discovery=disable_discovery
+            )
         ]
         return json.dumps(devices_json, indent=indent)
