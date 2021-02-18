@@ -309,12 +309,9 @@ class GLocalAuthenticationTokensClientTests(TypeTestMixin, TestCase):
         )
         self.assertEqual(m_get_google_devices.call_count, 1)
 
-        json_correct: bool = False
         try:
             print("Google Devices JSON: " + google_devices_json_raw)
             google_devices_json = json.loads(google_devices_json_raw)
-            json_correct = True
             self.assertEqual(len(homegraph_devices), len(google_devices_json))
         except ValueError:
-            pass
-        self.assertTrue(json_correct)
+            self.assertTrue(False, "Could not parse json")
