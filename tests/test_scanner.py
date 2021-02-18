@@ -12,7 +12,7 @@ faker.add_provider(internet_provider)
 faker.add_provider(python_provider)
 
 
-class GLocalAuthenticationTokensClientTests(TestCase):
+class GoogleDeviceTests(TestCase):
     def setUp(self):
         """Setup method run before every test"""
         pass
