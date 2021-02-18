@@ -16,10 +16,11 @@ from glocaltokens.const import (
     HOMEGRAPH_DURATION,
 )
 from tests.factory.mixin import TypeTestMixin
-from tests.factory.providers import TokenProvider
+from tests.factory.providers import HomegraphProvider, TokenProvider
 
 faker = Faker()
 faker.add_provider(TokenProvider)
+faker.add_provider(HomegraphProvider)
 faker.add_provider(internet)
 
 
@@ -281,11 +282,11 @@ class GLocalAuthenticationTokensClientTests(TypeTestMixin, TestCase):
         self.assertEqual(m_structure_service_stub.call_count, 2)
         self.assertEqual(m_get_home_graph_request.call_count, 2)
 
-    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_homegraph")
-    def test_google_devices(self, m_get_homegraph):
+    def test_google_devices(self):
         # Check Google Devices get
-        self.client.get_google_devices(disable_discovery=True)
-        self.assertEqual(m_get_homegraph.call_count, 1)
+        self.client.homegraph = {"home": {"devices": {faker.home_devices()}}}
+
+        google_devices = self.client.get_google_devices(disable_discovery=True)
 
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_homegraph")
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_google_devices")

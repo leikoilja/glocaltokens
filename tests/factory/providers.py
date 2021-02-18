@@ -15,3 +15,8 @@ class TokenProvider(BaseProvider):
 
     def local_auth_token(self):
         return generate_token(108)
+
+
+class HomegraphProvider(BaseProvider):
+    def home_devices(self):
+        pass
