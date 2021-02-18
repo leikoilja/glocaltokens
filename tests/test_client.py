@@ -1,3 +1,4 @@
+import json
 from datetime import datetime, timedelta
 from unittest import TestCase
 
@@ -249,7 +250,6 @@ class GLocalAuthenticationTokensClientTests(TypeTestMixin, TestCase):
         m_access_token_call_credentials,
         m_ssl_channel_credentials,
     ):
-
         # New homegraph
         self.client.get_homegraph()
         self.assertEqual(m_ssl_channel_credentials.call_count, 1)
@@ -281,8 +281,26 @@ class GLocalAuthenticationTokensClientTests(TypeTestMixin, TestCase):
         self.assertEqual(m_structure_service_stub.call_count, 2)
         self.assertEqual(m_get_home_graph_request.call_count, 2)
 
-    def test_google_devices(self):
-        pass
+    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_homegraph")
+    def test_google_devices(self, m_get_homegraph):
+        # Check Google Devices get
+        self.client.get_google_devices(disable_discovery=True)
+        self.assertEqual(m_get_homegraph.call_count, 1)
 
-    def test_google_devices_json(self):
-        pass
+    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_homegraph")
+    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_google_devices")
+    def test_google_devices_json(self, m_get_google_devices, m_get_homegraph):
+        # Check Google Devices get with JSON format
+        google_devices_json = self.client.get_google_devices_json(
+            disable_discovery=True
+        )
+        self.assertEqual(m_get_google_devices.call_count, 1)
+        self.assertEqual(m_get_homegraph.call_count, 1)
+
+        json_correct: bool = False
+        try:
+            json.loads(google_devices_json)
+            json_correct = True
+        except ValueError:
+            pass
+        self.assertTrue(json_correct)
