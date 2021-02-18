@@ -258,10 +258,10 @@ class GLocalAuthenticationTokens:
         disable_discovery: Whether or not the device's IP and port should be searched for in the network.
         """
 
-        devices_json = [
-            device.dict()
-            for device in self.get_google_devices(
-                models_list=models_list, disable_discovery=disable_discovery
-            )
-        ]
-        return json.dumps(devices_json, indent=indent)
+        google_devices = self.get_google_devices(
+            models_list=models_list, disable_discovery=disable_discovery
+        )
+        google_devices_json = []
+        for google_device in google_devices:
+            google_devices_json.append(google_device.dict())
+        return json.dumps(google_devices_json, indent=indent)
