@@ -4,16 +4,9 @@ from typing import Optional
 
 import zeroconf
 
+from .const import DISCOVER_TIMEOUT
 from .utils import network as net_utils
 from .utils import type as type_utils
-
-DISCOVER_TIMEOUT = 5
-GOOGLE_HOME_MODELS = [
-    "Google Home",
-    "Google Home Mini",
-    "Google Nest Mini",
-    "Lenovo Smart Clock",
-]
 
 _LOGGER = logging.getLogger(__name__)
 

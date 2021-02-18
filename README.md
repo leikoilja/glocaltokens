@@ -59,7 +59,7 @@ google_devices = client.get_google_devices_json()
 # You can also select specific models to select when calling get_google_devices or get_google_devices_json with the models_list parameter.
 # For example, we have pre-defined a constant with some Google Home Models (WARNING! Not all of them may be present)
 # This could be used this way
-from glocaltokens.scanner import GOOGLE_HOME_MODELS
+from glocaltokens.const import GOOGLE_HOME_MODELS
 
 google_devices_select = client.get_google_devices_json(GOOGLE_HOME_MODELS)
 

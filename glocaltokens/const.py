@@ -8,3 +8,11 @@ ANDROID_ID_LENGTH = 14
 GOOGLE_HOME_FOYER_API = "googlehomefoyer-pa.googleapis.com:443"
 
 HOMEGRAPH_DURATION = 24 * 60 * 60
+
+DISCOVER_TIMEOUT = 20
+GOOGLE_HOME_MODELS = [
+    "Google Home",
+    "Google Home Mini",
+    "Google Nest Mini",
+    "Lenovo Smart Clock",
+]
