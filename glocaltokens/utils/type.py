@@ -11,3 +11,8 @@ def is_integer(variable):
 def is_float(variable):
     """Checks if a variable is a floating point value"""
     return type(variable) == float
+
+
+class Struct:
+    def __init__(self, **entries):
+        self.__dict__.update(entries)
