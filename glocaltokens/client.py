@@ -2,7 +2,6 @@ import json
 import logging
 from datetime import datetime
 from typing import Any, Dict, List, Optional
-from uuid import getnode as getmac
 from uuid import uuid4
 
 import grpc
@@ -213,35 +212,30 @@ class GLocalAuthenticationTokens:
         # Set models_list to empty list if None
         models_list = models_list if models_list else []
 
-        def find_device(name, devices_list: [GoogleDevice]) -> Optional[GoogleDevice]:
-            for device in devices_list:
+        homegraph = self.get_homegraph()
+        network_devices = discover_devices(models_list) if disable_discovery else None
+
+        def find_device(name) -> Optional[GoogleDevice]:
+            for device in network_devices:
                 if device.name == name:
                     return device
             return None
 
-        def extract_devices(items, network_items) -> [Device]:
-            devices_result: [Device] = []
-            for item in items:
-                if item.local_auth_token != "":
-                    # This checks if the current item is a valid model, only if there are models in models_list.
-                    # If models_list is empty, the check should be omitted, and accept all items.
-                    if models_list and item.hardware.model not in models_list:
-                        continue
+        devices: [Device] = []
+        for item in homegraph.home.devices:
+            if item.local_auth_token != "":
+                # This checks if the current item is a valid model, only if there are models in models_list.
+                # If models_list is empty, the check should be omitted, and accept all items.
+                if models_list and item.hardware.model not in models_list:
+                    continue
 
-                    google_device = (
-                        find_device(item.device_name, network_items)
-                        if network_items
-                        else None
-                    )
-                    devices_result.append(
-                        Device(item.device_name, item.local_auth_token, google_device)
-                    )
-            return devices_result
+                google_device = (
+                    find_device(item.device_name) if network_devices else None
+                )
+                devices.append(
+                    Device(item.device_name, item.local_auth_token, google_device)
+                )
 
-        homegraph = self.get_homegraph()
-        network_devices = discover_devices(models_list)
-
-        devices = extract_devices(homegraph.home.devices, network_devices)
         LOGGER.debug("Google Home devices: {}".format(devices))
 
         return devices
