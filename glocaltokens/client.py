@@ -253,8 +253,8 @@ class GLocalAuthenticationTokens:
         Returns a json list of google devices with their local authentication tokens, and IP and ports if set in
         models_list.
 
-        models_list The list of accepted model names.
-        indent The indentation for the json formatting.
+        models_list: The list of accepted model names.
+        indent: The indentation for the json formatting.
         disable_discovery: Whether or not the device's IP and port should be searched for in the network.
         """
 
