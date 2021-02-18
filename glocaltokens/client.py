@@ -216,7 +216,9 @@ class GLocalAuthenticationTokens:
         models_list = models_list if models_list else []
 
         homegraph = self.get_homegraph()
-        network_devices = discover_devices(models_list) if disable_discovery else None
+        network_devices = (
+            discover_devices(models_list) if not disable_discovery else None
+        )
 
         def find_device(name) -> Optional[GoogleDevice]:
             for device in network_devices:
