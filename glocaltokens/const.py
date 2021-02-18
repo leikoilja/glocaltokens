@@ -4,6 +4,9 @@ ACCESS_TOKEN_DURATION = 60 * 60
 ACCESS_TOKEN_SERVICE = "oauth2:https://www.google.com/accounts/OAuthLogin"
 
 ANDROID_ID_LENGTH = 14
+MASTER_TOKEN_LENGTH = 216
+ACCESS_TOKEN_LENGTH = 315
+LOCAL_AUTH_TOKEN_LENGTH = 108
 
 GOOGLE_HOME_FOYER_API = "googlehomefoyer-pa.googleapis.com:443"
 
