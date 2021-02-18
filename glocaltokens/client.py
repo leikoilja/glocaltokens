@@ -145,7 +145,7 @@ class GLocalAuthenticationTokens:
         return self.android_id
 
     @staticmethod
-    def _has_expired(creation_dt, duration):
+    def _has_expired(creation_dt, duration) -> bool:
         """Checks if an specified token/object has expired"""
         return datetime.now().timestamp() - creation_dt.timestamp() > duration
 
