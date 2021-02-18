@@ -15,6 +15,7 @@ from glocaltokens.const import (
     ANDROID_ID_LENGTH,
     HOMEGRAPH_DURATION,
 )
+from glocaltokens.utils.type import Struct
 from tests.factory.mixin import TypeTestMixin
 from tests.factory.providers import HomegraphProvider, TokenProvider
 
@@ -283,25 +284,37 @@ class GLocalAuthenticationTokensClientTests(TypeTestMixin, TestCase):
         self.assertEqual(m_get_home_graph_request.call_count, 2)
 
     def test_google_devices(self):
+        homegraph_devices = faker.google_devices()
         # Check Google Devices get
-        self.client.homegraph = {"home": {"devices": {faker.home_devices()}}}
+        self.client.homegraph = Struct(
+            **{"home": Struct(**{"devices": homegraph_devices})}
+        )
+        self.client.homegraph_date = datetime.now()
 
         google_devices = self.client.get_google_devices(disable_discovery=True)
+        self.assertEqual(len(homegraph_devices), len(google_devices))
 
-    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_homegraph")
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_google_devices")
-    def test_google_devices_json(self, m_get_google_devices, m_get_homegraph):
+    def test_google_devices_json(self, m_get_google_devices):
+        homegraph_devices = faker.google_devices()
+        # Check Google Devices get
+        self.client.homegraph = Struct(
+            **{"home": Struct(**{"devices": homegraph_devices})}
+        )
+        self.client.homegraph_date = datetime.now()
+
         # Check Google Devices get with JSON format
-        google_devices_json = self.client.get_google_devices_json(
+        google_devices_json_raw = self.client.get_google_devices_json(
             disable_discovery=True
         )
         self.assertEqual(m_get_google_devices.call_count, 1)
-        self.assertEqual(m_get_homegraph.call_count, 1)
 
         json_correct: bool = False
         try:
-            json.loads(google_devices_json)
+            print("Google Devices JSON: " + google_devices_json_raw)
+            google_devices_json = json.loads(google_devices_json_raw)
             json_correct = True
+            self.assertEqual(len(homegraph_devices), len(google_devices_json))
         except ValueError:
             pass
         self.assertTrue(json_correct)
