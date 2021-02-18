@@ -1,6 +1,6 @@
 import logging
 from threading import Event
-from typing import Optional
+from typing import List, Optional
 
 import zeroconf
 
@@ -100,7 +100,11 @@ class GoogleDevice:
             return
 
 
-def discover_devices(models_list, max_devices=None, timeout=DISCOVER_TIMEOUT):
+def discover_devices(
+    models_list: Optional[List[str]] = None,
+    max_devices: int = None,
+    timeout: int = DISCOVER_TIMEOUT,
+):
     # pylint: disable=unused-argument
     def callback():
         """Called when zeroconf has discovered a new chromecast."""
