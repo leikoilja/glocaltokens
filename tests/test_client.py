@@ -12,6 +12,7 @@ from glocaltokens.const import (
     ACCESS_TOKEN_DURATION,
     ACCESS_TOKEN_SERVICE,
     ANDROID_ID_LENGTH,
+    HOMEGRAPH_DURATION,
 )
 from tests.factory.mixin import TypeTestMixin
 from tests.factory.providers import TokenProvider
@@ -231,8 +232,54 @@ class GLocalAuthenticationTokensClientTests(TypeTestMixin, TestCase):
         access_token = self.client.get_access_token()
         self.assertEqual(m_perform_oauth.call_count, 1)
 
-    def test_get_homegraph(self):
-        pass
+    @patch("glocaltokens.client.grpc.ssl_channel_credentials")
+    @patch("glocaltokens.client.grpc.access_token_call_credentials")
+    @patch("glocaltokens.client.grpc.composite_channel_credentials")
+    @patch("glocaltokens.client.grpc.secure_channel")
+    @patch("glocaltokens.client.v1_pb2_grpc.StructuresServiceStub")
+    @patch("glocaltokens.client.v1_pb2.GetHomeGraphRequest")
+    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_access_token")
+    def test_get_homegraph(
+        self,
+        m_get_access_token,
+        m_get_home_graph_request,
+        m_structure_service_stub,
+        m_secure_channel,
+        m_composite_channel_credentials,
+        m_access_token_call_credentials,
+        m_ssl_channel_credentials,
+    ):
+
+        # New homegraph
+        self.client.get_homegraph()
+        self.assertEqual(m_ssl_channel_credentials.call_count, 1)
+        self.assertEqual(m_access_token_call_credentials.call_count, 1)
+        self.assertEqual(m_composite_channel_credentials.call_count, 1)
+        self.assertEqual(m_secure_channel.call_count, 1)
+        self.assertEqual(m_structure_service_stub.call_count, 1)
+        self.assertEqual(m_get_home_graph_request.call_count, 1)
+
+        # Another request with non expired homegraph must return the same homegraph
+        # (no new requests)
+        self.client.get_homegraph()
+        self.assertEqual(m_ssl_channel_credentials.call_count, 1)
+        self.assertEqual(m_access_token_call_credentials.call_count, 1)
+        self.assertEqual(m_composite_channel_credentials.call_count, 1)
+        self.assertEqual(m_secure_channel.call_count, 1)
+        self.assertEqual(m_structure_service_stub.call_count, 1)
+        self.assertEqual(m_get_home_graph_request.call_count, 1)
+
+        # Expired homegraph
+        self.client.homegraph_date = self.client.homegraph_date - timedelta(
+            HOMEGRAPH_DURATION + 1
+        )
+        self.client.get_homegraph()
+        self.assertEqual(m_ssl_channel_credentials.call_count, 2)
+        self.assertEqual(m_access_token_call_credentials.call_count, 2)
+        self.assertEqual(m_composite_channel_credentials.call_count, 2)
+        self.assertEqual(m_secure_channel.call_count, 2)
+        self.assertEqual(m_structure_service_stub.call_count, 2)
+        self.assertEqual(m_get_home_graph_request.call_count, 2)
 
     def test_google_devices(self):
         pass
