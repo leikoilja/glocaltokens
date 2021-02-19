@@ -6,6 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Copy requirements.txt
+        working-directory: '/'
         run: |
           cp requirements.txt glocaltokens/
       - uses: seanzhengw/sphinx-pages@master
