@@ -268,5 +268,5 @@ class GLocalAuthenticationTokens:
         google_devices = self.get_google_devices(
             models_list=models_list, disable_discovery=disable_discovery
         )
-        json_string = json.dumps([obj.dict() for obj in google_devices])
+        json_string = json.dumps([obj.dict() for obj in google_devices], indent=indent)
         return json_string
