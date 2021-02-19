@@ -1,19 +1,12 @@
 import logging
 from threading import Event
-from typing import Optional
+from typing import List, Optional
 
 import zeroconf
 
+from .const import DISCOVER_TIMEOUT
 from .utils import network as net_utils
-from .utils import type as type_utils
-
-DISCOVER_TIMEOUT = 5
-GOOGLE_HOME_MODELS = [
-    "Google Home",
-    "Google Home Mini",
-    "Google Nest Mini",
-    "Lenovo Smart Clock",
-]
+from .utils import types as type_utils
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -107,7 +100,11 @@ class GoogleDevice:
             return
 
 
-def discover_devices(models_list, max_devices=None, timeout=DISCOVER_TIMEOUT):
+def discover_devices(
+    models_list: Optional[List[str]] = None,
+    max_devices: int = None,
+    timeout: int = DISCOVER_TIMEOUT,
+):
     # pylint: disable=unused-argument
     def callback():
         """Called when zeroconf has discovered a new chromecast."""

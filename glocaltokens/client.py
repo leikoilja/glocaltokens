@@ -2,7 +2,6 @@ import json
 import logging
 from datetime import datetime
 from typing import Any, Dict, List, Optional
-from uuid import getnode as getmac
 from uuid import uuid4
 
 import grpc
@@ -16,6 +15,11 @@ from .const import (
     ANDROID_ID_LENGTH,
     GOOGLE_HOME_FOYER_API,
     HOMEGRAPH_DURATION,
+    JSON_KEY_DEVICE_NAME,
+    JSON_KEY_GOOGLE_DEVICE,
+    JSON_KEY_IP,
+    JSON_KEY_LOCAL_AUTH_TOKEN,
+    JSON_KEY_PORT,
 )
 from .google.internal.home.foyer import v1_pb2, v1_pb2_grpc
 from .scanner import GoogleDevice, discover_devices
@@ -86,9 +90,9 @@ class Device:
 
     def dict(self) -> Dict[str, Any]:
         return {
-            "device_name": self.device_name,
-            "local_auth_token": self.local_auth_token,
-            "google_device": {"ip": self.ip, "port": self.port},
+            JSON_KEY_DEVICE_NAME: self.device_name,
+            JSON_KEY_LOCAL_AUTH_TOKEN: self.local_auth_token,
+            JSON_KEY_GOOGLE_DEVICE: {JSON_KEY_IP: self.ip, JSON_KEY_PORT: self.port},
         }
 
 
@@ -203,61 +207,66 @@ class GLocalAuthenticationTokens:
             self.homegraph_date = datetime.now()
         return self.homegraph
 
-    def get_google_devices(self, models_list=None) -> [Device]:
+    def get_google_devices(
+        self, models_list: Optional[List[str]] = None, disable_discovery: bool = False
+    ) -> [Device]:
         """
         Returns a list of google devices with their local authentication tokens, and IP and ports if set in models_list.
 
-        :param models_list The list of accepted model names.
+        models_list: The list of accepted model names.
+        disable_discovery: Whether or not the device's IP and port should be searched for in the network.
         """
 
         # Set models_list to empty list if None
         models_list = models_list if models_list else []
 
-        def find_device(name, devices_list: [GoogleDevice]) -> Optional[GoogleDevice]:
-            for device in devices_list:
+        homegraph = self.get_homegraph()
+        network_devices = (
+            discover_devices(models_list) if not disable_discovery else None
+        )
+
+        def find_device(name) -> Optional[GoogleDevice]:
+            for device in network_devices:
                 if device.name == name:
                     return device
             return None
 
-        def extract_devices(items, network_items) -> [Device]:
-            devices_result: [Device] = []
-            for item in items:
-                if item.local_auth_token != "":
-                    # This checks if the current item is a valid model, only if there are models in models_list.
-                    # If models_list is empty, the check should be omitted, and accept all items.
-                    if models_list and item.hardware.model not in models_list:
-                        continue
+        devices: [Device] = []
+        for item in homegraph.home.devices:
+            if item.local_auth_token != "":
+                # This checks if the current item is a valid model, only if there are models in models_list.
+                # If models_list is empty, the check should be omitted, and accept all items.
+                if models_list and item.hardware.model not in models_list:
+                    continue
 
-                    google_device = (
-                        find_device(item.device_name, network_items)
-                        if network_items
-                        else None
-                    )
-                    devices_result.append(
-                        Device(item.device_name, item.local_auth_token, google_device)
-                    )
-            return devices_result
+                google_device = (
+                    find_device(item.device_name) if network_devices else None
+                )
+                devices.append(
+                    Device(item.device_name, item.local_auth_token, google_device)
+                )
 
-        homegraph = self.get_homegraph()
-        network_devices = discover_devices(models_list)
-
-        devices = extract_devices(homegraph.home.devices, network_devices)
         LOGGER.debug("Google Home devices: {}".format(devices))
 
         return devices
 
     def get_google_devices_json(
-        self, models_list: Optional[List[str]] = None, indent: int = 2
+        self,
+        models_list: Optional[List[str]] = None,
+        indent: int = 2,
+        disable_discovery: bool = False,
     ) -> str:
         """
         Returns a json list of google devices with their local authentication tokens, and IP and ports if set in
         models_list.
 
-        :param models_list The list of accepted model names.
-        :param indent The indentation for the json formatting.
+        models_list: The list of accepted model names.
+        indent: The indentation for the json formatting.
+        disable_discovery: Whether or not the device's IP and port should be searched for in the network.
         """
 
-        devices_json = [
-            device.dict() for device in self.get_google_devices(models_list)
-        ]
-        return json.dumps(devices_json, indent=indent)
+        google_devices = self.get_google_devices(
+            models_list=models_list, disable_discovery=disable_discovery
+        )
+        json_string = json.dumps([obj.dict() for obj in google_devices])
+        return json_string

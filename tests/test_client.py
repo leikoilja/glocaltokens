@@ -1,3 +1,4 @@
+import json
 from datetime import datetime, timedelta
 from unittest import TestCase
 
@@ -13,12 +14,19 @@ from glocaltokens.const import (
     ACCESS_TOKEN_SERVICE,
     ANDROID_ID_LENGTH,
     HOMEGRAPH_DURATION,
+    JSON_KEY_DEVICE_NAME,
+    JSON_KEY_GOOGLE_DEVICE,
+    JSON_KEY_IP,
+    JSON_KEY_LOCAL_AUTH_TOKEN,
+    JSON_KEY_PORT,
 )
+from glocaltokens.utils.types import Struct
 from tests.factory.mixin import TypeTestMixin
-from tests.factory.providers import TokenProvider
+from tests.factory.providers import HomegraphProvider, TokenProvider
 
 faker = Faker()
 faker.add_provider(TokenProvider)
+faker.add_provider(HomegraphProvider)
 faker.add_provider(internet)
 
 
@@ -249,7 +257,6 @@ class GLocalAuthenticationTokensClientTests(TypeTestMixin, TestCase):
         m_access_token_call_credentials,
         m_ssl_channel_credentials,
     ):
-
         # New homegraph
         self.client.get_homegraph()
         self.assertEqual(m_ssl_channel_credentials.call_count, 1)
@@ -281,8 +288,49 @@ class GLocalAuthenticationTokensClientTests(TypeTestMixin, TestCase):
         self.assertEqual(m_structure_service_stub.call_count, 2)
         self.assertEqual(m_get_home_graph_request.call_count, 2)
 
-    def test_google_devices(self):
-        pass
+    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_homegraph")
+    def test_get_google_devices(self, m_get_homegraph):
+        # With just one device returned from homegraph
+        homegraph_devices = faker.google_devices(max_devices=1)
+        homegraph_device = homegraph_devices[0]
+        m_get_homegraph.return_value.home.devices = homegraph_devices
 
-    def test_google_devices_json(self):
-        pass
+        # With no discover_devices, with no model_list
+        google_devices = self.client.get_google_devices(disable_discovery=True)
+        self.assertEqual(len(google_devices), 1)
+
+        google_device = google_devices[0]
+        self.assertEqual(type(google_device), Device)
+        self.assertEqual(
+            google_device.local_auth_token, homegraph_device.local_auth_token
+        )
+        self.assertEqual(google_device.device_name, homegraph_device.device_name)
+
+        # With many devices returned from homegraph
+        homegraph_devices = faker.google_devices()
+        m_get_homegraph.return_value.home.devices = homegraph_devices
+
+        # With no discover_devices, with no model_list
+        google_devices = self.client.get_google_devices(disable_discovery=True)
+        self.assertEqual(len(homegraph_devices), len(google_devices))
+
+    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_google_devices")
+    def test_get_google_devices_json(self, m_get_google_devices):
+        device_name = faker.word()
+        local_auth_token = faker.local_auth_token()
+        ip = faker.ipv4()
+        port = faker.port_number()
+        google_device = Device(
+            device_name=device_name, local_auth_token=local_auth_token, ip=ip, port=port
+        )
+        m_get_google_devices.return_value = [google_device]
+
+        json_string = self.client.get_google_devices_json(disable_discovery=True)
+        self.assertEqual(m_get_google_devices.call_count, 1)
+        self.assertIsString(json_string)
+        received_json = json.loads(json_string)
+        received_device = received_json[0]
+        self.assertEqual(received_device[JSON_KEY_DEVICE_NAME], device_name)
+        self.assertEqual(received_device[JSON_KEY_LOCAL_AUTH_TOKEN], local_auth_token)
+        self.assertEqual(received_device[JSON_KEY_GOOGLE_DEVICE][JSON_KEY_PORT], port)
+        self.assertEqual(received_device[JSON_KEY_GOOGLE_DEVICE][JSON_KEY_IP], ip)
