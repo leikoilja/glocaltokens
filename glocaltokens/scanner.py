@@ -2,8 +2,6 @@ import logging
 from threading import Event
 from typing import List, Optional
 
-import zeroconf
-
 from .const import DISCOVER_TIMEOUT
 from .utils import network as net_utils
 from .utils import types as type_utils
@@ -106,6 +104,8 @@ def discover_devices(
     timeout: int = DISCOVER_TIMEOUT,
 ):
     # pylint: disable=unused-argument
+    import zeroconf
+
     def callback():
         """Called when zeroconf has discovered a new chromecast."""
         if max_devices is not None and listener.count >= max_devices:
