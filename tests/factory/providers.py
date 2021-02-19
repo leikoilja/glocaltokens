@@ -14,6 +14,11 @@ from .const import SMART_HOME_DEVICE_TYPES
 fake = Faker()
 
 
+class UtilsProvider(BaseProvider):
+    def version(self):
+        return "{}.{}.{}".format(fake.pyint(), fake.pyint(), fake.pyint())
+
+
 class TokenProvider(BaseProvider):
     def master_token(self):
         return generate_token(MASTER_TOKEN_LENGTH, prefix="aas_et/")
@@ -26,10 +31,6 @@ class TokenProvider(BaseProvider):
 
 
 class HomegraphProvider(BaseProvider):
-    # TODO: This should be moved somewhere else
-    def version(self):
-        return "{}.{}.{}".format(fake.pyint(), fake.pyint(), fake.pyint())
-
     def google_device(self):
         """
         Not sure from where did I get this structure from. Just using the content from client.py as reference.
