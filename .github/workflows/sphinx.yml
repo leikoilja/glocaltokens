@@ -5,8 +5,11 @@ jobs:
     name: Push Sphinx Pages
     runs-on: ubuntu-latest
     steps:
-    - uses: seanzhengw/sphinx-pages@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        create_readme: true
-        source_dir: 'glocaltokens'
+      - name: Copy requirements.txt
+        run: |
+          cp requirements.txt glocaltokens/
+      - uses: seanzhengw/sphinx-pages@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          create_readme: true
+          source_dir: 'glocaltokens'
