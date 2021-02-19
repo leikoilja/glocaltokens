@@ -28,7 +28,7 @@ class TokenProvider(BaseProvider):
 class HomegraphProvider(BaseProvider):
     # TODO: This should be moved somewhere else
     def version(self):
-        return str(fake.pyint()) + "." + str(fake.pyint()) + "." + str(fake.pyint())
+        return "{}.{}.{}".format(fake.pyint(), fake.pyint(), fake.pyint())
 
     def google_device(self):
         """
