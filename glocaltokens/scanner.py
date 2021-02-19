@@ -6,7 +6,7 @@ import zeroconf
 
 from .const import DISCOVER_TIMEOUT
 from .utils import network as net_utils
-from .utils import type as type_utils
+from .utils import types as type_utils
 
 _LOGGER = logging.getLogger(__name__)
 

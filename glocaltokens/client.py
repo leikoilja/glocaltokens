@@ -15,6 +15,11 @@ from .const import (
     ANDROID_ID_LENGTH,
     GOOGLE_HOME_FOYER_API,
     HOMEGRAPH_DURATION,
+    JSON_KEY_DEVICE_NAME,
+    JSON_KEY_GOOGLE_DEVICE,
+    JSON_KEY_IP,
+    JSON_KEY_LOCAL_AUTH_TOKEN,
+    JSON_KEY_PORT,
 )
 from .google.internal.home.foyer import v1_pb2, v1_pb2_grpc
 from .scanner import GoogleDevice, discover_devices
@@ -85,9 +90,9 @@ class Device:
 
     def dict(self) -> Dict[str, Any]:
         return {
-            "device_name": self.device_name,
-            "local_auth_token": self.local_auth_token,
-            "google_device": {"ip": self.ip, "port": self.port},
+            JSON_KEY_DEVICE_NAME: self.device_name,
+            JSON_KEY_LOCAL_AUTH_TOKEN: self.local_auth_token,
+            JSON_KEY_GOOGLE_DEVICE: {JSON_KEY_IP: self.ip, JSON_KEY_PORT: self.port},
         }
 
 
@@ -263,7 +268,5 @@ class GLocalAuthenticationTokens:
         google_devices = self.get_google_devices(
             models_list=models_list, disable_discovery=disable_discovery
         )
-        google_devices_json = []
-        for google_device in google_devices:
-            google_devices_json.append(google_device.dict())
-        return json.dumps(google_devices_json, indent=indent)
+        json_string = json.dumps([obj.dict() for obj in google_devices])
+        return json_string
