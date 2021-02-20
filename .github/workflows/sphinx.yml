@@ -7,9 +7,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Copy requirements.txt
-        working-directory: $GITHUB_WORKSPACE
         run: |
-          cp requirements.txt glocaltokens/
+          ls $GITHUB_WORKSPACE
+          cp $GITHUB_WORKSPACE/requirements.txt $GITHUB_WORKSPACE/glocaltokens/
       - uses: seanzhengw/sphinx-pages@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
