@@ -5,8 +5,9 @@ jobs:
     name: Push Sphinx Pages
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Copy requirements.txt
-        working-directory: '/'
+        working-directory: $GITHUB_WORKSPACE
         run: |
           cp requirements.txt glocaltokens/
       - uses: seanzhengw/sphinx-pages@master
