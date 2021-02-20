@@ -9,7 +9,7 @@ jobs:
       - name: Copy requirements.txt
         run: |
           ls $GITHUB_WORKSPACE
-          cp $GITHUB_WORKSPACE/requirements.txt $GITHUB_WORKSPACE/glocaltokens/
+          cp $GITHUB_WORKSPACE/requirements.txt $GITHUB_WORKSPACE/github/workspace/docs/glocaltokens/requirements.txt
       - uses: seanzhengw/sphinx-pages@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
