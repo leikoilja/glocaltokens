@@ -8,7 +8,7 @@ with open("HISTORY.md") as history_file:
 
 setup_args = dict(
     name="glocaltokens",
-    version="0.2.0",
+    version="0.2.2",
     description="Tool to extract Google device local authentication tokens in Python",
     long_description_content_type="text/markdown",
     long_description=README + "\n\n" + HISTORY,
@@ -23,7 +23,6 @@ setup_args = dict(
 )
 
 install_requires = [
-    "uuid",
     "gpsoauth",
     # grpcio is pinned by HomeAssistant
     # See https://github.com/home-assistant/core/blob/6e67b943da09a13409e1a61ec34ed7144e1093c3/script/gen_requirements_all.py

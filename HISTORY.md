@@ -1,3 +1,18 @@
+### v0.2.1
+#### Changes
+
+- Zeroconf import @ArnyminerZ (#32)
+
+#### 🚀 Features
+
+- Adding client tests for fetching tokens @leikoilja (#30)
+- Grpcio tools version @ArnyminerZ (#29)
+
+#### 🧰 Maintenance
+
+- Get devices testing @ArnyminerZ (#31)
+
+
 ### v0.2.0
 #### Changes
 
@@ -21,17 +36,22 @@
 
 - Implement typing @ArnyminerZ (#22)
 
+
 ### v0.1.4
-    * Pinning `grpcio==1.31.0` dependency to match with HomeAssistant's version
+- Pinning `grpcio==1.31.0` dependency to match with HomeAssistant's version
+
 
 ### v0.1.3
-    * Removing `jq` dependency, thanks @DurgNomis-drol
+- Removing `jq` dependency, thanks @DurgNomis-drol
+
 
 ### v0.1.2
-    * Removing dependency `requests==2.23.0` since `gpsoauth` is supporting newest versions
+- Removing dependency `requests==2.23.0` since `gpsoauth` is supporting newest versions
+
 
 ### v0.1.1
-    * Fixing the GetHomeGraphResponse.Home.Device.State.value serialization issue
+- Fixing the `GetHomeGraphResponse.Home.Device.State.value` serialization issue
+
 
 ### v0.1
-    * Initial release
+- Initial release
