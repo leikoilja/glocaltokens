@@ -1,3 +1,8 @@
+### v0.2.2
+#### Changes
+
+- Removing redundant `uuid` dependency from package setup
+
 ### v0.2.1
 #### Changes
 
