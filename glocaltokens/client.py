@@ -208,7 +208,10 @@ class GLocalAuthenticationTokens:
         return self.homegraph
 
     def get_google_devices(
-        self, models_list: Optional[List[str]] = None, disable_discovery: bool = False, zeroconf_instance=None
+        self,
+        models_list: Optional[List[str]] = None,
+        disable_discovery: bool = False,
+        zeroconf_instance=None,
     ) -> [Device]:
         """
         Returns a list of google devices with their local authentication tokens, and IP and ports if set in models_list.
@@ -223,7 +226,9 @@ class GLocalAuthenticationTokens:
 
         homegraph = self.get_homegraph()
         network_devices = (
-            discover_devices(models_list, zeroconf_instance=zeroconf_instance) if not disable_discovery else None
+            discover_devices(models_list, zeroconf_instance=zeroconf_instance)
+            if not disable_discovery
+            else None
         )
 
         def find_device(name) -> Optional[GoogleDevice]:
