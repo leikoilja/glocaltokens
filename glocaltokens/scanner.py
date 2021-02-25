@@ -102,7 +102,7 @@ def discover_devices(
     models_list: Optional[List[str]] = None,
     max_devices: int = None,
     timeout: int = DISCOVER_TIMEOUT,
-    zeroconf_instance=None
+    zeroconf_instance=None,
 ):
     # pylint: disable=unused-argument
     import zeroconf
