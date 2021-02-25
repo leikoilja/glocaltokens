@@ -102,6 +102,7 @@ def discover_devices(
     models_list: Optional[List[str]] = None,
     max_devices: int = None,
     timeout: int = DISCOVER_TIMEOUT,
+    zeroconf_instance=None,
 ):
     # pylint: disable=unused-argument
     import zeroconf
@@ -113,7 +114,10 @@ def discover_devices(
 
     discover_complete = Event()
     listener = CastListener(callback)
-    zconf = zeroconf.Zeroconf()
+    if not zeroconf_instance:
+        zconf = zeroconf.Zeroconf()
+    else:
+        zconf = zeroconf_instance
     zeroconf.ServiceBrowser(zconf, "_googlecast._tcp.local.", listener)
 
     # Wait for the timeout or the maximum number of devices
