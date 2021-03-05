@@ -286,3 +286,13 @@ class GLocalAuthenticationTokens:
         )
         json_string = json.dumps([obj.dict() for obj in google_devices])
         return json_string
+
+    def invalidate_access_token(self):
+        """Invalidates the current access token"""
+        self.access_token = None
+        self.access_token_date = None
+
+    def invalidate_homegraph(self):
+        """Invalidates the stored homegraph data"""
+        self.homegraph = None
+        self.homegraph_date = None
