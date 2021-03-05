@@ -230,6 +230,7 @@ class GLocalAuthenticationTokens:
         models_list: The list of accepted model names.
         disable_discovery: Whether or not the device's IP and port should be searched for in the network.
         zeroconf_instance: If you already have an initialized zeroconf instance, use it here.
+        force_homegraph_reload: If the stored homegraph should be generated again.
         """
 
         # Set models_list to empty list if None
@@ -285,6 +286,8 @@ class GLocalAuthenticationTokens:
         models_list: The list of accepted model names.
         indent: The indentation for the json formatting.
         disable_discovery: Whether or not the device's IP and port should be searched for in the network.
+        zeroconf_instance: If you already have an initialized zeroconf instance, use it here.
+        force_homegraph_reload: If the stored homegraph should be generated again.
         """
 
         google_devices = self.get_google_devices(
