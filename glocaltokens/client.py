@@ -195,16 +195,26 @@ class GLocalAuthenticationTokens:
         if self.homegraph is None or self._has_expired(
             self.homegraph_date, HOMEGRAPH_DURATION
         ):
-            scc = grpc.ssl_channel_credentials(root_certificates=None)
-            tok = grpc.access_token_call_credentials(self.get_access_token())
-            ccc = grpc.composite_channel_credentials(scc, tok)
+            try:
+                scc = grpc.ssl_channel_credentials(root_certificates=None)
+                tok = grpc.access_token_call_credentials(self.get_access_token())
+                ccc = grpc.composite_channel_credentials(scc, tok)
 
-            with grpc.secure_channel(GOOGLE_HOME_FOYER_API, ccc) as channel:
-                rpc_service = v1_pb2_grpc.StructuresServiceStub(channel)
-                request = v1_pb2.GetHomeGraphRequest(string1="", num2="")
-                response = rpc_service.GetHomeGraph(request)
-                self.homegraph = response
-            self.homegraph_date = datetime.now()
+                with grpc.secure_channel(GOOGLE_HOME_FOYER_API, ccc) as channel:
+                    rpc_service = v1_pb2_grpc.StructuresServiceStub(channel)
+                    request = v1_pb2.GetHomeGraphRequest(string1="", num2="")
+                    response = rpc_service.GetHomeGraph(request)
+                    self.homegraph = response
+                self.homegraph_date = datetime.now()
+            except grpc.RpcError as rpc_error:
+                if rpc_error.code().name == "UNAUTHENTICATED":
+                    LOGGER.warning("The access token has expired. Getting a new one.")
+                    self.invalidate_access_token()
+                    return self.get_homegraph()
+                else:
+                    LOGGER.error(
+                        f"Received unknown RPC error: code={rpc_error.code()} message={rpc_error.details()}"
+                    )
         return self.homegraph
 
     def get_google_devices(
@@ -212,6 +222,7 @@ class GLocalAuthenticationTokens:
         models_list: Optional[List[str]] = None,
         disable_discovery: bool = False,
         zeroconf_instance=None,
+        force_homegraph_reload: bool = False,
     ) -> [Device]:
         """
         Returns a list of google devices with their local authentication tokens, and IP and ports if set in models_list.
@@ -219,10 +230,14 @@ class GLocalAuthenticationTokens:
         models_list: The list of accepted model names.
         disable_discovery: Whether or not the device's IP and port should be searched for in the network.
         zeroconf_instance: If you already have an initialized zeroconf instance, use it here.
+        force_homegraph_reload: If the stored homegraph should be generated again.
         """
 
         # Set models_list to empty list if None
         models_list = models_list if models_list else []
+
+        if force_homegraph_reload:
+            self.invalidate_homegraph()
 
         homegraph = self.get_homegraph()
         network_devices = (
@@ -261,6 +276,8 @@ class GLocalAuthenticationTokens:
         models_list: Optional[List[str]] = None,
         indent: int = 2,
         disable_discovery: bool = False,
+        zeroconf_instance=None,
+        force_homegraph_reload: bool = False,
     ) -> str:
         """
         Returns a json list of google devices with their local authentication tokens, and IP and ports if set in
@@ -269,10 +286,25 @@ class GLocalAuthenticationTokens:
         models_list: The list of accepted model names.
         indent: The indentation for the json formatting.
         disable_discovery: Whether or not the device's IP and port should be searched for in the network.
+        zeroconf_instance: If you already have an initialized zeroconf instance, use it here.
+        force_homegraph_reload: If the stored homegraph should be generated again.
         """
 
         google_devices = self.get_google_devices(
-            models_list=models_list, disable_discovery=disable_discovery
+            models_list=models_list,
+            disable_discovery=disable_discovery,
+            zeroconf_instance=zeroconf_instance,
+            force_homegraph_reload=force_homegraph_reload,
         )
-        json_string = json.dumps([obj.dict() for obj in google_devices])
+        json_string = json.dumps([obj.dict() for obj in google_devices], indent=indent)
         return json_string
+
+    def invalidate_access_token(self):
+        """Invalidates the current access token"""
+        self.access_token = None
+        self.access_token_date = None
+
+    def invalidate_homegraph(self):
+        """Invalidates the stored homegraph data"""
+        self.homegraph = None
+        self.homegraph_date = None
