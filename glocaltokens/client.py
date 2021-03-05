@@ -207,9 +207,9 @@ class GLocalAuthenticationTokens:
                     self.homegraph = response
                 self.homegraph_date = datetime.now()
             except grpc.RpcError as rpc_error:
-                if rpc_error.code() == 401:
+                if rpc_error.code().name == "UNAUTHENTICATED":
                     LOGGER.warning("The access token has expired. Getting a new one.")
-                    self.access_token = None
+                    self.invalidate_access_token()
                     return self.get_homegraph()
                 else:
                     LOGGER.error(
