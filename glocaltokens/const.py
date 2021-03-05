@@ -22,6 +22,7 @@ GOOGLE_HOME_MODELS = [
 
 JSON_KEY_DEVICE_NAME = "device_name"
 JSON_KEY_GOOGLE_DEVICE = "google_device"
+JSON_KEY_HARDWARE = "hardware"
 JSON_KEY_IP = "ip"
 JSON_KEY_LOCAL_AUTH_TOKEN = "local_auth_token"
 JSON_KEY_PORT = "port"
