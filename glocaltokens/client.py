@@ -195,16 +195,26 @@ class GLocalAuthenticationTokens:
         if self.homegraph is None or self._has_expired(
             self.homegraph_date, HOMEGRAPH_DURATION
         ):
-            scc = grpc.ssl_channel_credentials(root_certificates=None)
-            tok = grpc.access_token_call_credentials(self.get_access_token())
-            ccc = grpc.composite_channel_credentials(scc, tok)
+            try:
+                scc = grpc.ssl_channel_credentials(root_certificates=None)
+                tok = grpc.access_token_call_credentials(self.get_access_token())
+                ccc = grpc.composite_channel_credentials(scc, tok)
 
-            with grpc.secure_channel(GOOGLE_HOME_FOYER_API, ccc) as channel:
-                rpc_service = v1_pb2_grpc.StructuresServiceStub(channel)
-                request = v1_pb2.GetHomeGraphRequest(string1="", num2="")
-                response = rpc_service.GetHomeGraph(request)
-                self.homegraph = response
-            self.homegraph_date = datetime.now()
+                with grpc.secure_channel(GOOGLE_HOME_FOYER_API, ccc) as channel:
+                    rpc_service = v1_pb2_grpc.StructuresServiceStub(channel)
+                    request = v1_pb2.GetHomeGraphRequest(string1="", num2="")
+                    response = rpc_service.GetHomeGraph(request)
+                    self.homegraph = response
+                self.homegraph_date = datetime.now()
+            except grpc.RpcError as rpc_error:
+                if rpc_error.code() == 401:
+                    LOGGER.warning("The access token has expired. Getting a new one.")
+                    self.access_token = None
+                    return self.get_homegraph()
+                else:
+                    LOGGER.error(
+                        f"Received unknown RPC error: code={rpc_error.code()} message={rpc_error.details()}"
+                    )
         return self.homegraph
 
     def get_google_devices(
