@@ -17,6 +17,7 @@ from .const import (
     HOMEGRAPH_DURATION,
     JSON_KEY_DEVICE_NAME,
     JSON_KEY_GOOGLE_DEVICE,
+    JSON_KEY_HARDWARE,
     JSON_KEY_IP,
     JSON_KEY_LOCAL_AUTH_TOKEN,
     JSON_KEY_PORT,
@@ -41,6 +42,7 @@ class Device:
         google_device: Optional[GoogleDevice] = None,
         ip: Optional[str] = None,
         port: Optional[int] = None,
+        hardware: Optional[str] = None,
     ):
         """
         Initializes a Device. Can set or google_device or ip and port
@@ -48,6 +50,7 @@ class Device:
         self.device_name = device_name
         self.local_auth_token = local_auth_token
         self.google_device = google_device
+        self.hardware = hardware
 
         if not self.local_auth_token:
             LOGGER.error("local_auth_token not set")
@@ -91,8 +94,9 @@ class Device:
     def dict(self) -> Dict[str, Any]:
         return {
             JSON_KEY_DEVICE_NAME: self.device_name,
-            JSON_KEY_LOCAL_AUTH_TOKEN: self.local_auth_token,
             JSON_KEY_GOOGLE_DEVICE: {JSON_KEY_IP: self.ip, JSON_KEY_PORT: self.port},
+            JSON_KEY_HARDWARE: self.hardware,
+            JSON_KEY_LOCAL_AUTH_TOKEN: self.local_auth_token,
         }
 
 
@@ -249,7 +253,12 @@ class GLocalAuthenticationTokens:
                     find_device(item.device_name) if network_devices else None
                 )
                 devices.append(
-                    Device(item.device_name, item.local_auth_token, google_device)
+                    Device(
+                        device_name=item.device_name,
+                        local_auth_token=item.local_auth_token,
+                        google_device=google_device,
+                        hardware=item.hardware.model,
+                    )
                 )
 
         LOGGER.debug("Google Home devices: {}".format(devices))
