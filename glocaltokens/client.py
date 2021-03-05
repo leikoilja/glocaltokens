@@ -222,6 +222,7 @@ class GLocalAuthenticationTokens:
         models_list: Optional[List[str]] = None,
         disable_discovery: bool = False,
         zeroconf_instance=None,
+        force_homegraph_reload: bool = False,
     ) -> [Device]:
         """
         Returns a list of google devices with their local authentication tokens, and IP and ports if set in models_list.
@@ -233,6 +234,9 @@ class GLocalAuthenticationTokens:
 
         # Set models_list to empty list if None
         models_list = models_list if models_list else []
+
+        if force_homegraph_reload:
+            self.invalidate_homegraph()
 
         homegraph = self.get_homegraph()
         network_devices = (
@@ -271,6 +275,8 @@ class GLocalAuthenticationTokens:
         models_list: Optional[List[str]] = None,
         indent: int = 2,
         disable_discovery: bool = False,
+        zeroconf_instance=None,
+        force_homegraph_reload: bool = False,
     ) -> str:
         """
         Returns a json list of google devices with their local authentication tokens, and IP and ports if set in
@@ -282,9 +288,12 @@ class GLocalAuthenticationTokens:
         """
 
         google_devices = self.get_google_devices(
-            models_list=models_list, disable_discovery=disable_discovery
+            models_list=models_list,
+            disable_discovery=disable_discovery,
+            zeroconf_instance=zeroconf_instance,
+            force_homegraph_reload=force_homegraph_reload,
         )
-        json_string = json.dumps([obj.dict() for obj in google_devices])
+        json_string = json.dumps([obj.dict() for obj in google_devices], indent=indent)
         return json_string
 
     def invalidate_access_token(self):
