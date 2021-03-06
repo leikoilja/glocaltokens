@@ -240,7 +240,8 @@ class GLocalAuthenticationTokens:
 
         # Set models_list to empty list if None
         models_list = models_list if models_list else []
-        self.android_id = android_id
+        if android_id:
+            self.android_id = android_id
 
         if force_homegraph_reload:
             self.invalidate_homegraph()
