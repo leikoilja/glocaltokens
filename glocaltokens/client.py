@@ -227,6 +227,7 @@ class GLocalAuthenticationTokens:
         disable_discovery: bool = False,
         zeroconf_instance=None,
         force_homegraph_reload: bool = False,
+        android_id: Optional[str] = None,
     ) -> [Device]:
         """
         Returns a list of google devices with their local authentication tokens, and IP and ports if set in models_list.
@@ -239,6 +240,7 @@ class GLocalAuthenticationTokens:
 
         # Set models_list to empty list if None
         models_list = models_list if models_list else []
+        self.android_id = android_id
 
         if force_homegraph_reload:
             self.invalidate_homegraph()
@@ -287,6 +289,7 @@ class GLocalAuthenticationTokens:
         disable_discovery: bool = False,
         zeroconf_instance=None,
         force_homegraph_reload: bool = False,
+        android_id: Optional[str] = None,
     ) -> str:
         """
         Returns a json list of google devices with their local authentication tokens, and IP and ports if set in
@@ -304,6 +307,7 @@ class GLocalAuthenticationTokens:
             disable_discovery=disable_discovery,
             zeroconf_instance=zeroconf_instance,
             force_homegraph_reload=force_homegraph_reload,
+            android_id=android_id,
         )
         json_string = json.dumps([obj.dict() for obj in google_devices], indent=indent)
         return json_string
