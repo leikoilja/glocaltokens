@@ -275,10 +275,10 @@ class GLocalAuthenticationTokens:
                     google_device=google_device,
                     hardware=item.hardware.model,
                 )
-                if not device.local_auth_token:
-                    LOGGER.warning("Device initialization failed, skipping.")
-                else:
+                if device.local_auth_token:
                     devices.append(device)
+                else:
+                    LOGGER.warning("Device initialization failed, skipping.")
 
         LOGGER.debug("Google Home devices: {}".format(devices))
 
