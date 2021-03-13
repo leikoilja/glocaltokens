@@ -52,7 +52,7 @@ class Device:
         self.google_device = google_device
         self.hardware = hardware
 
-        if not self.local_auth_token:
+        if not local_auth_token:
             LOGGER.error("local_auth_token not set")
             return
 
@@ -60,7 +60,7 @@ class Device:
             LOGGER.error("device_name not set")
             return
 
-        if not token_utils.is_local_auth_token(self.local_auth_token):
+        if not token_utils.is_local_auth_token(local_auth_token):
             LOGGER.error("local_auth_token doesn't follow the correct format.")
             return
 
@@ -87,6 +87,8 @@ class Device:
         if self.port and not net_utils.is_valid_port(self.port):
             LOGGER.error("port must be a valid port")
             return
+
+        self.local_auth_token = local_auth_token
 
     def __str__(self) -> str:
         return str(self.dict())
@@ -267,14 +269,16 @@ class GLocalAuthenticationTokens:
                 google_device = (
                     find_device(item.device_name) if network_devices else None
                 )
-                devices.append(
-                    Device(
-                        device_name=item.device_name,
-                        local_auth_token=item.local_auth_token,
-                        google_device=google_device,
-                        hardware=item.hardware.model,
-                    )
+                device = Device(
+                    device_name=item.device_name,
+                    local_auth_token=item.local_auth_token,
+                    google_device=google_device,
+                    hardware=item.hardware.model,
                 )
+                if device.local_auth_token != item.local_auth_token:
+                    LOGGER.warning("Device initialization failed, skipping.")
+                else:
+                    devices.append(device)
 
         LOGGER.debug("Google Home devices: {}".format(devices))
 
