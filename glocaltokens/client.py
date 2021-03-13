@@ -48,6 +48,7 @@ class Device:
         Initializes a Device. Can set or google_device or ip and port
         """
         self.device_name = device_name
+        self.local_auth_token = None
         self.google_device = google_device
         self.hardware = hardware
 
