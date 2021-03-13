@@ -267,7 +267,7 @@ class GLocalAuthenticationTokensClientTests(TypeTestMixin, TestCase):
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_homegraph")
     def test_get_google_devices(self, m_get_homegraph):
         # With just one device returned from homegraph
-        homegraph_devices = faker.google_devices(max_devices=1)
+        homegraph_devices = faker.homegraph_devices(count=1)
         homegraph_device = homegraph_devices[0]
         m_get_homegraph.return_value.home.devices = homegraph_devices
 
@@ -284,7 +284,7 @@ class GLocalAuthenticationTokensClientTests(TypeTestMixin, TestCase):
         self.assertEqual(google_device.hardware, homegraph_device.hardware.model)
 
         # With many devices returned from homegraph
-        homegraph_devices = faker.google_devices()
+        homegraph_devices = faker.homegraph_devices()
         m_get_homegraph.return_value.home.devices = homegraph_devices
 
         # With no discover_devices, with no model_list
