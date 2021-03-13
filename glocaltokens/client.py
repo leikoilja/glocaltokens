@@ -275,7 +275,7 @@ class GLocalAuthenticationTokens:
                     google_device=google_device,
                     hardware=item.hardware.model,
                 )
-                if device.local_auth_token != item.local_auth_token:
+                if device.local_auth_token:
                     LOGGER.warning("Device initialization failed, skipping.")
                 else:
                     devices.append(device)
