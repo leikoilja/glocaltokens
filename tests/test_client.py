@@ -330,12 +330,10 @@ class DeviceClientTests(TypeTestMixin, TestCase):
 
     @patch("glocaltokens.client.LOGGER.error")
     def test_initialization__invalid(self, m_log):
-        local_auth_token = faker.local_auth_token()
-
         # With only ip
         device = Device(
             device_name=faker.word(),
-            local_auth_token=local_auth_token,
+            local_auth_token=faker.local_auth_token(),
             ip=faker.ipv4_private(),
         )
         self.assertEqual(m_log.call_count, 1)
@@ -344,13 +342,13 @@ class DeviceClientTests(TypeTestMixin, TestCase):
         # With only port
         device = Device(
             device_name=faker.word(),
-            local_auth_token=local_auth_token,
+            local_auth_token=faker.local_auth_token(),
             port=faker.port_number(),
         )
         self.assertEqual(m_log.call_count, 2)
         self.assertIsNone(device.local_auth_token)
 
         # Invalid local_auth_token
-        device = Device(device_name=faker.word(), local_auth_token=local_auth_token)
+        device = Device(device_name=faker.word(), local_auth_token=faker.word())
         self.assertEqual(m_log.call_count, 3)
         self.assertIsNone(device.local_auth_token)
