@@ -267,9 +267,8 @@ class GLocalAuthenticationTokensClientTests(TypeTestMixin, TestCase):
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_homegraph")
     def test_get_google_devices(self, m_get_homegraph):
         # With just one device returned from homegraph
-        homegraph_devices = faker.homegraph_devices(count=1)
-        homegraph_device = homegraph_devices[0]
-        m_get_homegraph.return_value.home.devices = homegraph_devices
+        homegraph_device = faker.homegraph_device()
+        m_get_homegraph.return_value.home.devices = [homegraph_device]
 
         # With no discover_devices, with no model_list
         google_devices = self.client.get_google_devices(disable_discovery=True)
@@ -283,13 +282,23 @@ class GLocalAuthenticationTokensClientTests(TypeTestMixin, TestCase):
         self.assertEqual(google_device.device_name, homegraph_device.device_name)
         self.assertEqual(google_device.hardware, homegraph_device.hardware.model)
 
-        # With many devices returned from homegraph
-        homegraph_devices = faker.homegraph_devices()
-        m_get_homegraph.return_value.home.devices = homegraph_devices
-
-        # With no discover_devices, with no model_list
+        # With two devices returned from homegraph
+        # but one device having the invalid token
+        homegraph_device_valid = faker.homegraph_device()
+        homegraph_device_invalid = faker.homegraph_device()
+        homegraph_device_invalid.local_auth_token = (
+            faker.word()
+        )  # setting invalid token intentionally
+        # Note that we initialize the list with homegraph_device_invalid which should be ignored
+        m_get_homegraph.return_value.home.devices = [
+            homegraph_device_invalid,
+            homegraph_device_valid,
+        ]
         google_devices = self.client.get_google_devices(disable_discovery=True)
-        self.assertEqual(len(homegraph_devices), len(google_devices))
+        self.assertEqual(len(google_devices), 1)
+        self.assertEqual(
+            google_devices[0].local_auth_token, homegraph_device_valid.local_auth_token
+        )
 
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_google_devices")
     def test_get_google_devices_json(self, m_get_google_devices):
