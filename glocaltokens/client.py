@@ -52,18 +52,6 @@ class Device:
         self.google_device = google_device
         self.hardware = hardware
 
-        if not local_auth_token:
-            LOGGER.error("local_auth_token not set")
-            return
-
-        if not self.device_name:
-            LOGGER.error("device_name not set")
-            return
-
-        if not token_utils.is_local_auth_token(local_auth_token):
-            LOGGER.error("local_auth_token doesn't follow the correct format.")
-            return
-
         if google_device:
             self.ip = google_device.ip
             self.port = google_device.port
@@ -75,6 +63,18 @@ class Device:
                 return
             self.ip = ip
             self.port = port
+
+        if not local_auth_token:
+            LOGGER.error("local_auth_token not set")
+            return
+
+        if not self.device_name:
+            LOGGER.error("device_name not set")
+            return
+
+        if not token_utils.is_local_auth_token(local_auth_token):
+            LOGGER.error("local_auth_token doesn't follow the correct format.")
+            return
 
         if (
             self.ip
