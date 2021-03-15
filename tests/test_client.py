@@ -278,11 +278,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeTestMixin, Tes
 
         google_device = google_devices[0]
         self.assertEqual(type(google_device), Device)
-        self.assertEqual(
-            google_device.local_auth_token, homegraph_device.local_auth_token
-        )
-        self.assertEqual(google_device.device_name, homegraph_device.device_name)
-        self.assertEqual(google_device.hardware, homegraph_device.hardware.model)
+        self.assertDevice(google_device, homegraph_device)
 
         # With two devices returned from homegraph
         # but one device having the invalid token
