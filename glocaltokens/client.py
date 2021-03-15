@@ -48,21 +48,9 @@ class Device:
         Initializes a Device. Can set or google_device or ip and port
         """
         self.device_name = device_name
-        self.local_auth_token = local_auth_token
+        self.local_auth_token = None
         self.google_device = google_device
         self.hardware = hardware
-
-        if not self.local_auth_token:
-            LOGGER.error("local_auth_token not set")
-            return
-
-        if not self.device_name:
-            LOGGER.error("device_name not set")
-            return
-
-        if not token_utils.is_local_auth_token(self.local_auth_token):
-            LOGGER.error("local_auth_token doesn't follow the correct format.")
-            return
 
         if google_device:
             self.ip = google_device.ip
@@ -76,6 +64,18 @@ class Device:
             self.ip = ip
             self.port = port
 
+        if not local_auth_token:
+            LOGGER.error("local_auth_token not set")
+            return
+
+        if not self.device_name:
+            LOGGER.error("device_name not set")
+            return
+
+        if not token_utils.is_local_auth_token(local_auth_token):
+            LOGGER.error("local_auth_token doesn't follow the correct format.")
+            return
+
         if (
             self.ip
             and not net_utils.is_valid_ipv4_address(self.ip)
@@ -87,6 +87,8 @@ class Device:
         if self.port and not net_utils.is_valid_port(self.port):
             LOGGER.error("port must be a valid port")
             return
+
+        self.local_auth_token = local_auth_token
 
     def __str__(self) -> str:
         return str(self.dict())
@@ -267,14 +269,16 @@ class GLocalAuthenticationTokens:
                 google_device = (
                     find_device(item.device_name) if network_devices else None
                 )
-                devices.append(
-                    Device(
-                        device_name=item.device_name,
-                        local_auth_token=item.local_auth_token,
-                        google_device=google_device,
-                        hardware=item.hardware.model,
-                    )
+                device = Device(
+                    device_name=item.device_name,
+                    local_auth_token=item.local_auth_token,
+                    google_device=google_device,
+                    hardware=item.hardware.model,
                 )
+                if device.local_auth_token:
+                    devices.append(device)
+                else:
+                    LOGGER.warning("Device initialization failed, skipping.")
 
         LOGGER.debug("Google Home devices: {}".format(devices))
 

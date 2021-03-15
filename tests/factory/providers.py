@@ -1,3 +1,5 @@
+from typing import Optional
+
 from faker import Faker
 from faker.providers import BaseProvider
 
@@ -28,27 +30,32 @@ class TokenProvider(BaseProvider):
         return generate_token(LOCAL_AUTH_TOKEN_LENGTH)
 
 
-class HomegraphProvider(BaseProvider):
-    def google_device(self):
+class HomegraphProvider(TokenProvider):
+    def homegraph_device(self):
         """
         Not sure from where did I get this structure from. Just using the content from client.py as reference.
         """
         return Struct(
             **{
-                "local_auth_token": generate_token(LOCAL_AUTH_TOKEN_LENGTH),
+                "local_auth_token": self.local_auth_token(),
                 "device_name": fake.word(),
                 "hardware": Struct(**{"model": fake.word()}),
             }
         )
 
-    def google_devices(self, min_devices: int = 1, max_devices: int = 10):
+    def homegraph_devices(
+        self, min_devices: int = 1, max_devices: int = 10, count: Optional[int] = None
+    ):
         """
         Generates a random amount of devices, in the range specified.
 
         min_devices: The number minimum of devices to generate. Should be greater than 0
         max_devices: The maximum number of devices to generate. Must be greater than min_devices
+        count: If not None, min_devices and max_devices are ignored, and a count amount of devices will be generated
         """
         return [
-            self.google_device()
-            for n in range(fake.random.randint(min_devices, max_devices))
+            self.homegraph_device()
+            for n in range(
+                count if count else fake.random.randint(min_devices, max_devices)
+            )
         ]

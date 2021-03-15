@@ -22,7 +22,7 @@ from glocaltokens.const import (
     JSON_KEY_PORT,
 )
 from glocaltokens.utils.types import Struct
-from tests.factory.mixin import TypeTestMixin
+from tests.assertions import DeviceAssertions, TypeAssertions
 from tests.factory.providers import HomegraphProvider, TokenProvider
 
 faker = Faker()
@@ -31,7 +31,7 @@ faker.add_provider(HomegraphProvider)
 faker.add_provider(internet)
 
 
-class GLocalAuthenticationTokensClientTests(TypeTestMixin, TestCase):
+class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, TestCase):
     def setUp(self):
         """Setup method run before every test"""
         self.client = GLocalAuthenticationTokens(
@@ -267,9 +267,8 @@ class GLocalAuthenticationTokensClientTests(TypeTestMixin, TestCase):
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_homegraph")
     def test_get_google_devices(self, m_get_homegraph):
         # With just one device returned from homegraph
-        homegraph_devices = faker.google_devices(max_devices=1)
-        homegraph_device = homegraph_devices[0]
-        m_get_homegraph.return_value.home.devices = homegraph_devices
+        homegraph_device = faker.homegraph_device()
+        m_get_homegraph.return_value.home.devices = [homegraph_device]
 
         # With no discover_devices, with no model_list
         google_devices = self.client.get_google_devices(disable_discovery=True)
@@ -277,19 +276,23 @@ class GLocalAuthenticationTokensClientTests(TypeTestMixin, TestCase):
 
         google_device = google_devices[0]
         self.assertEqual(type(google_device), Device)
-        self.assertEqual(
-            google_device.local_auth_token, homegraph_device.local_auth_token
-        )
-        self.assertEqual(google_device.device_name, homegraph_device.device_name)
-        self.assertEqual(google_device.hardware, homegraph_device.hardware.model)
+        self.assertDevice(google_device, homegraph_device)
 
-        # With many devices returned from homegraph
-        homegraph_devices = faker.google_devices()
-        m_get_homegraph.return_value.home.devices = homegraph_devices
-
-        # With no discover_devices, with no model_list
+        # With two devices returned from homegraph
+        # but one device having the invalid token
+        homegraph_device_valid = faker.homegraph_device()
+        homegraph_device_invalid = faker.homegraph_device()
+        homegraph_device_invalid.local_auth_token = (
+            faker.word()
+        )  # setting invalid token intentionally
+        # Note that we initialize the list with homegraph_device_invalid which should be ignored
+        m_get_homegraph.return_value.home.devices = [
+            homegraph_device_invalid,
+            homegraph_device_valid,
+        ]
         google_devices = self.client.get_google_devices(disable_discovery=True)
-        self.assertEqual(len(homegraph_devices), len(google_devices))
+        self.assertEqual(len(google_devices), 1)
+        self.assertDevice(google_devices[0], homegraph_device_valid)
 
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_google_devices")
     def test_get_google_devices_json(self, m_get_google_devices):
@@ -319,29 +322,36 @@ class GLocalAuthenticationTokensClientTests(TypeTestMixin, TestCase):
         self.assertEqual(received_device[JSON_KEY_GOOGLE_DEVICE][JSON_KEY_IP], ip)
 
 
-class DeviceClientTests(TypeTestMixin, TestCase):
+class DeviceClientTests(TypeAssertions, TestCase):
     def test_initialization__valid(self):
+        local_auth_token = faker.local_auth_token()
+
         # With ip and port
-        Device(device_name=faker.word(), local_auth_token=faker.local_auth_token())
+        device = Device(device_name=faker.word(), local_auth_token=local_auth_token)
+
+        self.assertEqual(device.local_auth_token, local_auth_token)
 
     @patch("glocaltokens.client.LOGGER.error")
     def test_initialization__invalid(self, m_log):
         # With only ip
-        Device(
+        device = Device(
             device_name=faker.word(),
             local_auth_token=faker.local_auth_token(),
             ip=faker.ipv4_private(),
         )
         self.assertEqual(m_log.call_count, 1)
+        self.assertIsNone(device.local_auth_token)
 
         # With only port
-        Device(
+        device = Device(
             device_name=faker.word(),
             local_auth_token=faker.local_auth_token(),
             port=faker.port_number(),
         )
         self.assertEqual(m_log.call_count, 2)
+        self.assertIsNone(device.local_auth_token)
 
         # Invalid local_auth_token
-        Device(device_name=faker.word(), local_auth_token=faker.word())
+        device = Device(device_name=faker.word(), local_auth_token=faker.word())
         self.assertEqual(m_log.call_count, 3)
+        self.assertIsNone(device.local_auth_token)
