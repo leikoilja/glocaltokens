@@ -25,13 +25,15 @@ from glocaltokens.utils.types import Struct
 from tests.factory.mixin import TypeTestMixin
 from tests.factory.providers import HomegraphProvider, TokenProvider
 
+from .assertions import DeviceAssertions
+
 faker = Faker()
 faker.add_provider(TokenProvider)
 faker.add_provider(HomegraphProvider)
 faker.add_provider(internet)
 
 
-class GLocalAuthenticationTokensClientTests(TypeTestMixin, TestCase):
+class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeTestMixin, TestCase):
     def setUp(self):
         """Setup method run before every test"""
         self.client = GLocalAuthenticationTokens(
@@ -296,9 +298,7 @@ class GLocalAuthenticationTokensClientTests(TypeTestMixin, TestCase):
         ]
         google_devices = self.client.get_google_devices(disable_discovery=True)
         self.assertEqual(len(google_devices), 1)
-        self.assertEqual(
-            google_devices[0].local_auth_token, homegraph_device_valid.local_auth_token
-        )
+        self.assertDevice(google_devices[0], homegraph_device_valid)
 
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_google_devices")
     def test_get_google_devices_json(self, m_get_google_devices):
