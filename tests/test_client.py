@@ -22,9 +22,8 @@ from glocaltokens.const import (
     JSON_KEY_PORT,
 )
 from glocaltokens.utils.types import Struct
+from tests.assertions import DeviceAssertions, TypeAssertions
 from tests.factory.providers import HomegraphProvider, TokenProvider
-
-from .assertions import DeviceAssertions, TypeAssertions
 
 faker = Faker()
 faker.add_provider(TokenProvider)
