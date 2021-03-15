@@ -1,3 +1,6 @@
+import glocaltokens.utils.token as token_utils
+
+
 class DeviceAssertions(object):
     def assertDevice(self, homegraph_device, homegraph_device_struct):
         """
@@ -11,4 +14,17 @@ class DeviceAssertions(object):
         )
         self.assertEqual(
             homegraph_device.hardware, homegraph_device_struct.hardware.model
+        )
+
+
+class TypeAssertions:
+    def assertIsString(self, variable):
+        self.assertTrue(
+            type(variable) == str, msg=f"Given variable {variable} is not String type"
+        )
+
+    def assertIsAASET(self, variable):
+        self.assertTrue(
+            type(variable) == str and token_utils.is_aas_et(variable),
+            msg=f"Given variable {variable} doesn't follow the AAS_ET format",
         )

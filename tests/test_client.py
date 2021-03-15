@@ -22,10 +22,9 @@ from glocaltokens.const import (
     JSON_KEY_PORT,
 )
 from glocaltokens.utils.types import Struct
-from tests.factory.mixin import TypeTestMixin
 from tests.factory.providers import HomegraphProvider, TokenProvider
 
-from .assertions import DeviceAssertions
+from .assertions import DeviceAssertions, TypeAssertions
 
 faker = Faker()
 faker.add_provider(TokenProvider)
@@ -33,7 +32,7 @@ faker.add_provider(HomegraphProvider)
 faker.add_provider(internet)
 
 
-class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeTestMixin, TestCase):
+class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, TestCase):
     def setUp(self):
         """Setup method run before every test"""
         self.client = GLocalAuthenticationTokens(
@@ -324,7 +323,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeTestMixin, Tes
         self.assertEqual(received_device[JSON_KEY_GOOGLE_DEVICE][JSON_KEY_IP], ip)
 
 
-class DeviceClientTests(TypeTestMixin, TestCase):
+class DeviceClientTests(TypeAssertions, TestCase):
     def test_initialization__valid(self):
         local_auth_token = faker.local_auth_token()
 
