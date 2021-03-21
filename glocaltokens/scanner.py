@@ -97,6 +97,10 @@ class GoogleDevice:
             _LOGGER.error("Port is out of the valid range: [0,65535]")
             return
 
+    def __str__(self) -> str:
+        """Serializes the class into a str"""
+        return f"{{name:{self.name},ip:{self.ip},port:{self.port},model:{self.model}}}"
+
 
 def discover_devices(
     models_list: Optional[List[str]] = None,
