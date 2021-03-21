@@ -26,6 +26,7 @@ from .google.internal.home.foyer import v1_pb2, v1_pb2_grpc
 from .scanner import GoogleDevice, discover_devices
 from .utils import network as net_utils
 from .utils import token as token_utils
+from .utils.logs import censure
 
 DEBUG = False
 
@@ -47,21 +48,32 @@ class Device:
         """
         Initializes a Device. Can set or google_device or ip and port
         """
+        LOGGER.debug("Initializing new Device instance.")
+        LOGGER.debug(f'Setting self device_name to "{device_name}"')
         self.device_name = device_name
+        LOGGER.debug(f"Setting self local_auth_token to None")
         self.local_auth_token = None
+        LOGGER.debug(f"Setting self google_device to {google_device}")
         self.google_device = google_device
+        LOGGER.debug(f"Setting self hardware to {hardware}")
         self.hardware = hardware
 
         if google_device:
+            LOGGER.debug(f"google_device is not None")
+            LOGGER.debug(f"Setting self ip to {google_device.ip}")
             self.ip = google_device.ip
+            LOGGER.debug(f"Setting self port to {google_device.port}")
             self.port = google_device.port
         else:
+            LOGGER.debug(f"google_device is None")
             if (ip and not port) or (not ip and port):
                 LOGGER.error(
                     "Both ip and port must be set, if one of them is specified."
                 )
                 return
+            LOGGER.debug(f"Setting self ip to {ip}")
             self.ip = ip
+            LOGGER.debug(f"Setting self port to {port}")
             self.port = port
 
         if not local_auth_token:
@@ -88,6 +100,7 @@ class Device:
             LOGGER.error("port must be a valid port")
             return
 
+        LOGGER.debug(f"Setting self local_auth_token to {censure(local_auth_token)}")
         self.local_auth_token = local_auth_token
 
     def __str__(self) -> str:
