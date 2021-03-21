@@ -136,9 +136,14 @@ class GLocalAuthenticationTokens:
                 if not set;
 
         """
+        LOGGER.debug("Initializing new GLocalAuthenticationTokens instance.")
+        LOGGER.debug(f'Setting self username to "{username}"')
         self.username: Optional[str] = username
+        LOGGER.debug(f'Setting self password to "{censure(password)}"')
         self.password: Optional[str] = password
+        LOGGER.debug(f'Setting self master_token to "{censure(master_token)}"')
         self.master_token: Optional[str] = master_token
+        LOGGER.debug(f'Setting self android_id to "{censure(android_id)}"')
         self.android_id: Optional[str] = android_id
         if (not self.username or not self.password) and not self.master_token:
             LOGGER.error(
@@ -149,21 +154,28 @@ class GLocalAuthenticationTokens:
         if self.master_token and not token_utils.is_aas_et(self.master_token):
             LOGGER.error("master_token doesn't follow the AAS_ET format")
             return
+        LOGGER.debug(f"Setting self access_token to None")
         self.access_token: Optional[str] = None
+        LOGGER.debug(f"Setting self homegraph to None")
         self.homegraph = None
+        LOGGER.debug(f"Setting self access_token_date to None")
         self.access_token_date: Optional[datetime] = None
+        LOGGER.debug(f"Setting self homegraph_date to None")
         self.homegraph_date: Optional[datetime] = None
 
     @staticmethod
     def _generate_mac_string():
         """Generate random 14 char long string"""
+        LOGGER.debug(f"Generating mac...")
         random_uuid = uuid4()
         random_string = str(random_uuid).replace("-", "")[:ANDROID_ID_LENGTH]
         mac_string = random_string.upper()
+        LOGGER.debug(f"Generated mac: {mac_string}")
         return mac_string
 
     def get_android_id(self) -> Optional[str]:
         if not self.android_id:
+            LOGGER.debug("There is not any stored android_id, generating a new one")
             self.android_id = self._generate_mac_string()
         return self.android_id
 
@@ -177,11 +189,13 @@ class GLocalAuthenticationTokens:
         Get google master token from username and password
         """
         if not self.master_token:
+            LOGGER.debug("There is not any stored master_token, logging in...")
             res = perform_master_login(
                 self.username, self.password, self.get_android_id()
             )
             if "Token" not in res:
                 LOGGER.error("[!] Could not get master token.")
+                LOGGER.debug(f"Request response: {res}")
                 return
             self.master_token = res["Token"]
         LOGGER.debug("Master token: {}".format(self.master_token))
@@ -191,6 +205,9 @@ class GLocalAuthenticationTokens:
         if self.access_token is None or self._has_expired(
             self.access_token_date, ACCESS_TOKEN_DURATION
         ):
+            LOGGER.debug(
+                "There is not any stored access_token, or the stored one has expired, getting a new one..."
+            )
             res = perform_oauth(
                 self.username,
                 self.get_master_token(),
@@ -201,10 +218,12 @@ class GLocalAuthenticationTokens:
             )
             if "Auth" not in res:
                 LOGGER.error("[!] Could not get access token.")
+                LOGGER.debug(f"Request response: {res}")
                 return
             self.access_token = res["Auth"]
             self.access_token_date = datetime.now()
         LOGGER.debug("Access token: {}".format(self.access_token))
+        LOGGER.debug(f"Access token date: {self.access_token_date}")
         return self.access_token
 
     def get_homegraph(self):
@@ -214,18 +233,32 @@ class GLocalAuthenticationTokens:
         if self.homegraph is None or self._has_expired(
             self.homegraph_date, HOMEGRAPH_DURATION
         ):
+            LOGGER.debug(
+                "There is not any stored homegraph, or the stored one has expired, getting a new one..."
+            )
             try:
+                LOGGER.debug("Creating SSL channel credentials...")
                 scc = grpc.ssl_channel_credentials(root_certificates=None)
+                LOGGER.debug("Creating access token call credentials...")
                 tok = grpc.access_token_call_credentials(self.get_access_token())
+                LOGGER.debug("Compositing channel credentials...")
                 ccc = grpc.composite_channel_credentials(scc, tok)
 
+                LOGGER.debug(
+                    "Establishing secure channel with the Google Home Foyer API..."
+                )
                 with grpc.secure_channel(GOOGLE_HOME_FOYER_API, ccc) as channel:
+                    LOGGER.debug("Getting channels StructuresServiceStub...")
                     rpc_service = v1_pb2_grpc.StructuresServiceStub(channel)
+                    LOGGER.debug("Getting HomeGraph request...")
                     request = v1_pb2.GetHomeGraphRequest(string1="", num2="")
+                    LOGGER.debug("Fetching HomeGraph...")
                     response = rpc_service.GetHomeGraph(request)
+                    LOGGER.debug("Storing gotten homegraph...")
                     self.homegraph = response
                 self.homegraph_date = datetime.now()
             except grpc.RpcError as rpc_error:
+                LOGGER.debug("Got an RpcError.")
                 if rpc_error.code().name == "UNAUTHENTICATED":
                     LOGGER.warning("The access token has expired. Getting a new one.")
                     self.invalidate_access_token()
@@ -253,12 +286,16 @@ class GLocalAuthenticationTokens:
         """
 
         # Set models_list to empty list if None
+        LOGGER.debug("Initializing models list if empty...")
         models_list = models_list if models_list else []
 
         if force_homegraph_reload:
+            LOGGER.debug("Forcing homegraph reload.")
             self.invalidate_homegraph()
 
+        LOGGER.debug("Getting homegraph...")
         homegraph = self.get_homegraph()
+        LOGGER.debug("Getting network devices...")
         network_devices = (
             discover_devices(models_list, zeroconf_instance=zeroconf_instance)
             if not disable_discovery
@@ -272,13 +309,20 @@ class GLocalAuthenticationTokens:
             return None
 
         devices: [Device] = []
+        LOGGER.debug(
+            "Iterating in homegraph devices ({}).".format(len(homegraph.home.devices))
+        )
         for item in homegraph.home.devices:
             if item.local_auth_token != "":
                 # This checks if the current item is a valid model, only if there are models in models_list.
                 # If models_list is empty, the check should be omitted, and accept all items.
                 if models_list and item.hardware.model not in models_list:
+                    LOGGER.debug("{} not in models_list".format(item.hardware.model))
                     continue
 
+                LOGGER.debug(
+                    "Finding device in network? {}".format(not not network_devices)
+                )
                 google_device = (
                     find_device(item.device_name) if network_devices else None
                 )
@@ -289,9 +333,12 @@ class GLocalAuthenticationTokens:
                     hardware=item.hardware.model,
                 )
                 if device.local_auth_token:
+                    LOGGER.debug("Appending device")
                     devices.append(device)
                 else:
                     LOGGER.warning("Device initialization failed, skipping.")
+            else:
+                LOGGER.debug("local_auth_token is not initialized")
 
         LOGGER.debug("Google Home devices: {}".format(devices))
 
@@ -327,10 +374,12 @@ class GLocalAuthenticationTokens:
 
     def invalidate_access_token(self):
         """Invalidates the current access token"""
+        LOGGER.debug("Invalidating access_token")
         self.access_token = None
         self.access_token_date = None
 
     def invalidate_homegraph(self):
         """Invalidates the stored homegraph data"""
+        LOGGER.debug("Invalidating homegraph")
         self.homegraph = None
         self.homegraph_date = None
