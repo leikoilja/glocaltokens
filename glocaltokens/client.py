@@ -49,14 +49,15 @@ class Device:
         Initializes a Device. Can set or google_device or ip and port
         """
         LOGGER.debug("Initializing new Device instance.")
-        LOGGER.debug(f'Setting self device_name to "{device_name}"')
         self.device_name = device_name
-        LOGGER.debug(f"Setting self local_auth_token to None")
         self.local_auth_token = None
-        LOGGER.debug(f"Setting self google_device to {google_device}")
         self.google_device = google_device
-        LOGGER.debug(f"Setting self hardware to {hardware}")
         self.hardware = hardware
+        LOGGER.debug(
+            'Set self device_name to "{}", local_auth_token to None, google_device to {}, and hardware to {}'.format(
+                device_name, google_device, hardware
+            )
+        )
 
         if google_device:
             LOGGER.debug(f"google_device is not None")
@@ -137,14 +138,18 @@ class GLocalAuthenticationTokens:
 
         """
         LOGGER.debug("Initializing new GLocalAuthenticationTokens instance.")
-        LOGGER.debug(f'Setting self username to "{username}"')
         self.username: Optional[str] = username
-        LOGGER.debug(f'Setting self password to "{censor(password)}"')
         self.password: Optional[str] = password
-        LOGGER.debug(f'Setting self master_token to "{censor(master_token)}"')
         self.master_token: Optional[str] = master_token
-        LOGGER.debug(f'Setting self android_id to "{censor(android_id)}"')
         self.android_id: Optional[str] = android_id
+        LOGGER.debug(
+            'Set self username to "{}", password to "{}", master_token to "{}" and android_id to {}'.format(
+                censor(username),
+                censor(password),
+                censor(master_token),
+                censor(android_id),
+            )
+        )
         if (not self.username or not self.password) and not self.master_token:
             LOGGER.error(
                 "You must either provide google username/password "
@@ -154,14 +159,13 @@ class GLocalAuthenticationTokens:
         if self.master_token and not token_utils.is_aas_et(self.master_token):
             LOGGER.error("master_token doesn't follow the AAS_ET format")
             return
-        LOGGER.debug(f"Setting self access_token to None")
         self.access_token: Optional[str] = None
-        LOGGER.debug(f"Setting self homegraph to None")
         self.homegraph = None
-        LOGGER.debug(f"Setting self access_token_date to None")
         self.access_token_date: Optional[datetime] = None
-        LOGGER.debug(f"Setting self homegraph_date to None")
         self.homegraph_date: Optional[datetime] = None
+        LOGGER.debug(
+            "Set self access_token, homegraph, access_token_date and homegraph_date to None"
+        )
 
     @staticmethod
     def _generate_mac_string():
@@ -222,8 +226,9 @@ class GLocalAuthenticationTokens:
                 return
             self.access_token = res["Auth"]
             self.access_token_date = datetime.now()
-        LOGGER.debug("Access token: {}".format(self.access_token))
-        LOGGER.debug(f"Access token date: {self.access_token_date}")
+        LOGGER.debug(
+            f"Access token: {self.access_token}, datetime {self.access_token_date}"
+        )
         return self.access_token
 
     def get_homegraph(self):
@@ -310,7 +315,7 @@ class GLocalAuthenticationTokens:
 
         devices: [Device] = []
         LOGGER.debug(
-            "Iterating in homegraph devices ({}).".format(len(homegraph.home.devices))
+            f"Iterating in homegraph devices (len={len(homegraph.home.devices)})"
         )
         for item in homegraph.home.devices:
             if item.local_auth_token != "":
@@ -374,12 +379,12 @@ class GLocalAuthenticationTokens:
 
     def invalidate_access_token(self):
         """Invalidates the current access token"""
-        LOGGER.debug("Invalidating access_token")
         self.access_token = None
         self.access_token_date = None
+        LOGGER.debug("Invalidated access_token")
 
     def invalidate_homegraph(self):
         """Invalidates the stored homegraph data"""
-        LOGGER.debug("Invalidating homegraph")
         self.homegraph = None
         self.homegraph_date = None
+        LOGGER.debug("Invalidated homegraph")

@@ -89,14 +89,15 @@ class GoogleDevice:
             _LOGGER.error("port must be an integer value")
             return
 
-        _LOGGER.debug("Setting self name to {}".format(name))
         self.name = name
-        _LOGGER.debug("Setting self ip to {}".format(ip))
         self.ip = ip
-        _LOGGER.debug("Setting self port to {}".format(port))
         self.port = port
-        _LOGGER.debug("Setting self model to {}".format(model))
         self.model = model
+        _LOGGER.debug(
+            "Set self name to {}, ip to {}, port to {} and model to {}".format(
+                name, ip, port, model
+            )
+        )
 
         if not 0 <= self.port <= 65535:
             _LOGGER.error("Port is out of the valid range: [0,65535]")
