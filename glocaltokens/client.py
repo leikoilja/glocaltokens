@@ -26,7 +26,7 @@ from .google.internal.home.foyer import v1_pb2, v1_pb2_grpc
 from .scanner import GoogleDevice, discover_devices
 from .utils import network as net_utils
 from .utils import token as token_utils
-from .utils.logs import censure
+from .utils.logs import censor
 
 DEBUG = False
 
@@ -100,7 +100,7 @@ class Device:
             LOGGER.error("port must be a valid port")
             return
 
-        LOGGER.debug(f"Setting self local_auth_token to {censure(local_auth_token)}")
+        LOGGER.debug(f"Setting self local_auth_token to {censor(local_auth_token)}")
         self.local_auth_token = local_auth_token
 
     def __str__(self) -> str:
@@ -139,11 +139,11 @@ class GLocalAuthenticationTokens:
         LOGGER.debug("Initializing new GLocalAuthenticationTokens instance.")
         LOGGER.debug(f'Setting self username to "{username}"')
         self.username: Optional[str] = username
-        LOGGER.debug(f'Setting self password to "{censure(password)}"')
+        LOGGER.debug(f'Setting self password to "{censor(password)}"')
         self.password: Optional[str] = password
-        LOGGER.debug(f'Setting self master_token to "{censure(master_token)}"')
+        LOGGER.debug(f'Setting self master_token to "{censor(master_token)}"')
         self.master_token: Optional[str] = master_token
-        LOGGER.debug(f'Setting self android_id to "{censure(android_id)}"')
+        LOGGER.debug(f'Setting self android_id to "{censor(android_id)}"')
         self.android_id: Optional[str] = android_id
         if (not self.username or not self.password) and not self.master_token:
             LOGGER.error(

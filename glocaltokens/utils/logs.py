@@ -1,4 +1,4 @@
-def censure(text: str, replace: str = "*") -> str:
+def censor(text: str, replace: str = "*") -> str:
     """
     Replaces all the characters in a str by the specified [replace]
 
