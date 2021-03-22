@@ -21,7 +21,6 @@ from glocaltokens.const import (
     JSON_KEY_LOCAL_AUTH_TOKEN,
     JSON_KEY_PORT,
 )
-from glocaltokens.utils.types import Struct
 from tests.assertions import DeviceAssertions, TypeAssertions
 from tests.factory.providers import HomegraphProvider, TokenProvider
 
