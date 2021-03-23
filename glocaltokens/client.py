@@ -340,7 +340,7 @@ class GLocalAuthenticationTokens:
                     hardware=item.hardware.model,
                 )
                 if device.local_auth_token:
-                    LOGGER.debug("Appending device")
+                    LOGGER.debug("Adding {device.device_name} to devices list")
                     devices.append(device)
                 else:
                     LOGGER.warning("Device initialization failed, skipping.")
