@@ -94,9 +94,7 @@ class GoogleDevice:
         self.port = port
         self.model = model
         _LOGGER.debug(
-            "Set self name to {}, ip to {}, port to {} and model to {}".format(
-                name, ip, port, model
-            )
+            f"Set self name to {name}, ip to {ip}, port to {port} and model to {model}"
         )
 
         if not 0 <= self.port <= 65535:
