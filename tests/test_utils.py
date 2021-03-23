@@ -7,7 +7,7 @@ from glocaltokens.utils.logs import censor
 faker = Faker()
 
 
-class GLocalAuthenticationTokensClientTests(TestCase):
+class UtilsTests(TestCase):
     def setUp(self):
         """Setup method run before every test"""
         pass
