@@ -345,7 +345,9 @@ class GLocalAuthenticationTokens:
                 else:
                     LOGGER.warning("Device initialization failed, skipping.")
             else:
-                LOGGER.debug("local_auth_token is not initialized")
+                LOGGER.debug(
+                    f"local_auth_token is not initialized for {item.device_name}"
+                )
 
         LOGGER.debug("Google Home devices: {}".format(devices))
 
