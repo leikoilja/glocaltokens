@@ -326,7 +326,9 @@ class GLocalAuthenticationTokens:
                     continue
 
                 LOGGER.debug(
-                    "Finding device in network? {}".format(network_devices is not None)
+                    "Looking for a device in local network? {}".format(
+                        network_devices is not None
+                    )
                 )
                 google_device = (
                     find_device(item.device_name) if network_devices else None
