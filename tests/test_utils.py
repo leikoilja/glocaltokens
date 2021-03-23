@@ -17,5 +17,5 @@ class UtilsTests(TestCase):
         pass
 
     def test_logs(self):
-        random = faker.word()
-        self.assertNotEqual(random, censor(random))
+        secret_string = faker.word()
+        self.assertNotEqual(secret_string, censor(secret_string))
