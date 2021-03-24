@@ -1,7 +1,6 @@
-import json
-import logging
 from datetime import datetime, timedelta
 import json
+import logging
 from unittest import TestCase
 
 from faker import Faker

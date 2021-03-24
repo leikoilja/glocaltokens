@@ -27,7 +27,6 @@ from .scanner import GoogleDevice, discover_devices
 from .utils import network as net_utils, token as token_utils
 from .utils.logs import censor
 
-
 logging.basicConfig(level=logging.ERROR)
 LOGGER = logging.getLogger(__name__)
 
