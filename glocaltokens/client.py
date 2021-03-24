@@ -28,10 +28,7 @@ from .utils import network as net_utils
 from .utils import token as token_utils
 from .utils.logs import censor
 
-DEBUG = False
-
-logging_level = logging.DEBUG if DEBUG else logging.ERROR
-logging.basicConfig(level=logging_level)
+logging.basicConfig(level=logging.ERROR)
 LOGGER = logging.getLogger(__name__)
 
 
@@ -123,6 +120,7 @@ class GLocalAuthenticationTokens:
         password: Optional[str] = None,
         master_token: Optional[str] = None,
         android_id: Optional[str] = None,
+        verbose: Optional[bool] = False,
     ):
         """
         Initialize an GLocalAuthenticationTokens instance with google account
@@ -137,6 +135,9 @@ class GLocalAuthenticationTokens:
                 if not set;
 
         """
+        if verbose:
+            LOGGER.setLevel(logging.DEBUG)
+
         LOGGER.debug("Initializing new GLocalAuthenticationTokens instance.")
         self.username: Optional[str] = username
         self.password: Optional[str] = password

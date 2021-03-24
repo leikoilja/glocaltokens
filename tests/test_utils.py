@@ -17,5 +17,24 @@ class UtilsTests(TestCase):
         pass
 
     def test_logs(self):
+        # With word
         secret_string = faker.word()
-        self.assertNotEqual(secret_string, censor(secret_string))
+        censored_string = censor(secret_string)
+        self.assertNotEqual(secret_string, censored_string)
+        self.assertTrue(censored_string.startswith(secret_string[0]))
+        self.assertEqual(
+            censored_string, f"{secret_string[0]}{(len(secret_string)-1)*'*'}"
+        )
+
+        # With different censor character
+        secret_string = faker.word()
+        censored_string = censor(secret_string, "&")
+        self.assertNotEqual(secret_string, censored_string)
+        self.assertTrue(censored_string.startswith(secret_string[0]))
+        self.assertEqual(
+            censored_string, f"{secret_string[0]}{(len(secret_string)-1)*'&'}"
+        )
+
+        # With empty string
+        censored_string = censor("")
+        self.assertEqual(censored_string, "")
