@@ -120,7 +120,7 @@ class GLocalAuthenticationTokens:
         password: Optional[str] = None,
         master_token: Optional[str] = None,
         android_id: Optional[str] = None,
-        verbose: Optional[bool] = False,
+        verbose: bool = False,
     ):
         """
         Initialize an GLocalAuthenticationTokens instance with google account

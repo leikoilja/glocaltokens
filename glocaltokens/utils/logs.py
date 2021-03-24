@@ -1,10 +1,12 @@
-def censor(text: str, char: str = "*") -> str:
+from typing import Optional
+
+
+def censor(text: Optional[str]) -> str:
     """
-    Replaces all the characters in a str by the specified [replace]
+    Replaces characters in a str by the asteriks
 
     text: The text to censure.
-    replace: The character to instead of the content.
     """
+    char = "*"
     text = text if text else ""
-    censored_text = text[0] + (len(text) - 1) * char if len(text) else text
-    return censored_text
+    return text[0] + (len(text) - 1) * char if text else text
