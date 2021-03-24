@@ -4,6 +4,7 @@ version = "0.2.6"
 description = "Tool to extract Google device local authentication tokens in Python"
 authors = ["Ilja Leiko <leikoilja@gmail.com>"]
 license = "MIT"
+repository = "https://github.com/leikoilja/glocaltokens"
 readme = "README.md"
 
 [tool.poetry.dependencies]
@@ -27,6 +28,9 @@ pytest = "^6.2.2"
 Faker = "^6.6.2"
 mock = "^4.0.3"
 tox-gh-actions = "^2.4.0"
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/leikoilja/glocaltokens/issues"
 
 [tool.pylint.format]
 max-line-length = 88
