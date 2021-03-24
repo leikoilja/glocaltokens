@@ -1,4 +1,5 @@
 import json
+import logging
 from datetime import datetime, timedelta
 from unittest import TestCase
 
@@ -21,7 +22,6 @@ from glocaltokens.const import (
     JSON_KEY_LOCAL_AUTH_TOKEN,
     JSON_KEY_PORT,
 )
-from glocaltokens.utils.types import Struct
 from tests.assertions import DeviceAssertions, TypeAssertions
 from tests.factory.providers import HomegraphProvider, TokenProvider
 
@@ -80,6 +80,18 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         # With master_token
         GLocalAuthenticationTokens(master_token=faker.master_token())
         self.assertEqual(m_log.call_count, 0)
+
+    @patch("glocaltokens.client.LOGGER.setLevel")
+    def test_initialization__valid_verbose_logger(self, m_set_level):
+        # Non verbose
+        GLocalAuthenticationTokens(username=faker.word(), password=faker.word())
+        self.assertEqual(m_set_level.call_count, 0)
+
+        # Verbose
+        GLocalAuthenticationTokens(
+            username=faker.word(), password=faker.word(), verbose=True
+        )
+        m_set_level.assert_called_once_with(logging.DEBUG)
 
     @patch("glocaltokens.client.LOGGER.error")
     def test_initialization__invalid(self, m_log):

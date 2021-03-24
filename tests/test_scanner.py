@@ -33,6 +33,10 @@ class GoogleDeviceTests(TestCase):
         self.assertEqual(port, device.port)
         self.assertEqual(model, device.model)
 
+        self.assertEqual(
+            f"{{name:{name},ip:{ip},port:{port},model:{model}}}", str(device)
+        )
+
     @patch("glocaltokens.scanner._LOGGER.error")
     def test_initialization__valid(self, mock):
         GoogleDevice(

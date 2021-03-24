@@ -40,6 +40,7 @@ if __name__ == "__main__":
         password=GOOGLE_PASSWORD,
         master_token=GOOGLE_MASTER_TOKEN,
         android_id=DEVICE_ID,
+        verbose=True,
     )
 
     # Get master token
