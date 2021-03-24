@@ -1,8 +1,7 @@
 from unittest import TestCase
 
 from faker import Faker
-from faker.providers import internet as internet_provider
-from faker.providers import python as python_provider
+from faker.providers import internet as internet_provider, python as python_provider
 from mock import patch
 
 from glocaltokens.scanner import GoogleDevice
