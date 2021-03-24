@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "glocaltokens"
-version = "0.0.0"
-description = "Python package to fetch google home local authentication tokens"
+version = "0.2.6"
+description = "Tool to extract Google device local authentication tokens in Python"
 authors = ["Ilja Leiko <leikoilja@gmail.com>"]
 license = "MIT"
 readme = "README.md"
