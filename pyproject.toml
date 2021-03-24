@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "glocaltokens"
+version = "0.2.5"
+description = "Python 3 package to fetch google home local authentication tokens and IP using google username/password or google master token"
+authors = ["Ilja Leiko <leikoilja@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "3.7,3.8.3.9"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
