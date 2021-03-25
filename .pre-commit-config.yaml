@@ -16,3 +16,11 @@ repos:
         args:
           - --safe
           - --quiet
+-  repo: local
+   hooks:
+   -  id: pytest
+      name: pytest
+      language: system
+      entry: poetry run pytest
+      pass_filenames: false
+      always_run: true

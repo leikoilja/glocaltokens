@@ -28,6 +28,6 @@ jobs:
       - name: Install dependencies
         run: poetry install
 
-      - name: Run tox
+      - name: Run pytest
         run: |
-          poetry run tox
+          poetry run pytest

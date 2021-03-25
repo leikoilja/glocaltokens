@@ -23,11 +23,9 @@ pre-commit = "^2.11.1"
 pylint = "^2.7.2"
 isort = "^5.8.0"
 mypy = "^0.812"
-tox = "^3.23.0"
 pytest = "^6.2.2"
 Faker = "^6.6.2"
 mock = "^4.0.3"
-tox-gh-actions = "^2.4.0"
 
 [tool.poetry.urls]
 "Bug Tracker" = "https://github.com/leikoilja/glocaltokens/issues"
