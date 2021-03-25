@@ -78,7 +78,7 @@ $ poetry run pre-commit install
 
 Now the pre-commit tests will be done every time you commit.
 
-You can run the tests on all repository file with the command:
+You can also run the tests on all repository files manually with the command:
 
 ```console
 $ poetry run pre-commit run --all-files
