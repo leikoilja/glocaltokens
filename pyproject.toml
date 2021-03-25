@@ -1,11 +1,24 @@
 [tool.poetry]
-name = "glocaltokens"
-version = "0.2.6"
-description = "Tool to extract Google device local authentication tokens in Python"
 authors = ["Ilja Leiko <leikoilja@gmail.com>"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+]
+description = "Tool to extract Google device local authentication tokens in Python"
+homepage = "https://github.com/leikoilja/glocaltokens"
+keywords = [
+    "Authentication",
+    "Google Home",
+    "Google",
+    "LocalAuthenticationTokens",
+]
 license = "MIT"
-repository = "https://github.com/leikoilja/glocaltokens"
+name = "glocaltokens"
 readme = "README.md"
+repository = "https://github.com/leikoilja/glocaltokens"
+version = "0.2.6"
 
 [tool.poetry.dependencies]
 python = "^3.8"
@@ -29,6 +42,7 @@ mock = "^4.0.3"
 
 [tool.poetry.urls]
 "Bug Tracker" = "https://github.com/leikoilja/glocaltokens/issues"
+"Release Notes" = "https://github.com/leikoilja/glocaltokens/releases"
 
 [tool.pylint.format]
 max-line-length = 88
