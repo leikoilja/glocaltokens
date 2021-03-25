@@ -13,7 +13,8 @@ _LOGGER = logging.getLogger(__name__)
 class CastListener(ServiceListener):
     """
     Zeroconf Cast Services collection.
-    Credit (pychromecast): https://github.com/home-assistant-libs/pychromecast/blob/master/pychromecast/discovery.py
+    Credit (pychromecast):
+    https://github.com/home-assistant-libs/pychromecast/
     """
 
     def __init__(self, add_callback=None, remove_callback=None, update_callback=None):

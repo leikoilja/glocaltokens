@@ -53,19 +53,20 @@ class Device:
         self.hardware = hardware
 
         LOGGER.debug(
-            'Set self device_name to "{}", local_auth_token to None, google_device to {}, and hardware to {}'.format(
+            'Set self device_name to "{}", local_auth_token to None, '
+            "google_device to {}, and hardware to {}".format(
                 device_name, google_device, hardware
             )
         )
 
         if google_device:
-            LOGGER.debug(f"google_device is not None")
+            LOGGER.debug("google_device is not None")
             LOGGER.debug(f"Setting self ip to {google_device.ip}")
             self.ip = google_device.ip
             LOGGER.debug(f"Setting self port to {google_device.port}")
             self.port = google_device.port
         else:
-            LOGGER.debug(f"google_device is None")
+            LOGGER.debug("google_device is None")
             if (ip and not port) or (not ip and port):
                 LOGGER.error(
                     "Both ip and port must be set, if one of them is specified."
@@ -146,7 +147,8 @@ class GLocalAuthenticationTokens:
         self.master_token: Optional[str] = master_token
         self.android_id: Optional[str] = android_id
         LOGGER.debug(
-            'Set self username to "{}", password to "{}", master_token to "{}" and android_id to {}'.format(
+            'Set self username to "{}", password to "{}", '
+            'master_token to "{}" and android_id to {}'.format(
                 censor(username),
                 censor(password),
                 censor(master_token),
@@ -167,13 +169,14 @@ class GLocalAuthenticationTokens:
         self.access_token_date: Optional[datetime] = None
         self.homegraph_date: Optional[datetime] = None
         LOGGER.debug(
-            "Set self access_token, homegraph, access_token_date and homegraph_date to None"
+            "Set self access_token, homegraph, "
+            "access_token_date and homegraph_date to None"
         )
 
     @staticmethod
     def _generate_mac_string():
         """Generate random 14 char long string"""
-        LOGGER.debug(f"Generating mac...")
+        LOGGER.debug("Generating mac...")
         random_uuid = uuid4()
         random_string = str(random_uuid).replace("-", "")[:ANDROID_ID_LENGTH]
         mac_string = random_string.upper()
@@ -213,7 +216,8 @@ class GLocalAuthenticationTokens:
             self.access_token_date, ACCESS_TOKEN_DURATION
         ):
             LOGGER.debug(
-                "There is not any stored access_token, or the stored one has expired, getting a new one..."
+                "There is not any stored access_token, "
+                "or the stored one has expired, getting a new one..."
             )
             res = perform_oauth(
                 self.username,
@@ -242,7 +246,8 @@ class GLocalAuthenticationTokens:
             self.homegraph_date, HOMEGRAPH_DURATION
         ):
             LOGGER.debug(
-                "There is not any stored homegraph, or the stored one has expired, getting a new one..."
+                "There is not any stored homegraph, "
+                "or the stored one has expired, getting a new one..."
             )
             try:
                 LOGGER.debug("Creating SSL channel credentials...")
@@ -273,7 +278,8 @@ class GLocalAuthenticationTokens:
                     return self.get_homegraph()
                 else:
                     LOGGER.error(
-                        f"Received unknown RPC error: code={rpc_error.code()} message={rpc_error.details()}"
+                        f"Received unknown RPC error: code={rpc_error.code()} "
+                        "message={rpc_error.details()}"
                     )
         return self.homegraph
 
@@ -285,11 +291,14 @@ class GLocalAuthenticationTokens:
         force_homegraph_reload: bool = False,
     ) -> List[Device]:
         """
-        Returns a list of google devices with their local authentication tokens, and IP and ports if set in models_list.
+        Returns a list of google devices with their local authentication tokens,
+        and IP and ports if set in models_list.
 
         models_list: The list of accepted model names.
-        disable_discovery: Whether or not the device's IP and port should be searched for in the network.
-        zeroconf_instance: If you already have an initialized zeroconf instance, use it here.
+        disable_discovery: Whether or not the device's IP and port should
+          be searched for in the network.
+        zeroconf_instance: If you already have an initialized zeroconf instance,
+          use it here.
         force_homegraph_reload: If the stored homegraph should be generated again.
         """
 
@@ -322,8 +331,10 @@ class GLocalAuthenticationTokens:
         )
         for item in homegraph.home.devices:
             if item.local_auth_token != "":
-                # This checks if the current item is a valid model, only if there are models in models_list.
-                # If models_list is empty, the check should be omitted, and accept all items.
+                # This checks if the current item is a valid model,
+                # only if there are models in models_list.
+                # If models_list is empty, the check should be omitted,
+                # and accept all items.
                 if models_list and item.hardware.model not in models_list:
                     LOGGER.debug("{} not in models_list".format(item.hardware.model))
                     continue
@@ -365,13 +376,15 @@ class GLocalAuthenticationTokens:
         force_homegraph_reload: bool = False,
     ) -> str:
         """
-        Returns a json list of google devices with their local authentication tokens, and IP and ports if set in
-        models_list.
+        Returns a json list of google devices with their local authentication tokens,
+        and IP and ports if set in models_list.
 
         models_list: The list of accepted model names.
         indent: The indentation for the json formatting.
-        disable_discovery: Whether or not the device's IP and port should be searched for in the network.
-        zeroconf_instance: If you already have an initialized zeroconf instance, use it here.
+        disable_discovery: Whether or not the device's IP and port should
+          be searched for in the network.
+        zeroconf_instance: If you already have an initialized zeroconf instance,
+          use it here.
         force_homegraph_reload: If the stored homegraph should be generated again.
         """
 

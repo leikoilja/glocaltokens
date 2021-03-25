@@ -4,7 +4,8 @@ import glocaltokens.utils.token as token_utils
 class DeviceAssertions(object):
     def assertDevice(self, homegraph_device, homegraph_device_struct):
         """
-        Custom assertion because we create Device class object for each of received homegraph devices,
+        Custom assertion because we create Device class object
+        for each of received homegraph devices,
         while in testing homegraph devices that we create are of type Struct"""
         self.assertEqual(
             homegraph_device.local_auth_token, homegraph_device_struct.local_auth_token
