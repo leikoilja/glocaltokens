@@ -7,6 +7,7 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
+    "Typing :: Typed",
 ]
 description = "Tool to extract Google device local authentication tokens in Python"
 keywords = [
@@ -15,6 +16,7 @@ keywords = [
     "Google",
     "LocalAuthenticationTokens",
 ]
+include = ["glocaltokens/py.typed"]
 license = "MIT"
 readme = "README.md"
 homepage = "https://github.com/leikoilja/glocaltokens"
