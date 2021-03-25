@@ -149,7 +149,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
     @patch("glocaltokens.client.perform_master_login")
     def test_get_master_token(self, m_perform_master_login, m_log):
         # No token in response
-        self.assertEqual(self.client.get_master_token(), "")
+        self.assertIsNone(self.client.get_master_token())
         m_perform_master_login.assert_called_once_with(
             self.client.username, self.client.password, self.client.get_android_id()
         )
@@ -181,7 +181,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         m_get_master_token.return_value = {"Token": master_token}
 
         # No token in response
-        self.assertEqual(self.client.get_access_token(), "")
+        self.assertIsNone(self.client.get_access_token())
         m_perform_oauth.assert_called_once_with(
             self.client.username,
             master_token,

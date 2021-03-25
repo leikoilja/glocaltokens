@@ -206,7 +206,7 @@ class GLocalAuthenticationTokens:
             if "Token" not in res:
                 LOGGER.error("[!] Could not get master token.")
                 LOGGER.debug(f"Request response: {res}")
-                return ""
+                return None
             self.master_token = res["Token"]
         LOGGER.debug("Master token: {}".format(self.master_token))
         return self.master_token
@@ -230,7 +230,7 @@ class GLocalAuthenticationTokens:
             if "Auth" not in res:
                 LOGGER.error("[!] Could not get access token.")
                 LOGGER.debug(f"Request response: {res}")
-                return ""
+                return None
             self.access_token = res["Auth"]
             self.access_token_date = datetime.now()
         LOGGER.debug(
