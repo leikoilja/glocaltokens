@@ -1,4 +1,6 @@
 [tool.poetry]
+name = "glocaltokens"
+version = "0.2.6"
 authors = ["Ilja Leiko <leikoilja@gmail.com>"]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -7,7 +9,6 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
 ]
 description = "Tool to extract Google device local authentication tokens in Python"
-homepage = "https://github.com/leikoilja/glocaltokens"
 keywords = [
     "Authentication",
     "Google Home",
@@ -15,10 +16,9 @@ keywords = [
     "LocalAuthenticationTokens",
 ]
 license = "MIT"
-name = "glocaltokens"
 readme = "README.md"
+homepage = "https://github.com/leikoilja/glocaltokens"
 repository = "https://github.com/leikoilja/glocaltokens"
-version = "0.2.6"
 
 [tool.poetry.dependencies]
 python = "^3.8"
