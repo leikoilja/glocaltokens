@@ -47,8 +47,11 @@ class Device:
         LOGGER.debug("Initializing new Device instance.")
         self.device_name = device_name
         self.local_auth_token = None
+        self.ip = ip
+        self.port = port
         self.google_device = google_device
         self.hardware = hardware
+
         LOGGER.debug(
             'Set self device_name to "{}", local_auth_token to None, google_device to {}, and hardware to {}'.format(
                 device_name, google_device, hardware
@@ -200,7 +203,7 @@ class GLocalAuthenticationTokens:
             if "Token" not in res:
                 LOGGER.error("[!] Could not get master token.")
                 LOGGER.debug(f"Request response: {res}")
-                return
+                return ""
             self.master_token = res["Token"]
         LOGGER.debug("Master token: {}".format(self.master_token))
         return self.master_token
@@ -223,7 +226,7 @@ class GLocalAuthenticationTokens:
             if "Auth" not in res:
                 LOGGER.error("[!] Could not get access token.")
                 LOGGER.debug(f"Request response: {res}")
-                return
+                return ""
             self.access_token = res["Auth"]
             self.access_token_date = datetime.now()
         LOGGER.debug(
@@ -280,7 +283,7 @@ class GLocalAuthenticationTokens:
         disable_discovery: bool = False,
         zeroconf_instance=None,
         force_homegraph_reload: bool = False,
-    ) -> [Device]:
+    ) -> List[Device]:
         """
         Returns a list of google devices with their local authentication tokens, and IP and ports if set in models_list.
 
@@ -313,7 +316,7 @@ class GLocalAuthenticationTokens:
                     return device
             return None
 
-        devices: [Device] = []
+        devices: List[Device] = []
         LOGGER.debug(
             f"Iterating in homegraph devices (len={len(homegraph.home.devices)})"
         )
