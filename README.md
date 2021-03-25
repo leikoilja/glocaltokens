@@ -1,9 +1,10 @@
 [![GitHub Workflow Status][workflow-shield]][workflow]
-[![Contributors][contributors-shield]][contributors]
 [![PyPI][pypi-shield]][pypi]
+[![Pre-commit][pre-commit-shield]][pre-commit]
 
 [![Open Issues][issues-shield]][issues]
 [![Open Pull-Requests][pr-shield]][pr]
+[![Contributors][contributors-shield]][contributors]
 
 [![GitHub Release][releases-shield]][releases]
 [![GitHub Activity][commits-shield]][commits]
@@ -136,6 +137,9 @@ Also, thank you very much to the guys at `pychromecast` which provided the code 
 
 [license]: https://github.com/leikoilja/glocaltokens/blob/main/LICENSE
 [license-shield]: https://img.shields.io/github/license/leikoilja/glocaltokens.svg?style=for-the-badge
+
+[pre-commit-shield]: https://img.shields.io/badge/pre--commit-enabled-brightgreen?style=for-the-badge
+[pre-commit]: https://github.com/pre-commit/pre-commit
 
 [releases-shield]: https://img.shields.io/github/release/leikoilja/glocaltokens.svg?style=for-the-badge
 [releases]: https://github.com/leikoilja/glocaltokens/releases
