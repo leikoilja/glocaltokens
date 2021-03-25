@@ -6,8 +6,7 @@ from . import v1_pb2 as google_dot_internal_dot_home_dot_foyer_dot_v1__pb2
 
 
 class HomeControlServiceServicer(object):
-    """Home Control Service
-    """
+    """Home Control Service"""
 
     def GetAssistantRoutines(self, request, context):
         """Missing associated documentation comment in .proto file."""
@@ -17,8 +16,7 @@ class HomeControlServiceServicer(object):
 
 
 class StructuresServiceStub(object):
-    """Structure Service
-    """
+    """Structure Service"""
 
     def __init__(self, channel):
         """Constructor.
@@ -34,8 +32,7 @@ class StructuresServiceStub(object):
 
 
 class StructuresServiceServicer(object):
-    """Structure Service
-    """
+    """Structure Service"""
 
     def GetHomeGraph(self, request, context):
         """Missing associated documentation comment in .proto file."""
@@ -60,8 +57,7 @@ def add_StructuresServiceServicer_to_server(servicer, server):
 
 # This class is part of an EXPERIMENTAL API.
 class StructuresService(object):
-    """Structure Service
-    """
+    """Structure Service"""
 
     @staticmethod
     def GetHomeGraph(
@@ -94,8 +90,7 @@ class StructuresService(object):
 
 
 class HomeDevicesServiceStub(object):
-    """Home Devices Service
-    """
+    """Home Devices Service"""
 
     def __init__(self, channel):
         """Constructor.
@@ -116,8 +111,7 @@ class HomeDevicesServiceStub(object):
 
 
 class HomeDevicesServiceServicer(object):
-    """Home Devices Service
-    """
+    """Home Devices Service"""
 
     def GetAssistantDeviceSettings(self, request, context):
         """Missing associated documentation comment in .proto file."""
@@ -153,8 +147,7 @@ def add_HomeDevicesServiceServicer_to_server(servicer, server):
 
 # This class is part of an EXPERIMENTAL API.
 class HomeDevicesService(object):
-    """Home Devices Service
-    """
+    """Home Devices Service"""
 
     @staticmethod
     def GetAssistantDeviceSettings(

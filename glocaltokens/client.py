@@ -1,11 +1,11 @@
+from datetime import datetime
 import json
 import logging
-from datetime import datetime
 from typing import Any, Dict, List, Optional
 from uuid import uuid4
 
-import grpc
 from gpsoauth import perform_master_login, perform_oauth
+import grpc
 
 from .const import (
     ACCESS_TOKEN_APP_NAME,
@@ -24,8 +24,7 @@ from .const import (
 )
 from .google.internal.home.foyer import v1_pb2, v1_pb2_grpc
 from .scanner import GoogleDevice, discover_devices
-from .utils import network as net_utils
-from .utils import token as token_utils
+from .utils import network as net_utils, token as token_utils
 from .utils.logs import censor
 
 logging.basicConfig(level=logging.ERROR)

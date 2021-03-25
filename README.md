@@ -1,9 +1,10 @@
 [![GitHub Workflow Status][workflow-shield]][workflow]
-[![Contributors][contributors-shield]][contributors]
 [![PyPI][pypi-shield]][pypi]
+[![Pre-commit][pre-commit-shield]][pre-commit]
 
 [![Open Issues][issues-shield]][issues]
 [![Open Pull-Requests][pr-shield]][pr]
+[![Contributors][contributors-shield]][contributors]
 
 [![GitHub Release][releases-shield]][releases]
 [![GitHub Activity][commits-shield]][commits]
@@ -104,22 +105,8 @@ print("[*] Master token", master_token)
 
 ## Contributing
 
+See [Contributing guidelines](CONTRIBUTING.md)
 This is an open-source project and all countribution is highly welcomed. To contribute please:
-
-- Fork this repo
-- Create a new branch
-- Create a new virtual environment and install dependencies:
-  `pip install -r requirements`
-- Implement your changes
-- If possible add tests for your changes
-- Push your changes to your branch
-- Open Pull Request
-
-When writting unittests please follow the good practises like:
-
-- Use `faker` to fake the data. See [examples](https://faker.readthedocs.io/en/master/)
-- Use `mock` to patch objects/methods. See [examples](https://realpython.com/python-mock-library/)
-- You can run `python -m discover -p 'test*.py'` or `tox` inside of your virtual environment to test locally.
 
 # Credits
 
@@ -150,6 +137,9 @@ Also, thank you very much to the guys at `pychromecast` which provided the code 
 
 [license]: https://github.com/leikoilja/glocaltokens/blob/main/LICENSE
 [license-shield]: https://img.shields.io/github/license/leikoilja/glocaltokens.svg?style=for-the-badge
+
+[pre-commit-shield]: https://img.shields.io/badge/pre--commit-enabled-brightgreen?style=for-the-badge
+[pre-commit]: https://github.com/pre-commit/pre-commit
 
 [releases-shield]: https://img.shields.io/github/release/leikoilja/glocaltokens.svg?style=for-the-badge
 [releases]: https://github.com/leikoilja/glocaltokens/releases
