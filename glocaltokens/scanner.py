@@ -2,16 +2,19 @@ import logging
 from threading import Event
 from typing import List, Optional
 
+from zeroconf import ServiceListener
+
 from .const import DISCOVER_TIMEOUT
 from .utils import network as net_utils, types as type_utils
 
 _LOGGER = logging.getLogger(__name__)
 
 
-class CastListener:
+class CastListener(ServiceListener):
     """
     Zeroconf Cast Services collection.
-    Credit (pychromecast): https://github.com/home-assistant-libs/pychromecast/blob/master/pychromecast/discovery.py
+    Credit (pychromecast):
+    https://github.com/home-assistant-libs/pychromecast/
     """
 
     def __init__(self, add_callback=None, remove_callback=None, update_callback=None):

@@ -297,7 +297,8 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         homegraph_device_invalid.local_auth_token = (
             faker.word()
         )  # setting invalid token intentionally
-        # Note that we initialize the list with homegraph_device_invalid which should be ignored
+        # Note that we initialize the list with homegraph_device_invalid
+        # which should be ignored
         m_get_homegraph.return_value.home.devices = [
             homegraph_device_invalid,
             homegraph_device_valid,

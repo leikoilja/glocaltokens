@@ -33,7 +33,8 @@ class TokenProvider(BaseProvider):
 class HomegraphProvider(TokenProvider):
     def homegraph_device(self):
         """
-        Not sure from where did I get this structure from. Just using the content from client.py as reference.
+        Not sure from where did I get this structure from.
+        Just using the content from client.py as reference.
         """
         return Struct(
             **{
@@ -49,9 +50,13 @@ class HomegraphProvider(TokenProvider):
         """
         Generates a random amount of devices, in the range specified.
 
-        min_devices: The number minimum of devices to generate. Should be greater than 0
-        max_devices: The maximum number of devices to generate. Must be greater than min_devices
-        count: If not None, min_devices and max_devices are ignored, and a count amount of devices will be generated
+        min_devices:
+          The number minimum of devices to generate. Should be greater than 0
+        max_devices:
+          The maximum number of devices to generate. Must be greater than min_devices
+        count:
+          If not None, min_devices and max_devices are ignored,
+          and a count amount of devices will be generated
         """
         return [
             self.homegraph_device()
