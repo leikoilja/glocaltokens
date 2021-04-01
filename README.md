@@ -106,7 +106,7 @@ print("[*] Master token", master_token)
 ## Contributing
 
 See [Contributing guidelines](CONTRIBUTING.md)
-This is an open-source project and all countribution is highly welcomed. To contribute please:
+This is an open-source project and all countribution is highly welcomed.
 
 # Credits
 
