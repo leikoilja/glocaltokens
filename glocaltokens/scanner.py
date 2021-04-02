@@ -39,7 +39,7 @@ class CastListener(ServiceListener):
         self._add_update_service(zconf, typ, name, self.update_callback)
 
     def remove_service(self, _zconf, typ, name):
-        """Called when a cast has beeen lost (MDNS info expired or host down)."""
+        """Called when a cast has beeen lost (mDNS info expired or host down)."""
         LOGGER.debug("remove_service %s, %s", typ, name)
 
     def _add_update_service(self, zconf, typ, name, callback):
