@@ -85,7 +85,9 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
     def test_initialization__valid_verbose_logger(self, m_set_level):
         # Non verbose
         GLocalAuthenticationTokens(username=faker.word(), password=faker.word())
-        self.assertEqual(m_set_level.call_count, 0)
+        m_set_level.assert_called_once_with(logging.ERROR)
+
+        m_set_level.reset_mock()
 
         # Verbose
         GLocalAuthenticationTokens(

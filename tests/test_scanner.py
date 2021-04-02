@@ -36,14 +36,14 @@ class GoogleDeviceTests(TestCase):
             f"{{name:{name},ip:{ip},port:{port},model:{model}}}", str(device)
         )
 
-    @patch("glocaltokens.scanner._LOGGER.error")
+    @patch("glocaltokens.scanner.LOGGER.error")
     def test_initialization__valid(self, mock):
         GoogleDevice(
             faker.word(), faker.ipv4_private(), faker.port_number(), faker.word()
         )
         self.assertEqual(mock.call_count, 0)
 
-    @patch("glocaltokens.scanner._LOGGER.error")
+    @patch("glocaltokens.scanner.LOGGER.error")
     def test_initialization__invalid(self, mock):
         # With invalid IP
         GoogleDevice(faker.word(), faker.word(), faker.port_number(), faker.word())
