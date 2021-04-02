@@ -1,24 +1,18 @@
 [![GitHub Workflow Status][workflow-shield]][workflow]
 [![PyPI][pypi-shield]][pypi]
 [![Pre-commit][pre-commit-shield]][pre-commit]
-
-[![Open Issues][issues-shield]][issues]
-[![Open Pull-Requests][pr-shield]][pr]
-[![Contributors][contributors-shield]][contributors]
-
-[![GitHub Release][releases-shield]][releases]
 [![GitHub Activity][commits-shield]][commits]
-[![License][license-shield]][license]
 
 # Google home local authentication token extraction
 
-Python 3 package to extract google home devices local authentication tokens from google servers. These local
-authentication tokens are needed to control Google Home devices(See
-@rithvikvibhu's [Google Home (2.0) API](https://rithvikvibhu.github.io/GHLocalApi/)).
+Python 3 package to extract google home devices local authentication tokens from google servers.
+These local authentication tokens are needed to control Google Home devices
+(See [@rithvikvibhu](https://github.com/rithvikvibhu)'s [Google Home (2.0) API](https://rithvikvibhu.github.io/GHLocalApi/)).
 
 Please note:
-Once you have local google authentication tokens they only live about 1 day long. After that you will need to obtain new
-ones. You will probably need to run the script repeatedly storing the tokens somewhere convenient.
+Once you have local google authentication tokens they only live about 1 day long.
+After that you will need to obtain new ones.
+You will probably need to run the script repeatedly storing the tokens somewhere convenient.
 
 ## Quickstart
 
@@ -83,8 +77,8 @@ add new lists, or add models to a list with a pull-request.
 
 ## Security Recommendation
 
-Never store the user's password nor username in plain text, if storage is necessary, generate a master token and store
-it. Example approach:
+Never store the user's password nor username in plain text, if storage is necessary, generate a master token and store it.
+Example approach:
 
 ```python
 from glocaltokens.client import GLocalAuthenticationTokens
@@ -105,12 +99,12 @@ print("[*] Master token", master_token)
 
 ## Contributing
 
-See [Contributing guidelines](CONTRIBUTING.md)
+See [Contributing guidelines](CONTRIBUTING.md).
 This is an open-source project and all countribution is highly welcomed.
 
 # Credits
 
-Much credits go to @rithvikvibhu(https://github.com/rithvikvibhu) for doing most of the heavy work like finding a way to
+Much credits go to [@rithvikvibhu](https://github.com/rithvikvibhu) for doing most of the heavy work like finding a way to
 extract master and access tokens
 (See his gist [here](https://gist.github.com/rithvikvibhu/952f83ea656c6782fbd0f1645059055d)).
 
@@ -123,23 +117,8 @@ Also, thank you very much to the guys at `pychromecast` which provided the code 
 [pypi-shield]: https://img.shields.io/pypi/v/glocaltokens?style=for-the-badge
 [pypi]: https://pypi.org/project/glocaltokens/
 
-[issues-shield]: https://img.shields.io/github/issues/leikoilja/glocaltokens?style=for-the-badge
-[issues]: https://github.com/leikoilja/glocaltokens/issues
-
-[pr-shield]: https://img.shields.io/github/issues-pr/leikoilja/glocaltokens?style=for-the-badge
-[pr]: https://github.com/leikoilja/glocaltokens/pulls
-
 [commits-shield]: https://img.shields.io/github/commit-activity/y/leikoilja/glocaltokens?style=for-the-badge
 [commits]: https://github.com/leikoilja/glocaltokens/commits/main
 
-[contributors-shield]: https://img.shields.io/github/contributors/leikoilja/glocaltokens?style=for-the-badge
-[contributors]: https://github.com/leikoilja/glocaltokens/graphs/contributors
-
-[license]: https://github.com/leikoilja/glocaltokens/blob/main/LICENSE
-[license-shield]: https://img.shields.io/github/license/leikoilja/glocaltokens.svg?style=for-the-badge
-
 [pre-commit-shield]: https://img.shields.io/badge/pre--commit-enabled-brightgreen?style=for-the-badge
 [pre-commit]: https://github.com/pre-commit/pre-commit
-
-[releases-shield]: https://img.shields.io/github/release/leikoilja/glocaltokens.svg?style=for-the-badge
-[releases]: https://github.com/leikoilja/glocaltokens/releases
