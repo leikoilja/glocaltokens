@@ -41,10 +41,6 @@ class CastListener(ServiceListener):
     def remove_service(self, _zconf, typ, name):
         """Called when a cast has beeen lost (MDNS info expired or host down)."""
         LOGGER.debug("remove_service %s, %s", typ, name)
-        for device in self.devices:
-            if device[4] == name:
-                self.devices.remove(device)
-                return
 
     def _add_update_service(self, zconf, typ, name, callback):
         """ Add or update a service. """
@@ -80,7 +76,7 @@ class CastListener(ServiceListener):
         model_name = get_value("md")
         friendly_name = get_value("fn")
 
-        self.devices.append((model_name, friendly_name, host, service.port, name))
+        self.devices.append((model_name, friendly_name, host, service.port))
 
         if callback:
             callback()
