@@ -138,8 +138,8 @@ class GLocalAuthenticationTokens:
                 if not set;
 
         """
-        if verbose:
-            LOGGER.setLevel(logging.DEBUG)
+        self.logging_level = logging.DEBUG if verbose else logging.ERROR
+        LOGGER.setLevel(self.logging_level)
 
         LOGGER.debug("Initializing new GLocalAuthenticationTokens instance.")
         self.username: Optional[str] = username
@@ -314,7 +314,11 @@ class GLocalAuthenticationTokens:
         homegraph = self.get_homegraph()
         LOGGER.debug("Getting network devices...")
         network_devices = (
-            discover_devices(models_list, zeroconf_instance=zeroconf_instance)
+            discover_devices(
+                models_list,
+                zeroconf_instance=zeroconf_instance,
+                logging_level=self.logging_level,
+            )
             if not disable_discovery
             else None
         )
