@@ -1,3 +1,4 @@
+"""Scanner specifc tests"""
 from unittest import TestCase
 
 from faker import Faker
@@ -12,32 +13,30 @@ faker.add_provider(python_provider)
 
 
 class GoogleDeviceTests(TestCase):
-    def setUp(self):
-        """Setup method run before every test"""
-        pass
-
-    def tearDown(self):
-        """Teardown method run after every test"""
-        pass
+    """
+    GoogleDevice specific tests
+    """
 
     def test_initialization(self):
+        """Initialization tests"""
         name = faker.word()
-        ip = faker.ipv4_private()
+        ip_address = faker.ipv4_private()
         port = faker.port_number()
         model = faker.word()
 
-        device = GoogleDevice(name, ip, port, model)
+        device = GoogleDevice(name, ip_address, port, model)
         self.assertEqual(name, device.name)
-        self.assertEqual(ip, device.ip)
+        self.assertEqual(ip_address, device.ip)
         self.assertEqual(port, device.port)
         self.assertEqual(model, device.model)
 
         self.assertEqual(
-            f"{{name:{name},ip:{ip},port:{port},model:{model}}}", str(device)
+            f"{{name:{name},ip:{ip_address},port:{port},model:{model}}}", str(device)
         )
 
     @patch("glocaltokens.scanner.LOGGER.error")
     def test_initialization__valid(self, mock):
+        """Valid initialization tests"""
         GoogleDevice(
             faker.word(), faker.ipv4_private(), faker.port_number(), faker.word()
         )
@@ -45,6 +44,7 @@ class GoogleDeviceTests(TestCase):
 
     @patch("glocaltokens.scanner.LOGGER.error")
     def test_initialization__invalid(self, mock):
+        """Invalid initialization tests"""
         # With invalid IP
         GoogleDevice(faker.word(), faker.word(), faker.port_number(), faker.word())
         self.assertEqual(mock.call_count, 1)

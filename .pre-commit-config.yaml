@@ -31,11 +31,12 @@ repos:
         exclude: glocaltokens/google/
         language: system
         types: [python]
-      # - id: pylint
-      #   name: pylint
-      #   entry: poetry run pylint
-      #   language: system
-      #   types: [python]
+      - id: pylint
+        name: pylint
+        entry: poetry run pylint
+        exclude: ^glocaltokens/
+        language: system
+        types: [python]
       - id: pytest
         name: pytest
         language: system

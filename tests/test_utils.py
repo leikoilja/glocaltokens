@@ -1,3 +1,4 @@
+"""Utility tests"""
 from unittest import TestCase
 
 from faker import Faker
@@ -8,15 +9,10 @@ faker = Faker()
 
 
 class UtilsTests(TestCase):
-    def setUp(self):
-        """Setup method run before every test"""
-        pass
+    """Utilities tests"""
 
-    def tearDown(self):
-        """Teardown method run after every test"""
-        pass
-
-    def test_logs(self):
+    def test_censor(self):
+        """Testing sensitive info censoring"""
         # With word
         secret_string = faker.word()
         censored_string = censor(secret_string)
