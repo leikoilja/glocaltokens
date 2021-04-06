@@ -730,7 +730,7 @@ python-versions = "*"
 
 [[package]]
 name = "zeroconf"
-version = "0.28.8"
+version = "0.29.0"
 description = "Pure Python Multicast DNS Service Discovery Library (Bonjour/Avahi compatible)"
 category = "main"
 optional = false
@@ -742,7 +742,7 @@ ifaddr = ">=0.1.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "265a2d5ac97bcf78867bd68b8095ed18165e9e157ccef1373724e1c5e19e49fb"
+content-hash = "79f5249fef8d6157514981a5453f38bd6b522aa7cb2f3240424dfa86ab87e2fd"
 
 [metadata.files]
 appdirs = [
@@ -1312,6 +1312,6 @@ wrapt = [
     {file = "wrapt-1.12.1.tar.gz", hash = "sha256:b62ffa81fb85f4332a4f609cab4ac40709470da05643a082ec1eb88e6d9b97d7"},
 ]
 zeroconf = [
-    {file = "zeroconf-0.28.8-py3-none-any.whl", hash = "sha256:3608be2db58f6f0dc70665e02ab420fb8bf428016f2c78403d879e066ecc9bff"},
-    {file = "zeroconf-0.28.8.tar.gz", hash = "sha256:4be24a10aa9c73406f48d42a8b3b077c217b0e8d7ed1e57639630da520c25959"},
+    {file = "zeroconf-0.29.0-py3-none-any.whl", hash = "sha256:85fdeeef88b08965ab87559177457cfdb5dd2e4bc62a476208c2473a51dfa0b2"},
+    {file = "zeroconf-0.29.0.tar.gz", hash = "sha256:7aefbb658b452b1fd7e51124364f938c6f5e42d6ea893fa2557bea8c06c540af"},
 ]
