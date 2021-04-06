@@ -1,12 +1,12 @@
 """
 Common assertion helper classes used for unittesting
 """
-# pylint: disable=E1101
-# pylint: disable=C0103
+# pylint: disable=no-member
+# pylint: disable=invalid-name
 import glocaltokens.utils.token as token_utils
 
 
-# pylint: disable=R0903
+# pylint: disable=too-few-public-methods
 class DeviceAssertions:
     """Device specific assessors"""
 

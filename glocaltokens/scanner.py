@@ -1,3 +1,6 @@
+"""Zeroconf based scanner"""
+# pylint: disable=arguments-differ
+
 import logging
 from threading import Event
 from typing import List, Optional
@@ -82,25 +85,32 @@ class CastListener(ServiceListener):
             callback()
 
 
+# pylint: disable=too-few-public-methods
 class GoogleDevice:
-    def __init__(self, name: str, ip: str, port: int, model: str):
+    """Discovered Google device representation"""
+
+    def __init__(self, name: str, ip_address: str, port: int, model: str):
         LOGGER.debug("Initializing GoogleDevice...")
         if not net_utils.is_valid_ipv4_address(
-            ip
-        ) and not net_utils.is_valid_ipv6_address(ip):
-            LOGGER.error("ip must be a valid IP address")
+            ip_address
+        ) and not net_utils.is_valid_ipv6_address(ip_address):
+            LOGGER.error("IP must be a valid IP address")
             return
 
         if not type_utils.is_integer(port):
-            LOGGER.error("port must be an integer value")
+            LOGGER.error("PORT must be an integer value")
             return
 
         self.name = name
-        self.ip = ip
+        self.ip_address = ip_address
         self.port = port
         self.model = model
         LOGGER.debug(
-            f"Set self name to {name}, ip to {ip}, port to {port} and model to {model}"
+            "Set self name to %s, IP to %s, PORT to %s and model to %s",
+            name,
+            ip_address,
+            port,
+            model,
         )
 
         if not 0 <= self.port <= 65535:
@@ -109,9 +119,14 @@ class GoogleDevice:
 
     def __str__(self) -> str:
         """Serializes the class into a str"""
-        return f"{{name:{self.name},ip:{self.ip},port:{self.port},model:{self.model}}}"
+        return (
+            f"{{name:{self.name},ip:{self.ip_address},"
+            f"port:{self.port},model:{self.model}}}"
+        )
 
 
+# pylint: disable=too-many-locals
+# pylint: disable=unused-argument
 def discover_devices(
     models_list: Optional[List[str]] = None,
     max_devices: int = None,
@@ -119,11 +134,12 @@ def discover_devices(
     zeroconf_instance=None,
     logging_level=logging.ERROR,
 ):
+    """Discover devices"""
     LOGGER.setLevel(logging_level)
 
-    # pylint: disable=unused-argument
     LOGGER.debug("Discovering devices...")
     LOGGER.debug("Importing zeroconf...")
+    # pylint: disable=import-outside-toplevel
     import zeroconf
 
     def callback():
@@ -149,23 +165,23 @@ def discover_devices(
     discover_complete.wait(timeout)
 
     devices = []
-    LOGGER.debug("Got {} devices. Iterating...".format(len(listener.devices)))
+    LOGGER.debug("Got %s devices. Iterating...", len(listener.devices))
     for service in listener.devices:
         model = service[0]
         name = service[1]
-        ip = service[2]
+        ip_address = service[2]
         access_port = service[3]
         if not models_list or model in models_list:
             LOGGER.debug(
                 "Appending new device. name: %s, ip: %s, port: %s, model: %s",
                 name,
-                ip,
+                ip_address,
                 access_port,
                 model,
             )
-            devices.append(GoogleDevice(name, ip, int(access_port), model))
+            devices.append(GoogleDevice(name, ip_address, int(access_port), model))
         else:
             LOGGER.debug(
-                'Won\'t add device since model "{}" is not in models_list'.format(model)
+                'Won\'t add device since model "%s" is not in models_list', model
             )
     return devices

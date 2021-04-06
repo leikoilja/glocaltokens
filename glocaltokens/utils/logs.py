@@ -1,3 +1,5 @@
+"""Log utilities"""
+
 from typing import Optional
 
 

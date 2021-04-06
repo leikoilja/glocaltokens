@@ -34,7 +34,7 @@ repos:
       - id: pylint
         name: pylint
         entry: poetry run pylint
-        exclude: ^glocaltokens/
+        exclude: ^glocaltokens/google/
         language: system
         types: [python]
       - id: pytest

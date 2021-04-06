@@ -84,7 +84,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         self.assertEqual(m_log.call_count, 0)
 
     @patch("glocaltokens.client.LOGGER.setLevel")
-    # pylint: disable=R0201
+    # pylint: disable=no-self-use
     def test_initialization__valid_verbose_logger(self, m_set_level):
         """Valid initialization tests with verbose logging"""
         # Non verbose
@@ -128,7 +128,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         # Make sure we get the same ID when called further
         self.assertEqual(android_id, self.client.get_android_id())
 
-    # pylint: disable=W0212
+    # pylint: disable=protected-access
     def test_generate_mac_string(self):
         """Test generating mac string"""
         mac_string = GLocalAuthenticationTokens._generate_mac_string()
@@ -241,7 +241,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         access_token = self.client.get_access_token()
         self.assertEqual(m_perform_oauth.call_count, 1)
 
-    # pylint: disable=R0913
+    # pylint: disable=too-many-arguments
     @patch("glocaltokens.client.grpc.ssl_channel_credentials")
     @patch("glocaltokens.client.grpc.access_token_call_credentials")
     @patch("glocaltokens.client.grpc.composite_channel_credentials")
@@ -251,7 +251,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_access_token")
     def test_get_homegraph(
         self,
-        m_get_access_token,  # pylint: disable=W0613
+        m_get_access_token,  # pylint: disable=unused-argument
         m_get_home_graph_request,
         m_structure_service_stub,
         m_secure_channel,
@@ -334,7 +334,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         google_device = Device(
             device_name=device_name,
             local_auth_token=local_auth_token,
-            ip=ip_address,
+            ip_address=ip_address,
             port=port,
             hardware=hardware,
         )
@@ -373,7 +373,7 @@ class DeviceClientTests(TypeAssertions, TestCase):
         device = Device(
             device_name=faker.word(),
             local_auth_token=faker.local_auth_token(),
-            ip=faker.ipv4_private(),
+            ip_address=faker.ipv4_private(),
         )
         self.assertEqual(m_log.call_count, 1)
         self.assertIsNone(device.local_auth_token)

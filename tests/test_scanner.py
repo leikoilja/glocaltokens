@@ -26,7 +26,7 @@ class GoogleDeviceTests(TestCase):
 
         device = GoogleDevice(name, ip_address, port, model)
         self.assertEqual(name, device.name)
-        self.assertEqual(ip_address, device.ip)
+        self.assertEqual(ip_address, device.ip_address)
         self.assertEqual(port, device.port)
         self.assertEqual(model, device.model)
 

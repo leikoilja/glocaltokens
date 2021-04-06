@@ -1,9 +1,11 @@
+"""Network utilities"""
 import socket
 
 import glocaltokens.utils.types as type_utils
 
 
 def is_valid_ipv4_address(address):
+    """Check if ip address is ipv4 type"""
     try:
         socket.inet_pton(socket.AF_INET, address)
     except AttributeError:  # no inet_pton here, sorry
@@ -19,6 +21,7 @@ def is_valid_ipv4_address(address):
 
 
 def is_valid_ipv6_address(address):
+    """Check if ip address is ipv6 type"""
     try:
         socket.inet_pton(socket.AF_INET6, address)
     except socket.error:  # not a valid address
@@ -27,4 +30,5 @@ def is_valid_ipv6_address(address):
 
 
 def is_valid_port(port) -> bool:
+    """Check if port is valid"""
     return type_utils.is_integer(port) and 0 <= port <= 65535

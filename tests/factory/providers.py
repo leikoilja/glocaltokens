@@ -1,5 +1,5 @@
 """Test factory providers"""
-# pylint: disable=R0201
+# pylint: disable=no-self-use
 from typing import Optional
 
 from faker import Faker
