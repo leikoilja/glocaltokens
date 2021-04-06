@@ -1,5 +1,11 @@
+dependencies:
+  - poetry.lock
+
+documentation:
+  - "*.md"
+
+github structure:
+  - .github/*
+
 test:
   - tests/*
-
-github_structure:
-  - .github/*
