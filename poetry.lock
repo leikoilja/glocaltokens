@@ -169,15 +169,15 @@ pyflakes = ">=2.3.0,<2.4.0"
 
 [[package]]
 name = "gpsoauth"
-version = "0.4.3"
+version = "1.0.0"
 description = "A python client library for Google Play Services OAuth."
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = ">=3.8,<4.0"
 
 [package.dependencies]
 pycryptodomex = ">=3.0"
-requests = "*"
+requests = ">=2.0.0"
 
 [[package]]
 name = "grpcio"
@@ -742,7 +742,7 @@ ifaddr = ">=0.1.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "79f5249fef8d6157514981a5453f38bd6b522aa7cb2f3240424dfa86ab87e2fd"
+content-hash = "eaf844090012bacd5da0f020e038f307f718ea3143ee22b7e5ff5be1906dcbde"
 
 [metadata.files]
 appdirs = [
@@ -813,7 +813,8 @@ flake8 = [
     {file = "flake8-3.9.0.tar.gz", hash = "sha256:78873e372b12b093da7b5e5ed302e8ad9e988b38b063b61ad937f26ca58fc5f0"},
 ]
 gpsoauth = [
-    {file = "gpsoauth-0.4.3.tar.gz", hash = "sha256:b38f654450ec55f130c9414d457355d78030a2c29c5ad8f20b28304a9fc8fad7"},
+    {file = "gpsoauth-1.0.0-py3-none-any.whl", hash = "sha256:149c374863eec17cdac5279d57e4905592a9cd74cc34b7e58671cb19f9238f39"},
+    {file = "gpsoauth-1.0.0.tar.gz", hash = "sha256:1c4d6a980625b8ab6f6f1cf3e30d9b10a6c61ababb2b60bfe4870649e9c82be0"},
 ]
 grpcio = [
     {file = "grpcio-1.31.0-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:e8c3264b0fd728aadf3f0324471843f65bd3b38872bdab2a477e31ffb685dd5b"},
