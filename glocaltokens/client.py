@@ -317,7 +317,7 @@ class GLocalAuthenticationTokens:
                 LOGGER.debug("%s Got an RpcError", log_prefix)
                 if rpc_error.code().name == "UNAUTHENTICATED":
                     LOGGER.warning(
-                        "%s The access token has expired. " "Getting a new one.",
+                        "%s The access token has expired. Getting a new one.",
                         log_prefix,
                     )
                     self.invalidate_access_token()
@@ -376,7 +376,7 @@ class GLocalAuthenticationTokens:
             return None
 
         devices: List[Device] = []
-        LOGGER.debug("Iterating in %s homegraph devices", len(homegraph.home.devices))
+        LOGGER.debug("Iterating in %d homegraph devices", len(homegraph.home.devices))
         for item in homegraph.home.devices:
             if item.local_auth_token != "":
                 # This checks if the current item is a valid model,
@@ -413,7 +413,7 @@ class GLocalAuthenticationTokens:
                     item.device_name,
                 )
 
-        LOGGER.debug("Sucessfully initialized %s Google Home devices", len(devices))
+        LOGGER.debug("Sucessfully initialized %d Google Home devices", len(devices))
         return devices
 
     def get_google_devices_json(
