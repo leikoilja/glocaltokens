@@ -6,7 +6,6 @@ Common assertion helper classes used for unittesting
 import glocaltokens.utils.token as token_utils
 
 
-# pylint: disable=too-few-public-methods
 class DeviceAssertions:
     """Device specific assessors"""
 
