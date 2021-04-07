@@ -60,22 +60,17 @@ class Device:
         # Token and name validations
         if not self.device_name:
             LOGGER.error("%s device_name must be provided", log_prefix)
-            return None
-        if not local_auth_token:
-            LOGGER.error("%s local_auth_token must be provided", log_prefix)
-            return None
+            return
         if not token_utils.is_local_auth_token(local_auth_token):
             LOGGER.error(
-                "%s local_auth_token must follow the correct format",
-                log_prefix
+                "%s local_auth_token must follow the correct format", log_prefix
             )
-            return None
+            return
 
         # Setting IP and PORT
         if google_device:
             LOGGER.debug(
-                "%s google_device is provided, using it's IP and PORT",
-                log_prefix
+                "%s google_device is provided, using it's IP and PORT", log_prefix
             )
             self.ip_address = google_device.ip_address
             self.port = google_device.port
@@ -83,7 +78,7 @@ class Device:
             LOGGER.debug(
                 "%s google_device is not provided, "
                 "using manually provided IP and PORT",
-                log_prefix
+                log_prefix,
             )
             if (ip_address and not port) or (not ip_address and port):
                 LOGGER.error(
@@ -104,11 +99,11 @@ class Device:
             and not net_utils.is_valid_ipv6_address(self.ip_address)
         ):
             LOGGER.error("%s IP(%s) is invalid", log_prefix, self.ip_address)
-            return None
+            return
 
         if self.port and not net_utils.is_valid_port(self.port):
             LOGGER.error("%s PORT(%s) is invalid", log_prefix, self.port)
-            return None
+            return
 
         LOGGER.debug(
             '%s Set device_name to "%s", '
@@ -182,7 +177,7 @@ class GLocalAuthenticationTokens:
         )
 
         LOGGER.debug(
-            'Set GLocalAuthenticationTokens client '
+            "Set GLocalAuthenticationTokens client "
             'username to "%s", password to "%s", '
             'master_token to "%s" and android_id to %s',
             censor(username),
@@ -197,10 +192,10 @@ class GLocalAuthenticationTokens:
                 "You must either provide google username/password "
                 "or google master token"
             )
-            return None
+            return
         if self.master_token and not token_utils.is_aas_et(self.master_token):
             LOGGER.error("master_token doesn't follow the AAS_ET format")
-            return None
+            return
 
     @staticmethod
     def _generate_mac_string() -> str:
@@ -279,57 +274,56 @@ class GLocalAuthenticationTokens:
         LOGGER.debug(
             "Access token: %s, datetime %s",
             censor(self.access_token),
-            self.access_token_date
+            self.access_token_date,
         )
         return self.access_token
 
+    # pylint: disable=no-member
     def get_homegraph(self):
         """Returns the entire Google Home Foyer V2 service"""
         if self.homegraph is None or self._has_expired(
             self.homegraph_date, HOMEGRAPH_DURATION
         ):
-            log_prefix = "[GRPC]"
             LOGGER.debug(
-                "There is no stored homegraph, "
-                "or it has expired, getting a new one..."
+                "There is no stored homegraph, or it has expired, getting a new one..."
             )
+            log_prefix = "[GRPC]"
             try:
-                LOGGER.debug(f"{log_prefix} Creating SSL channel credentials...")
+                LOGGER.debug("%s Creating SSL channel credentials...", log_prefix)
                 scc = grpc.ssl_channel_credentials(root_certificates=None)
-                LOGGER.debug(f"{log_prefix} Creating access token call credentials...")
+                LOGGER.debug("%s Creating access token call credentials...", log_prefix)
                 tok = grpc.access_token_call_credentials(self.get_access_token())
-                LOGGER.debug(f"{log_prefix} Compositing channel credentials...")
+                LOGGER.debug("%s Compositing channel credentials...", log_prefix)
                 ccc = grpc.composite_channel_credentials(scc, tok)
 
                 LOGGER.debug(
-                    f"{log_prefix} Establishing secure channel with "
-                    "the Google Home Foyer API..."
+                    "%s Establishing secure channel with "
+                    "the Google Home Foyer API...",
+                    log_prefix,
                 )
                 with grpc.secure_channel(GOOGLE_HOME_FOYER_API, ccc) as channel:
                     LOGGER.debug(
-                        f"{log_prefix} Getting channels StructuresServiceStub..."
+                        "%s Getting channels StructuresServiceStub...", log_prefix
                     )
                     rpc_service = v1_pb2_grpc.StructuresServiceStub(channel)
-                    LOGGER.debug(f"{log_prefix} Getting HomeGraph request...")
+                    LOGGER.debug("%s Getting HomeGraph request...", log_prefix)
                     request = v1_pb2.GetHomeGraphRequest(string1="", num2="")
-                    LOGGER.debug(f"{log_prefix} Fetching HomeGraph...")
+                    LOGGER.debug("%s Fetching HomeGraph...", log_prefix)
                     response = rpc_service.GetHomeGraph(request)
-                    LOGGER.debug(f"{log_prefix} Storing gotten homegraph...")
+                    LOGGER.debug("%s Storing obtained HomeGraph...", log_prefix)
                     self.homegraph = response
                 self.homegraph_date = datetime.now()
             except grpc.RpcError as rpc_error:
                 LOGGER.debug("%s Got an RpcError", log_prefix)
                 if rpc_error.code().name == "UNAUTHENTICATED":
                     LOGGER.warning(
-                        "%s The access token has expired. "
-                        "Getting a new one.",
+                        "%s The access token has expired. " "Getting a new one.",
                         log_prefix,
                     )
                     self.invalidate_access_token()
                     return self.get_homegraph()
                 LOGGER.error(
-                    "$s Received unknown RPC error: code=%s "
-                    "message=%s",
+                    "%s Received unknown RPC error: code=%s message=%s",
                     log_prefix,
                     rpc_error.code(),
                     rpc_error.details(),
@@ -382,10 +376,7 @@ class GLocalAuthenticationTokens:
             return None
 
         devices: List[Device] = []
-        LOGGER.debug(
-            "Iterating in %s homegraph devices",
-            len(homegraph.home.devices)
-        )
+        LOGGER.debug("Iterating in %s homegraph devices", len(homegraph.home.devices))
         for item in homegraph.home.devices:
             if item.local_auth_token != "":
                 # This checks if the current item is a valid model,
@@ -398,9 +389,7 @@ class GLocalAuthenticationTokens:
 
                 google_device = None
                 if network_devices:
-                    LOGGER.debug(
-                        "Looking for '%s' in local network", item.device_name
-                    )
+                    LOGGER.debug("Looking for '%s' in local network", item.device_name)
                     google_device = find_device(item.device_name)
 
                 device = Device(
@@ -416,13 +405,12 @@ class GLocalAuthenticationTokens:
                     LOGGER.warning(
                         "%s device initialization failed "
                         "because of missing local_auth_token, skipping.",
-                        device.device_name
+                        device.device_name,
                     )
             else:
                 LOGGER.debug(
-                    "'%s' local_auth_token is "
-                    "not found in Homegraph, skipping",
-                    item.device_name
+                    "'%s' local_auth_token is " "not found in Homegraph, skipping",
+                    item.device_name,
                 )
 
         LOGGER.debug("Sucessfully initialized %s Google Home devices", len(devices))
