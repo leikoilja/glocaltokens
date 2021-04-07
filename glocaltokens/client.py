@@ -174,7 +174,7 @@ class GLocalAuthenticationTokens:
         )
 
     @staticmethod
-    def _generate_mac_string():
+    def _generate_mac_string() -> str:
         """Generate random 14 char long string"""
         LOGGER.debug("Generating mac...")
         random_uuid = uuid4()
@@ -183,7 +183,7 @@ class GLocalAuthenticationTokens:
         LOGGER.debug(f"Generated mac: {mac_string}")
         return mac_string
 
-    def get_android_id(self) -> Optional[str]:
+    def get_android_id(self) -> str:
         if not self.android_id:
             LOGGER.debug("There is not any stored android_id, generating a new one")
             self.android_id = self._generate_mac_string()
@@ -198,6 +198,9 @@ class GLocalAuthenticationTokens:
         """
         Get google master token from username and password
         """
+        if self.username is None or self.password is None:
+            LOGGER.error("Username and password are not set.")
+            return None
         if not self.master_token:
             LOGGER.debug("There is not any stored master_token, logging in...")
             res = perform_master_login(
@@ -219,9 +222,16 @@ class GLocalAuthenticationTokens:
                 "There is not any stored access_token, "
                 "or the stored one has expired, getting a new one..."
             )
+            master_token = self.get_master_token()
+            if master_token is None:
+                LOGGER.debug("Unable to obtain master token.")
+                return None
+            if self.username is None:
+                LOGGER.error("Username is not set.")
+                return None
             res = perform_oauth(
                 self.username,
-                self.get_master_token(),
+                master_token,
                 self.get_android_id(),
                 app=ACCESS_TOKEN_APP_NAME,
                 service=ACCESS_TOKEN_SERVICE,
