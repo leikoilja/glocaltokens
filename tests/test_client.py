@@ -241,7 +241,6 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         access_token = self.client.get_access_token()
         self.assertEqual(m_perform_oauth.call_count, 1)
 
-    # pylint: disable=too-many-arguments
     @patch("glocaltokens.client.grpc.ssl_channel_credentials")
     @patch("glocaltokens.client.grpc.access_token_call_credentials")
     @patch("glocaltokens.client.grpc.composite_channel_credentials")

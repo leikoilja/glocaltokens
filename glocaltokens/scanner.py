@@ -1,6 +1,4 @@
 """Zeroconf based scanner"""
-# pylint: disable=arguments-differ
-
 import logging
 from threading import Event
 from typing import List, Optional
@@ -13,6 +11,7 @@ from .utils import network as net_utils, types as type_utils
 LOGGER = logging.getLogger(__name__)
 
 
+# pylint: disable=invalid-name
 class CastListener(ServiceListener):
     """
     Zeroconf Cast Services collection.
@@ -31,30 +30,30 @@ class CastListener(ServiceListener):
         """Number of discovered cast services."""
         return len(self.devices)
 
-    def add_service(self, zconf, typ, name):
+    def add_service(self, zc, type_, name):
         """ Add a service to the collection. """
-        LOGGER.debug("add_service %s, %s", typ, name)
-        self._add_update_service(zconf, typ, name, self.add_callback)
+        LOGGER.debug("add_service %s, %s", type_, name)
+        self._add_update_service(zc, type_, name, self.add_callback)
 
-    def update_service(self, zconf, typ, name):
+    def update_service(self, zc, type_, name):
         """ Update a service in the collection. """
-        LOGGER.debug("update_service %s, %s", typ, name)
-        self._add_update_service(zconf, typ, name, self.update_callback)
+        LOGGER.debug("update_service %s, %s", type_, name)
+        self._add_update_service(zc, type_, name, self.update_callback)
 
-    def remove_service(self, _zconf, typ, name):
+    def remove_service(self, _zconf, type_, name):
         """Called when a cast has beeen lost (mDNS info expired or host down)."""
-        LOGGER.debug("remove_service %s, %s", typ, name)
+        LOGGER.debug("remove_service %s, %s", type_, name)
 
-    def _add_update_service(self, zconf, typ, name, callback):
+    def _add_update_service(self, zc, type_, name, callback):
         """ Add or update a service. """
         service = None
         tries = 0
         if name.endswith("_sub._googlecast._tcp.local."):
-            LOGGER.debug("_add_update_service ignoring %s, %s", typ, name)
+            LOGGER.debug("_add_update_service ignoring %s, %s", type_, name)
             return
         while service is None and tries < 4:
             try:
-                service = zconf.get_service_info(typ, name)
+                service = zc.get_service_info(type_, name)
             except IOError:
                 # If the zeroconf fails to receive the necessary data we abort
                 # adding the service
@@ -62,7 +61,7 @@ class CastListener(ServiceListener):
             tries += 1
 
         if not service:
-            LOGGER.debug("_add_update_service failed to add %s, %s", typ, name)
+            LOGGER.debug("_add_update_service failed to add %s, %s", type_, name)
             return
 
         def get_value(key):
@@ -85,7 +84,6 @@ class CastListener(ServiceListener):
             callback()
 
 
-# pylint: disable=too-few-public-methods
 class GoogleDevice:
     """Discovered Google device representation"""
 
@@ -125,8 +123,6 @@ class GoogleDevice:
         )
 
 
-# pylint: disable=too-many-locals
-# pylint: disable=unused-argument
 def discover_devices(
     models_list: Optional[List[str]] = None,
     max_devices: int = None,
@@ -153,12 +149,12 @@ def discover_devices(
     listener = CastListener(callback)
     if not zeroconf_instance:
         LOGGER.debug("Creating new Zeroconf instance")
-        zconf = zeroconf.Zeroconf()
+        zc = zeroconf.Zeroconf()
     else:
         LOGGER.debug("Using attribute Zeroconf instance")
-        zconf = zeroconf_instance
+        zc = zeroconf_instance
     LOGGER.debug("Creating zeroconf service browser for _googlecast._tcp.local.")
-    zeroconf.ServiceBrowser(zconf, "_googlecast._tcp.local.", listener)
+    zeroconf.ServiceBrowser(zc, "_googlecast._tcp.local.", listener)
 
     # Wait for the timeout or the maximum number of devices
     LOGGER.debug("Waiting for discovery completion...")

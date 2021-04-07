@@ -33,7 +33,6 @@ logging.basicConfig(level=logging.ERROR)
 LOGGER = logging.getLogger(__name__)
 
 
-# pylint: disable=too-many-arguments
 class Device:
     """Device representation"""
 
@@ -126,7 +125,6 @@ class Device:
         }
 
 
-# pylint: disable=too-many-instance-attributes
 class GLocalAuthenticationTokens:
     """Client"""
 
@@ -293,18 +291,16 @@ class GLocalAuthenticationTokens:
                 self.homegraph_date = datetime.now()
             except grpc.RpcError as rpc_error:
                 LOGGER.debug("Got an RpcError.")
-                # pylint: disable=no-else-return
                 # pylint: disable=no-member
                 if rpc_error.code().name == "UNAUTHENTICATED":
                     LOGGER.warning("The access token has expired. Getting a new one.")
                     self.invalidate_access_token()
                     return self.get_homegraph()
-                else:
-                    LOGGER.error(
-                        "Received unknown RPC error: code=%s " "message=%s",
-                        rpc_error.code(),
-                        rpc_error.details(),
-                    )
+                LOGGER.error(
+                    "Received unknown RPC error: code=%s " "message=%s",
+                    rpc_error.code(),
+                    rpc_error.details(),
+                )
         return self.homegraph
 
     def get_google_devices(
