@@ -1,3 +1,5 @@
+"""Client"""
+
 from datetime import datetime
 import json
 import logging
@@ -32,12 +34,14 @@ LOGGER = logging.getLogger(__name__)
 
 
 class Device:
+    """Device representation"""
+
     def __init__(
         self,
         device_name: str,
         local_auth_token: str,
         google_device: Optional[GoogleDevice] = None,
-        ip: Optional[str] = None,
+        ip_address: Optional[str] = None,
         port: Optional[int] = None,
         hardware: Optional[str] = None,
     ):
@@ -47,34 +51,35 @@ class Device:
         LOGGER.debug("Initializing new Device instance.")
         self.device_name = device_name
         self.local_auth_token = None
-        self.ip = ip
+        self.ip_address = ip_address
         self.port = port
         self.google_device = google_device
         self.hardware = hardware
 
         LOGGER.debug(
-            'Set self device_name to "{}", local_auth_token to None, '
-            "google_device to {}, and hardware to {}".format(
-                device_name, google_device, hardware
-            )
+            "Set self device_name to '%s', local_auth_token to None, "
+            "google_device to %s, and hardware to %s",
+            device_name,
+            google_device,
+            hardware,
         )
 
         if google_device:
             LOGGER.debug("google_device is not None")
-            LOGGER.debug(f"Setting self ip to {google_device.ip}")
-            self.ip = google_device.ip
-            LOGGER.debug(f"Setting self port to {google_device.port}")
+            LOGGER.debug("Setting self ip to %s", google_device.ip_address)
+            self.ip_address = google_device.ip_address
+            LOGGER.debug("Setting self port to %s", google_device.port)
             self.port = google_device.port
         else:
             LOGGER.debug("google_device is None")
-            if (ip and not port) or (not ip and port):
+            if (ip_address and not port) or (not ip_address and port):
                 LOGGER.error(
                     "Both ip and port must be set, if one of them is specified."
                 )
                 return
-            LOGGER.debug(f"Setting self ip to {ip}")
-            self.ip = ip
-            LOGGER.debug(f"Setting self port to {port}")
+            LOGGER.debug("Setting self ip to %s", ip_address)
+            self.ip_address = ip_address
+            LOGGER.debug("Setting self port to %s", port)
             self.port = port
 
         if not local_auth_token:
@@ -90,9 +95,9 @@ class Device:
             return
 
         if (
-            self.ip
-            and not net_utils.is_valid_ipv4_address(self.ip)
-            and not net_utils.is_valid_ipv6_address(self.ip)
+            self.ip_address
+            and not net_utils.is_valid_ipv4_address(self.ip_address)
+            and not net_utils.is_valid_ipv6_address(self.ip_address)
         ):
             LOGGER.error("ip must be a valid IP address")
             return
@@ -101,22 +106,28 @@ class Device:
             LOGGER.error("port must be a valid port")
             return
 
-        LOGGER.debug(f"Setting self local_auth_token to {censor(local_auth_token)}")
+        LOGGER.debug("Setting self local_auth_token to %s", censor(local_auth_token))
         self.local_auth_token = local_auth_token
 
     def __str__(self) -> str:
         return str(self.dict())
 
     def dict(self) -> Dict[str, Any]:
+        """Dictionary representation"""
         return {
             JSON_KEY_DEVICE_NAME: self.device_name,
-            JSON_KEY_GOOGLE_DEVICE: {JSON_KEY_IP: self.ip, JSON_KEY_PORT: self.port},
+            JSON_KEY_GOOGLE_DEVICE: {
+                JSON_KEY_IP: self.ip_address,
+                JSON_KEY_PORT: self.port,
+            },
             JSON_KEY_HARDWARE: self.hardware,
             JSON_KEY_LOCAL_AUTH_TOKEN: self.local_auth_token,
         }
 
 
 class GLocalAuthenticationTokens:
+    """Client"""
+
     def __init__(
         self,
         username: Optional[str] = None,
@@ -147,13 +158,12 @@ class GLocalAuthenticationTokens:
         self.master_token: Optional[str] = master_token
         self.android_id: Optional[str] = android_id
         LOGGER.debug(
-            'Set self username to "{}", password to "{}", '
-            'master_token to "{}" and android_id to {}'.format(
-                censor(username),
-                censor(password),
-                censor(master_token),
-                censor(android_id),
-            )
+            'Set self username to "%s", password to "%s", '
+            'master_token to "%s" and android_id to %s',
+            censor(username),
+            censor(password),
+            censor(master_token),
+            censor(android_id),
         )
         if (not self.username or not self.password) and not self.master_token:
             LOGGER.error(
@@ -180,10 +190,11 @@ class GLocalAuthenticationTokens:
         random_uuid = uuid4()
         random_string = str(random_uuid).replace("-", "")[:ANDROID_ID_LENGTH]
         mac_string = random_string.upper()
-        LOGGER.debug(f"Generated mac: {mac_string}")
+        LOGGER.debug("Generated mac: %s", mac_string)
         return mac_string
 
     def get_android_id(self) -> str:
+        """Return existing or generate android id"""
         if not self.android_id:
             LOGGER.debug("There is not any stored android_id, generating a new one")
             self.android_id = self._generate_mac_string()
@@ -195,12 +206,11 @@ class GLocalAuthenticationTokens:
         return datetime.now().timestamp() - creation_dt.timestamp() > duration
 
     def get_master_token(self) -> Optional[str]:
-        """
-        Get google master token from username and password
-        """
+        """Get google master token from username and password"""
         if self.username is None or self.password is None:
             LOGGER.error("Username and password are not set.")
             return None
+
         if not self.master_token:
             LOGGER.debug("There is not any stored master_token, logging in...")
             res = perform_master_login(
@@ -208,13 +218,14 @@ class GLocalAuthenticationTokens:
             )
             if "Token" not in res:
                 LOGGER.error("[!] Could not get master token.")
-                LOGGER.debug(f"Request response: {res}")
+                LOGGER.debug("Request response: %s", res)
                 return None
             self.master_token = res["Token"]
-        LOGGER.debug("Master token: {}".format(self.master_token))
+        LOGGER.debug("Master token: %s", self.master_token)
         return self.master_token
 
     def get_access_token(self) -> Optional[str]:
+        """Return existing or fetch access_token"""
         if self.access_token is None or self._has_expired(
             self.access_token_date, ACCESS_TOKEN_DURATION
         ):
@@ -239,19 +250,17 @@ class GLocalAuthenticationTokens:
             )
             if "Auth" not in res:
                 LOGGER.error("[!] Could not get access token.")
-                LOGGER.debug(f"Request response: {res}")
+                LOGGER.debug("Request response: %s", res)
                 return None
             self.access_token = res["Auth"]
             self.access_token_date = datetime.now()
         LOGGER.debug(
-            f"Access token: {self.access_token}, datetime {self.access_token_date}"
+            "Access token: %s, datetime %s", self.access_token, self.access_token_date
         )
         return self.access_token
 
     def get_homegraph(self):
-        """
-        Returns the entire Google Home Foyer V2 service
-        """
+        """Returns the entire Google Home Foyer V2 service"""
         if self.homegraph is None or self._has_expired(
             self.homegraph_date, HOMEGRAPH_DURATION
         ):
@@ -282,15 +291,16 @@ class GLocalAuthenticationTokens:
                 self.homegraph_date = datetime.now()
             except grpc.RpcError as rpc_error:
                 LOGGER.debug("Got an RpcError.")
+                # pylint: disable=no-member
                 if rpc_error.code().name == "UNAUTHENTICATED":
                     LOGGER.warning("The access token has expired. Getting a new one.")
                     self.invalidate_access_token()
                     return self.get_homegraph()
-                else:
-                    LOGGER.error(
-                        f"Received unknown RPC error: code={rpc_error.code()} "
-                        "message={rpc_error.details()}"
-                    )
+                LOGGER.error(
+                    "Received unknown RPC error: code=%s " "message=%s",
+                    rpc_error.code(),
+                    rpc_error.details(),
+                )
         return self.homegraph
 
     def get_google_devices(
@@ -341,7 +351,7 @@ class GLocalAuthenticationTokens:
 
         devices: List[Device] = []
         LOGGER.debug(
-            f"Iterating in homegraph devices (len={len(homegraph.home.devices)})"
+            "Iterating in homegraph devices (len=%s)", len(homegraph.home.devices)
         )
         for item in homegraph.home.devices:
             if item.local_auth_token != "":
@@ -350,13 +360,12 @@ class GLocalAuthenticationTokens:
                 # If models_list is empty, the check should be omitted,
                 # and accept all items.
                 if models_list and item.hardware.model not in models_list:
-                    LOGGER.debug("{} not in models_list".format(item.hardware.model))
+                    LOGGER.debug("%s not in models_list", item.hardware.model)
                     continue
 
                 LOGGER.debug(
-                    "Looking for a device in local network? {}".format(
-                        network_devices is not None
-                    )
+                    "Looking for a device in local network? %s",
+                    network_devices is not None,
                 )
                 google_device = (
                     find_device(item.device_name) if network_devices else None
@@ -368,17 +377,16 @@ class GLocalAuthenticationTokens:
                     hardware=item.hardware.model,
                 )
                 if device.local_auth_token:
-                    LOGGER.debug("Adding {device.device_name} to devices list")
+                    LOGGER.debug("Adding %s to devices list", device.device_name)
                     devices.append(device)
                 else:
                     LOGGER.warning("Device initialization failed, skipping.")
             else:
                 LOGGER.debug(
-                    f"local_auth_token is not initialized for {item.device_name}"
+                    "local_auth_token is not initialized for %s", item.device_name
                 )
 
-        LOGGER.debug("Google Home devices: {}".format(devices))
-
+        LOGGER.debug("Google Home devices: %s", devices)
         return devices
 
     def get_google_devices_json(

@@ -1,3 +1,5 @@
+"""Test factory providers"""
+# pylint: disable=no-self-use
 from typing import Optional
 
 from faker import Faker
@@ -15,27 +17,34 @@ fake = Faker()
 
 
 class UtilsProvider(BaseProvider):
+    """Utility provider"""
+
     def version(self):
+        """Generates random version"""
         return "{}.{}.{}".format(fake.pyint(), fake.pyint(), fake.pyint())
 
 
 class TokenProvider(BaseProvider):
+    """Token provider"""
+
     def master_token(self):
+        """Generates random master token"""
         return generate_token(MASTER_TOKEN_LENGTH, prefix="aas_et/")
 
     def access_token(self):
+        """Generates random access token"""
         return generate_token(ACCESS_TOKEN_LENGTH, prefix="ya29.")
 
     def local_auth_token(self):
+        """Generates random local_auth_token token"""
         return generate_token(LOCAL_AUTH_TOKEN_LENGTH)
 
 
 class HomegraphProvider(TokenProvider):
+    """Homegraph provider"""
+
     def homegraph_device(self):
-        """
-        Not sure from where did I get this structure from.
-        Just using the content from client.py as reference.
-        """
+        """Using the content from test requests as reference"""
         return Struct(
             **{
                 "local_auth_token": self.local_auth_token(),

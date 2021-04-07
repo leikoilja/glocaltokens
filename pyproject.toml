@@ -49,6 +49,15 @@ ipdb = "^0.13.7"
 
 [tool.pylint.format]
 max-line-length = 88
+min-similarity-lines = 7
+
+[tool.pylint.messages_control]
+disable = [
+    "too-few-public-methods",
+    "too-many-arguments",
+    "too-many-instance-attributes",
+    "too-many-locals",
+]
 
 [tool.isort]
 profile = "black"

@@ -1,3 +1,4 @@
+"""Zeroconf based scanner"""
 import logging
 from threading import Event
 from typing import List, Optional
@@ -10,6 +11,7 @@ from .utils import network as net_utils, types as type_utils
 LOGGER = logging.getLogger(__name__)
 
 
+# pylint: disable=invalid-name
 class CastListener(ServiceListener):
     """
     Zeroconf Cast Services collection.
@@ -28,30 +30,30 @@ class CastListener(ServiceListener):
         """Number of discovered cast services."""
         return len(self.devices)
 
-    def add_service(self, zconf, typ, name):
+    def add_service(self, zc, type_, name):
         """ Add a service to the collection. """
-        LOGGER.debug("add_service %s, %s", typ, name)
-        self._add_update_service(zconf, typ, name, self.add_callback)
+        LOGGER.debug("add_service %s, %s", type_, name)
+        self._add_update_service(zc, type_, name, self.add_callback)
 
-    def update_service(self, zconf, typ, name):
+    def update_service(self, zc, type_, name):
         """ Update a service in the collection. """
-        LOGGER.debug("update_service %s, %s", typ, name)
-        self._add_update_service(zconf, typ, name, self.update_callback)
+        LOGGER.debug("update_service %s, %s", type_, name)
+        self._add_update_service(zc, type_, name, self.update_callback)
 
-    def remove_service(self, _zconf, typ, name):
+    def remove_service(self, _zconf, type_, name):
         """Called when a cast has beeen lost (mDNS info expired or host down)."""
-        LOGGER.debug("remove_service %s, %s", typ, name)
+        LOGGER.debug("remove_service %s, %s", type_, name)
 
-    def _add_update_service(self, zconf, typ, name, callback):
+    def _add_update_service(self, zc, type_, name, callback):
         """ Add or update a service. """
         service = None
         tries = 0
         if name.endswith("_sub._googlecast._tcp.local."):
-            LOGGER.debug("_add_update_service ignoring %s, %s", typ, name)
+            LOGGER.debug("_add_update_service ignoring %s, %s", type_, name)
             return
         while service is None and tries < 4:
             try:
-                service = zconf.get_service_info(typ, name)
+                service = zc.get_service_info(type_, name)
             except IOError:
                 # If the zeroconf fails to receive the necessary data we abort
                 # adding the service
@@ -59,7 +61,7 @@ class CastListener(ServiceListener):
             tries += 1
 
         if not service:
-            LOGGER.debug("_add_update_service failed to add %s, %s", typ, name)
+            LOGGER.debug("_add_update_service failed to add %s, %s", type_, name)
             return
 
         def get_value(key):
@@ -83,24 +85,30 @@ class CastListener(ServiceListener):
 
 
 class GoogleDevice:
-    def __init__(self, name: str, ip: str, port: int, model: str):
+    """Discovered Google device representation"""
+
+    def __init__(self, name: str, ip_address: str, port: int, model: str):
         LOGGER.debug("Initializing GoogleDevice...")
         if not net_utils.is_valid_ipv4_address(
-            ip
-        ) and not net_utils.is_valid_ipv6_address(ip):
-            LOGGER.error("ip must be a valid IP address")
+            ip_address
+        ) and not net_utils.is_valid_ipv6_address(ip_address):
+            LOGGER.error("IP must be a valid IP address")
             return
 
         if not type_utils.is_integer(port):
-            LOGGER.error("port must be an integer value")
+            LOGGER.error("PORT must be an integer value")
             return
 
         self.name = name
-        self.ip = ip
+        self.ip_address = ip_address
         self.port = port
         self.model = model
         LOGGER.debug(
-            f"Set self name to {name}, ip to {ip}, port to {port} and model to {model}"
+            "Set self name to %s, IP to %s, PORT to %s and model to %s",
+            name,
+            ip_address,
+            port,
+            model,
         )
 
         if not 0 <= self.port <= 65535:
@@ -109,7 +117,10 @@ class GoogleDevice:
 
     def __str__(self) -> str:
         """Serializes the class into a str"""
-        return f"{{name:{self.name},ip:{self.ip},port:{self.port},model:{self.model}}}"
+        return (
+            f"{{name:{self.name},ip:{self.ip_address},"
+            f"port:{self.port},model:{self.model}}}"
+        )
 
 
 def discover_devices(
@@ -119,11 +130,12 @@ def discover_devices(
     zeroconf_instance=None,
     logging_level=logging.ERROR,
 ):
+    """Discover devices"""
     LOGGER.setLevel(logging_level)
 
-    # pylint: disable=unused-argument
     LOGGER.debug("Discovering devices...")
     LOGGER.debug("Importing zeroconf...")
+    # pylint: disable=import-outside-toplevel
     import zeroconf
 
     def callback():
@@ -137,35 +149,35 @@ def discover_devices(
     listener = CastListener(callback)
     if not zeroconf_instance:
         LOGGER.debug("Creating new Zeroconf instance")
-        zconf = zeroconf.Zeroconf()
+        zc = zeroconf.Zeroconf()
     else:
         LOGGER.debug("Using attribute Zeroconf instance")
-        zconf = zeroconf_instance
+        zc = zeroconf_instance
     LOGGER.debug("Creating zeroconf service browser for _googlecast._tcp.local.")
-    zeroconf.ServiceBrowser(zconf, "_googlecast._tcp.local.", listener)
+    zeroconf.ServiceBrowser(zc, "_googlecast._tcp.local.", listener)
 
     # Wait for the timeout or the maximum number of devices
     LOGGER.debug("Waiting for discovery completion...")
     discover_complete.wait(timeout)
 
     devices = []
-    LOGGER.debug("Got {} devices. Iterating...".format(len(listener.devices)))
+    LOGGER.debug("Got %s devices. Iterating...", len(listener.devices))
     for service in listener.devices:
         model = service[0]
         name = service[1]
-        ip = service[2]
+        ip_address = service[2]
         access_port = service[3]
         if not models_list or model in models_list:
             LOGGER.debug(
                 "Appending new device. name: %s, ip: %s, port: %s, model: %s",
                 name,
-                ip,
+                ip_address,
                 access_port,
                 model,
             )
-            devices.append(GoogleDevice(name, ip, int(access_port), model))
+            devices.append(GoogleDevice(name, ip_address, int(access_port), model))
         else:
             LOGGER.debug(
-                'Won\'t add device since model "{}" is not in models_list'.format(model)
+                'Won\'t add device since model "%s" is not in models_list', model
             )
     return devices

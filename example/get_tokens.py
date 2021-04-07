@@ -1,3 +1,5 @@
+"""Example to fetch local authentication tokens"""
+
 import json
 from os import getenv
 
