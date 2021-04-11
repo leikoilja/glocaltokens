@@ -1,12 +1,13 @@
 """
 Common assertion helper classes used for unittesting
 """
-# pylint: disable=no-member
 # pylint: disable=invalid-name
+from unittest import TestCase
+
 import glocaltokens.utils.token as token_utils
 
 
-class DeviceAssertions:
+class DeviceAssertions(TestCase):
     """Device specific assessors"""
 
     def assertDevice(self, homegraph_device, homegraph_device_struct):
@@ -26,7 +27,7 @@ class DeviceAssertions:
         )
 
 
-class TypeAssertions:
+class TypeAssertions(TestCase):
     """Type assessors"""
 
     def assertIsString(self, variable):
@@ -36,7 +37,7 @@ class TypeAssertions:
             msg=f"Given variable {variable} is not String type",
         )
 
-    def assertIsAASET(self, variable):
+    def assertIsAasEt(self, variable):
         """Assert the given variable is a of string type and follows AAS token format"""
         self.assertTrue(
             isinstance(variable, str) and token_utils.is_aas_et(variable),

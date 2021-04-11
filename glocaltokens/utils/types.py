@@ -16,7 +16,6 @@ def is_float(variable):
     return isinstance(variable, float)
 
 
-# pylint: disable=too-few-public-methods
 class Struct:
     """Structure type"""
 

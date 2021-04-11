@@ -70,7 +70,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         self.assertIsNone(client.access_token_date)
         self.assertIsNone(client.homegraph_date)
 
-        self.assertIsAASET(client.master_token)
+        self.assertIsAasEt(client.master_token)
 
     @patch("glocaltokens.client.LOGGER.error")
     def test_initialization__valid(self, m_log):
@@ -235,6 +235,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         self.assertEqual(m_perform_oauth.call_count, 0)
 
         # Another request with expired token must return new token (new request)
+        assert self.client.access_token_date is not None
         self.client.access_token_date = self.client.access_token_date - timedelta(
             ACCESS_TOKEN_DURATION + 1
         )
@@ -250,7 +251,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_access_token")
     def test_get_homegraph(
         self,
-        m_get_access_token,  # pylint: disable=unused-argument
+        _m_get_access_token,
         m_get_home_graph_request,
         m_structure_service_stub,
         m_secure_channel,
@@ -279,6 +280,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         self.assertEqual(m_get_home_graph_request.call_count, 1)
 
         # Expired homegraph
+        assert self.client.homegraph_date is not None
         self.client.homegraph_date = self.client.homegraph_date - timedelta(
             HOMEGRAPH_DURATION + 1
         )
