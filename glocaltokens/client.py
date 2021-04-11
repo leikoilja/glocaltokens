@@ -279,7 +279,6 @@ class GLocalAuthenticationTokens:
         )
         return self.access_token
 
-    # pylint: disable=no-member
     def get_homegraph(self):
         """Returns the entire Google Home Foyer V2 service"""
         if self.homegraph is None or self._has_expired(
@@ -322,7 +321,10 @@ class GLocalAuthenticationTokens:
                 self.homegraph_date = datetime.now()
             except grpc.RpcError as rpc_error:
                 LOGGER.debug("%s Got an RpcError", log_prefix)
-                if rpc_error.code().name == "UNAUTHENTICATED":
+                if (
+                    rpc_error.code().name  # pylint: disable=no-member
+                    == "UNAUTHENTICATED"
+                ):
                     LOGGER.warning(
                         "%s The access token has expired. Getting a new one.",
                         log_prefix,
@@ -332,8 +334,8 @@ class GLocalAuthenticationTokens:
                 LOGGER.error(
                     "%s Received unknown RPC error: code=%s message=%s",
                     log_prefix,
-                    rpc_error.code(),
-                    rpc_error.details(),
+                    rpc_error.code(),  # pylint: disable=no-member
+                    rpc_error.details(),  # pylint: disable=no-member
                 )
         return self.homegraph
 

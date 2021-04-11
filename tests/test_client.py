@@ -70,7 +70,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         self.assertIsNone(client.access_token_date)
         self.assertIsNone(client.homegraph_date)
 
-        self.assertIsAASET(client.master_token)
+        self.assertIsAasEt(client.master_token)
 
     @patch("glocaltokens.client.LOGGER.error")
     def test_initialization__valid(self, m_log):
@@ -251,7 +251,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_access_token")
     def test_get_homegraph(
         self,
-        m_get_access_token,  # pylint: disable=unused-argument
+        _m_get_access_token,
         m_get_home_graph_request,
         m_structure_service_stub,
         m_secure_channel,
