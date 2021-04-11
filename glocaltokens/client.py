@@ -15,6 +15,7 @@ from .const import (
     ACCESS_TOKEN_DURATION,
     ACCESS_TOKEN_SERVICE,
     ANDROID_ID_LENGTH,
+    DISCOVERY_TIMEOUT,
     GOOGLE_HOME_FOYER_API,
     HOMEGRAPH_DURATION,
     JSON_KEY_DEVICE_NAME,
@@ -336,6 +337,7 @@ class GLocalAuthenticationTokens:
         disable_discovery: bool = False,
         zeroconf_instance=None,
         force_homegraph_reload: bool = False,
+        discovery_timeout: int = DISCOVERY_TIMEOUT,
     ) -> List[Device]:
         """
         Returns a list of google devices with their local authentication tokens,
@@ -347,6 +349,7 @@ class GLocalAuthenticationTokens:
         zeroconf_instance: If you already have an initialized zeroconf instance,
           use it here.
         force_homegraph_reload: If the stored homegraph should be generated again.
+        discovery_timeout: Timeout for zeroconf discovery in seconds.
         """
 
         # Set models_list to empty list if None
@@ -365,6 +368,7 @@ class GLocalAuthenticationTokens:
             LOGGER.debug("Getting network devices...")
             network_devices = discover_devices(
                 models_list,
+                timeout=discovery_timeout,
                 zeroconf_instance=zeroconf_instance,
                 logging_level=self.logging_level,
             )

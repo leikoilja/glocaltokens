@@ -47,6 +47,11 @@ ipdb = "^0.13.7"
 "Bug Tracker" = "https://github.com/leikoilja/glocaltokens/issues"
 "Release Notes" = "https://github.com/leikoilja/glocaltokens/releases"
 
+[tool.pylint.master]
+extension-pkg-whitelist = [
+    "_socket",
+]
+
 [tool.pylint.format]
 max-line-length = 88
 min-similarity-lines = 7

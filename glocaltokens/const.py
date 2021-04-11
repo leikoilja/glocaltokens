@@ -14,7 +14,8 @@ GOOGLE_HOME_FOYER_API = "googlehomefoyer-pa.googleapis.com:443"
 
 HOMEGRAPH_DURATION = 24 * 60 * 60
 
-DISCOVER_TIMEOUT = 20
+DISCOVERY_TIMEOUT = 2
+
 GOOGLE_HOME_MODELS = [
     "Google Home",
     "Google Home Mini",
