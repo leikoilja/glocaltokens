@@ -5,7 +5,7 @@ from typing import List, Optional
 
 from zeroconf import ServiceListener
 
-from .const import DISCOVER_TIMEOUT
+from .const import DISCOVERY_TIMEOUT
 from .utils import network as net_utils, types as type_utils
 
 LOGGER = logging.getLogger(__name__)
@@ -126,7 +126,7 @@ class GoogleDevice:
 def discover_devices(
     models_list: Optional[List[str]] = None,
     max_devices: int = None,
-    timeout: int = DISCOVER_TIMEOUT,
+    timeout: int = DISCOVERY_TIMEOUT,
     zeroconf_instance=None,
     logging_level=logging.ERROR,
 ):
@@ -141,10 +141,10 @@ def discover_devices(
     def callback():
         """Called when zeroconf has discovered a new chromecast."""
         if max_devices is not None and listener.count >= max_devices:
-            discover_complete.set()
+            discovery_complete.set()
 
     LOGGER.debug("Creating new Event for discovery completion...")
-    discover_complete = Event()
+    discovery_complete = Event()
     LOGGER.debug("Creating new CastListener...")
     listener = CastListener(callback)
     if not zeroconf_instance:
@@ -158,7 +158,7 @@ def discover_devices(
 
     # Wait for the timeout or the maximum number of devices
     LOGGER.debug("Waiting for discovery completion...")
-    discover_complete.wait(timeout)
+    discovery_complete.wait(timeout)
 
     devices = []
     LOGGER.debug("Got %s devices. Iterating...", len(listener.devices))
