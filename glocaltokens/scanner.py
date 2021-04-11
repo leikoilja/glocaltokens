@@ -3,6 +3,7 @@ import logging
 from threading import Event
 from typing import Callable, List, Optional
 
+import zeroconf
 from zeroconf import ServiceInfo, ServiceListener, Zeroconf
 
 from .const import DISCOVERY_TIMEOUT
@@ -148,11 +149,8 @@ def discover_devices(
     LOGGER.setLevel(logging_level)
 
     LOGGER.debug("Discovering devices...")
-    LOGGER.debug("Importing zeroconf...")
-    # pylint: disable=import-outside-toplevel
-    import zeroconf
 
-    def callback():
+    def callback() -> None:
         """Called when zeroconf has discovered a new chromecast."""
         if max_devices is not None and listener.count >= max_devices:
             discovery_complete.set()
