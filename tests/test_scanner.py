@@ -49,14 +49,6 @@ class GoogleDeviceTests(TestCase):
         GoogleDevice(faker.word(), faker.word(), faker.port_number(), faker.word())
         self.assertEqual(mock.call_count, 1)
 
-        # With non-numeric port
-        GoogleDevice(faker.word(), faker.ipv4_private(), faker.word(), faker.word())
-        self.assertEqual(mock.call_count, 2)
-
-        # With float port
-        GoogleDevice(faker.word(), faker.ipv4_private(), faker.pyfloat(), faker.word())
-        self.assertEqual(mock.call_count, 3)
-
         # With negative port
         GoogleDevice(
             faker.word(),
@@ -64,7 +56,7 @@ class GoogleDeviceTests(TestCase):
             faker.pyint(min_value=-9999, max_value=-1),
             faker.word(),
         )
-        self.assertEqual(mock.call_count, 4)
+        self.assertEqual(mock.call_count, 2)
 
         # With greater port
         GoogleDevice(
@@ -73,4 +65,4 @@ class GoogleDeviceTests(TestCase):
             faker.pyint(min_value=65535, max_value=999999),
             faker.word(),
         )
-        self.assertEqual(mock.call_count, 5)
+        self.assertEqual(mock.call_count, 3)

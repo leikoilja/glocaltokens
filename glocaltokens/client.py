@@ -289,20 +289,26 @@ class GLocalAuthenticationTokens:
                 "There is no stored homegraph, or it has expired, getting a new one..."
             )
             log_prefix = "[GRPC]"
+            access_token = self.get_access_token()
+            if not access_token:
+                LOGGER.debug("%s Unable to obtain access token.", log_prefix)
+                return None
             try:
                 LOGGER.debug("%s Creating SSL channel credentials...", log_prefix)
                 scc = grpc.ssl_channel_credentials(root_certificates=None)
                 LOGGER.debug("%s Creating access token call credentials...", log_prefix)
-                tok = grpc.access_token_call_credentials(self.get_access_token())
+                tok = grpc.access_token_call_credentials(access_token)
                 LOGGER.debug("%s Compositing channel credentials...", log_prefix)
-                ccc = grpc.composite_channel_credentials(scc, tok)
+                channel_credentials = grpc.composite_channel_credentials(scc, tok)
 
                 LOGGER.debug(
                     "%s Establishing secure channel with "
                     "the Google Home Foyer API...",
                     log_prefix,
                 )
-                with grpc.secure_channel(GOOGLE_HOME_FOYER_API, ccc) as channel:
+                with grpc.secure_channel(
+                    GOOGLE_HOME_FOYER_API, channel_credentials
+                ) as channel:
                     LOGGER.debug(
                         "%s Getting channels StructuresServiceStub...", log_prefix
                     )

@@ -235,6 +235,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         self.assertEqual(m_perform_oauth.call_count, 0)
 
         # Another request with expired token must return new token (new request)
+        assert self.client.access_token_date is not None
         self.client.access_token_date = self.client.access_token_date - timedelta(
             ACCESS_TOKEN_DURATION + 1
         )
@@ -279,6 +280,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         self.assertEqual(m_get_home_graph_request.call_count, 1)
 
         # Expired homegraph
+        assert self.client.homegraph_date is not None
         self.client.homegraph_date = self.client.homegraph_date - timedelta(
             HOMEGRAPH_DURATION + 1
         )

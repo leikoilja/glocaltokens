@@ -3,10 +3,12 @@ Common assertion helper classes used for unittesting
 """
 # pylint: disable=no-member
 # pylint: disable=invalid-name
+from unittest import TestCase
+
 import glocaltokens.utils.token as token_utils
 
 
-class DeviceAssertions:
+class DeviceAssertions(TestCase):
     """Device specific assessors"""
 
     def assertDevice(self, homegraph_device, homegraph_device_struct):
@@ -26,7 +28,7 @@ class DeviceAssertions:
         )
 
 
-class TypeAssertions:
+class TypeAssertions(TestCase):
     """Type assessors"""
 
     def assertIsString(self, variable):

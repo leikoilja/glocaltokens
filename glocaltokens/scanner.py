@@ -1,17 +1,16 @@
 """Zeroconf based scanner"""
 import logging
 from threading import Event
-from typing import List, Optional
+from typing import Callable, List, Optional
 
-from zeroconf import ServiceListener
+from zeroconf import ServiceInfo, ServiceListener, Zeroconf
 
 from .const import DISCOVERY_TIMEOUT
-from .utils import network as net_utils, types as type_utils
+from .utils import network as net_utils
 
 LOGGER = logging.getLogger(__name__)
 
 
-# pylint: disable=invalid-name
 class CastListener(ServiceListener):
     """
     Zeroconf Cast Services collection.
@@ -19,32 +18,43 @@ class CastListener(ServiceListener):
     https://github.com/home-assistant-libs/pychromecast/
     """
 
-    def __init__(self, add_callback=None, remove_callback=None, update_callback=None):
-        self.devices = []
+    def __init__(
+        self,
+        add_callback: Optional[Callable[[], None]] = None,
+        remove_callback: Optional[Callable[[], None]] = None,
+        update_callback: Optional[Callable[[], None]] = None,
+    ):
+        self.devices: List[GoogleDevice] = []
         self.add_callback = add_callback
         self.remove_callback = remove_callback
         self.update_callback = update_callback
 
     @property
-    def count(self):
+    def count(self) -> int:
         """Number of discovered cast services."""
         return len(self.devices)
 
-    def add_service(self, zc, type_, name):
+    def add_service(self, zc: Zeroconf, type_: str, name: str) -> None:
         """ Add a service to the collection. """
         LOGGER.debug("add_service %s, %s", type_, name)
         self._add_update_service(zc, type_, name, self.add_callback)
 
-    def update_service(self, zc, type_, name):
+    def update_service(self, zc: Zeroconf, type_: str, name: str) -> None:
         """ Update a service in the collection. """
         LOGGER.debug("update_service %s, %s", type_, name)
         self._add_update_service(zc, type_, name, self.update_callback)
 
-    def remove_service(self, _zconf, type_, name):
+    def remove_service(self, _zc: Zeroconf, type_: str, name: str) -> None:
         """Called when a cast has beeen lost (mDNS info expired or host down)."""
         LOGGER.debug("remove_service %s, %s", type_, name)
 
-    def _add_update_service(self, zc, type_, name, callback):
+    def _add_update_service(
+        self,
+        zc: Zeroconf,
+        type_: str,
+        name: str,
+        callback: Optional[Callable[[], None]],
+    ) -> None:
         """ Add or update a service. """
         service = None
         tries = 0
@@ -64,24 +74,32 @@ class CastListener(ServiceListener):
             LOGGER.debug("_add_update_service failed to add %s, %s", type_, name)
             return
 
-        def get_value(key):
-            """Retrieve value and decode to UTF-8."""
-            value = service.properties.get(key.encode("utf-8"))
-
-            if value is None or isinstance(value, str):
-                return value
-            return value.decode("utf-8")
-
         addresses = service.parsed_addresses()
         host = addresses[0] if addresses else service.server
 
-        model_name = get_value("md")
-        friendly_name = get_value("fn")
+        model_name = self.get_service_value(service, "md")
+        friendly_name = self.get_service_value(service, "fn")
 
-        self.devices.append((model_name, friendly_name, host, service.port))
+        if not model_name or not friendly_name or not service.port:
+            LOGGER.debug(
+                "Device %s doesn't have friendly name, model name or port, skipping...",
+                host,
+            )
+            return
+
+        self.devices.append(GoogleDevice(friendly_name, host, service.port, model_name))
 
         if callback:
             callback()
+
+    @staticmethod
+    def get_service_value(service: ServiceInfo, key: str) -> Optional[str]:
+        """Retrieve value and decode to UTF-8."""
+        value = service.properties.get(key.encode("utf-8"))
+
+        if value is None or isinstance(value, str):
+            return value
+        return value.decode("utf-8")
 
 
 class GoogleDevice:
@@ -93,10 +111,6 @@ class GoogleDevice:
             ip_address
         ) and not net_utils.is_valid_ipv6_address(ip_address):
             LOGGER.error("IP must be a valid IP address")
-            return
-
-        if not type_utils.is_integer(port):
-            LOGGER.error("PORT must be an integer value")
             return
 
         self.name = name
@@ -146,7 +160,7 @@ def discover_devices(
     LOGGER.debug("Creating new Event for discovery completion...")
     discovery_complete = Event()
     LOGGER.debug("Creating new CastListener...")
-    listener = CastListener(callback)
+    listener = CastListener(add_callback=callback)
     if not zeroconf_instance:
         LOGGER.debug("Creating new Zeroconf instance")
         zc = zeroconf.Zeroconf()
@@ -160,24 +174,14 @@ def discover_devices(
     LOGGER.debug("Waiting for discovery completion...")
     discovery_complete.wait(timeout)
 
-    devices = []
+    devices: List[GoogleDevice] = []
     LOGGER.debug("Got %s devices. Iterating...", len(listener.devices))
-    for service in listener.devices:
-        model = service[0]
-        name = service[1]
-        ip_address = service[2]
-        access_port = service[3]
-        if not models_list or model in models_list:
-            LOGGER.debug(
-                "Appending new device. name: %s, ip: %s, port: %s, model: %s",
-                name,
-                ip_address,
-                access_port,
-                model,
-            )
-            devices.append(GoogleDevice(name, ip_address, int(access_port), model))
+    for device in listener.devices:
+        if not models_list or device.model in models_list:
+            LOGGER.debug("Appending new device: %s", device)
+            devices.append(device)
         else:
             LOGGER.debug(
-                'Won\'t add device since model "%s" is not in models_list', model
+                'Won\'t add device since model "%s" is not in models_list', device.model
             )
     return devices
