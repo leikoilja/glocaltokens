@@ -1,6 +1,6 @@
 """Test factory providers"""
 # pylint: disable=no-self-use
-from typing import Optional
+from typing import List, Optional
 
 from faker import Faker
 from faker.providers import BaseProvider
@@ -11,31 +11,38 @@ from glocaltokens.const import (
     MASTER_TOKEN_LENGTH,
 )
 from glocaltokens.utils.token import generate as generate_token
-from glocaltokens.utils.types import Struct
 
 fake = Faker()
+
+
+class Struct:
+    """Structure type"""
+
+    def __init__(self, **entries):
+        """Initialization"""
+        self.__dict__.update(entries)
 
 
 class UtilsProvider(BaseProvider):
     """Utility provider"""
 
-    def version(self):
+    def version(self) -> str:
         """Generates random version"""
-        return "{}.{}.{}".format(fake.pyint(), fake.pyint(), fake.pyint())
+        return f"{fake.pyint()}.{fake.pyint()}.{fake.pyint()}"
 
 
 class TokenProvider(BaseProvider):
     """Token provider"""
 
-    def master_token(self):
+    def master_token(self) -> str:
         """Generates random master token"""
         return generate_token(MASTER_TOKEN_LENGTH, prefix="aas_et/")
 
-    def access_token(self):
+    def access_token(self) -> str:
         """Generates random access token"""
         return generate_token(ACCESS_TOKEN_LENGTH, prefix="ya29.")
 
-    def local_auth_token(self):
+    def local_auth_token(self) -> str:
         """Generates random local_auth_token token"""
         return generate_token(LOCAL_AUTH_TOKEN_LENGTH)
 
@@ -43,7 +50,7 @@ class TokenProvider(BaseProvider):
 class HomegraphProvider(TokenProvider):
     """Homegraph provider"""
 
-    def homegraph_device(self):
+    def homegraph_device(self) -> Struct:
         """Using the content from test requests as reference"""
         return Struct(
             **{
@@ -55,7 +62,7 @@ class HomegraphProvider(TokenProvider):
 
     def homegraph_devices(
         self, min_devices: int = 1, max_devices: int = 10, count: Optional[int] = None
-    ):
+    ) -> List[Struct]:
         """
         Generates a random amount of devices, in the range specified.
 

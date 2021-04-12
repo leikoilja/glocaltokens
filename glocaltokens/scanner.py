@@ -3,8 +3,7 @@ import logging
 from threading import Event
 from typing import Callable, List, Optional
 
-import zeroconf
-from zeroconf import ServiceInfo, ServiceListener, Zeroconf
+from zeroconf import ServiceBrowser, ServiceInfo, ServiceListener, Zeroconf
 
 from .const import DISCOVERY_TIMEOUT
 from .utils import network as net_utils
@@ -142,9 +141,9 @@ def discover_devices(
     models_list: Optional[List[str]] = None,
     max_devices: int = None,
     timeout: int = DISCOVERY_TIMEOUT,
-    zeroconf_instance=None,
-    logging_level=logging.ERROR,
-):
+    zeroconf_instance: Optional[Zeroconf] = None,
+    logging_level: int = logging.ERROR,
+) -> List[GoogleDevice]:
     """Discover devices"""
     LOGGER.setLevel(logging_level)
 
@@ -161,12 +160,12 @@ def discover_devices(
     listener = CastListener(add_callback=callback)
     if not zeroconf_instance:
         LOGGER.debug("Creating new Zeroconf instance")
-        zc = zeroconf.Zeroconf()
+        zc = Zeroconf()
     else:
         LOGGER.debug("Using attribute Zeroconf instance")
         zc = zeroconf_instance
     LOGGER.debug("Creating zeroconf service browser for _googlecast._tcp.local.")
-    zeroconf.ServiceBrowser(zc, "_googlecast._tcp.local.", listener)
+    ServiceBrowser(zc, "_googlecast._tcp.local.", listener)
 
     # Wait for the timeout or the maximum number of devices
     LOGGER.debug("Waiting for discovery completion...")

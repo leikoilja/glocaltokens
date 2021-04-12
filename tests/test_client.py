@@ -143,17 +143,17 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         """Test expiry method"""
         duration_sec = 60
         now = datetime.now()
-        token_dt__expired = now - timedelta(seconds=duration_sec + 1)
-        token_dt__non_expired = now - timedelta(seconds=duration_sec - 1)
+        token_dt_expired = now - timedelta(seconds=duration_sec + 1)
+        token_dt_non_expired = now - timedelta(seconds=duration_sec - 1)
 
         # Expired
         self.assertTrue(
-            GLocalAuthenticationTokens._has_expired(token_dt__expired, duration_sec)
+            GLocalAuthenticationTokens._has_expired(token_dt_expired, duration_sec)
         )
 
         # Non expired
         self.assertFalse(
-            GLocalAuthenticationTokens._has_expired(token_dt__non_expired, duration_sec)
+            GLocalAuthenticationTokens._has_expired(token_dt_non_expired, duration_sec)
         )
 
     @patch("glocaltokens.client.LOGGER.error")
@@ -363,7 +363,12 @@ class DeviceClientTests(TypeAssertions, TestCase):
         local_auth_token = faker.local_auth_token()
 
         # With ip and port
-        device = Device(device_name=faker.word(), local_auth_token=local_auth_token)
+        device = Device(
+            device_name=faker.word(),
+            ip_address=faker.ipv4(),
+            port=faker.port_number(),
+            local_auth_token=local_auth_token,
+        )
 
         self.assertEqual(device.local_auth_token, local_auth_token)
 
