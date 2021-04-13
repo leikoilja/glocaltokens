@@ -429,7 +429,7 @@ class GLocalAuthenticationTokens:
                     item.device_name,
                 )
 
-        LOGGER.debug("Sucessfully initialized %d Google Home devices", len(devices))
+        LOGGER.debug("Successfully initialized %d Google Home devices", len(devices))
         return devices
 
     def get_google_devices_json(
