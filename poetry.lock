@@ -180,6 +180,19 @@ pycryptodomex = ">=3.0"
 requests = ">=2.0.0"
 
 [[package]]
+name = "grpc-stubs"
+version = "1.24.6"
+description = "Mypy stubs for gRPC"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+grpcio = "*"
+mypy = ">=0.730"
+typing-extensions = "*"
+
+[[package]]
 name = "grpcio"
 version = "1.31.0"
 description = "HTTP/2-based RPC framework"
@@ -742,7 +755,7 @@ ifaddr = ">=0.1.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "ae5ea23d329c32081aa75a5c5aee6e083e19bcb237d2db832c889631292e136c"
+content-hash = "24e1f6207240cc6a06b0229e8cf5b73d0856cb08cdac77526ee577d96461a807"
 
 [metadata.files]
 appdirs = [
@@ -815,6 +828,10 @@ flake8 = [
 gpsoauth = [
     {file = "gpsoauth-1.0.0-py3-none-any.whl", hash = "sha256:149c374863eec17cdac5279d57e4905592a9cd74cc34b7e58671cb19f9238f39"},
     {file = "gpsoauth-1.0.0.tar.gz", hash = "sha256:1c4d6a980625b8ab6f6f1cf3e30d9b10a6c61ababb2b60bfe4870649e9c82be0"},
+]
+grpc-stubs = [
+    {file = "grpc-stubs-1.24.6.tar.gz", hash = "sha256:98f307afcb180676ce3181262d01a7f1b0773b4c4c92724a761030ba2c44ff6b"},
+    {file = "grpc_stubs-1.24.6-py3-none-any.whl", hash = "sha256:d22e3a9febde16252bfa30c807a0f7b7090bef2b83b87cf9e0e8a97b4b489a19"},
 ]
 grpcio = [
     {file = "grpcio-1.31.0-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:e8c3264b0fd728aadf3f0324471843f65bd3b38872bdab2a477e31ffb685dd5b"},

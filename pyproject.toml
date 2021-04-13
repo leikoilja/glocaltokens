@@ -42,6 +42,7 @@ pytest = "^6.2.3"
 Faker = "^8.0.0"
 mock = "^4.0.3"
 ipdb = "^0.13.7"
+grpc-stubs = "^1.24.6"
 
 [tool.poetry.urls]
 "Bug Tracker" = "https://github.com/leikoilja/glocaltokens/issues"

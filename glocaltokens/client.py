@@ -8,6 +8,7 @@ from uuid import uuid4
 
 from gpsoauth import perform_master_login, perform_oauth
 import grpc
+from zeroconf import Zeroconf
 
 from .const import (
     ACCESS_TOKEN_APP_NAME,
@@ -81,6 +82,7 @@ class Device:
                 "using manually provided IP and PORT",
                 log_prefix,
             )
+            # If both ip_address and port are not set, this is fine.
             if (ip_address and not port) or (not ip_address and port):
                 LOGGER.error(
                     "%s google_device is not provided, "
@@ -120,9 +122,9 @@ class Device:
         self.local_auth_token = local_auth_token
 
     def __str__(self) -> str:
-        return str(self.dict())
+        return str(self.as_dict())
 
-    def dict(self) -> Dict[str, Any]:
+    def as_dict(self) -> Dict[str, Any]:
         """Dictionary representation"""
         return {
             JSON_KEY_DEVICE_NAME: self.device_name,
@@ -216,7 +218,7 @@ class GLocalAuthenticationTokens:
         return self.android_id
 
     @staticmethod
-    def _has_expired(creation_dt, duration) -> bool:
+    def _has_expired(creation_dt: datetime, duration: int) -> bool:
         """Checks if an specified token/object has expired"""
         return datetime.now().timestamp() - creation_dt.timestamp() > duration
 
@@ -244,8 +246,10 @@ class GLocalAuthenticationTokens:
 
     def get_access_token(self) -> Optional[str]:
         """Return existing or fetch access_token"""
-        if self.access_token is None or self._has_expired(
-            self.access_token_date, ACCESS_TOKEN_DURATION
+        if (
+            self.access_token is None
+            or self.access_token_date is None
+            or self._has_expired(self.access_token_date, ACCESS_TOKEN_DURATION)
         ):
             LOGGER.debug(
                 "There is no access_token stored, "
@@ -343,7 +347,7 @@ class GLocalAuthenticationTokens:
         self,
         models_list: Optional[List[str]] = None,
         disable_discovery: bool = False,
-        zeroconf_instance=None,
+        zeroconf_instance: Optional[Zeroconf] = None,
         force_homegraph_reload: bool = False,
         discovery_timeout: int = DISCOVERY_TIMEOUT,
     ) -> List[Device]:
@@ -381,7 +385,7 @@ class GLocalAuthenticationTokens:
                 logging_level=self.logging_level,
             )
 
-        def find_device(name) -> Optional[GoogleDevice]:
+        def find_device(name: str) -> Optional[GoogleDevice]:
             for device in network_devices:
                 if device.name == name:
                     return device
@@ -421,7 +425,7 @@ class GLocalAuthenticationTokens:
                     )
             else:
                 LOGGER.debug(
-                    "'%s' local_auth_token is " "not found in Homegraph, skipping",
+                    "'%s' local_auth_token is not found in Homegraph, skipping",
                     item.device_name,
                 )
 
@@ -433,7 +437,7 @@ class GLocalAuthenticationTokens:
         models_list: Optional[List[str]] = None,
         indent: int = 2,
         disable_discovery: bool = False,
-        zeroconf_instance=None,
+        zeroconf_instance: Optional[Zeroconf] = None,
         force_homegraph_reload: bool = False,
     ) -> str:
         """
@@ -455,16 +459,18 @@ class GLocalAuthenticationTokens:
             zeroconf_instance=zeroconf_instance,
             force_homegraph_reload=force_homegraph_reload,
         )
-        json_string = json.dumps([obj.dict() for obj in google_devices], indent=indent)
+        json_string = json.dumps(
+            [obj.as_dict() for obj in google_devices], indent=indent
+        )
         return json_string
 
-    def invalidate_access_token(self):
+    def invalidate_access_token(self) -> None:
         """Invalidates the current access token"""
         self.access_token = None
         self.access_token_date = None
         LOGGER.debug("Invalidated access_token")
 
-    def invalidate_homegraph(self):
+    def invalidate_homegraph(self) -> None:
         """Invalidates the stored homegraph data"""
         self.homegraph = None
         self.homegraph_date = None
