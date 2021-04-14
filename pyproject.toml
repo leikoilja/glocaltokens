@@ -23,10 +23,10 @@ homepage = "https://github.com/leikoilja/glocaltokens"
 repository = "https://github.com/leikoilja/glocaltokens"
 
 [tool.poetry.dependencies]
+python = "^3.8"
 gpsoauth = "^1.0.0"
 grpcio = "1.31.0"
 grpcio-tools = "1.31.0"
-python = "^3.8"
 requests = "^2.25.1"
 simplejson = "^3.17.2"
 zeroconf = ">=0.28.8,<0.30.0"
