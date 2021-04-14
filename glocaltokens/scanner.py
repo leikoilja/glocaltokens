@@ -1,7 +1,7 @@
 """Zeroconf based scanner"""
 import logging
 from threading import Event
-from typing import Callable, List, Optional
+from typing import Callable, List, Optional, Union
 
 from zeroconf import ServiceBrowser, ServiceInfo, ServiceListener, Zeroconf
 
@@ -95,7 +95,7 @@ class CastListener(ServiceListener):
     @staticmethod
     def get_service_value(service: ServiceInfo, key: str) -> Optional[str]:
         """Retrieve value and decode to UTF-8."""
-        value = service.properties.get(key.encode("utf-8"))
+        value: Optional[Union[str, bytes]] = service.properties.get(key.encode("utf-8"))
 
         if value is None or isinstance(value, str):
             return value
@@ -139,7 +139,7 @@ class GoogleDevice:
 
 def discover_devices(
     models_list: Optional[List[str]] = None,
-    max_devices: int = None,
+    max_devices: Optional[int] = None,
     timeout: int = DISCOVERY_TIMEOUT,
     zeroconf_instance: Optional[Zeroconf] = None,
     logging_level: int = logging.ERROR,

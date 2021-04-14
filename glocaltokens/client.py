@@ -26,7 +26,8 @@ from .const import (
     JSON_KEY_LOCAL_AUTH_TOKEN,
     JSON_KEY_PORT,
 )
-from .google.internal.home.foyer import v1_pb2, v1_pb2_grpc
+from .google.internal.home.foyer.v1_pb2 import GetHomeGraphRequest, GetHomeGraphResponse
+from .google.internal.home.foyer.v1_pb2_grpc import StructuresServiceStub
 from .scanner import GoogleDevice, discover_devices
 from .utils import network as net_utils, token as token_utils
 from .utils.logs import censor
@@ -172,7 +173,7 @@ class GLocalAuthenticationTokens:
         self.android_id: Optional[str] = android_id
         self.access_token: Optional[str] = None
         self.access_token_date: Optional[datetime] = None
-        self.homegraph = None
+        self.homegraph: Optional[GetHomeGraphResponse] = None
         self.homegraph_date: Optional[datetime] = None
         LOGGER.debug(
             "Set GLocalAuthenticationTokens client access_token, homegraph, "
@@ -283,10 +284,12 @@ class GLocalAuthenticationTokens:
         )
         return self.access_token
 
-    def get_homegraph(self):
+    def get_homegraph(self) -> Optional[GetHomeGraphResponse]:
         """Returns the entire Google Home Foyer V2 service"""
-        if self.homegraph is None or self._has_expired(
-            self.homegraph_date, HOMEGRAPH_DURATION
+        if (
+            self.homegraph is None
+            or self.homegraph_date is None
+            or self._has_expired(self.homegraph_date, HOMEGRAPH_DURATION)
         ):
             LOGGER.debug(
                 "There is no stored homegraph, or it has expired, getting a new one..."
@@ -315,9 +318,9 @@ class GLocalAuthenticationTokens:
                     LOGGER.debug(
                         "%s Getting channels StructuresServiceStub...", log_prefix
                     )
-                    rpc_service = v1_pb2_grpc.StructuresServiceStub(channel)
+                    rpc_service = StructuresServiceStub(channel)
                     LOGGER.debug("%s Getting HomeGraph request...", log_prefix)
-                    request = v1_pb2.GetHomeGraphRequest(string1="", num2="")
+                    request = GetHomeGraphRequest(string1="", num2="")
                     LOGGER.debug("%s Fetching HomeGraph...", log_prefix)
                     response = rpc_service.GetHomeGraph(request)
                     LOGGER.debug("%s Storing obtained HomeGraph...", log_prefix)
@@ -375,6 +378,12 @@ class GLocalAuthenticationTokens:
         LOGGER.debug("Getting homegraph...")
         homegraph = self.get_homegraph()
 
+        devices: List[Device] = []
+
+        if homegraph is None:
+            LOGGER.debug("Failed to fetch homegraph")
+            return devices
+
         network_devices = []
         if disable_discovery is False:
             LOGGER.debug("Getting network devices...")
@@ -391,7 +400,6 @@ class GLocalAuthenticationTokens:
                     return device
             return None
 
-        devices: List[Device] = []
         LOGGER.debug("Iterating in %d homegraph devices", len(homegraph.home.devices))
         for item in homegraph.home.devices:
             if item.local_auth_token != "":
