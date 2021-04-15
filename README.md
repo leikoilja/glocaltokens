@@ -67,9 +67,12 @@ google_devices_select_2 = client.get_google_devices_json([
 ```
 
 ### Predefined models list
+
 There are some pre-defined models list in [`scanner.py`](/glocaltokens/scanner.py), feel free to
 add new lists, or add models to a list with a pull-request.
+
 #### `GOOGLE_HOME_MODELS`:
+
 - Google Home
 - Google Home Mini
 - Google Nest Mini
@@ -110,15 +113,11 @@ extract master and access tokens
 
 Also, thank you very much to the guys at `pychromecast` which provided the code required to scan devices in the network.
 
-
 [workflow-shield]: https://img.shields.io/github/workflow/status/leikoilja/glocaltokens/Running%20tests?style=for-the-badge
 [workflow]: https://github.com/leikoilja/glocaltokens/actions
-
 [pypi-shield]: https://img.shields.io/pypi/v/glocaltokens?style=for-the-badge
 [pypi]: https://pypi.org/project/glocaltokens/
-
 [commits-shield]: https://img.shields.io/github/commit-activity/y/leikoilja/glocaltokens?style=for-the-badge
 [commits]: https://github.com/leikoilja/glocaltokens/commits/main
-
 [pre-commit-shield]: https://img.shields.io/badge/pre--commit-enabled-brightgreen?style=for-the-badge
 [pre-commit]: https://github.com/pre-commit/pre-commit
