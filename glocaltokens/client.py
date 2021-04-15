@@ -217,7 +217,7 @@ class GLocalAuthenticationTokens:
         LOGGER.debug("Generating android id...")
         mac_string = "".join(
             [f"{random.randrange(16):x}" for _ in range(ANDROID_ID_LENGTH)]
-        ).upper()
+        )
         LOGGER.debug("Generated android id: %s", mac_string)
         return mac_string
 
