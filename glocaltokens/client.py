@@ -3,7 +3,7 @@
 from datetime import datetime
 import json
 import logging
-from typing import Any, Dict, List, Optional
+from typing import List, Optional, TypedDict
 from uuid import uuid4
 
 from gpsoauth import perform_master_login, perform_oauth
@@ -19,12 +19,6 @@ from .const import (
     DISCOVERY_TIMEOUT,
     GOOGLE_HOME_FOYER_API,
     HOMEGRAPH_DURATION,
-    JSON_KEY_DEVICE_NAME,
-    JSON_KEY_GOOGLE_DEVICE,
-    JSON_KEY_HARDWARE,
-    JSON_KEY_IP,
-    JSON_KEY_LOCAL_AUTH_TOKEN,
-    JSON_KEY_PORT,
 )
 from .google.internal.home.foyer.v1_pb2 import GetHomeGraphRequest, GetHomeGraphResponse
 from .google.internal.home.foyer.v1_pb2_grpc import StructuresServiceStub
@@ -34,6 +28,22 @@ from .utils.logs import censor
 
 logging.basicConfig(level=logging.ERROR)
 LOGGER = logging.getLogger(__name__)
+
+
+class GoogleDeviceDict(TypedDict):
+    """Typed dict for google_device field of DeviceDict."""
+
+    ip: Optional[str]
+    port: Optional[int]
+
+
+class DeviceDict(TypedDict):
+    """Typed dict for Device representation as dict."""
+
+    device_name: str
+    hardware: Optional[str]
+    google_device: GoogleDeviceDict
+    local_auth_token: Optional[str]
 
 
 class Device:
@@ -125,16 +135,16 @@ class Device:
     def __str__(self) -> str:
         return str(self.as_dict())
 
-    def as_dict(self) -> Dict[str, Any]:
+    def as_dict(self) -> DeviceDict:
         """Dictionary representation"""
         return {
-            JSON_KEY_DEVICE_NAME: self.device_name,
-            JSON_KEY_GOOGLE_DEVICE: {
-                JSON_KEY_IP: self.ip_address,
-                JSON_KEY_PORT: self.port,
+            "device_name": self.device_name,
+            "google_device": {
+                "ip": self.ip_address,
+                "port": self.port,
             },
-            JSON_KEY_HARDWARE: self.hardware,
-            JSON_KEY_LOCAL_AUTH_TOKEN: self.local_auth_token,
+            "hardware": self.hardware,
+            "local_auth_token": self.local_auth_token,
         }
 
 
@@ -384,7 +394,7 @@ class GLocalAuthenticationTokens:
             LOGGER.debug("Failed to fetch homegraph")
             return devices
 
-        network_devices = []
+        network_devices: List[GoogleDevice] = []
         if disable_discovery is False:
             LOGGER.debug("Getting network devices...")
             network_devices = discover_devices(
