@@ -5,7 +5,7 @@ from typing import Optional
 
 def censor(text: Optional[str]) -> str:
     """
-    Replaces characters in a str by the asteriks
+    Replaces characters in a str with the asterisks
 
     text: The text to censure.
     """

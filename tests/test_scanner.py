@@ -1,4 +1,4 @@
-"""Scanner specifc tests"""
+"""Scanner specific tests"""
 from unittest import TestCase
 
 from faker import Faker
