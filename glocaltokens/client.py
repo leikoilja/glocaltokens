@@ -169,7 +169,7 @@ class GLocalAuthenticationTokens:
                 combination);
             android_id: the id of an android device. Will be randomly generated
                 if not set;
-            verbose: wheather or not print debug logging information
+            verbose: whether or not print debug logging information
 
         """
         self.logging_level = logging.DEBUG if verbose else logging.ERROR
