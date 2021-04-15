@@ -22,9 +22,10 @@ repos:
         require_serial: true
       - id: mypy
         name: mypy
-        entry: poetry run mypy
+        entry: poetry run mypy glocaltokens tests
         language: system
         types: [python]
+        pass_filenames: false
       - id: flake8
         name: flake8
         entry: poetry run flake8

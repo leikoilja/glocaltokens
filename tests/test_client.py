@@ -246,8 +246,8 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
     @patch("glocaltokens.client.grpc.access_token_call_credentials")
     @patch("glocaltokens.client.grpc.composite_channel_credentials")
     @patch("glocaltokens.client.grpc.secure_channel")
-    @patch("glocaltokens.client.v1_pb2_grpc.StructuresServiceStub")
-    @patch("glocaltokens.client.v1_pb2.GetHomeGraphRequest")
+    @patch("glocaltokens.client.StructuresServiceStub")
+    @patch("glocaltokens.client.GetHomeGraphRequest")
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_access_token")
     def test_get_homegraph(
         self,

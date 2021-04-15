@@ -72,7 +72,7 @@ class StructuresService(object):
         timeout=None,
         metadata=None,
     ):
-        return grpc.experimental.unary_unary(
+        return grpc.experimental.unary_unary(  # type: ignore
             request,
             target,
             "/google.internal.home.foyer.v1.StructuresService/GetHomeGraph",
@@ -162,7 +162,7 @@ class HomeDevicesService(object):
         timeout=None,
         metadata=None,
     ):
-        return grpc.experimental.unary_stream(
+        return grpc.experimental.unary_stream(  # type: ignore
             request,
             target,
             "/google.internal.home.foyer.v1.HomeDevicesService/GetAssistantDeviceSettings",
@@ -191,7 +191,7 @@ class HomeDevicesService(object):
         timeout=None,
         metadata=None,
     ):
-        return grpc.experimental.unary_stream(
+        return grpc.experimental.unary_stream(  # type: ignore
             request,
             target,
             "/google.internal.home.foyer.v1.HomeDevicesService/UpdateAssistantDeviceSettings",
