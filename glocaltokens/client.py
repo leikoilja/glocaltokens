@@ -3,8 +3,8 @@
 from datetime import datetime
 import json
 import logging
+import random
 from typing import List, Optional, TypedDict
-from uuid import uuid4
 
 from gpsoauth import perform_master_login, perform_oauth
 import grpc
@@ -212,20 +212,20 @@ class GLocalAuthenticationTokens:
             return
 
     @staticmethod
-    def _generate_mac_string() -> str:
-        """Generate random 14 char long string"""
-        LOGGER.debug("Generating mac string...")
-        random_uuid = uuid4()
-        random_string = str(random_uuid).replace("-", "")[:ANDROID_ID_LENGTH]
-        mac_string = random_string.upper()
-        LOGGER.debug("Generated mac string: %s", mac_string)
+    def _generate_android_id() -> str:
+        """Generate random 16 char long string"""
+        LOGGER.debug("Generating android id...")
+        mac_string = "".join(
+            [f"{random.randrange(16):x}" for _ in range(ANDROID_ID_LENGTH)]
+        )
+        LOGGER.debug("Generated android id: %s", mac_string)
         return mac_string
 
     def get_android_id(self) -> str:
         """Return existing or generate android id"""
         if not self.android_id:
             LOGGER.debug("There is no stored android_id, generating a new one")
-            self.android_id = self._generate_mac_string()
+            self.android_id = self._generate_android_id()
         return self.android_id
 
     @staticmethod

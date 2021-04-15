@@ -125,14 +125,14 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         self.assertEqual(android_id, self.client.get_android_id())
 
     # pylint: disable=protected-access
-    def test_generate_mac_string(self) -> None:
+    def test_generate_android_id(self) -> None:
         """Test generating mac string"""
-        mac_string = GLocalAuthenticationTokens._generate_mac_string()
-        self.assertTrue(len(mac_string) == ANDROID_ID_LENGTH)
+        android_id = GLocalAuthenticationTokens._generate_android_id()
+        self.assertTrue(len(android_id) == ANDROID_ID_LENGTH)
 
         # Make sure we get different generated mac string
         self.assertNotEqual(
-            mac_string, GLocalAuthenticationTokens._generate_mac_string()
+            android_id, GLocalAuthenticationTokens._generate_android_id()
         )
 
     def test_has_expired(self) -> None:
