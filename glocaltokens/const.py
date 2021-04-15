@@ -6,7 +6,7 @@ ACCESS_TOKEN_CLIENT_SIGNATURE: Final[str] = "24bb24c05e47e0aefa68a58a766179d9b61
 ACCESS_TOKEN_DURATION: Final[int] = 60 * 60
 ACCESS_TOKEN_SERVICE: Final[str] = "oauth2:https://www.google.com/accounts/OAuthLogin"
 
-MAC_ADDRESS_LENGTH: Final[int] = 12
+ANDROID_ID_LENGTH: Final[int] = 16
 MASTER_TOKEN_LENGTH: Final[int] = 216
 ACCESS_TOKEN_LENGTH: Final[int] = 315
 LOCAL_AUTH_TOKEN_LENGTH: Final[int] = 108

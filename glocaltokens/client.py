@@ -15,10 +15,10 @@ from .const import (
     ACCESS_TOKEN_CLIENT_SIGNATURE,
     ACCESS_TOKEN_DURATION,
     ACCESS_TOKEN_SERVICE,
+    ANDROID_ID_LENGTH,
     DISCOVERY_TIMEOUT,
     GOOGLE_HOME_FOYER_API,
     HOMEGRAPH_DURATION,
-    MAC_ADDRESS_LENGTH,
 )
 from .google.internal.home.foyer.v1_pb2 import GetHomeGraphRequest, GetHomeGraphResponse
 from .google.internal.home.foyer.v1_pb2_grpc import StructuresServiceStub
@@ -212,20 +212,20 @@ class GLocalAuthenticationTokens:
             return
 
     @staticmethod
-    def _generate_mac_string() -> str:
-        """Generate random 12 char long string"""
-        LOGGER.debug("Generating mac string...")
+    def _generate_android_id() -> str:
+        """Generate random 16 char long string"""
+        LOGGER.debug("Generating android id...")
         mac_string = "".join(
-            [f"{random.randrange(16):x}" for _ in range(MAC_ADDRESS_LENGTH)]
+            [f"{random.randrange(16):x}" for _ in range(ANDROID_ID_LENGTH)]
         ).upper()
-        LOGGER.debug("Generated mac string: %s", mac_string)
+        LOGGER.debug("Generated android id: %s", mac_string)
         return mac_string
 
     def get_android_id(self) -> str:
         """Return existing or generate android id"""
         if not self.android_id:
             LOGGER.debug("There is no stored android_id, generating a new one")
-            self.android_id = self._generate_mac_string()
+            self.android_id = self._generate_android_id()
         return self.android_id
 
     @staticmethod
