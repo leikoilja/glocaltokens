@@ -15,7 +15,6 @@ from glocaltokens.const import (
     ACCESS_TOKEN_CLIENT_SIGNATURE,
     ACCESS_TOKEN_DURATION,
     ACCESS_TOKEN_SERVICE,
-    ANDROID_ID_LENGTH,
     HOMEGRAPH_DURATION,
     JSON_KEY_DEVICE_NAME,
     JSON_KEY_GOOGLE_DEVICE,
@@ -23,6 +22,7 @@ from glocaltokens.const import (
     JSON_KEY_IP,
     JSON_KEY_LOCAL_AUTH_TOKEN,
     JSON_KEY_PORT,
+    MAC_ADDRESS_LENGTH,
 )
 from tests.assertions import DeviceAssertions, TypeAssertions
 from tests.factory.providers import HomegraphProvider, TokenProvider
@@ -119,7 +119,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
     def test_get_android_id(self) -> None:
         """Test getting android id"""
         android_id = self.client.get_android_id()
-        self.assertTrue(len(android_id) == ANDROID_ID_LENGTH)
+        self.assertTrue(len(android_id) == MAC_ADDRESS_LENGTH)
 
         # Make sure we get the same ID when called further
         self.assertEqual(android_id, self.client.get_android_id())
@@ -128,7 +128,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
     def test_generate_mac_string(self) -> None:
         """Test generating mac string"""
         mac_string = GLocalAuthenticationTokens._generate_mac_string()
-        self.assertTrue(len(mac_string) == ANDROID_ID_LENGTH)
+        self.assertTrue(len(mac_string) == MAC_ADDRESS_LENGTH)
 
         # Make sure we get different generated mac string
         self.assertNotEqual(

@@ -3,8 +3,8 @@
 from datetime import datetime
 import json
 import logging
+import random
 from typing import List, Optional, TypedDict
-from uuid import uuid4
 
 from gpsoauth import perform_master_login, perform_oauth
 import grpc
@@ -15,10 +15,10 @@ from .const import (
     ACCESS_TOKEN_CLIENT_SIGNATURE,
     ACCESS_TOKEN_DURATION,
     ACCESS_TOKEN_SERVICE,
-    ANDROID_ID_LENGTH,
     DISCOVERY_TIMEOUT,
     GOOGLE_HOME_FOYER_API,
     HOMEGRAPH_DURATION,
+    MAC_ADDRESS_LENGTH,
 )
 from .google.internal.home.foyer.v1_pb2 import GetHomeGraphRequest, GetHomeGraphResponse
 from .google.internal.home.foyer.v1_pb2_grpc import StructuresServiceStub
@@ -213,11 +213,11 @@ class GLocalAuthenticationTokens:
 
     @staticmethod
     def _generate_mac_string() -> str:
-        """Generate random 14 char long string"""
+        """Generate random 12 char long string"""
         LOGGER.debug("Generating mac string...")
-        random_uuid = uuid4()
-        random_string = str(random_uuid).replace("-", "")[:ANDROID_ID_LENGTH]
-        mac_string = random_string.upper()
+        mac_string = "".join(
+            [f"{random.randrange(16):x}" for _ in range(MAC_ADDRESS_LENGTH)]
+        ).upper()
         LOGGER.debug("Generated mac string: %s", mac_string)
         return mac_string
 
