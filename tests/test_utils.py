@@ -11,7 +11,7 @@ faker = Faker()
 class UtilsTests(TestCase):
     """Utilities tests"""
 
-    def test_censor(self):
+    def test_censor(self) -> None:
         """Testing sensitive info censoring"""
         # With word
         secret_string = faker.word()

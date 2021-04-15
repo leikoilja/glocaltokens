@@ -3,7 +3,7 @@ from unittest import TestCase
 
 from faker import Faker
 from faker.providers import internet as internet_provider, python as python_provider
-from mock import patch
+from mock import NonCallableMock, patch
 
 from glocaltokens.scanner import GoogleDevice
 
@@ -17,7 +17,7 @@ class GoogleDeviceTests(TestCase):
     GoogleDevice specific tests
     """
 
-    def test_initialization(self):
+    def test_initialization(self) -> None:
         """Initialization tests"""
         name = faker.word()
         ip_address = faker.ipv4_private()
@@ -35,7 +35,7 @@ class GoogleDeviceTests(TestCase):
         )
 
     @patch("glocaltokens.scanner.LOGGER.error")
-    def test_initialization__valid(self, mock):
+    def test_initialization__valid(self, mock: NonCallableMock) -> None:
         """Valid initialization tests"""
         GoogleDevice(
             faker.word(), faker.ipv4_private(), faker.port_number(), faker.word()
@@ -43,7 +43,7 @@ class GoogleDeviceTests(TestCase):
         self.assertEqual(mock.call_count, 0)
 
     @patch("glocaltokens.scanner.LOGGER.error")
-    def test_initialization__invalid(self, mock):
+    def test_initialization__invalid(self, mock: NonCallableMock) -> None:
         """Invalid initialization tests"""
         # With invalid IP
         GoogleDevice(faker.word(), faker.word(), faker.port_number(), faker.word())

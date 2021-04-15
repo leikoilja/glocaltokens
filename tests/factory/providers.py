@@ -10,20 +10,13 @@ from glocaltokens.const import (
     LOCAL_AUTH_TOKEN_LENGTH,
     MASTER_TOKEN_LENGTH,
 )
+from glocaltokens.google.internal.home.foyer.v1_pb2 import GetHomeGraphResponse
 from glocaltokens.utils.token import generate as generate_token
 
 fake = Faker()
 
 
-class Struct:
-    """Structure type"""
-
-    def __init__(self, **entries):
-        """Initialization"""
-        self.__dict__.update(entries)
-
-
-class UtilsProvider(BaseProvider):
+class UtilsProvider(BaseProvider):  # type: ignore
     """Utility provider"""
 
     def version(self) -> str:
@@ -31,7 +24,7 @@ class UtilsProvider(BaseProvider):
         return f"{fake.pyint()}.{fake.pyint()}.{fake.pyint()}"
 
 
-class TokenProvider(BaseProvider):
+class TokenProvider(BaseProvider):  # type: ignore
     """Token provider"""
 
     def master_token(self) -> str:
@@ -50,19 +43,17 @@ class TokenProvider(BaseProvider):
 class HomegraphProvider(TokenProvider):
     """Homegraph provider"""
 
-    def homegraph_device(self) -> Struct:
+    def homegraph_device(self) -> GetHomeGraphResponse.Home.Device:
         """Using the content from test requests as reference"""
-        return Struct(
-            **{
-                "local_auth_token": self.local_auth_token(),
-                "device_name": fake.word(),
-                "hardware": Struct(**{"model": fake.word()}),
-            }
+        return GetHomeGraphResponse.Home.Device(
+            local_auth_token=self.local_auth_token(),
+            device_name=fake.word(),
+            hardware=GetHomeGraphResponse.Home.Device.Hardware(model=fake.word()),
         )
 
     def homegraph_devices(
         self, min_devices: int = 1, max_devices: int = 10, count: Optional[int] = None
-    ) -> List[Struct]:
+    ) -> List[GetHomeGraphResponse.Home.Device]:
         """
         Generates a random amount of devices, in the range specified.
 
