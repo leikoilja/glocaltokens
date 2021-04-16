@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "glocaltokens"
-version = "0.3.1"
+version = "0.0.0"
 authors = ["Ilja Leiko <leikoilja@gmail.com>"]
 classifiers = [
     "Development Status :: 3 - Alpha",
