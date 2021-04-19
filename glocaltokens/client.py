@@ -1,10 +1,11 @@
 """Client"""
+from __future__ import annotations
 
 from datetime import datetime
 import json
 import logging
 import random
-from typing import List, Optional, TypedDict
+from typing import TypedDict
 
 from gpsoauth import perform_master_login, perform_oauth
 import grpc
@@ -33,17 +34,17 @@ LOGGER = logging.getLogger(__name__)
 class GoogleDeviceDict(TypedDict):
     """Typed dict for google_device field of DeviceDict."""
 
-    ip: Optional[str]
-    port: Optional[int]
+    ip: str | None
+    port: int | None
 
 
 class DeviceDict(TypedDict):
     """Typed dict for Device representation as dict."""
 
     device_name: str
-    hardware: Optional[str]
+    hardware: str | None
     google_device: GoogleDeviceDict
-    local_auth_token: Optional[str]
+    local_auth_token: str | None
 
 
 class Device:
@@ -53,10 +54,10 @@ class Device:
         self,
         device_name: str,
         local_auth_token: str,
-        google_device: Optional[GoogleDevice] = None,
-        ip_address: Optional[str] = None,
-        port: Optional[int] = None,
-        hardware: Optional[str] = None,
+        google_device: GoogleDevice | None = None,
+        ip_address: str | None = None,
+        port: int | None = None,
+        hardware: str | None = None,
     ):
         """
         Initializes a Device. Can set or google_device or ip and port
@@ -153,10 +154,10 @@ class GLocalAuthenticationTokens:
 
     def __init__(
         self,
-        username: Optional[str] = None,
-        password: Optional[str] = None,
-        master_token: Optional[str] = None,
-        android_id: Optional[str] = None,
+        username: str | None = None,
+        password: str | None = None,
+        master_token: str | None = None,
+        android_id: str | None = None,
         verbose: bool = False,
     ):
         """
@@ -177,14 +178,14 @@ class GLocalAuthenticationTokens:
 
         LOGGER.debug("Initializing new GLocalAuthenticationTokens instance.")
 
-        self.username: Optional[str] = username
-        self.password: Optional[str] = password
-        self.master_token: Optional[str] = master_token
-        self.android_id: Optional[str] = android_id
-        self.access_token: Optional[str] = None
-        self.access_token_date: Optional[datetime] = None
-        self.homegraph: Optional[GetHomeGraphResponse] = None
-        self.homegraph_date: Optional[datetime] = None
+        self.username: str | None = username
+        self.password: str | None = password
+        self.master_token: str | None = master_token
+        self.android_id: str | None = android_id
+        self.access_token: str | None = None
+        self.access_token_date: datetime | None = None
+        self.homegraph: GetHomeGraphResponse | None = None
+        self.homegraph_date: datetime | None = None
         LOGGER.debug(
             "Set GLocalAuthenticationTokens client access_token, homegraph, "
             "access_token_date and homegraph_date to None"
@@ -233,7 +234,7 @@ class GLocalAuthenticationTokens:
         """Checks if an specified token/object has expired"""
         return datetime.now().timestamp() - creation_dt.timestamp() > duration
 
-    def get_master_token(self) -> Optional[str]:
+    def get_master_token(self) -> str | None:
         """Get google master token from username and password"""
         if self.username is None or self.password is None:
             LOGGER.error("Username and password are not set.")
@@ -255,7 +256,7 @@ class GLocalAuthenticationTokens:
         LOGGER.debug("Master token: %s", censor(self.master_token))
         return self.master_token
 
-    def get_access_token(self) -> Optional[str]:
+    def get_access_token(self) -> str | None:
         """Return existing or fetch access_token"""
         if (
             self.access_token is None
@@ -294,7 +295,7 @@ class GLocalAuthenticationTokens:
         )
         return self.access_token
 
-    def get_homegraph(self) -> Optional[GetHomeGraphResponse]:
+    def get_homegraph(self) -> GetHomeGraphResponse | None:
         """Returns the entire Google Home Foyer V2 service"""
         if (
             self.homegraph is None
@@ -358,12 +359,12 @@ class GLocalAuthenticationTokens:
 
     def get_google_devices(
         self,
-        models_list: Optional[List[str]] = None,
+        models_list: list[str] | None = None,
         disable_discovery: bool = False,
-        zeroconf_instance: Optional[Zeroconf] = None,
+        zeroconf_instance: Zeroconf | None = None,
         force_homegraph_reload: bool = False,
         discovery_timeout: int = DISCOVERY_TIMEOUT,
-    ) -> List[Device]:
+    ) -> list[Device]:
         """
         Returns a list of google devices with their local authentication tokens,
         and IP and ports if set in models_list.
@@ -388,13 +389,13 @@ class GLocalAuthenticationTokens:
         LOGGER.debug("Getting homegraph...")
         homegraph = self.get_homegraph()
 
-        devices: List[Device] = []
+        devices: list[Device] = []
 
         if homegraph is None:
             LOGGER.debug("Failed to fetch homegraph")
             return devices
 
-        network_devices: List[GoogleDevice] = []
+        network_devices: list[GoogleDevice] = []
         if disable_discovery is False:
             LOGGER.debug("Getting network devices...")
             network_devices = discover_devices(
@@ -404,7 +405,7 @@ class GLocalAuthenticationTokens:
                 logging_level=self.logging_level,
             )
 
-        def find_device(name: str) -> Optional[GoogleDevice]:
+        def find_device(name: str) -> GoogleDevice | None:
             for device in network_devices:
                 if device.name == name:
                     return device
@@ -452,10 +453,10 @@ class GLocalAuthenticationTokens:
 
     def get_google_devices_json(
         self,
-        models_list: Optional[List[str]] = None,
+        models_list: list[str] | None = None,
         indent: int = 2,
         disable_discovery: bool = False,
-        zeroconf_instance: Optional[Zeroconf] = None,
+        zeroconf_instance: Zeroconf | None = None,
         force_homegraph_reload: bool = False,
     ) -> str:
         """

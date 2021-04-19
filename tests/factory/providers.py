@@ -1,6 +1,6 @@
 """Test factory providers"""
 # pylint: disable=no-self-use
-from typing import List, Optional
+from __future__ import annotations
 
 from faker import Faker
 from faker.providers import BaseProvider
@@ -52,8 +52,8 @@ class HomegraphProvider(TokenProvider):
         )
 
     def homegraph_devices(
-        self, min_devices: int = 1, max_devices: int = 10, count: Optional[int] = None
-    ) -> List[GetHomeGraphResponse.Home.Device]:
+        self, min_devices: int = 1, max_devices: int = 10, count: int | None = None
+    ) -> list[GetHomeGraphResponse.Home.Device]:
         """
         Generates a random amount of devices, in the range specified.
 
