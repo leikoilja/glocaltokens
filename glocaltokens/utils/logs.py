@@ -1,9 +1,8 @@
 """Log utilities"""
+from __future__ import annotations
 
-from typing import Optional
 
-
-def censor(text: Optional[str]) -> str:
+def censor(text: str | None) -> str:
     """
     Replaces characters in a str with the asterisks
 

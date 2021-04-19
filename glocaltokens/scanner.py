@@ -1,7 +1,9 @@
 """Zeroconf based scanner"""
+from __future__ import annotations
+
 import logging
 from threading import Event
-from typing import Callable, List, Optional, Union
+from typing import Callable
 
 from zeroconf import ServiceBrowser, ServiceInfo, ServiceListener, Zeroconf
 
@@ -20,11 +22,11 @@ class CastListener(ServiceListener):
 
     def __init__(
         self,
-        add_callback: Optional[Callable[[], None]] = None,
-        remove_callback: Optional[Callable[[], None]] = None,
-        update_callback: Optional[Callable[[], None]] = None,
+        add_callback: Callable[[], None] | None = None,
+        remove_callback: Callable[[], None] | None = None,
+        update_callback: Callable[[], None] | None = None,
     ):
-        self.devices: List[GoogleDevice] = []
+        self.devices: list[GoogleDevice] = []
         self.add_callback = add_callback
         self.remove_callback = remove_callback
         self.update_callback = update_callback
@@ -53,7 +55,7 @@ class CastListener(ServiceListener):
         zc: Zeroconf,
         type_: str,
         name: str,
-        callback: Optional[Callable[[], None]],
+        callback: Callable[[], None] | None,
     ) -> None:
         """ Add or update a service. """
         service = None
@@ -64,7 +66,7 @@ class CastListener(ServiceListener):
         while service is None and tries < 4:
             try:
                 service = zc.get_service_info(type_, name)
-            except IOError:
+            except OSError:
                 # If the zeroconf fails to receive the necessary data we abort
                 # adding the service
                 break
@@ -93,9 +95,9 @@ class CastListener(ServiceListener):
             callback()
 
     @staticmethod
-    def get_service_value(service: ServiceInfo, key: str) -> Optional[str]:
+    def get_service_value(service: ServiceInfo, key: str) -> str | None:
         """Retrieve value and decode to UTF-8."""
-        value: Optional[Union[str, bytes]] = service.properties.get(key.encode("utf-8"))
+        value: str | bytes | None = service.properties.get(key.encode("utf-8"))
 
         if value is None or isinstance(value, str):
             return value
@@ -138,12 +140,12 @@ class GoogleDevice:
 
 
 def discover_devices(
-    models_list: Optional[List[str]] = None,
-    max_devices: Optional[int] = None,
+    models_list: list[str] | None = None,
+    max_devices: int | None = None,
     timeout: int = DISCOVERY_TIMEOUT,
-    zeroconf_instance: Optional[Zeroconf] = None,
+    zeroconf_instance: Zeroconf | None = None,
     logging_level: int = logging.ERROR,
-) -> List[GoogleDevice]:
+) -> list[GoogleDevice]:
     """Discover devices"""
     LOGGER.setLevel(logging_level)
 
@@ -171,7 +173,7 @@ def discover_devices(
     LOGGER.debug("Waiting for discovery completion...")
     discovery_complete.wait(timeout)
 
-    devices: List[GoogleDevice] = []
+    devices: list[GoogleDevice] = []
     LOGGER.debug("Got %s devices. Iterating...", len(listener.devices))
     for device in listener.devices:
         if not models_list or device.model in models_list:

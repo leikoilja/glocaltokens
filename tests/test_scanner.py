@@ -1,9 +1,11 @@
 """Scanner specific tests"""
+from __future__ import annotations
+
 from unittest import TestCase
+from unittest.mock import NonCallableMock, patch
 
 from faker import Faker
 from faker.providers import internet as internet_provider, python as python_provider
-from mock import NonCallableMock, patch
 
 from glocaltokens.scanner import GoogleDevice
 

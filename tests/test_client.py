@@ -1,13 +1,14 @@
 """Client specific unittests"""
+from __future__ import annotations
 
 from datetime import datetime, timedelta
 import json
 import logging
 from unittest import TestCase
+from unittest.mock import NonCallableMock, patch
 
 from faker import Faker
 from faker.providers import internet
-from mock import NonCallableMock, patch
 
 from glocaltokens.client import Device, GLocalAuthenticationTokens
 from glocaltokens.const import (

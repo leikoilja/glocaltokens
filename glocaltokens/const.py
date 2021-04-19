@@ -1,5 +1,7 @@
 """Globally used constants"""
-from typing import Final, List
+from __future__ import annotations
+
+from typing import Final
 
 ACCESS_TOKEN_APP_NAME: Final[str] = "com.google.android.apps.chromecast.app"
 ACCESS_TOKEN_CLIENT_SIGNATURE: Final[str] = "24bb24c05e47e0aefa68a58a766179d9b613a600"
@@ -17,7 +19,7 @@ HOMEGRAPH_DURATION: Final[int] = 24 * 60 * 60
 
 DISCOVERY_TIMEOUT: Final[int] = 2
 
-GOOGLE_HOME_MODELS: Final[List[str]] = [
+GOOGLE_HOME_MODELS: Final[list[str]] = [
     "Google Home",
     "Google Home Mini",
     "Google Nest Mini",
