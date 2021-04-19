@@ -118,6 +118,6 @@ Also, thank you very much to the guys at `pychromecast` which provided the code 
 [pypi-shield]: https://img.shields.io/pypi/v/glocaltokens?style=for-the-badge
 [pypi]: https://pypi.org/project/glocaltokens/
 [commits-shield]: https://img.shields.io/github/commit-activity/y/leikoilja/glocaltokens?style=for-the-badge
-[commits]: https://github.com/leikoilja/glocaltokens/commits/main
+[commits]: https://github.com/leikoilja/glocaltokens/commits/master
 [pre-commit-shield]: https://img.shields.io/badge/pre--commit-enabled-brightgreen?style=for-the-badge
 [pre-commit]: https://github.com/pre-commit/pre-commit
