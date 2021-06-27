@@ -1,5 +1,6 @@
 [![GitHub Workflow Status][workflow-shield]][workflow]
 [![PyPI][pypi-shield]][pypi]
+[![Downloads][pepy-shield]][pepy]
 [![Pre-commit][pre-commit-shield]][pre-commit]
 [![GitHub Activity][commits-shield]][commits]
 
@@ -113,11 +114,13 @@ extract master and access tokens
 
 Also, thank you very much to the guys at `pychromecast` which provided the code required to scan devices in the network.
 
-[workflow-shield]: https://img.shields.io/github/workflow/status/leikoilja/glocaltokens/Running%20tests?style=for-the-badge
+[workflow-shield]: https://img.shields.io/github/workflow/status/leikoilja/glocaltokens/Running%20tests
 [workflow]: https://github.com/leikoilja/glocaltokens/actions
-[pypi-shield]: https://img.shields.io/pypi/v/glocaltokens?style=for-the-badge
+[pypi-shield]: https://img.shields.io/pypi/v/glocaltokens
 [pypi]: https://pypi.org/project/glocaltokens/
-[commits-shield]: https://img.shields.io/github/commit-activity/y/leikoilja/glocaltokens?style=for-the-badge
+[pepy-shield]: https://pepy.tech/badge/glocaltokens
+[pepy]: https://pepy.tech/project/glocaltokens
+[commits-shield]: https://img.shields.io/github/commit-activity/y/leikoilja/glocaltokens
 [commits]: https://github.com/leikoilja/glocaltokens/commits/master
-[pre-commit-shield]: https://img.shields.io/badge/pre--commit-enabled-brightgreen?style=for-the-badge
+[pre-commit-shield]: https://img.shields.io/badge/pre--commit-enabled-brightgreen
 [pre-commit]: https://pre-commit.com/
