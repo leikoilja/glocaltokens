@@ -1,13 +1,14 @@
 """Types used for package typing"""
+from __future__ import annotations
 
-from typing import TypedDict, Union
+from typing import TypedDict
 
 
 class GoogleDeviceDict(TypedDict):
     """Typed dict for google_device field of DeviceDict."""
 
-    ip: Union[str, None]
-    port: Union[int, None]
+    ip: str | None
+    port: int | None
 
 
 class DeviceDict(TypedDict):
@@ -15,6 +16,6 @@ class DeviceDict(TypedDict):
 
     device_id: str
     device_name: str
-    hardware: Union[str, None]
+    hardware: str | None
     google_device: GoogleDeviceDict
-    local_auth_token: Union[str, None]
+    local_auth_token: str | None
