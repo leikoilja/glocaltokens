@@ -26,6 +26,9 @@ class DeviceAssertions(TestCase):
             homegraph_device.local_auth_token, homegraph_device_struct.local_auth_token
         )
         self.assertEqual(
+            homegraph_device.device_id, homegraph_device_struct.device_info.device_id
+        )
+        self.assertEqual(
             homegraph_device.device_name, homegraph_device_struct.device_name
         )
         self.assertEqual(

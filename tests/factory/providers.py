@@ -13,7 +13,7 @@ from glocaltokens.const import (
 from glocaltokens.google.internal.home.foyer.v1_pb2 import GetHomeGraphResponse
 from glocaltokens.utils.token import generate as generate_token
 
-fake = Faker()
+faker = Faker()
 
 
 class UtilsProvider(BaseProvider):  # type: ignore
@@ -21,7 +21,7 @@ class UtilsProvider(BaseProvider):  # type: ignore
 
     def version(self) -> str:
         """Generates random version"""
-        return f"{fake.pyint()}.{fake.pyint()}.{fake.pyint()}"
+        return f"{faker.pyint()}.{faker.pyint()}.{faker.pyint()}"
 
 
 class TokenProvider(BaseProvider):  # type: ignore
@@ -47,8 +47,11 @@ class HomegraphProvider(TokenProvider):
         """Using the content from test requests as reference"""
         return GetHomeGraphResponse.Home.Device(
             local_auth_token=self.local_auth_token(),
-            device_name=fake.word(),
-            hardware=GetHomeGraphResponse.Home.Device.Hardware(model=fake.word()),
+            device_info=GetHomeGraphResponse.Home.Device.DeviceInfo(
+                device_id=str(faker.uuid4)
+            ),
+            device_name=faker.word(),
+            hardware=GetHomeGraphResponse.Home.Device.Hardware(model=faker.word()),
         )
 
     def homegraph_devices(
@@ -68,6 +71,6 @@ class HomegraphProvider(TokenProvider):
         return [
             self.homegraph_device()
             for n in range(
-                count if count else fake.random.randint(min_devices, max_devices)
+                count if count else faker.random.randint(min_devices, max_devices)
             )
         ]
