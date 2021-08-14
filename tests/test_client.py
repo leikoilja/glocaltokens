@@ -332,12 +332,14 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         self, m_get_google_devices: NonCallableMock
     ) -> None:
         """Test getting google devices as JSON"""
+        device_id = faker.uuid4()
         device_name = faker.word()
         local_auth_token = faker.local_auth_token()
         ip_address = faker.ipv4()
         port = faker.port_number()
         hardware = faker.word()
         google_device = Device(
+            device_id=device_id,
             device_name=device_name,
             local_auth_token=local_auth_token,
             ip_address=ip_address,
@@ -368,6 +370,7 @@ class DeviceClientTests(TypeAssertions, TestCase):
 
         # With ip and port
         device = Device(
+            device_id=faker.uuid4(),
             device_name=faker.word(),
             ip_address=faker.ipv4(),
             port=faker.port_number(),
@@ -381,6 +384,7 @@ class DeviceClientTests(TypeAssertions, TestCase):
         """Test initialization that is invalid"""
         # With only ip
         device = Device(
+            device_id=faker.uuid4(),
             device_name=faker.word(),
             local_auth_token=faker.local_auth_token(),
             ip_address=faker.ipv4_private(),
@@ -390,6 +394,7 @@ class DeviceClientTests(TypeAssertions, TestCase):
 
         # With only port
         device = Device(
+            device_id=faker.uuid4(),
             device_name=faker.word(),
             local_auth_token=faker.local_auth_token(),
             port=faker.port_number(),
@@ -398,6 +403,10 @@ class DeviceClientTests(TypeAssertions, TestCase):
         self.assertIsNone(device.local_auth_token)
 
         # Invalid local_auth_token
-        device = Device(device_name=faker.word(), local_auth_token=faker.word())
+        device = Device(
+            device_id=faker.uuid4(),
+            device_name=faker.word(),
+            local_auth_token=faker.word(),
+        )
         self.assertEqual(m_log.call_count, 3)
         self.assertIsNone(device.local_auth_token)
