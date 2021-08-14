@@ -28,7 +28,7 @@ from glocaltokens.const import (
 from tests.assertions import DeviceAssertions, TypeAssertions
 from tests.factory.providers import HomegraphProvider, TokenProvider
 
-faker = Faker()
+faker = Faker()  # type: ignore
 faker.add_provider(TokenProvider)
 faker.add_provider(HomegraphProvider)
 faker.add_provider(internet)

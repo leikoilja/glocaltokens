@@ -13,10 +13,10 @@ from glocaltokens.const import (
 from glocaltokens.google.internal.home.foyer.v1_pb2 import GetHomeGraphResponse
 from glocaltokens.utils.token import generate as generate_token
 
-faker = Faker()
+faker = Faker()  # type: ignore
 
 
-class UtilsProvider(BaseProvider):  # type: ignore
+class UtilsProvider(BaseProvider):
     """Utility provider"""
 
     def version(self) -> str:
@@ -24,7 +24,7 @@ class UtilsProvider(BaseProvider):  # type: ignore
         return f"{faker.pyint()}.{faker.pyint()}.{faker.pyint()}"
 
 
-class TokenProvider(BaseProvider):  # type: ignore
+class TokenProvider(BaseProvider):
     """Token provider"""
 
     def master_token(self) -> str:
