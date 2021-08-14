@@ -5,7 +5,7 @@ from faker import Faker
 
 from glocaltokens.utils.logs import censor
 
-faker = Faker()
+faker = Faker()  # type: ignore
 
 
 class UtilsTests(TestCase):
