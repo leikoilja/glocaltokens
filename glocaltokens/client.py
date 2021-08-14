@@ -5,7 +5,6 @@ from datetime import datetime
 import json
 import logging
 import random
-from typing import TypedDict
 
 from gpsoauth import perform_master_login, perform_oauth
 import grpc
@@ -24,6 +23,7 @@ from .const import (
 from .google.internal.home.foyer.v1_pb2 import GetHomeGraphRequest, GetHomeGraphResponse
 from .google.internal.home.foyer.v1_pb2_grpc import StructuresServiceStub
 from .scanner import GoogleDevice, discover_devices
+from .types import DeviceDict
 from .utils import network as net_utils, token as token_utils
 from .utils.logs import censor
 
@@ -31,27 +31,12 @@ logging.basicConfig(level=logging.ERROR)
 LOGGER = logging.getLogger(__name__)
 
 
-class GoogleDeviceDict(TypedDict):
-    """Typed dict for google_device field of DeviceDict."""
-
-    ip: str | None
-    port: int | None
-
-
-class DeviceDict(TypedDict):
-    """Typed dict for Device representation as dict."""
-
-    device_name: str
-    hardware: str | None
-    google_device: GoogleDeviceDict
-    local_auth_token: str | None
-
-
 class Device:
     """Device representation"""
 
     def __init__(
         self,
+        device_id: str,
         device_name: str,
         local_auth_token: str,
         google_device: GoogleDevice | None = None,
@@ -62,8 +47,9 @@ class Device:
         """
         Initializes a Device. Can set or google_device or ip and port
         """
-        log_prefix = f"[Device - {device_name}]"
+        log_prefix = f"[Device - {device_name}(id={device_id})]"
         LOGGER.debug("%s Initializing new Device instance", log_prefix)
+        self.device_id = device_id
         self.device_name = device_name
         self.local_auth_token = None
         self.ip_address = ip_address
@@ -139,6 +125,7 @@ class Device:
     def as_dict(self) -> DeviceDict:
         """Dictionary representation"""
         return {
+            "device_id": self.device_id,
             "device_name": self.device_name,
             "google_device": {
                 "ip": self.ip_address,
@@ -428,6 +415,7 @@ class GLocalAuthenticationTokens:
                     google_device = find_device(item.device_name)
 
                 device = Device(
+                    device_id=item.device_info.device_id,
                     device_name=item.device_name,
                     local_auth_token=item.local_auth_token,
                     google_device=google_device,
