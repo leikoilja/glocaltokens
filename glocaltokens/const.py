@@ -25,6 +25,7 @@ GOOGLE_HOME_MODELS: Final = [
     "Google Nest Mini",
     "Lenovo Smart Clock",
 ]
+GOOGLE_CAST_GROUP: Final = "Google Cast Group"
 
 JSON_KEY_DEVICE_NAME: Final = "device_name"
 JSON_KEY_NETWORK_DEVICE: Final = "network_device"

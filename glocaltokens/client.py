@@ -377,9 +377,9 @@ class GLocalAuthenticationTokens:
                 logging_level=self.logging_level,
             )
 
-        def find_device(name: str) -> NetworkDevice | None:
+        def find_device(unique_id: str) -> NetworkDevice | None:
             for device in network_devices:
-                if device.name == name:
+                if device.unique_id == unique_id:
                     return device
             return None
 
@@ -397,11 +397,13 @@ class GLocalAuthenticationTokens:
                 network_device = None
                 if network_devices:
                     LOGGER.debug("Looking for '%s' in local network", item.device_name)
-                    network_device = find_device(item.device_name)
+                    network_device = find_device(item.device_info.agent_info.unique_id)
 
                 device = Device(
                     device_id=item.device_info.device_id,
-                    device_name=item.device_name,
+                    device_name=network_device.name
+                    if network_device is not None
+                    else item.device_name,
                     local_auth_token=item.local_auth_token,
                     network_device=network_device,
                     hardware=item.hardware.model,
