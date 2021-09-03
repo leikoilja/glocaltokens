@@ -22,14 +22,14 @@ from .v1_pb2 import *
 class HomeControlServiceStub:
     def __init__(self, channel: Channel) -> None: ...
     def GetAssistantRoutines(self,
-        request: None,
+        request: GetAssistantRoutinesRequest,
     ) -> Iterator[GetAssistantRoutinesResponse]: ...
 
 
 class HomeControlServiceServicer(metaclass=ABCMeta):
     @abstractmethod
     def GetAssistantRoutines(self,
-        request: None,
+        request: GetAssistantRoutinesRequest,
         context: ServicerContext,
     ) -> Iterator[GetAssistantRoutinesResponse]: ...
 

@@ -4,7 +4,25 @@ from __future__ import annotations
 
 import grpc
 
-from . import v1_pb2 as google_dot_internal_dot_home_dot_foyer_dot_v1__pb2
+from glocaltokens.google.internal.home.foyer import (
+    v1_pb2 as glocaltokens_dot_google_dot_internal_dot_home_dot_foyer_dot_v1__pb2,
+)
+
+
+class HomeControlServiceStub:
+    """Home Control Service"""
+
+    def __init__(self, channel):
+        """Constructor.
+
+        Args:
+            channel: A grpc.Channel.
+        """
+        self.GetAssistantRoutines = channel.unary_stream(
+            "/google.internal.home.foyer.v1.HomeControlService/GetAssistantRoutines",
+            request_serializer=glocaltokens_dot_google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.GetAssistantRoutinesRequest.SerializeToString,
+            response_deserializer=glocaltokens_dot_google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.GetAssistantRoutinesResponse.FromString,
+        )
 
 
 class HomeControlServiceServicer:
@@ -15,6 +33,54 @@ class HomeControlServiceServicer:
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details("Method not implemented!")
         raise NotImplementedError("Method not implemented!")
+
+
+def add_HomeControlServiceServicer_to_server(servicer, server):
+    rpc_method_handlers = {
+        "GetAssistantRoutines": grpc.unary_stream_rpc_method_handler(
+            servicer.GetAssistantRoutines,
+            request_deserializer=glocaltokens_dot_google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.GetAssistantRoutinesRequest.FromString,
+            response_serializer=glocaltokens_dot_google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.GetAssistantRoutinesResponse.SerializeToString,
+        ),
+    }
+    generic_handler = grpc.method_handlers_generic_handler(
+        "google.internal.home.foyer.v1.HomeControlService", rpc_method_handlers
+    )
+    server.add_generic_rpc_handlers((generic_handler,))
+
+
+# This class is part of an EXPERIMENTAL API.
+class HomeControlService:
+    """Home Control Service"""
+
+    @staticmethod
+    def GetAssistantRoutines(
+        request,
+        target,
+        options=(),
+        channel_credentials=None,
+        call_credentials=None,
+        insecure=False,
+        compression=None,
+        wait_for_ready=None,
+        timeout=None,
+        metadata=None,
+    ):
+        return grpc.experimental.unary_stream(
+            request,
+            target,
+            "/google.internal.home.foyer.v1.HomeControlService/GetAssistantRoutines",
+            glocaltokens_dot_google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.GetAssistantRoutinesRequest.SerializeToString,
+            glocaltokens_dot_google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.GetAssistantRoutinesResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+        )
 
 
 class StructuresServiceStub:
@@ -28,8 +94,8 @@ class StructuresServiceStub:
         """
         self.GetHomeGraph = channel.unary_unary(
             "/google.internal.home.foyer.v1.StructuresService/GetHomeGraph",
-            request_serializer=google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.GetHomeGraphRequest.SerializeToString,
-            response_deserializer=google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.GetHomeGraphResponse.FromString,
+            request_serializer=glocaltokens_dot_google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.GetHomeGraphRequest.SerializeToString,
+            response_deserializer=glocaltokens_dot_google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.GetHomeGraphResponse.FromString,
         )
 
 
@@ -47,9 +113,9 @@ def add_StructuresServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
         "GetHomeGraph": grpc.unary_unary_rpc_method_handler(
             servicer.GetHomeGraph,
-            request_deserializer=google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.GetHomeGraphRequest.FromString,
-            response_serializer=google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.GetHomeGraphResponse.SerializeToString,
-        )
+            request_deserializer=glocaltokens_dot_google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.GetHomeGraphRequest.FromString,
+            response_serializer=glocaltokens_dot_google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.GetHomeGraphResponse.SerializeToString,
+        ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
         "google.internal.home.foyer.v1.StructuresService", rpc_method_handlers
@@ -74,12 +140,12 @@ class StructuresService:
         timeout=None,
         metadata=None,
     ):
-        return grpc.experimental.unary_unary(  # type: ignore
+        return grpc.experimental.unary_unary(
             request,
             target,
             "/google.internal.home.foyer.v1.StructuresService/GetHomeGraph",
-            google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.GetHomeGraphRequest.SerializeToString,
-            google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.GetHomeGraphResponse.FromString,
+            glocaltokens_dot_google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.GetHomeGraphRequest.SerializeToString,
+            glocaltokens_dot_google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.GetHomeGraphResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -102,13 +168,13 @@ class HomeDevicesServiceStub:
         """
         self.GetAssistantDeviceSettings = channel.unary_stream(
             "/google.internal.home.foyer.v1.HomeDevicesService/GetAssistantDeviceSettings",
-            request_serializer=google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.GetAssistantDeviceSettingsRequest.SerializeToString,
-            response_deserializer=google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.GetAssistantDeviceSettingsResponse.FromString,
+            request_serializer=glocaltokens_dot_google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.GetAssistantDeviceSettingsRequest.SerializeToString,
+            response_deserializer=glocaltokens_dot_google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.GetAssistantDeviceSettingsResponse.FromString,
         )
         self.UpdateAssistantDeviceSettings = channel.unary_stream(
             "/google.internal.home.foyer.v1.HomeDevicesService/UpdateAssistantDeviceSettings",
-            request_serializer=google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.UpdateAssistantDeviceSettingsRequest.SerializeToString,
-            response_deserializer=google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.UpdateAssistantDeviceSettingsResponse.FromString,
+            request_serializer=glocaltokens_dot_google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.UpdateAssistantDeviceSettingsRequest.SerializeToString,
+            response_deserializer=glocaltokens_dot_google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.UpdateAssistantDeviceSettingsResponse.FromString,
         )
 
 
@@ -132,13 +198,13 @@ def add_HomeDevicesServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
         "GetAssistantDeviceSettings": grpc.unary_stream_rpc_method_handler(
             servicer.GetAssistantDeviceSettings,
-            request_deserializer=google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.GetAssistantDeviceSettingsRequest.FromString,
-            response_serializer=google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.GetAssistantDeviceSettingsResponse.SerializeToString,
+            request_deserializer=glocaltokens_dot_google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.GetAssistantDeviceSettingsRequest.FromString,
+            response_serializer=glocaltokens_dot_google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.GetAssistantDeviceSettingsResponse.SerializeToString,
         ),
         "UpdateAssistantDeviceSettings": grpc.unary_stream_rpc_method_handler(
             servicer.UpdateAssistantDeviceSettings,
-            request_deserializer=google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.UpdateAssistantDeviceSettingsRequest.FromString,
-            response_serializer=google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.UpdateAssistantDeviceSettingsResponse.SerializeToString,
+            request_deserializer=glocaltokens_dot_google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.UpdateAssistantDeviceSettingsRequest.FromString,
+            response_serializer=glocaltokens_dot_google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.UpdateAssistantDeviceSettingsResponse.SerializeToString,
         ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -164,12 +230,12 @@ class HomeDevicesService:
         timeout=None,
         metadata=None,
     ):
-        return grpc.experimental.unary_stream(  # type: ignore
+        return grpc.experimental.unary_stream(
             request,
             target,
             "/google.internal.home.foyer.v1.HomeDevicesService/GetAssistantDeviceSettings",
-            google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.GetAssistantDeviceSettingsRequest.SerializeToString,
-            google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.GetAssistantDeviceSettingsResponse.FromString,
+            glocaltokens_dot_google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.GetAssistantDeviceSettingsRequest.SerializeToString,
+            glocaltokens_dot_google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.GetAssistantDeviceSettingsResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -193,12 +259,12 @@ class HomeDevicesService:
         timeout=None,
         metadata=None,
     ):
-        return grpc.experimental.unary_stream(  # type: ignore
+        return grpc.experimental.unary_stream(
             request,
             target,
             "/google.internal.home.foyer.v1.HomeDevicesService/UpdateAssistantDeviceSettings",
-            google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.UpdateAssistantDeviceSettingsRequest.SerializeToString,
-            google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.UpdateAssistantDeviceSettingsResponse.FromString,
+            glocaltokens_dot_google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.UpdateAssistantDeviceSettingsRequest.SerializeToString,
+            glocaltokens_dot_google_dot_internal_dot_home_dot_foyer_dot_v1__pb2.UpdateAssistantDeviceSettingsResponse.FromString,
             options,
             channel_credentials,
             insecure,
