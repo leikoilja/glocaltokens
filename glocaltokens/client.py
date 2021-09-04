@@ -345,6 +345,7 @@ class GLocalAuthenticationTokens:
                     rpc_error.code(),  # pylint: disable=no-member
                     rpc_error.details(),  # pylint: disable=no-member
                 )
+                return None
         return self.homegraph
 
     def get_google_devices(
