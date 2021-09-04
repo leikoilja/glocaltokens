@@ -282,13 +282,16 @@ class GLocalAuthenticationTokens:
         )
         return self.access_token
 
-    def get_homegraph(self) -> GetHomeGraphResponse | None:
+    def get_homegraph(self, auth_attempts: int = 3) -> GetHomeGraphResponse | None:
         """Returns the entire Google Home Foyer V2 service"""
         if (
             self.homegraph is None
             or self.homegraph_date is None
             or self._has_expired(self.homegraph_date, HOMEGRAPH_DURATION)
         ):
+            if auth_attempts == 0:
+                LOGGER.error("Reached maximum number of authentication attempts")
+                return None
             LOGGER.debug(
                 "There is no stored homegraph, or it has expired, getting a new one..."
             )
@@ -335,13 +338,14 @@ class GLocalAuthenticationTokens:
                         log_prefix,
                     )
                     self.invalidate_access_token()
-                    return self.get_homegraph()
+                    return self.get_homegraph(auth_attempts - 1)
                 LOGGER.error(
                     "%s Received unknown RPC error: code=%s message=%s",
                     log_prefix,
                     rpc_error.code(),  # pylint: disable=no-member
                     rpc_error.details(),  # pylint: disable=no-member
                 )
+                return None
         return self.homegraph
 
     def get_google_devices(

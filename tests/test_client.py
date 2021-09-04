@@ -4,11 +4,12 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 import json
 import logging
-from unittest import TestCase
+from unittest import TestCase, mock
 from unittest.mock import NonCallableMock, patch
 
 from faker import Faker
 from faker.providers import internet
+import grpc
 
 from glocaltokens.client import Device, GLocalAuthenticationTokens
 from glocaltokens.const import (
@@ -295,6 +296,26 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         self.assertEqual(m_secure_channel.call_count, 2)
         self.assertEqual(m_structure_service_stub.call_count, 2)
         self.assertEqual(m_get_home_graph_request.call_count, 2)
+
+    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_access_token")
+    @patch("glocaltokens.client.StructuresServiceStub")
+    def test_get_homegraph_retries(
+        self,
+        m_structure_service_stub: NonCallableMock,
+        m_get_access_token: NonCallableMock,
+    ) -> None:
+        """Test retries in  get_homegraph"""
+        m_get_access_token.return_value = faker.word()
+        rpc_error = grpc.RpcError()
+        rpc_error.code = mock.Mock()  # type: ignore[assignment]
+        rpc_error.code.return_value.name = "UNAUTHENTICATED"
+        rpc_error.details = mock.Mock()  # type: ignore[assignment]
+        m_structure_service_stub.return_value.GetHomeGraph.side_effect = rpc_error
+        result = self.client.get_homegraph()
+        self.assertEqual(result, None)
+        self.assertEqual(
+            m_structure_service_stub.return_value.GetHomeGraph.call_count, 3
+        )
 
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_homegraph")
     def test_get_google_devices(self, m_get_homegraph: NonCallableMock) -> None:
