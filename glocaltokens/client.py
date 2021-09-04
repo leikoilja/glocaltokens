@@ -22,7 +22,7 @@ from .const import (
 )
 from .google.internal.home.foyer.v1_pb2 import GetHomeGraphRequest, GetHomeGraphResponse
 from .google.internal.home.foyer.v1_pb2_grpc import StructuresServiceStub
-from .scanner import GoogleDevice, discover_devices
+from .scanner import NetworkDevice, discover_devices
 from .types import DeviceDict
 from .utils import network as net_utils, token as token_utils
 from .utils.logs import censor
@@ -39,22 +39,18 @@ class Device:
         device_id: str,
         device_name: str,
         local_auth_token: str,
-        google_device: GoogleDevice | None = None,
-        ip_address: str | None = None,
-        port: int | None = None,
+        network_device: NetworkDevice | None = None,
         hardware: str | None = None,
     ):
         """
-        Initializes a Device. Can set or google_device or ip and port
+        Initializes a Device.
         """
         log_prefix = f"[Device - {device_name}(id={device_id})]"
         LOGGER.debug("%s Initializing new Device instance", log_prefix)
         self.device_id = device_id
         self.device_name = device_name
         self.local_auth_token = None
-        self.ip_address = ip_address
-        self.port = port
-        self.google_device = google_device
+        self.network_device = network_device
         self.hardware = hardware
 
         # Token and name validations
@@ -68,30 +64,15 @@ class Device:
             return
 
         # Setting IP and PORT
-        if google_device:
+        if network_device:
             LOGGER.debug(
-                "%s google_device is provided, using it's IP and PORT", log_prefix
+                "%s network_device is provided, using its IP and PORT", log_prefix
             )
-            self.ip_address = google_device.ip_address
-            self.port = google_device.port
+            self.ip_address: str | None = network_device.ip_address
+            self.port: int | None = network_device.port
         else:
-            LOGGER.debug(
-                "%s google_device is not provided, "
-                "using manually provided IP and PORT",
-                log_prefix,
-            )
-            # If both ip_address and port are not set, this is fine.
-            if (ip_address and not port) or (not ip_address and port):
-                LOGGER.error(
-                    "%s google_device is not provided, "
-                    "both IP(%s) and PORT(%s) must be manually provided",
-                    log_prefix,
-                    ip_address,
-                    port,
-                )
-                return
-            self.ip_address = ip_address
-            self.port = port
+            self.ip_address = None
+            self.port = None
 
         # IP and PORT validation
         if (
@@ -127,7 +108,7 @@ class Device:
         return {
             "device_id": self.device_id,
             "device_name": self.device_name,
-            "google_device": {
+            "network_device": {
                 "ip": self.ip_address,
                 "port": self.port,
             },
@@ -386,7 +367,7 @@ class GLocalAuthenticationTokens:
             LOGGER.debug("Failed to fetch homegraph")
             return devices
 
-        network_devices: list[GoogleDevice] = []
+        network_devices: list[NetworkDevice] = []
         if disable_discovery is False:
             LOGGER.debug("Getting network devices...")
             network_devices = discover_devices(
@@ -396,7 +377,7 @@ class GLocalAuthenticationTokens:
                 logging_level=self.logging_level,
             )
 
-        def find_device(name: str) -> GoogleDevice | None:
+        def find_device(name: str) -> NetworkDevice | None:
             for device in network_devices:
                 if device.name == name:
                     return device
@@ -413,16 +394,16 @@ class GLocalAuthenticationTokens:
                     LOGGER.debug("%s not in models_list", item.hardware.model)
                     continue
 
-                google_device = None
+                network_device = None
                 if network_devices:
                     LOGGER.debug("Looking for '%s' in local network", item.device_name)
-                    google_device = find_device(item.device_name)
+                    network_device = find_device(item.device_name)
 
                 device = Device(
                     device_id=item.device_info.device_id,
                     device_name=item.device_name,
                     local_auth_token=item.local_auth_token,
-                    google_device=google_device,
+                    network_device=network_device,
                     hardware=item.hardware.model,
                 )
                 if device.local_auth_token:

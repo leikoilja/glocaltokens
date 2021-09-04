@@ -20,12 +20,13 @@ from glocaltokens.const import (
     ANDROID_ID_LENGTH,
     HOMEGRAPH_DURATION,
     JSON_KEY_DEVICE_NAME,
-    JSON_KEY_GOOGLE_DEVICE,
     JSON_KEY_HARDWARE,
     JSON_KEY_IP,
     JSON_KEY_LOCAL_AUTH_TOKEN,
+    JSON_KEY_NETWORK_DEVICE,
     JSON_KEY_PORT,
 )
+from glocaltokens.scanner import NetworkDevice
 from tests.assertions import DeviceAssertions, TypeAssertions
 from tests.factory.providers import HomegraphProvider, TokenProvider
 
@@ -359,12 +360,14 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         ip_address = faker.ipv4()
         port = faker.port_number()
         hardware = faker.word()
+        unique_id = faker.word()
         google_device = Device(
             device_id=device_id,
             device_name=device_name,
             local_auth_token=local_auth_token,
-            ip_address=ip_address,
-            port=port,
+            network_device=NetworkDevice(
+                device_name, ip_address, port, hardware, unique_id
+            ),
             hardware=hardware,
         )
         m_get_google_devices.return_value = [google_device]
@@ -376,9 +379,9 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         self.assertEqual(received_device[JSON_KEY_DEVICE_NAME], device_name)
         self.assertEqual(received_device[JSON_KEY_HARDWARE], hardware)
         self.assertEqual(received_device[JSON_KEY_LOCAL_AUTH_TOKEN], local_auth_token)
-        self.assertEqual(received_device[JSON_KEY_GOOGLE_DEVICE][JSON_KEY_PORT], port)
+        self.assertEqual(received_device[JSON_KEY_NETWORK_DEVICE][JSON_KEY_PORT], port)
         self.assertEqual(
-            received_device[JSON_KEY_GOOGLE_DEVICE][JSON_KEY_IP], ip_address
+            received_device[JSON_KEY_NETWORK_DEVICE][JSON_KEY_IP], ip_address
         )
 
 
@@ -393,8 +396,13 @@ class DeviceClientTests(TypeAssertions, TestCase):
         device = Device(
             device_id=faker.uuid4(),
             device_name=faker.word(),
-            ip_address=faker.ipv4(),
-            port=faker.port_number(),
+            network_device=NetworkDevice(
+                faker.word(),
+                faker.ipv4(),
+                faker.port_number(),
+                faker.word(),
+                faker.word(),
+            ),
             local_auth_token=local_auth_token,
         )
 
@@ -403,25 +411,6 @@ class DeviceClientTests(TypeAssertions, TestCase):
     @patch("glocaltokens.client.LOGGER.error")
     def test_initialization__invalid(self, m_log: NonCallableMock) -> None:
         """Test initialization that is invalid"""
-        # With only ip
-        device = Device(
-            device_id=faker.uuid4(),
-            device_name=faker.word(),
-            local_auth_token=faker.local_auth_token(),
-            ip_address=faker.ipv4_private(),
-        )
-        self.assertEqual(m_log.call_count, 1)
-        self.assertIsNone(device.local_auth_token)
-
-        # With only port
-        device = Device(
-            device_id=faker.uuid4(),
-            device_name=faker.word(),
-            local_auth_token=faker.local_auth_token(),
-            port=faker.port_number(),
-        )
-        self.assertEqual(m_log.call_count, 2)
-        self.assertIsNone(device.local_auth_token)
 
         # Invalid local_auth_token
         device = Device(
@@ -429,5 +418,5 @@ class DeviceClientTests(TypeAssertions, TestCase):
             device_name=faker.word(),
             local_auth_token=faker.word(),
         )
-        self.assertEqual(m_log.call_count, 3)
+        self.assertEqual(m_log.call_count, 1)
         self.assertIsNone(device.local_auth_token)

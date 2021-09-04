@@ -4,8 +4,8 @@ from __future__ import annotations
 from typing import TypedDict
 
 
-class GoogleDeviceDict(TypedDict):
-    """Typed dict for google_device field of DeviceDict."""
+class NetworkDeviceDict(TypedDict):
+    """Typed dict for network_device field of DeviceDict."""
 
     ip: str | None
     port: int | None
@@ -17,5 +17,5 @@ class DeviceDict(TypedDict):
     device_id: str
     device_name: str
     hardware: str | None
-    google_device: GoogleDeviceDict
+    network_device: NetworkDeviceDict
     local_auth_token: str | None

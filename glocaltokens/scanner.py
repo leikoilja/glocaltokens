@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import logging
 from threading import Event
-from typing import Callable
+from typing import Callable, NamedTuple
 
 from zeroconf import ServiceBrowser, ServiceInfo, ServiceListener, Zeroconf
 
@@ -11,6 +11,16 @@ from .const import DISCOVERY_TIMEOUT
 from .utils import network as net_utils
 
 LOGGER = logging.getLogger(__name__)
+
+
+class NetworkDevice(NamedTuple):
+    """Discovered Google device representation"""
+
+    name: str
+    ip_address: str
+    port: int
+    model: str
+    unique_id: str
 
 
 class CastListener(ServiceListener):
@@ -26,7 +36,7 @@ class CastListener(ServiceListener):
         remove_callback: Callable[[], None] | None = None,
         update_callback: Callable[[], None] | None = None,
     ):
-        self.devices: list[GoogleDevice] = []
+        self.devices: dict[str, NetworkDevice] = {}
         self.add_callback = add_callback
         self.remove_callback = remove_callback
         self.update_callback = update_callback
@@ -49,6 +59,10 @@ class CastListener(ServiceListener):
     def remove_service(self, _zc: Zeroconf, type_: str, name: str) -> None:
         """Called when a cast has beeen lost (mDNS info expired or host down)."""
         LOGGER.debug("remove_service %s, %s", type_, name)
+        if name in self.devices:
+            del self.devices[name]
+        if self.remove_callback:
+            self.remove_callback()
 
     def _add_update_service(
         self,
@@ -58,11 +72,11 @@ class CastListener(ServiceListener):
         callback: Callable[[], None] | None,
     ) -> None:
         """ Add or update a service. """
-        service = None
-        tries = 0
         if name.endswith("_sub._googlecast._tcp.local."):
             LOGGER.debug("_add_update_service ignoring %s, %s", type_, name)
             return
+        service = None
+        tries = 0
         while service is None and tries < 4:
             try:
                 service = zc.get_service_info(type_, name)
@@ -77,19 +91,38 @@ class CastListener(ServiceListener):
             return
 
         addresses = service.parsed_addresses()
-        host = addresses[0] if addresses else service.server
+        ip_address = addresses[0] if addresses else service.server
 
         model_name = self.get_service_value(service, "md")
         friendly_name = self.get_service_value(service, "fn")
+        unique_id = self.get_service_value(service, "cd")
 
-        if not model_name or not friendly_name or not service.port:
+        if not model_name or not friendly_name or not service.port or not unique_id:
             LOGGER.debug(
-                "Device %s doesn't have friendly name, model name or port, skipping...",
-                host,
+                "Discovered device %s has incomplete service info, skipping...",
+                ip_address,
             )
             return
 
-        self.devices.append(GoogleDevice(friendly_name, host, service.port, model_name))
+        if not net_utils.is_valid_ipv4_address(
+            ip_address
+        ) and not net_utils.is_valid_ipv6_address(ip_address):
+            LOGGER.error("Discovered device has invalid IP address: %s", ip_address)
+            return
+
+        if not 0 <= service.port <= 65535:
+            LOGGER.error(
+                "Port of discovered device is out of the valid range: [0,65535]"
+            )
+            return
+
+        self.devices[name] = NetworkDevice(
+            name=friendly_name,
+            ip_address=ip_address,
+            port=service.port,
+            model=model_name,
+            unique_id=unique_id,
+        )
 
         if callback:
             callback()
@@ -104,55 +137,20 @@ class CastListener(ServiceListener):
         return value.decode("utf-8")
 
 
-class GoogleDevice:
-    """Discovered Google device representation"""
-
-    def __init__(self, name: str, ip_address: str, port: int, model: str):
-        LOGGER.debug("Initializing GoogleDevice...")
-        if not net_utils.is_valid_ipv4_address(
-            ip_address
-        ) and not net_utils.is_valid_ipv6_address(ip_address):
-            LOGGER.error("IP must be a valid IP address")
-            return
-
-        self.name = name
-        self.ip_address = ip_address
-        self.port = port
-        self.model = model
-        LOGGER.debug(
-            "Set self name to %s, IP to %s, PORT to %s and model to %s",
-            name,
-            ip_address,
-            port,
-            model,
-        )
-
-        if not 0 <= self.port <= 65535:
-            LOGGER.error("Port is out of the valid range: [0,65535]")
-            return
-
-    def __str__(self) -> str:
-        """Serializes the class into a str"""
-        return (
-            f"{{name:{self.name},ip:{self.ip_address},"
-            f"port:{self.port},model:{self.model}}}"
-        )
-
-
 def discover_devices(
     models_list: list[str] | None = None,
     max_devices: int | None = None,
     timeout: int = DISCOVERY_TIMEOUT,
     zeroconf_instance: Zeroconf | None = None,
     logging_level: int = logging.ERROR,
-) -> list[GoogleDevice]:
+) -> list[NetworkDevice]:
     """Discover devices"""
     LOGGER.setLevel(logging_level)
 
     LOGGER.debug("Discovering devices...")
 
     def callback() -> None:
-        """Called when zeroconf has discovered a new chromecast."""
+        """Called when zeroconf has discovered a new device."""
         if max_devices is not None and listener.count >= max_devices:
             discovery_complete.set()
 
@@ -167,20 +165,25 @@ def discover_devices(
         LOGGER.debug("Using attribute Zeroconf instance")
         zc = zeroconf_instance
     LOGGER.debug("Creating zeroconf service browser for _googlecast._tcp.local.")
-    ServiceBrowser(zc, "_googlecast._tcp.local.", listener)
+    service_browser = ServiceBrowser(zc, "_googlecast._tcp.local.", listener)
 
     # Wait for the timeout or the maximum number of devices
     LOGGER.debug("Waiting for discovery completion...")
     discovery_complete.wait(timeout)
 
-    devices: list[GoogleDevice] = []
-    LOGGER.debug("Got %s devices. Iterating...", len(listener.devices))
-    for device in listener.devices:
-        if not models_list or device.model in models_list:
-            LOGGER.debug("Appending new device: %s", device)
-            devices.append(device)
-        else:
+    # Stop discovery
+    service_browser.cancel()
+    service_browser.zc.close()
+
+    devices: list[NetworkDevice] = []
+    LOGGER.debug("Got %d devices. Iterating...", listener.count)
+    for device in listener.devices.values():
+        if models_list and device.model not in models_list:
             LOGGER.debug(
-                'Won\'t add device since model "%s" is not in models_list', device.model
+                'Skip discovered device since model "%s" is not in models_list',
+                device.model,
             )
+            continue
+        LOGGER.debug("Add discovered device: %s", device)
+        devices.append(device)
     return devices
