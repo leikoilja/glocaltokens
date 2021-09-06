@@ -7,7 +7,7 @@ from typing import Callable, NamedTuple
 
 from zeroconf import ServiceBrowser, ServiceInfo, ServiceListener, Zeroconf
 
-from .const import DISCOVERY_TIMEOUT
+from .const import DISCOVERY_TIMEOUT, GOOGLE_CAST_GROUP
 from .utils import network as net_utils
 
 LOGGER = logging.getLogger(__name__)
@@ -183,6 +183,9 @@ def discover_devices(
                 'Skip discovered device since model "%s" is not in models_list',
                 device.model,
             )
+            continue
+        if device.model == GOOGLE_CAST_GROUP:
+            LOGGER.debug("Skip discovered cast group: %s", device.name)
             continue
         LOGGER.debug("Add discovered device: %s", device)
         devices.append(device)
