@@ -21,28 +21,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
     syntax="proto3",
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
-    serialized_pb=b'\n0glocaltokens/google/internal/home/foyer/v1.proto\x12\x1dgoogle.internal.home.foyer.v1"\x06\n\x04None"\x1d\n\x1bGetAssistantRoutinesRequest"\xf4\x06\n\x1cGetAssistantRoutinesResponse\x12M\n\x02p1\x18\x01 \x03(\x0b\x32\x41.google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1\x12M\n\x02p2\x18\x02 \x01(\x0b\x32\x41.google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part2\x1a\x8a\x05\n\x05Part1\x12\x14\n\x0croutine_name\x18\x01 \x01(\t\x12\\\n\x08workflow\x18\x03 \x01(\x0b\x32J.google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow\x12\x0f\n\x07string4\x18\x04 \x01(\t\x12\x0f\n\x07string5\x18\x05 \x01(\t\x1a\xea\x03\n\x08WorkFlow\x12\x0c\n\x04type\x18\x01 \x01(\t\x12\x61\n\x05wf_s1\x18\x02 \x01(\x0b\x32R.google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1\x1a\xec\x02\n\x07WF_Sub1\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12q\n\x08wf_s1_s1\x18\x02 \x01(\x0b\x32_.google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.WF_Sub1_Sub1\x1a\xdc\x01\n\x0cWF_Sub1_Sub1\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12x\n\x07routine\x18\x02 \x01(\x0b\x32g.google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.WF_Sub1_Sub1.Routine\x1a\x41\n\x07Routine\x12\x12\n\nroutine_id\x18\x01 \x01(\t\x12\x0c\n\x04num2\x18\x02 \x01(\r\x12\x14\n\x0croutine_name\x18\x03 \x01(\t\x1a)\n\x05Part2\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12\x0f\n\x07string3\x18\x03 \x01(\t"4\n\x13GetHomeGraphRequest\x12\x0f\n\x07string1\x18\x03 \x01(\t\x12\x0c\n\x04num2\x18\x04 \x01(\t"\xbc\x37\n\x14GetHomeGraphResponse\x12\x12\n\ntimestamp1\x18\x01 \x01(\x04\x12\x46\n\x04home\x18\x02 \x01(\x0b\x32\x38.google.internal.home.foyer.v1.GetHomeGraphResponse.Home\x12I\n\x06groups\x18\x03 \x03(\x0b\x32\x39.google.internal.home.foyer.v1.GetHomeGraphResponse.Group\x12P\n\nroom_types\x18\x04 \x03(\x0b\x32<.google.internal.home.foyer.v1.GetHomeGraphResponse.RoomType\x12\x0f\n\x07string5\x18\x05 \x01(\t\x12\r\n\x05\x62ool6\x18\x06 \x01(\x08\x12T\n\x0c\x64\x65vice_types\x18\x07 \x03(\x0b\x32>.google.internal.home.foyer.v1.GetHomeGraphResponse.DeviceType\x12V\n\rproject_types\x18\t \x03(\x0b\x32?.google.internal.home.foyer.v1.GetHomeGraphResponse.ProjectType\x12P\n\tmessage11\x18\x0b \x03(\x0b\x32=.google.internal.home.foyer.v1.GetHomeGraphResponse.Message11\x12R\n\x0blinked_apps\x18\x0c \x03(\x0b\x32=.google.internal.home.foyer.v1.GetHomeGraphResponse.LinkedApp\x1a\xc6\'\n\x04Home\x12\x0f\n\x07home_id\x18\x01 \x01(\t\x12\x11\n\thome_name\x18\x02 \x01(\t\x12S\n\x08location\x18\x03 \x01(\x0b\x32\x41.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Location\x12Y\n\x0clinked_users\x18\x04 \x03(\x0b\x32\x43.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.LinkedUser\x12L\n\x05rooms\x18\x06 \x03(\x0b\x32=.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Room\x12P\n\x07\x64\x65vices\x18\x07 \x03(\x0b\x32?.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device\x12U\n\tmessage11\x18\x0b \x01(\x0b\x32\x42.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message11\x12\x10\n\x08string12\x18\x0c \x01(\t\x12U\n\tmessage13\x18\r \x01(\x0b\x32\x42.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13\x12\x11\n\tmessage14\x18\x0e \x01(\t\x12U\n\tmessage15\x18\x0f \x01(\x0b\x32\x42.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15\x1a\xd9\x01\n\x08Location\x12\x0f\n\x07\x61\x64\x64ress\x18\x01 \x01(\t\x12\x62\n\x0b\x63oordinates\x18\x02 \x01(\x0b\x32M.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Location.Coordinates\x12\x12\n\ntimestamp5\x18\x05 \x01(\x04\x12\x10\n\x08timezone\x18\x06 \x01(\t\x1a\x32\n\x0b\x43oordinates\x12\x10\n\x08latitude\x18\x01 \x01(\x01\x12\x11\n\tlongitude\x18\x02 \x01(\x01\x1a#\n\nLinkedUser\x12\x15\n\remail_address\x18\x01 \x01(\t\x1a\x9e\x01\n\x04Room\x12\x0f\n\x07room_id\x18\x01 \x01(\t\x12\x11\n\troom_name\x18\x03 \x01(\t\x12X\n\x08\x63\x61tegory\x18\x04 \x01(\x0b\x32\x46.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Room.Category\x1a\x18\n\x08\x43\x61tegory\x12\x0c\n\x04name\x18\x01 \x01(\t\x1a\xbb\x18\n\x06\x44\x65vice\x12_\n\x0b\x64\x65vice_info\x18\x01 \x01(\x0b\x32J.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.DeviceInfo\x12\x13\n\x0b\x64\x65vice_name\x18\x04 \x01(\t\x12\x13\n\x0b\x64\x65vice_type\x18\x06 \x01(\t\x12\x0e\n\x06traits\x18\x07 \x03(\t\x12\x0e\n\x06suffix\x18\n \x01(\t\x12\\\n\tmessage12\x18\x0c \x01(\x0b\x32I.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message12\x12\\\n\tmessage15\x18\x0f \x01(\x0b\x32I.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message15\x12Z\n\x08hardware\x18\x11 \x01(\x0b\x32H.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Hardware\x12\\\n\tmessage18\x18\x12 \x01(\x0b\x32I.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message18\x12\x13\n\x0btimestamp19\x18\x13 \x01(\x04\x12\\\n\tmessage20\x18\x14 \x01(\x0b\x32I.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20\x12\\\n\tmessage25\x18\x19 \x01(\x0b\x32I.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message25\x12`\n\x0clinked_users\x18\x1a \x03(\x0b\x32J.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.LinkedUser\x12\x18\n\x10local_auth_token\x18\x1c \x01(\t\x12U\n\x06states\x18\x1d \x03(\x0b\x32\x45.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.State\x12\\\n\tmessage30\x18\x1e \x01(\x0b\x32I.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30\x12\\\n\tmessage34\x18" \x01(\x0b\x32I.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message34\x12\r\n\x05num37\x18% \x01(\r\x12\x10\n\x08string41\x18) \x01(\t\x12\x10\n\x08string42\x18* \x01(\t\x1a\xc1\x01\n\nDeviceInfo\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12h\n\nagent_info\x18\x02 \x01(\x0b\x32T.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.DeviceInfo.AgentInfo\x1a\x36\n\tAgentInfo\x12\x16\n\x0e\x61pi_project_id\x18\x01 \x01(\t\x12\x11\n\tunique_id\x18\x02 \x01(\t\x1aq\n\tMessage12\x12\x0c\n\x04num2\x18\x02 \x01(\r\x12\x0c\n\x04num4\x18\x04 \x01(\r\x12\x0c\n\x04num5\x18\x05 \x01(\r\x12\r\n\x05num37\x18% \x01(\r\x12\r\n\x05num38\x18& \x01(\r\x12\r\n\x05num45\x18- \x01(\r\x12\r\n\x05num46\x18. \x01(\r\x1a\x43\n\tMessage15\x12\x0c\n\x04num1\x18\x01 \x01(\x04\x12\x0c\n\x04num5\x18\x05 \x01(\x04\x12\x0c\n\x04num6\x18\x06 \x01(\x04\x12\x0c\n\x04num7\x18\x07 \x01(\x04\x1a\x19\n\x08Hardware\x12\r\n\x05model\x18\x02 \x01(\t\x1a \n\tMessage18\x12\x13\n\x0b\x64\x65vice_name\x18\x02 \x01(\t\x1a\x88\x08\n\tMessage20\x12\x64\n\x08message1\x18\x01 \x03(\x0b\x32R.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1\x1a\x94\x07\n\x08Message1\x12\x0b\n\x03key\x18\x01 \x01(\t\x12g\n\x05value\x18\x02 \x01(\x0b\x32X.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value\x1a\x91\x06\n\x05Value\x12s\n\x08message6\x18\x06 \x01(\x0b\x32\x61.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6\x1a\x92\x05\n\x08Message6\x12|\n\x08message1\x18\x01 \x01(\x0b\x32j.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1\x1a\x87\x04\n\x08Message1\x12\x85\x01\n\x08message5\x18\x05 \x01(\x0b\x32s.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5\x1a\xf2\x02\n\x08Message5\x12\x8e\x01\n\x08message1\x18\x01 \x03(\x0b\x32|.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5.Message1\x1a\xd4\x01\n\x08Message1\x12\x12\n\ncapability\x18\x01 \x01(\t\x12\x98\x01\n\x08message2\x18\x02 \x01(\x0b\x32\x85\x01.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5.Message1.Message2\x1a\x19\n\x08Message2\x12\r\n\x05\x62ool4\x18\x04 \x01(\x08\x1a)\n\tMessage25\x12\r\n\x05\x62ool1\x18\x01 \x01(\x08\x12\r\n\x05\x62ool2\x18\x02 \x01(\x08\x1a#\n\nLinkedUser\x12\x15\n\remail_address\x18\x01 \x01(\t\x1a$\n\x05State\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x0c\x1a\xa6\x02\n\tMessage30\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x64\n\x08message2\x18\x02 \x01(\x0b\x32R.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30.Message2\x1a\xa5\x01\n\x08Message2\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12m\n\x08message2\x18\x02 \x01(\x0b\x32[.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30.Message2.Message2\x1a\x19\n\x08Message2\x12\r\n\x05\x62ool4\x18\x04 \x01(\x08\x1a\x1a\n\tMessage34\x12\r\n\x05\x62ool1\x18\x01 \x01(\x08\x1a\x1a\n\tMessage11\x12\r\n\x05\x62ool1\x18\x01 \x01(\x08\x1a\xe4\x03\n\tMessage13\x12]\n\x08message1\x18\x01 \x01(\x0b\x32K.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1\x12\x14\n\x0c\x64uo_call_url\x18\x02 \x01(\t\x12\x18\n\x10\x64uo_phone_number\x18\x03 \x01(\t\x1a\xc7\x02\n\x08Message1\x12k\n\x0b\x64\x65vice_info\x18\x01 \x01(\x0b\x32V.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1.DeviceInfo\x1a\xcd\x01\n\nDeviceInfo\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12t\n\nagent_info\x18\x02 \x01(\x0b\x32`.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1.DeviceInfo.AgentInfo\x1a\x36\n\tAgentInfo\x12\x16\n\x0e\x61pi_project_id\x18\x01 \x01(\t\x12\x11\n\tunique_id\x18\x02 \x01(\t\x1a\xbc\x02\n\tMessage15\x12\r\n\x05\x62ool1\x18\x01 \x01(\x08\x12\x0f\n\x07string2\x18\x02 \x01(\t\x12]\n\x08message3\x18\x03 \x03(\x0b\x32K.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15.Message3\x12\r\n\x05\x62ool4\x18\x04 \x01(\x08\x1a\xa0\x01\n\x08Message3\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12\x66\n\x08message2\x18\x02 \x01(\x0b\x32T.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15.Message3.Message2\x1a\x1b\n\x08Message2\x12\x0f\n\x07string1\x18\x01 \x01(\t\x1a\x87\x08\n\x05Group\x12Y\n\x0b\x64\x65vice_info\x18\x01 \x01(\x0b\x32\x44.google.internal.home.foyer.v1.GetHomeGraphResponse.Group.DeviceInfo\x12\x12\n\ngroup_nmae\x18\x04 \x01(\t\x12\x13\n\x0b\x64\x65vice_type\x18\x06 \x01(\t\x12\x0e\n\x06traits\x18\x07 \x01(\t\x12\x0e\n\x06suffix\x18\n \x01(\t\x12V\n\tmessage12\x18\x0c \x01(\x0b\x32\x43.google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message12\x12V\n\tmessage15\x18\x0f \x01(\x0b\x32\x43.google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message15\x12V\n\tmessage17\x18\x11 \x01(\x0b\x32\x43.google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message17\x12V\n\tmessage18\x18\x12 \x01(\x0b\x32\x43.google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message18\x12\x13\n\x0btimestamp19\x18\x13 \x01(\x04\x12V\n\tmessage34\x18" \x01(\x0b\x32\x43.google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message34\x1a\xa8\x01\n\nDeviceInfo\x12\x62\n\nagent_info\x18\x02 \x01(\x0b\x32N.google.internal.home.foyer.v1.GetHomeGraphResponse.Group.DeviceInfo.AgentInfo\x1a\x36\n\tAgentInfo\x12\x16\n\x0e\x61pi_project_id\x18\x01 \x01(\t\x12\x11\n\tunique_id\x18\x02 \x01(\t\x1aI\n\tMessage12\x12\r\n\x05\x62ool3\x18\x03 \x01(\x08\x12\r\n\x05\x62ool4\x18\x04 \x01(\x08\x12\x0e\n\x06\x62ool37\x18% \x01(\x08\x12\x0e\n\x06\x62ool38\x18& \x01(\x08\x1a\x38\n\tMessage15\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12\x0c\n\x04num5\x18\x05 \x01(\x04\x12\x0c\n\x04num6\x18\x06 \x01(\r\x1a \n\tMessage17\x12\x13\n\x0bgroup_model\x18\x02 \x01(\t\x1a\x1f\n\tMessage18\x12\x12\n\ngroup_name\x18\x02 \x01(\t\x1a\x1a\n\tMessage34\x12\r\n\x05\x62ool1\x18\x01 \x01(\x08\x1a&\n\x08RoomType\x12\x0c\n\x04\x63ode\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x1a(\n\nDeviceType\x12\x0c\n\x04\x63ode\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x1a)\n\x0bProjectType\x12\x0c\n\x04\x63ode\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x1a\x8d\x01\n\tMessage11\x12\x0c\n\x04name\x18\x01 \x01(\t\x12X\n\x08message2\x18\x02 \x01(\x0b\x32\x46.google.internal.home.foyer.v1.GetHomeGraphResponse.Message11.Message2\x1a\x18\n\x08Message2\x12\x0c\n\x04num2\x18\x02 \x01(\r\x1aW\n\tLinkedApp\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12\x0f\n\x07string2\x18\x02 \x01(\t\x12\x0c\n\x04num3\x18\x03 \x01(\r\x12\x0c\n\x04num4\x18\x04 \x01(\r\x12\x0c\n\x04num5\x18\x05 \x01(\r"\xdb\x02\n!GetAssistantDeviceSettingsRequest\x12`\n\x0b\x64\x65vice_info\x18\x01 \x01(\x0b\x32K.google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest.DeviceInfo\x12\x0f\n\x07string2\x18\x02 \x01(\t\x1a\xc2\x01\n\nDeviceInfo\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12i\n\nagent_info\x18\x02 \x01(\x0b\x32U.google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest.DeviceInfo.AgentInfo\x1a\x36\n\tAgentInfo\x12\x16\n\x0e\x61pi_project_id\x18\x01 \x01(\t\x12\x11\n\tunique_id\x18\x02 \x01(\t"\xe6\x01\n"GetAssistantDeviceSettingsResponse\x12\\\n\x08message1\x18\x01 \x01(\x0b\x32J.google.internal.home.foyer.v1.GetAssistantDeviceSettingsResponse.Message1\x1a\x62\n\x08Message1\x12\x0c\n\x04num1\x18\x01 \x01(\r\x12\x0c\n\x04num2\x18\x02 \x01(\r\x12\x0c\n\x04num4\x18\x04 \x01(\r\x12\x0c\n\x04num5\x18\x05 \x01(\r\x12\x0c\n\x04num6\x18\x06 \x01(\r\x12\x10\n\x08string10\x18\n \x01(\t"\xa3\x05\n$UpdateAssistantDeviceSettingsRequest\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12\x63\n\x0b\x64\x65vice_info\x18\x02 \x01(\x0b\x32N.google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.DeviceInfo\x12\x63\n\x0bupdate_data\x18\x03 \x01(\x0b\x32N.google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.UpdateData\x1a\xc5\x01\n\nDeviceInfo\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12l\n\nagent_info\x18\x02 \x01(\x0b\x32X.google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.DeviceInfo.AgentInfo\x1a\x36\n\tAgentInfo\x12\x16\n\x0e\x61pi_project_id\x18\x01 \x01(\t\x12\x11\n\tunique_id\x18\x02 \x01(\t\x1a\xd7\x01\n\nUpdateData\x12i\n\x08message1\x18\x01 \x01(\x0b\x32W.google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.UpdateData.Message1\x1a^\n\x08Message1\x12\x1f\n\x17youtube_restricted_mode\x18\x04 \x01(\r\x12!\n\x19youtube_tv_content_filter\x18\x05 \x01(\r\x12\x0e\n\x06locale\x18\n \x01(\t"8\n%UpdateAssistantDeviceSettingsResponse\x12\x0f\n\x07string1\x18\x01 \x01(\t2\xa8\x01\n\x12HomeControlService\x12\x91\x01\n\x14GetAssistantRoutines\x12:.google.internal.home.foyer.v1.GetAssistantRoutinesRequest\x1a;.google.internal.home.foyer.v1.GetAssistantRoutinesResponse0\x01\x32\x8c\x01\n\x11StructuresService\x12w\n\x0cGetHomeGraph\x12\x32.google.internal.home.foyer.v1.GetHomeGraphRequest\x1a\x33.google.internal.home.foyer.v1.GetHomeGraphResponse2\xe9\x02\n\x12HomeDevicesService\x12\xa3\x01\n\x1aGetAssistantDeviceSettings\x12@.google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest\x1a\x41.google.internal.home.foyer.v1.GetAssistantDeviceSettingsResponse0\x01\x12\xac\x01\n\x1dUpdateAssistantDeviceSettings\x12\x43.google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest\x1a\x44.google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsResponse0\x01\x62\x06proto3',
-)
-
-
-_NONE = _descriptor.Descriptor(
-    name="None",
-    full_name="google.internal.home.foyer.v1.None",
-    filename=None,
-    file=DESCRIPTOR,
-    containing_type=None,
-    create_key=_descriptor._internal_create_key,
-    fields=[],
-    extensions=[],
-    nested_types=[],
-    enum_types=[],
-    serialized_options=None,
-    is_extendable=False,
-    syntax="proto3",
-    extension_ranges=[],
-    oneofs=[],
-    serialized_start=83,
-    serialized_end=89,
+    serialized_pb=b'\n0glocaltokens/google/internal/home/foyer/v1.proto\x12\x1dgoogle.internal.home.foyer.v1"\x1d\n\x1bGetAssistantRoutinesRequest"\xf4\x06\n\x1cGetAssistantRoutinesResponse\x12M\n\x02p1\x18\x01 \x03(\x0b\x32\x41.google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1\x12M\n\x02p2\x18\x02 \x01(\x0b\x32\x41.google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part2\x1a\x8a\x05\n\x05Part1\x12\x14\n\x0croutine_name\x18\x01 \x01(\t\x12\\\n\x08workflow\x18\x03 \x01(\x0b\x32J.google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow\x12\x0f\n\x07string4\x18\x04 \x01(\t\x12\x0f\n\x07string5\x18\x05 \x01(\t\x1a\xea\x03\n\x08WorkFlow\x12\x0c\n\x04type\x18\x01 \x01(\t\x12\x61\n\x05wf_s1\x18\x02 \x01(\x0b\x32R.google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1\x1a\xec\x02\n\x07WF_Sub1\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12q\n\x08wf_s1_s1\x18\x02 \x01(\x0b\x32_.google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.WF_Sub1_Sub1\x1a\xdc\x01\n\x0cWF_Sub1_Sub1\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12x\n\x07routine\x18\x02 \x01(\x0b\x32g.google.internal.home.foyer.v1.GetAssistantRoutinesResponse.Part1.WorkFlow.WF_Sub1.WF_Sub1_Sub1.Routine\x1a\x41\n\x07Routine\x12\x12\n\nroutine_id\x18\x01 \x01(\t\x12\x0c\n\x04num2\x18\x02 \x01(\r\x12\x14\n\x0croutine_name\x18\x03 \x01(\t\x1a)\n\x05Part2\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12\x0f\n\x07string3\x18\x03 \x01(\t"4\n\x13GetHomeGraphRequest\x12\x0f\n\x07string1\x18\x03 \x01(\t\x12\x0c\n\x04num2\x18\x04 \x01(\t"\xbc\x37\n\x14GetHomeGraphResponse\x12\x12\n\ntimestamp1\x18\x01 \x01(\x04\x12\x46\n\x04home\x18\x02 \x01(\x0b\x32\x38.google.internal.home.foyer.v1.GetHomeGraphResponse.Home\x12I\n\x06groups\x18\x03 \x03(\x0b\x32\x39.google.internal.home.foyer.v1.GetHomeGraphResponse.Group\x12P\n\nroom_types\x18\x04 \x03(\x0b\x32<.google.internal.home.foyer.v1.GetHomeGraphResponse.RoomType\x12\x0f\n\x07string5\x18\x05 \x01(\t\x12\r\n\x05\x62ool6\x18\x06 \x01(\x08\x12T\n\x0c\x64\x65vice_types\x18\x07 \x03(\x0b\x32>.google.internal.home.foyer.v1.GetHomeGraphResponse.DeviceType\x12V\n\rproject_types\x18\t \x03(\x0b\x32?.google.internal.home.foyer.v1.GetHomeGraphResponse.ProjectType\x12P\n\tmessage11\x18\x0b \x03(\x0b\x32=.google.internal.home.foyer.v1.GetHomeGraphResponse.Message11\x12R\n\x0blinked_apps\x18\x0c \x03(\x0b\x32=.google.internal.home.foyer.v1.GetHomeGraphResponse.LinkedApp\x1a\xc6\'\n\x04Home\x12\x0f\n\x07home_id\x18\x01 \x01(\t\x12\x11\n\thome_name\x18\x02 \x01(\t\x12S\n\x08location\x18\x03 \x01(\x0b\x32\x41.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Location\x12Y\n\x0clinked_users\x18\x04 \x03(\x0b\x32\x43.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.LinkedUser\x12L\n\x05rooms\x18\x06 \x03(\x0b\x32=.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Room\x12P\n\x07\x64\x65vices\x18\x07 \x03(\x0b\x32?.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device\x12U\n\tmessage11\x18\x0b \x01(\x0b\x32\x42.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message11\x12\x10\n\x08string12\x18\x0c \x01(\t\x12U\n\tmessage13\x18\r \x01(\x0b\x32\x42.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13\x12\x11\n\tmessage14\x18\x0e \x01(\t\x12U\n\tmessage15\x18\x0f \x01(\x0b\x32\x42.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15\x1a\xd9\x01\n\x08Location\x12\x0f\n\x07\x61\x64\x64ress\x18\x01 \x01(\t\x12\x62\n\x0b\x63oordinates\x18\x02 \x01(\x0b\x32M.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Location.Coordinates\x12\x12\n\ntimestamp5\x18\x05 \x01(\x04\x12\x10\n\x08timezone\x18\x06 \x01(\t\x1a\x32\n\x0b\x43oordinates\x12\x10\n\x08latitude\x18\x01 \x01(\x01\x12\x11\n\tlongitude\x18\x02 \x01(\x01\x1a#\n\nLinkedUser\x12\x15\n\remail_address\x18\x01 \x01(\t\x1a\x9e\x01\n\x04Room\x12\x0f\n\x07room_id\x18\x01 \x01(\t\x12\x11\n\troom_name\x18\x03 \x01(\t\x12X\n\x08\x63\x61tegory\x18\x04 \x01(\x0b\x32\x46.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Room.Category\x1a\x18\n\x08\x43\x61tegory\x12\x0c\n\x04name\x18\x01 \x01(\t\x1a\xbb\x18\n\x06\x44\x65vice\x12_\n\x0b\x64\x65vice_info\x18\x01 \x01(\x0b\x32J.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.DeviceInfo\x12\x13\n\x0b\x64\x65vice_name\x18\x04 \x01(\t\x12\x13\n\x0b\x64\x65vice_type\x18\x06 \x01(\t\x12\x0e\n\x06traits\x18\x07 \x03(\t\x12\x0e\n\x06suffix\x18\n \x01(\t\x12\\\n\tmessage12\x18\x0c \x01(\x0b\x32I.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message12\x12\\\n\tmessage15\x18\x0f \x01(\x0b\x32I.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message15\x12Z\n\x08hardware\x18\x11 \x01(\x0b\x32H.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Hardware\x12\\\n\tmessage18\x18\x12 \x01(\x0b\x32I.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message18\x12\x13\n\x0btimestamp19\x18\x13 \x01(\x04\x12\\\n\tmessage20\x18\x14 \x01(\x0b\x32I.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20\x12\\\n\tmessage25\x18\x19 \x01(\x0b\x32I.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message25\x12`\n\x0clinked_users\x18\x1a \x03(\x0b\x32J.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.LinkedUser\x12\x18\n\x10local_auth_token\x18\x1c \x01(\t\x12U\n\x06states\x18\x1d \x03(\x0b\x32\x45.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.State\x12\\\n\tmessage30\x18\x1e \x01(\x0b\x32I.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30\x12\\\n\tmessage34\x18" \x01(\x0b\x32I.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message34\x12\r\n\x05num37\x18% \x01(\r\x12\x10\n\x08string41\x18) \x01(\t\x12\x10\n\x08string42\x18* \x01(\t\x1a\xc1\x01\n\nDeviceInfo\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12h\n\nagent_info\x18\x02 \x01(\x0b\x32T.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.DeviceInfo.AgentInfo\x1a\x36\n\tAgentInfo\x12\x16\n\x0e\x61pi_project_id\x18\x01 \x01(\t\x12\x11\n\tunique_id\x18\x02 \x01(\t\x1aq\n\tMessage12\x12\x0c\n\x04num2\x18\x02 \x01(\r\x12\x0c\n\x04num4\x18\x04 \x01(\r\x12\x0c\n\x04num5\x18\x05 \x01(\r\x12\r\n\x05num37\x18% \x01(\r\x12\r\n\x05num38\x18& \x01(\r\x12\r\n\x05num45\x18- \x01(\r\x12\r\n\x05num46\x18. \x01(\r\x1a\x43\n\tMessage15\x12\x0c\n\x04num1\x18\x01 \x01(\x04\x12\x0c\n\x04num5\x18\x05 \x01(\x04\x12\x0c\n\x04num6\x18\x06 \x01(\x04\x12\x0c\n\x04num7\x18\x07 \x01(\x04\x1a\x19\n\x08Hardware\x12\r\n\x05model\x18\x02 \x01(\t\x1a \n\tMessage18\x12\x13\n\x0b\x64\x65vice_name\x18\x02 \x01(\t\x1a\x88\x08\n\tMessage20\x12\x64\n\x08message1\x18\x01 \x03(\x0b\x32R.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1\x1a\x94\x07\n\x08Message1\x12\x0b\n\x03key\x18\x01 \x01(\t\x12g\n\x05value\x18\x02 \x01(\x0b\x32X.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value\x1a\x91\x06\n\x05Value\x12s\n\x08message6\x18\x06 \x01(\x0b\x32\x61.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6\x1a\x92\x05\n\x08Message6\x12|\n\x08message1\x18\x01 \x01(\x0b\x32j.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1\x1a\x87\x04\n\x08Message1\x12\x85\x01\n\x08message5\x18\x05 \x01(\x0b\x32s.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5\x1a\xf2\x02\n\x08Message5\x12\x8e\x01\n\x08message1\x18\x01 \x03(\x0b\x32|.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5.Message1\x1a\xd4\x01\n\x08Message1\x12\x12\n\ncapability\x18\x01 \x01(\t\x12\x98\x01\n\x08message2\x18\x02 \x01(\x0b\x32\x85\x01.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message20.Message1.Value.Message6.Message1.Message5.Message1.Message2\x1a\x19\n\x08Message2\x12\r\n\x05\x62ool4\x18\x04 \x01(\x08\x1a)\n\tMessage25\x12\r\n\x05\x62ool1\x18\x01 \x01(\x08\x12\r\n\x05\x62ool2\x18\x02 \x01(\x08\x1a#\n\nLinkedUser\x12\x15\n\remail_address\x18\x01 \x01(\t\x1a$\n\x05State\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x0c\x1a\xa6\x02\n\tMessage30\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x64\n\x08message2\x18\x02 \x01(\x0b\x32R.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30.Message2\x1a\xa5\x01\n\x08Message2\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12m\n\x08message2\x18\x02 \x01(\x0b\x32[.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Device.Message30.Message2.Message2\x1a\x19\n\x08Message2\x12\r\n\x05\x62ool4\x18\x04 \x01(\x08\x1a\x1a\n\tMessage34\x12\r\n\x05\x62ool1\x18\x01 \x01(\x08\x1a\x1a\n\tMessage11\x12\r\n\x05\x62ool1\x18\x01 \x01(\x08\x1a\xe4\x03\n\tMessage13\x12]\n\x08message1\x18\x01 \x01(\x0b\x32K.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1\x12\x14\n\x0c\x64uo_call_url\x18\x02 \x01(\t\x12\x18\n\x10\x64uo_phone_number\x18\x03 \x01(\t\x1a\xc7\x02\n\x08Message1\x12k\n\x0b\x64\x65vice_info\x18\x01 \x01(\x0b\x32V.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1.DeviceInfo\x1a\xcd\x01\n\nDeviceInfo\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12t\n\nagent_info\x18\x02 \x01(\x0b\x32`.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message13.Message1.DeviceInfo.AgentInfo\x1a\x36\n\tAgentInfo\x12\x16\n\x0e\x61pi_project_id\x18\x01 \x01(\t\x12\x11\n\tunique_id\x18\x02 \x01(\t\x1a\xbc\x02\n\tMessage15\x12\r\n\x05\x62ool1\x18\x01 \x01(\x08\x12\x0f\n\x07string2\x18\x02 \x01(\t\x12]\n\x08message3\x18\x03 \x03(\x0b\x32K.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15.Message3\x12\r\n\x05\x62ool4\x18\x04 \x01(\x08\x1a\xa0\x01\n\x08Message3\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12\x66\n\x08message2\x18\x02 \x01(\x0b\x32T.google.internal.home.foyer.v1.GetHomeGraphResponse.Home.Message15.Message3.Message2\x1a\x1b\n\x08Message2\x12\x0f\n\x07string1\x18\x01 \x01(\t\x1a\x87\x08\n\x05Group\x12Y\n\x0b\x64\x65vice_info\x18\x01 \x01(\x0b\x32\x44.google.internal.home.foyer.v1.GetHomeGraphResponse.Group.DeviceInfo\x12\x12\n\ngroup_nmae\x18\x04 \x01(\t\x12\x13\n\x0b\x64\x65vice_type\x18\x06 \x01(\t\x12\x0e\n\x06traits\x18\x07 \x01(\t\x12\x0e\n\x06suffix\x18\n \x01(\t\x12V\n\tmessage12\x18\x0c \x01(\x0b\x32\x43.google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message12\x12V\n\tmessage15\x18\x0f \x01(\x0b\x32\x43.google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message15\x12V\n\tmessage17\x18\x11 \x01(\x0b\x32\x43.google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message17\x12V\n\tmessage18\x18\x12 \x01(\x0b\x32\x43.google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message18\x12\x13\n\x0btimestamp19\x18\x13 \x01(\x04\x12V\n\tmessage34\x18" \x01(\x0b\x32\x43.google.internal.home.foyer.v1.GetHomeGraphResponse.Group.Message34\x1a\xa8\x01\n\nDeviceInfo\x12\x62\n\nagent_info\x18\x02 \x01(\x0b\x32N.google.internal.home.foyer.v1.GetHomeGraphResponse.Group.DeviceInfo.AgentInfo\x1a\x36\n\tAgentInfo\x12\x16\n\x0e\x61pi_project_id\x18\x01 \x01(\t\x12\x11\n\tunique_id\x18\x02 \x01(\t\x1aI\n\tMessage12\x12\r\n\x05\x62ool3\x18\x03 \x01(\x08\x12\r\n\x05\x62ool4\x18\x04 \x01(\x08\x12\x0e\n\x06\x62ool37\x18% \x01(\x08\x12\x0e\n\x06\x62ool38\x18& \x01(\x08\x1a\x38\n\tMessage15\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12\x0c\n\x04num5\x18\x05 \x01(\x04\x12\x0c\n\x04num6\x18\x06 \x01(\r\x1a \n\tMessage17\x12\x13\n\x0bgroup_model\x18\x02 \x01(\t\x1a\x1f\n\tMessage18\x12\x12\n\ngroup_name\x18\x02 \x01(\t\x1a\x1a\n\tMessage34\x12\r\n\x05\x62ool1\x18\x01 \x01(\x08\x1a&\n\x08RoomType\x12\x0c\n\x04\x63ode\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x1a(\n\nDeviceType\x12\x0c\n\x04\x63ode\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x1a)\n\x0bProjectType\x12\x0c\n\x04\x63ode\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x1a\x8d\x01\n\tMessage11\x12\x0c\n\x04name\x18\x01 \x01(\t\x12X\n\x08message2\x18\x02 \x01(\x0b\x32\x46.google.internal.home.foyer.v1.GetHomeGraphResponse.Message11.Message2\x1a\x18\n\x08Message2\x12\x0c\n\x04num2\x18\x02 \x01(\r\x1aW\n\tLinkedApp\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12\x0f\n\x07string2\x18\x02 \x01(\t\x12\x0c\n\x04num3\x18\x03 \x01(\r\x12\x0c\n\x04num4\x18\x04 \x01(\r\x12\x0c\n\x04num5\x18\x05 \x01(\r"\xdb\x02\n!GetAssistantDeviceSettingsRequest\x12`\n\x0b\x64\x65vice_info\x18\x01 \x01(\x0b\x32K.google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest.DeviceInfo\x12\x0f\n\x07string2\x18\x02 \x01(\t\x1a\xc2\x01\n\nDeviceInfo\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12i\n\nagent_info\x18\x02 \x01(\x0b\x32U.google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest.DeviceInfo.AgentInfo\x1a\x36\n\tAgentInfo\x12\x16\n\x0e\x61pi_project_id\x18\x01 \x01(\t\x12\x11\n\tunique_id\x18\x02 \x01(\t"\xe6\x01\n"GetAssistantDeviceSettingsResponse\x12\\\n\x08message1\x18\x01 \x01(\x0b\x32J.google.internal.home.foyer.v1.GetAssistantDeviceSettingsResponse.Message1\x1a\x62\n\x08Message1\x12\x0c\n\x04num1\x18\x01 \x01(\r\x12\x0c\n\x04num2\x18\x02 \x01(\r\x12\x0c\n\x04num4\x18\x04 \x01(\r\x12\x0c\n\x04num5\x18\x05 \x01(\r\x12\x0c\n\x04num6\x18\x06 \x01(\r\x12\x10\n\x08string10\x18\n \x01(\t"\xa3\x05\n$UpdateAssistantDeviceSettingsRequest\x12\x0f\n\x07string1\x18\x01 \x01(\t\x12\x63\n\x0b\x64\x65vice_info\x18\x02 \x01(\x0b\x32N.google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.DeviceInfo\x12\x63\n\x0bupdate_data\x18\x03 \x01(\x0b\x32N.google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.UpdateData\x1a\xc5\x01\n\nDeviceInfo\x12\x11\n\tdevice_id\x18\x01 \x01(\t\x12l\n\nagent_info\x18\x02 \x01(\x0b\x32X.google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.DeviceInfo.AgentInfo\x1a\x36\n\tAgentInfo\x12\x16\n\x0e\x61pi_project_id\x18\x01 \x01(\t\x12\x11\n\tunique_id\x18\x02 \x01(\t\x1a\xd7\x01\n\nUpdateData\x12i\n\x08message1\x18\x01 \x01(\x0b\x32W.google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest.UpdateData.Message1\x1a^\n\x08Message1\x12\x1f\n\x17youtube_restricted_mode\x18\x04 \x01(\r\x12!\n\x19youtube_tv_content_filter\x18\x05 \x01(\r\x12\x0e\n\x06locale\x18\n \x01(\t"8\n%UpdateAssistantDeviceSettingsResponse\x12\x0f\n\x07string1\x18\x01 \x01(\t2\xa8\x01\n\x12HomeControlService\x12\x91\x01\n\x14GetAssistantRoutines\x12:.google.internal.home.foyer.v1.GetAssistantRoutinesRequest\x1a;.google.internal.home.foyer.v1.GetAssistantRoutinesResponse0\x01\x32\x8c\x01\n\x11StructuresService\x12w\n\x0cGetHomeGraph\x12\x32.google.internal.home.foyer.v1.GetHomeGraphRequest\x1a\x33.google.internal.home.foyer.v1.GetHomeGraphResponse2\xe9\x02\n\x12HomeDevicesService\x12\xa3\x01\n\x1aGetAssistantDeviceSettings\x12@.google.internal.home.foyer.v1.GetAssistantDeviceSettingsRequest\x1a\x41.google.internal.home.foyer.v1.GetAssistantDeviceSettingsResponse0\x01\x12\xac\x01\n\x1dUpdateAssistantDeviceSettings\x12\x43.google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsRequest\x1a\x44.google.internal.home.foyer.v1.UpdateAssistantDeviceSettingsResponse0\x01\x62\x06proto3',
 )
 
 
@@ -62,8 +41,8 @@ _GETASSISTANTROUTINESREQUEST = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=91,
-    serialized_end=120,
+    serialized_start=83,
+    serialized_end=112,
 )
 
 
@@ -141,8 +120,8 @@ _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1_WF_SUB1_SUB1_ROUTINE = _des
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=899,
-    serialized_end=964,
+    serialized_start=891,
+    serialized_end=956,
 )
 
 _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1_WF_SUB1_SUB1 = _descriptor.Descriptor(
@@ -202,8 +181,8 @@ _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1_WF_SUB1_SUB1 = _descriptor.
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=744,
-    serialized_end=964,
+    serialized_start=736,
+    serialized_end=956,
 )
 
 _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1 = _descriptor.Descriptor(
@@ -263,8 +242,8 @@ _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1 = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=600,
-    serialized_end=964,
+    serialized_start=592,
+    serialized_end=956,
 )
 
 _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW = _descriptor.Descriptor(
@@ -324,8 +303,8 @@ _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=474,
-    serialized_end=964,
+    serialized_start=466,
+    serialized_end=956,
 )
 
 _GETASSISTANTROUTINESRESPONSE_PART1 = _descriptor.Descriptor(
@@ -423,8 +402,8 @@ _GETASSISTANTROUTINESRESPONSE_PART1 = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=314,
-    serialized_end=964,
+    serialized_start=306,
+    serialized_end=956,
 )
 
 _GETASSISTANTROUTINESRESPONSE_PART2 = _descriptor.Descriptor(
@@ -482,8 +461,8 @@ _GETASSISTANTROUTINESRESPONSE_PART2 = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=966,
-    serialized_end=1007,
+    serialized_start=958,
+    serialized_end=999,
 )
 
 _GETASSISTANTROUTINESRESPONSE = _descriptor.Descriptor(
@@ -544,8 +523,8 @@ _GETASSISTANTROUTINESRESPONSE = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=123,
-    serialized_end=1007,
+    serialized_start=115,
+    serialized_end=999,
 )
 
 
@@ -604,8 +583,8 @@ _GETHOMEGRAPHREQUEST = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=1009,
-    serialized_end=1061,
+    serialized_start=1001,
+    serialized_end=1053,
 )
 
 
@@ -664,8 +643,8 @@ _GETHOMEGRAPHRESPONSE_HOME_LOCATION_COORDINATES = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=2556,
-    serialized_end=2606,
+    serialized_start=2548,
+    serialized_end=2598,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_LOCATION = _descriptor.Descriptor(
@@ -763,8 +742,8 @@ _GETHOMEGRAPHRESPONSE_HOME_LOCATION = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=2389,
-    serialized_end=2606,
+    serialized_start=2381,
+    serialized_end=2598,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_LINKEDUSER = _descriptor.Descriptor(
@@ -803,8 +782,8 @@ _GETHOMEGRAPHRESPONSE_HOME_LINKEDUSER = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=2608,
-    serialized_end=2643,
+    serialized_start=2600,
+    serialized_end=2635,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_ROOM_CATEGORY = _descriptor.Descriptor(
@@ -843,8 +822,8 @@ _GETHOMEGRAPHRESPONSE_HOME_ROOM_CATEGORY = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=2780,
-    serialized_end=2804,
+    serialized_start=2772,
+    serialized_end=2796,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_ROOM = _descriptor.Descriptor(
@@ -923,8 +902,8 @@ _GETHOMEGRAPHRESPONSE_HOME_ROOM = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=2646,
-    serialized_end=2804,
+    serialized_start=2638,
+    serialized_end=2796,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_DEVICEINFO_AGENTINFO = _descriptor.Descriptor(
@@ -982,8 +961,8 @@ _GETHOMEGRAPHRESPONSE_HOME_DEVICE_DEVICEINFO_AGENTINFO = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=4161,
-    serialized_end=4215,
+    serialized_start=4153,
+    serialized_end=4207,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_DEVICEINFO = _descriptor.Descriptor(
@@ -1043,8 +1022,8 @@ _GETHOMEGRAPHRESPONSE_HOME_DEVICE_DEVICEINFO = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=4022,
-    serialized_end=4215,
+    serialized_start=4014,
+    serialized_end=4207,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE12 = _descriptor.Descriptor(
@@ -1197,8 +1176,8 @@ _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE12 = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=4217,
-    serialized_end=4330,
+    serialized_start=4209,
+    serialized_end=4322,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE15 = _descriptor.Descriptor(
@@ -1294,8 +1273,8 @@ _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE15 = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=4332,
-    serialized_end=4399,
+    serialized_start=4324,
+    serialized_end=4391,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_HARDWARE = _descriptor.Descriptor(
@@ -1334,8 +1313,8 @@ _GETHOMEGRAPHRESPONSE_HOME_DEVICE_HARDWARE = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=4401,
-    serialized_end=4426,
+    serialized_start=4393,
+    serialized_end=4418,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE18 = _descriptor.Descriptor(
@@ -1374,8 +1353,8 @@ _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE18 = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=4428,
-    serialized_end=4460,
+    serialized_start=4420,
+    serialized_end=4452,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5_MESSAGE1_MESSAGE2 = _descriptor.Descriptor(
@@ -1414,8 +1393,8 @@ _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MES
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=5470,
-    serialized_end=5495,
+    serialized_start=5462,
+    serialized_end=5487,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5_MESSAGE1 = _descriptor.Descriptor(
@@ -1475,8 +1454,8 @@ _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MES
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=5283,
-    serialized_end=5495,
+    serialized_start=5275,
+    serialized_end=5487,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MESSAGE5 = _descriptor.Descriptor(
@@ -1517,8 +1496,8 @@ _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1_MES
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=5125,
-    serialized_end=5495,
+    serialized_start=5117,
+    serialized_end=5487,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1 = _descriptor.Descriptor(
@@ -1559,8 +1538,8 @@ _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6_MESSAGE1 = _
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=4976,
-    serialized_end=5495,
+    serialized_start=4968,
+    serialized_end=5487,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6 = _descriptor.Descriptor(
@@ -1601,8 +1580,8 @@ _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE_MESSAGE6 = _descripto
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=4837,
-    serialized_end=5495,
+    serialized_start=4829,
+    serialized_end=5487,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE = _descriptor.Descriptor(
@@ -1643,8 +1622,8 @@ _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1_VALUE = _descriptor.Descrip
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=4710,
-    serialized_end=5495,
+    serialized_start=4702,
+    serialized_end=5487,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1 = _descriptor.Descriptor(
@@ -1704,8 +1683,8 @@ _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20_MESSAGE1 = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=4579,
-    serialized_end=5495,
+    serialized_start=4571,
+    serialized_end=5487,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20 = _descriptor.Descriptor(
@@ -1746,8 +1725,8 @@ _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE20 = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=4463,
-    serialized_end=5495,
+    serialized_start=4455,
+    serialized_end=5487,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE25 = _descriptor.Descriptor(
@@ -1805,8 +1784,8 @@ _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE25 = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=5497,
-    serialized_end=5538,
+    serialized_start=5489,
+    serialized_end=5530,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_LINKEDUSER = _descriptor.Descriptor(
@@ -1845,8 +1824,8 @@ _GETHOMEGRAPHRESPONSE_HOME_DEVICE_LINKEDUSER = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=2608,
-    serialized_end=2643,
+    serialized_start=2600,
+    serialized_end=2635,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_STATE = _descriptor.Descriptor(
@@ -1904,8 +1883,8 @@ _GETHOMEGRAPHRESPONSE_HOME_DEVICE_STATE = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=5577,
-    serialized_end=5613,
+    serialized_start=5569,
+    serialized_end=5605,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30_MESSAGE2_MESSAGE2 = _descriptor.Descriptor(
@@ -1944,8 +1923,8 @@ _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30_MESSAGE2_MESSAGE2 = _descriptor.Desc
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=5470,
-    serialized_end=5495,
+    serialized_start=5462,
+    serialized_end=5487,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30_MESSAGE2 = _descriptor.Descriptor(
@@ -2005,8 +1984,8 @@ _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30_MESSAGE2 = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=5745,
-    serialized_end=5910,
+    serialized_start=5737,
+    serialized_end=5902,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30 = _descriptor.Descriptor(
@@ -2066,8 +2045,8 @@ _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE30 = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=5616,
-    serialized_end=5910,
+    serialized_start=5608,
+    serialized_end=5902,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE34 = _descriptor.Descriptor(
@@ -2106,8 +2085,8 @@ _GETHOMEGRAPHRESPONSE_HOME_DEVICE_MESSAGE34 = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=5912,
-    serialized_end=5938,
+    serialized_start=5904,
+    serialized_end=5930,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_DEVICE = _descriptor.Descriptor(
@@ -2519,8 +2498,8 @@ _GETHOMEGRAPHRESPONSE_HOME_DEVICE = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=2807,
-    serialized_end=5938,
+    serialized_start=2799,
+    serialized_end=5930,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_MESSAGE11 = _descriptor.Descriptor(
@@ -2559,8 +2538,8 @@ _GETHOMEGRAPHRESPONSE_HOME_MESSAGE11 = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=5940,
-    serialized_end=5966,
+    serialized_start=5932,
+    serialized_end=5958,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1_DEVICEINFO_AGENTINFO = _descriptor.Descriptor(
@@ -2618,8 +2597,8 @@ _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1_DEVICEINFO_AGENTINFO = _descriptor
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=4161,
-    serialized_end=4215,
+    serialized_start=4153,
+    serialized_end=4207,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1_DEVICEINFO = _descriptor.Descriptor(
@@ -2679,8 +2658,8 @@ _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1_DEVICEINFO = _descriptor.Descripto
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=6248,
-    serialized_end=6453,
+    serialized_start=6240,
+    serialized_end=6445,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1 = _descriptor.Descriptor(
@@ -2721,8 +2700,8 @@ _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13_MESSAGE1 = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=6126,
-    serialized_end=6453,
+    serialized_start=6118,
+    serialized_end=6445,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13 = _descriptor.Descriptor(
@@ -2801,8 +2780,8 @@ _GETHOMEGRAPHRESPONSE_HOME_MESSAGE13 = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=5969,
-    serialized_end=6453,
+    serialized_start=5961,
+    serialized_end=6445,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_MESSAGE15_MESSAGE3_MESSAGE2 = _descriptor.Descriptor(
@@ -2841,8 +2820,8 @@ _GETHOMEGRAPHRESPONSE_HOME_MESSAGE15_MESSAGE3_MESSAGE2 = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=5745,
-    serialized_end=5772,
+    serialized_start=5737,
+    serialized_end=5764,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_MESSAGE15_MESSAGE3 = _descriptor.Descriptor(
@@ -2902,8 +2881,8 @@ _GETHOMEGRAPHRESPONSE_HOME_MESSAGE15_MESSAGE3 = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=6612,
-    serialized_end=6772,
+    serialized_start=6604,
+    serialized_end=6764,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME_MESSAGE15 = _descriptor.Descriptor(
@@ -3001,8 +2980,8 @@ _GETHOMEGRAPHRESPONSE_HOME_MESSAGE15 = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=6456,
-    serialized_end=6772,
+    serialized_start=6448,
+    serialized_end=6764,
 )
 
 _GETHOMEGRAPHRESPONSE_HOME = _descriptor.Descriptor(
@@ -3239,8 +3218,8 @@ _GETHOMEGRAPHRESPONSE_HOME = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=1710,
-    serialized_end=6772,
+    serialized_start=1702,
+    serialized_end=6764,
 )
 
 _GETHOMEGRAPHRESPONSE_GROUP_DEVICEINFO_AGENTINFO = _descriptor.Descriptor(
@@ -3298,8 +3277,8 @@ _GETHOMEGRAPHRESPONSE_GROUP_DEVICEINFO_AGENTINFO = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=4161,
-    serialized_end=4215,
+    serialized_start=4153,
+    serialized_end=4207,
 )
 
 _GETHOMEGRAPHRESPONSE_GROUP_DEVICEINFO = _descriptor.Descriptor(
@@ -3340,8 +3319,8 @@ _GETHOMEGRAPHRESPONSE_GROUP_DEVICEINFO = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=7410,
-    serialized_end=7578,
+    serialized_start=7402,
+    serialized_end=7570,
 )
 
 _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE12 = _descriptor.Descriptor(
@@ -3437,8 +3416,8 @@ _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE12 = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=7580,
-    serialized_end=7653,
+    serialized_start=7572,
+    serialized_end=7645,
 )
 
 _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE15 = _descriptor.Descriptor(
@@ -3515,8 +3494,8 @@ _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE15 = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=7655,
-    serialized_end=7711,
+    serialized_start=7647,
+    serialized_end=7703,
 )
 
 _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE17 = _descriptor.Descriptor(
@@ -3555,8 +3534,8 @@ _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE17 = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=7713,
-    serialized_end=7745,
+    serialized_start=7705,
+    serialized_end=7737,
 )
 
 _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE18 = _descriptor.Descriptor(
@@ -3595,8 +3574,8 @@ _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE18 = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=7747,
-    serialized_end=7778,
+    serialized_start=7739,
+    serialized_end=7770,
 )
 
 _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE34 = _descriptor.Descriptor(
@@ -3635,8 +3614,8 @@ _GETHOMEGRAPHRESPONSE_GROUP_MESSAGE34 = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=5912,
-    serialized_end=5938,
+    serialized_start=5904,
+    serialized_end=5930,
 )
 
 _GETHOMEGRAPHRESPONSE_GROUP = _descriptor.Descriptor(
@@ -3872,8 +3851,8 @@ _GETHOMEGRAPHRESPONSE_GROUP = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=6775,
-    serialized_end=7806,
+    serialized_start=6767,
+    serialized_end=7798,
 )
 
 _GETHOMEGRAPHRESPONSE_ROOMTYPE = _descriptor.Descriptor(
@@ -3931,8 +3910,8 @@ _GETHOMEGRAPHRESPONSE_ROOMTYPE = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=7808,
-    serialized_end=7846,
+    serialized_start=7800,
+    serialized_end=7838,
 )
 
 _GETHOMEGRAPHRESPONSE_DEVICETYPE = _descriptor.Descriptor(
@@ -3990,8 +3969,8 @@ _GETHOMEGRAPHRESPONSE_DEVICETYPE = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=7848,
-    serialized_end=7888,
+    serialized_start=7840,
+    serialized_end=7880,
 )
 
 _GETHOMEGRAPHRESPONSE_PROJECTTYPE = _descriptor.Descriptor(
@@ -4049,8 +4028,8 @@ _GETHOMEGRAPHRESPONSE_PROJECTTYPE = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=7890,
-    serialized_end=7931,
+    serialized_start=7882,
+    serialized_end=7923,
 )
 
 _GETHOMEGRAPHRESPONSE_MESSAGE11_MESSAGE2 = _descriptor.Descriptor(
@@ -4089,8 +4068,8 @@ _GETHOMEGRAPHRESPONSE_MESSAGE11_MESSAGE2 = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=8051,
-    serialized_end=8075,
+    serialized_start=8043,
+    serialized_end=8067,
 )
 
 _GETHOMEGRAPHRESPONSE_MESSAGE11 = _descriptor.Descriptor(
@@ -4150,8 +4129,8 @@ _GETHOMEGRAPHRESPONSE_MESSAGE11 = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=7934,
-    serialized_end=8075,
+    serialized_start=7926,
+    serialized_end=8067,
 )
 
 _GETHOMEGRAPHRESPONSE_LINKEDAPP = _descriptor.Descriptor(
@@ -4266,8 +4245,8 @@ _GETHOMEGRAPHRESPONSE_LINKEDAPP = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=8077,
-    serialized_end=8164,
+    serialized_start=8069,
+    serialized_end=8156,
 )
 
 _GETHOMEGRAPHRESPONSE = _descriptor.Descriptor(
@@ -4485,8 +4464,8 @@ _GETHOMEGRAPHRESPONSE = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=1064,
-    serialized_end=8164,
+    serialized_start=1056,
+    serialized_end=8156,
 )
 
 
@@ -4545,8 +4524,8 @@ _GETASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO_AGENTINFO = _descriptor.Descriptor
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=4161,
-    serialized_end=4215,
+    serialized_start=4153,
+    serialized_end=4207,
 )
 
 _GETASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO = _descriptor.Descriptor(
@@ -4606,8 +4585,8 @@ _GETASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=8320,
-    serialized_end=8514,
+    serialized_start=8312,
+    serialized_end=8506,
 )
 
 _GETASSISTANTDEVICESETTINGSREQUEST = _descriptor.Descriptor(
@@ -4667,8 +4646,8 @@ _GETASSISTANTDEVICESETTINGSREQUEST = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=8167,
-    serialized_end=8514,
+    serialized_start=8159,
+    serialized_end=8506,
 )
 
 
@@ -4803,8 +4782,8 @@ _GETASSISTANTDEVICESETTINGSRESPONSE_MESSAGE1 = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=8649,
-    serialized_end=8747,
+    serialized_start=8641,
+    serialized_end=8739,
 )
 
 _GETASSISTANTDEVICESETTINGSRESPONSE = _descriptor.Descriptor(
@@ -4845,8 +4824,8 @@ _GETASSISTANTDEVICESETTINGSRESPONSE = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=8517,
-    serialized_end=8747,
+    serialized_start=8509,
+    serialized_end=8739,
 )
 
 
@@ -4905,8 +4884,8 @@ _UPDATEASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO_AGENTINFO = _descriptor.Descrip
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=4161,
-    serialized_end=4215,
+    serialized_start=4153,
+    serialized_end=4207,
 )
 
 _UPDATEASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO = _descriptor.Descriptor(
@@ -4966,8 +4945,8 @@ _UPDATEASSISTANTDEVICESETTINGSREQUEST_DEVICEINFO = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=9010,
-    serialized_end=9207,
+    serialized_start=9002,
+    serialized_end=9199,
 )
 
 _UPDATEASSISTANTDEVICESETTINGSREQUEST_UPDATEDATA_MESSAGE1 = _descriptor.Descriptor(
@@ -5044,8 +5023,8 @@ _UPDATEASSISTANTDEVICESETTINGSREQUEST_UPDATEDATA_MESSAGE1 = _descriptor.Descript
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=9331,
-    serialized_end=9425,
+    serialized_start=9323,
+    serialized_end=9417,
 )
 
 _UPDATEASSISTANTDEVICESETTINGSREQUEST_UPDATEDATA = _descriptor.Descriptor(
@@ -5086,8 +5065,8 @@ _UPDATEASSISTANTDEVICESETTINGSREQUEST_UPDATEDATA = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=9210,
-    serialized_end=9425,
+    serialized_start=9202,
+    serialized_end=9417,
 )
 
 _UPDATEASSISTANTDEVICESETTINGSREQUEST = _descriptor.Descriptor(
@@ -5167,8 +5146,8 @@ _UPDATEASSISTANTDEVICESETTINGSREQUEST = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=8750,
-    serialized_end=9425,
+    serialized_start=8742,
+    serialized_end=9417,
 )
 
 
@@ -5208,8 +5187,8 @@ _UPDATEASSISTANTDEVICESETTINGSRESPONSE = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=9427,
-    serialized_end=9483,
+    serialized_start=9419,
+    serialized_end=9475,
 )
 
 _GETASSISTANTROUTINESRESPONSE_PART1_WORKFLOW_WF_SUB1_WF_SUB1_SUB1_ROUTINE.containing_type = (
@@ -5544,7 +5523,6 @@ _UPDATEASSISTANTDEVICESETTINGSREQUEST.fields_by_name[
 _UPDATEASSISTANTDEVICESETTINGSREQUEST.fields_by_name[
     "update_data"
 ].message_type = _UPDATEASSISTANTDEVICESETTINGSREQUEST_UPDATEDATA
-DESCRIPTOR.message_types_by_name["None"] = _NONE
 DESCRIPTOR.message_types_by_name[
     "GetAssistantRoutinesRequest"
 ] = _GETASSISTANTROUTINESREQUEST
@@ -5566,17 +5544,6 @@ DESCRIPTOR.message_types_by_name[
     "UpdateAssistantDeviceSettingsResponse"
 ] = _UPDATEASSISTANTDEVICESETTINGSRESPONSE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
-
-globals()["None"] = _reflection.GeneratedProtocolMessageType(
-    "None",
-    (_message.Message,),
-    {
-        "DESCRIPTOR": _NONE,
-        "__module__": "glocaltokens.google.internal.home.foyer.v1_pb2"
-        # @@protoc_insertion_point(class_scope:google.internal.home.foyer.v1.None)
-    },
-)
-_sym_db.RegisterMessage(globals()["None"])
 
 GetAssistantRoutinesRequest = _reflection.GeneratedProtocolMessageType(
     "GetAssistantRoutinesRequest",
@@ -6324,8 +6291,8 @@ _HOMECONTROLSERVICE = _descriptor.ServiceDescriptor(
     index=0,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
-    serialized_start=9486,
-    serialized_end=9654,
+    serialized_start=9478,
+    serialized_end=9646,
     methods=[
         _descriptor.MethodDescriptor(
             name="GetAssistantRoutines",
@@ -6351,8 +6318,8 @@ _STRUCTURESSERVICE = _descriptor.ServiceDescriptor(
     index=1,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
-    serialized_start=9657,
-    serialized_end=9797,
+    serialized_start=9649,
+    serialized_end=9789,
     methods=[
         _descriptor.MethodDescriptor(
             name="GetHomeGraph",
@@ -6378,8 +6345,8 @@ _HOMEDEVICESSERVICE = _descriptor.ServiceDescriptor(
     index=2,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
-    serialized_start=9800,
-    serialized_end=10161,
+    serialized_start=9792,
+    serialized_end=10153,
     methods=[
         _descriptor.MethodDescriptor(
             name="GetAssistantDeviceSettings",

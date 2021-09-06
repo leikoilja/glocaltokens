@@ -1,6 +1,3 @@
-syntax = "proto3";
-package google.internal.home.foyer.v1;
-
 // This file contains the following services:
 //
 // HomeControlService
@@ -11,9 +8,8 @@ package google.internal.home.foyer.v1;
 //
 // HomeDevicesService
 //   - GetAssistantDeviceSettings
-
-message None {
-}
+syntax = "proto3";
+package google.internal.home.foyer.v1;
 
 // Home Control Service
 service HomeControlService {
