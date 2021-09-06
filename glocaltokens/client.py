@@ -396,8 +396,13 @@ class GLocalAuthenticationTokens:
 
                 network_device = None
                 if network_devices:
-                    LOGGER.debug("Looking for '%s' in local network", item.device_name)
-                    network_device = find_device(item.device_info.agent_info.unique_id)
+                    unique_id = item.device_info.agent_info.unique_id
+                    LOGGER.debug(
+                        "Looking for '%s' (id=%s) in local network",
+                        item.device_name,
+                        unique_id,
+                    )
+                    network_device = find_device(unique_id)
 
                 device = Device(
                     device_id=item.device_info.device_id,
