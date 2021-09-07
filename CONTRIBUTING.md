@@ -83,3 +83,13 @@ You can also run the tests on all repository files manually with this command:
 ```console
 $ poetry run pre-commit run --all-files
 ```
+
+## Compiling proto file
+
+`v1.proto` is compiled with these commands from the repo root, [mypy-protobuf](https://github.com/dropbox/mypy-protobuf) needs to be installed:
+
+```console
+$ protoc --plugin=protoc-gen-grpc_python=~/path/to/grpc_python_plugin --grpc_python_out=. --python_out=. --mypy_out=readable_stubs:. --mypy_grpc_out=readable_stubs:. glocaltokens/google/internal/home/foyer/v1.proto
+$ git commit
+$ pre-commit run --hook-stage manual python-typing-update --all-files
+```
