@@ -408,7 +408,7 @@ class DeviceClientTests(TypeAssertions, TestCase):
 
         self.assertEqual(device.local_auth_token, local_auth_token)
 
-    @patch("glocaltokens.client.LOGGER.error")
+    @patch("glocaltokens.client.LOGGER.warning")
     def test_initialization__invalid(self, m_log: NonCallableMock) -> None:
         """Test initialization that is invalid"""
 
