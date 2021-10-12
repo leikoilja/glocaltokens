@@ -58,8 +58,10 @@ class Device:
             LOGGER.error("%s device_name must be provided", log_prefix)
             return
         if not token_utils.is_local_auth_token(local_auth_token):
-            LOGGER.error(
-                "%s local_auth_token must follow the correct format", log_prefix
+            LOGGER.warning(
+                "%s local_auth_token does not follow Google Home token format. "
+                "Ignore for non-Google Home devices",
+                log_prefix,
             )
             return
 
