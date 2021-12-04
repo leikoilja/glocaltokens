@@ -18,6 +18,7 @@ GOOGLE_HOME_FOYER_API: Final = "googlehomefoyer-pa.googleapis.com:443"
 HOMEGRAPH_DURATION: Final = 24 * 60 * 60
 
 DISCOVERY_TIMEOUT: Final = 2
+DEFAULT_DISCOVERY_PORT: Final = 0
 
 GOOGLE_HOME_MODELS: Final = [
     "Google Home",
