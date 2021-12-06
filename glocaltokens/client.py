@@ -382,7 +382,7 @@ class GLocalAuthenticationTokens:
             # We need to disable flake8-use-fstring because of the brackets,
             # it causes a false positive.
             LOGGER.error(
-                "Invalid dictionary structure for discovery_address_dict "
+                "Invalid dictionary structure for addresses dictionary "
                 "argument. Correct structure is {'device_name': 'ipaddress'}"  # noqa
             )
             return devices
