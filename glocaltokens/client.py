@@ -336,7 +336,8 @@ class GLocalAuthenticationTokens:
     def get_google_devices(
         self,
         models_list: list[str] | None = None,
-        discovery_address_dict: dict[str, str] | None = None,
+        disable_discovery: bool = False,
+        addresses: dict[str, str] | None = None,
         zeroconf_instance: Zeroconf | None = None,
         force_homegraph_reload: bool = False,
         discovery_timeout: int = DISCOVERY_TIMEOUT,
@@ -346,7 +347,9 @@ class GLocalAuthenticationTokens:
         and IP and ports if set in models_list.
 
         models_list: The list of accepted model names.
-        discovery_address_dict: Dict of network devices from the local network
+        disable_discovery: Whether or not the device's IP and port should
+          be searched for in the network.
+        addresses: Dict of network devices from the local network
           ({"name": "ip_address"}). If set to `None` will try to automatically
           discover network devices. Disable discovery by setting to `{}`.
         zeroconf_instance: If you already have an initialized zeroconf instance,
@@ -375,10 +378,8 @@ class GLocalAuthenticationTokens:
                 isinstance(x, str) and is_valid_ipv4_address(x) for x in data.values()
             )
 
-        if discovery_address_dict and not is_dict_with_valid_ipv4_addresses(
-            discovery_address_dict
-        ):
-            # We need to disable flake8-use-fstring, because of the brackets,
+        if addresses and not is_dict_with_valid_ipv4_addresses(addresses):
+            # We need to disable flake8-use-fstring because of the brackets,
             # it causes a false positive.
             LOGGER.error(
                 "Invalid dictionary structure for discovery_address_dict "
@@ -391,7 +392,7 @@ class GLocalAuthenticationTokens:
             return devices
 
         network_devices: list[NetworkDevice] = []
-        if discovery_address_dict is None:
+        if disable_discovery is False:
             LOGGER.debug("Automatically discovering network devices...")
             network_devices = discover_devices(
                 models_list,
@@ -406,7 +407,7 @@ class GLocalAuthenticationTokens:
                     return device
             return None
 
-        address_dict = discovery_address_dict if discovery_address_dict else {}
+        address_dict = addresses if addresses else {}
 
         LOGGER.debug("Iterating in %d homegraph devices", len(homegraph.home.devices))
         for item in homegraph.home.devices:
@@ -468,7 +469,8 @@ class GLocalAuthenticationTokens:
         self,
         models_list: list[str] | None = None,
         indent: int = 2,
-        discovery_address_dict: dict[str, str] | None = None,
+        disable_discovery: bool = False,
+        addresses: dict[str, str] | None = None,
         zeroconf_instance: Zeroconf | None = None,
         force_homegraph_reload: bool = False,
     ) -> str:
@@ -478,7 +480,9 @@ class GLocalAuthenticationTokens:
 
         models_list: The list of accepted model names.
         indent: The indentation for the json formatting.
-        discovery_address_dict: Dict of network devices from the local network
+        disable_discovery: Whether or not the device's IP and port should
+          be searched for in the network.
+        addresses: Dict of network devices from the local network
           ({"name": "ip_address"}). If set to `None` will try to automatically
           discover network devices. Disable discovery by setting to `{}`.
         zeroconf_instance: If you already have an initialized zeroconf instance,
@@ -488,7 +492,8 @@ class GLocalAuthenticationTokens:
 
         google_devices = self.get_google_devices(
             models_list=models_list,
-            discovery_address_dict=discovery_address_dict,
+            disable_discovery=disable_discovery,
+            addresses=addresses,
             zeroconf_instance=zeroconf_instance,
             force_homegraph_reload=force_homegraph_reload,
         )

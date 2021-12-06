@@ -329,7 +329,8 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
 
         # With no discover_devices, with no model_list
         google_devices = self.client.get_google_devices(
-            discovery_address_dict={fake_device_name: fake_ip_address}
+            disable_discovery=True,
+            addresses={fake_device_name: fake_ip_address},
         )
         self.assertEqual(len(google_devices), 1)
 
@@ -353,7 +354,8 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
             homegraph_device_valid,
         ]
         google_devices = self.client.get_google_devices(
-            discovery_address_dict={fake_device_name: fake_ip_address}
+            disable_discovery=True,
+            addresses={fake_device_name: fake_ip_address},
         )
         self.assertEqual(len(google_devices), 1)
         self.assertDevice(google_devices[0], homegraph_device_valid)
@@ -386,7 +388,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         )
         m_get_google_devices.return_value = [google_device]
 
-        json_string = self.client.get_google_devices_json(discovery_address_dict={})
+        json_string = self.client.get_google_devices_json(disable_discovery=True)
         self.assertEqual(m_get_google_devices.call_count, 1)
         received_json = json.loads(json_string)
         received_device = received_json[0]
