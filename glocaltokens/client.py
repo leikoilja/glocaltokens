@@ -372,7 +372,7 @@ class GLocalAuthenticationTokens:
         devices: list[Device] = []
 
         def is_dict_with_valid_ipv4_addresses(data: dict[str, str]) -> bool:
-            # Test if the data structure is correct and if each entry contains a
+            # Validate the data structure is correct and that each entry contains a
             # valid IPv4 address.
             return isinstance(data, dict) and all(
                 isinstance(x, str) and is_valid_ipv4_address(x) for x in data.values()
