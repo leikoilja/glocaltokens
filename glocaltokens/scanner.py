@@ -47,12 +47,12 @@ class CastListener(ServiceListener):
         return len(self.devices)
 
     def add_service(self, zc: Zeroconf, type_: str, name: str) -> None:
-        """Add a service to the collection."""
+        """ Add a service to the collection. """
         LOGGER.debug("add_service %s, %s", type_, name)
         self._add_update_service(zc, type_, name, self.add_callback)
 
     def update_service(self, zc: Zeroconf, type_: str, name: str) -> None:
-        """Update a service in the collection."""
+        """ Update a service in the collection. """
         LOGGER.debug("update_service %s, %s", type_, name)
         self._add_update_service(zc, type_, name, self.update_callback)
 
@@ -71,7 +71,7 @@ class CastListener(ServiceListener):
         name: str,
         callback: Callable[[], None] | None,
     ) -> None:
-        """Add or update a service."""
+        """ Add or update a service. """
         if name.endswith("_sub._googlecast._tcp.local."):
             LOGGER.debug("_add_update_service ignoring %s, %s", type_, name)
             return
