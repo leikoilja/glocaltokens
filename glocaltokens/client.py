@@ -16,6 +16,7 @@ from .const import (
     ACCESS_TOKEN_DURATION,
     ACCESS_TOKEN_SERVICE,
     ANDROID_ID_LENGTH,
+    DEFAULT_DISCOVERY_PORT,
     DISCOVERY_TIMEOUT,
     GOOGLE_HOME_FOYER_API,
     HOMEGRAPH_DURATION,
@@ -26,6 +27,7 @@ from .scanner import NetworkDevice, discover_devices
 from .types import DeviceDict
 from .utils import network as net_utils, token as token_utils
 from .utils.logs import censor
+from .utils.network import is_valid_ipv4_address
 
 logging.basicConfig(level=logging.ERROR)
 LOGGER = logging.getLogger(__name__)
@@ -335,6 +337,7 @@ class GLocalAuthenticationTokens:
         self,
         models_list: list[str] | None = None,
         disable_discovery: bool = False,
+        addresses: dict[str, str] | None = None,
         zeroconf_instance: Zeroconf | None = None,
         force_homegraph_reload: bool = False,
         discovery_timeout: int = DISCOVERY_TIMEOUT,
@@ -346,6 +349,9 @@ class GLocalAuthenticationTokens:
         models_list: The list of accepted model names.
         disable_discovery: Whether or not the device's IP and port should
           be searched for in the network.
+        addresses: Dict of network devices from the local network
+          ({"name": "ip_address"}). If set to `None` will try to automatically
+          discover network devices. Disable discovery by setting to `{}`.
         zeroconf_instance: If you already have an initialized zeroconf instance,
           use it here.
         force_homegraph_reload: If the stored homegraph should be generated again.
@@ -365,13 +371,29 @@ class GLocalAuthenticationTokens:
 
         devices: list[Device] = []
 
+        def is_dict_with_valid_ipv4_addresses(data: dict[str, str]) -> bool:
+            # Validate the data structure is correct and that each entry contains a
+            # valid IPv4 address.
+            return isinstance(data, dict) and all(
+                isinstance(x, str) and is_valid_ipv4_address(x) for x in data.values()
+            )
+
+        if addresses and not is_dict_with_valid_ipv4_addresses(addresses):
+            # We need to disable flake8-use-fstring because of the brackets,
+            # it causes a false positive.
+            LOGGER.error(
+                "Invalid dictionary structure for addresses dictionary "
+                "argument. Correct structure is {'device_name': 'ipaddress'}"  # noqa
+            )
+            return devices
+
         if homegraph is None:
             LOGGER.debug("Failed to fetch homegraph")
             return devices
 
         network_devices: list[NetworkDevice] = []
         if disable_discovery is False:
-            LOGGER.debug("Getting network devices...")
+            LOGGER.debug("Automatically discovering network devices...")
             network_devices = discover_devices(
                 models_list,
                 timeout=discovery_timeout,
@@ -384,6 +406,8 @@ class GLocalAuthenticationTokens:
                 if device.unique_id == unique_id:
                     return device
             return None
+
+        address_dict = addresses if addresses else {}
 
         LOGGER.debug("Iterating in %d homegraph devices", len(homegraph.home.devices))
         for item in homegraph.home.devices:
@@ -405,6 +429,14 @@ class GLocalAuthenticationTokens:
                         unique_id,
                     )
                     network_device = find_device(unique_id)
+                elif item.device_name in address_dict:
+                    network_device = NetworkDevice(
+                        name=item.device_name,
+                        ip_address=address_dict[item.device_name],
+                        port=DEFAULT_DISCOVERY_PORT,
+                        model=item.hardware.model,
+                        unique_id=item.device_info.device_id,
+                    )
 
                 device = Device(
                     device_id=item.device_info.device_id,
@@ -438,6 +470,7 @@ class GLocalAuthenticationTokens:
         models_list: list[str] | None = None,
         indent: int = 2,
         disable_discovery: bool = False,
+        addresses: dict[str, str] | None = None,
         zeroconf_instance: Zeroconf | None = None,
         force_homegraph_reload: bool = False,
     ) -> str:
@@ -449,6 +482,9 @@ class GLocalAuthenticationTokens:
         indent: The indentation for the json formatting.
         disable_discovery: Whether or not the device's IP and port should
           be searched for in the network.
+        addresses: Dict of network devices from the local network
+          ({"name": "ip_address"}). If set to `None` will try to automatically
+          discover network devices. Disable discovery by setting to `{}`.
         zeroconf_instance: If you already have an initialized zeroconf instance,
           use it here.
         force_homegraph_reload: If the stored homegraph should be generated again.
@@ -457,6 +493,7 @@ class GLocalAuthenticationTokens:
         google_devices = self.get_google_devices(
             models_list=models_list,
             disable_discovery=disable_discovery,
+            addresses=addresses,
             zeroconf_instance=zeroconf_instance,
             force_homegraph_reload=force_homegraph_reload,
         )

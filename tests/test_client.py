@@ -322,19 +322,27 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
     def test_get_google_devices(self, m_get_homegraph: NonCallableMock) -> None:
         """Test getting google devices"""
         # With just one device returned from homegraph
-        homegraph_device = faker.homegraph_device()
+        fake_device_name = faker.word()
+        fake_ip_address = faker.ipv4()
+        homegraph_device = faker.homegraph_device(device_name=fake_device_name)
         m_get_homegraph.return_value.home.devices = [homegraph_device]
 
         # With no discover_devices, with no model_list
-        google_devices = self.client.get_google_devices(disable_discovery=True)
+        google_devices = self.client.get_google_devices(
+            disable_discovery=True,
+            addresses={fake_device_name: fake_ip_address},
+        )
         self.assertEqual(len(google_devices), 1)
 
         google_device = google_devices[0]
         self.assertDevice(google_device, homegraph_device)
+        self.assertIsNotNone(google_device.network_device)
+        if google_device.network_device is not None:
+            self.assertEqual(google_device.network_device.ip_address, fake_ip_address)
 
         # With two devices returned from homegraph
         # but one device having the invalid token
-        homegraph_device_valid = faker.homegraph_device()
+        homegraph_device_valid = faker.homegraph_device(device_name=fake_device_name)
         homegraph_device_invalid = faker.homegraph_device()
         homegraph_device_invalid.local_auth_token = (
             faker.word()
@@ -345,9 +353,17 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
             homegraph_device_invalid,
             homegraph_device_valid,
         ]
-        google_devices = self.client.get_google_devices(disable_discovery=True)
+        google_devices = self.client.get_google_devices(
+            disable_discovery=True,
+            addresses={fake_device_name: fake_ip_address},
+        )
         self.assertEqual(len(google_devices), 1)
         self.assertDevice(google_devices[0], homegraph_device_valid)
+        self.assertIsNotNone(google_devices[0].network_device)
+        if google_devices[0].network_device is not None:
+            self.assertEqual(
+                google_devices[0].network_device.ip_address, fake_ip_address
+            )
 
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_google_devices")
     def test_get_google_devices_json(

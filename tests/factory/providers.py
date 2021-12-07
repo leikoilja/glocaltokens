@@ -43,14 +43,18 @@ class TokenProvider(BaseProvider):
 class HomegraphProvider(TokenProvider):
     """Homegraph provider"""
 
-    def homegraph_device(self) -> GetHomeGraphResponse.Home.Device:
+    def homegraph_device(
+        self, device_name: str | None = None
+    ) -> GetHomeGraphResponse.Home.Device:
         """Using the content from test requests as reference"""
+        device_name = device_name if device_name else faker.word()
+
         return GetHomeGraphResponse.Home.Device(
             local_auth_token=self.local_auth_token(),
             device_info=GetHomeGraphResponse.Home.Device.DeviceInfo(
                 device_id=str(faker.uuid4)
             ),
-            device_name=faker.word(),
+            device_name=device_name,
             hardware=GetHomeGraphResponse.Home.Device.Hardware(model=faker.word()),
         )
 
