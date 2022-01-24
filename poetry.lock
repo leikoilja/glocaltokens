@@ -219,7 +219,7 @@ flake8 = ">=3.0,<3.2.0 || >3.2.0"
 
 [[package]]
 name = "flake8-simplify"
-version = "0.14.5"
+version = "0.14.6"
 description = "flake8 plugin which checks for code that can be simplified"
 category = "dev"
 optional = false
@@ -933,8 +933,8 @@ flake8-comprehensions = [
     {file = "flake8_comprehensions-3.8.0-py3-none-any.whl", hash = "sha256:9406314803abe1193c064544ab14fdc43c58424c0882f6ff8a581eb73fc9bb58"},
 ]
 flake8-simplify = [
-    {file = "flake8_simplify-0.14.5-py3-none-any.whl", hash = "sha256:9b4b93d75b3c2046883d490df0e8e957b725fcdccf455c0ffe51436d1a098f6b"},
-    {file = "flake8_simplify-0.14.5.tar.gz", hash = "sha256:0bf8b1d60cf35d3e7cf8871194445589778f49ce81a35060f2fe3e0501f5792e"},
+    {file = "flake8_simplify-0.14.6-py3-none-any.whl", hash = "sha256:8831fb8ff46dee1018d0b4c29f043a010cffafce7309fca536fde8461b98b6f6"},
+    {file = "flake8_simplify-0.14.6.tar.gz", hash = "sha256:c4008db8016707684a1f0502ee69f3c2da37687d3cf7031cc1f326bf5986bf47"},
 ]
 flake8-use-fstring = [
     {file = "flake8-use-fstring-1.3.tar.gz", hash = "sha256:1bd4a409adbb93e64e711fdd26b88759c33792e3899f174edc68ddf7307e81b6"},
