@@ -23,15 +23,15 @@ homepage = "https://github.com/leikoilja/glocaltokens"
 repository = "https://github.com/leikoilja/glocaltokens"
 
 [tool.poetry.dependencies]
-python = "^3.8"
 gpsoauth = "^1.0.0"
-requests = "^2.25.1"
+python = "^3.8"
 simplejson = "^3.17.2"
-zeroconf = "^0.36.2"
 
-# We want to keep grpcio similar to Home Assistant
+# Note, we want to keep versions similar to Home Assistant
 # https://github.com/home-assistant/core/blob/9ce2e9e8f4e9afaefc4a66e788d503ebe817c327/homeassistant/package_constraints.txt
-grpcio = "1.43.0"
+grpcio = "^1.44.0"
+requests = "^2.27.1"
+zeroconf = "^0.38.3"
 
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"
