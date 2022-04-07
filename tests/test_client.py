@@ -186,6 +186,17 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         master_token = self.client.get_master_token()
         self.assertEqual(expected_master_token, master_token)
 
+        # Reset mocks
+        m_perform_master_login.reset_mock()
+        m_log.reset_mock()
+
+        # For passwords that are too long
+        m_perform_master_login.side_effect = ValueError("Plaintext is too long.")
+        self.client.invalidate_master_token()
+        master_token = self.client.get_master_token()
+        self.assertIsNone(master_token)
+        self.assertEqual(m_log.call_count, 2)
+
     @patch("glocaltokens.client.LOGGER.error")
     @patch("glocaltokens.client.perform_master_login")
     @patch("glocaltokens.client.perform_oauth")

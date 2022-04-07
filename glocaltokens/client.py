@@ -515,6 +515,11 @@ class GLocalAuthenticationTokens:
         self.access_token_date = None
         LOGGER.debug("Invalidated access_token")
 
+    def invalidate_master_token(self) -> None:
+        """Invalidates the current master token"""
+        self.master_token = None
+        LOGGER.debug("Invalidated master_token")
+
     def invalidate_homegraph(self) -> None:
         """Invalidates the stored homegraph data"""
         self.homegraph = None
