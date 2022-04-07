@@ -217,6 +217,7 @@ class GLocalAuthenticationTokens:
                 "There is no stored master_token, "
                 "logging in using username and password"
             )
+            res = {}
             try:
                 res = perform_master_login(
                     self.username, self.password, self.get_android_id()
@@ -226,7 +227,6 @@ class GLocalAuthenticationTokens:
                     "A ValueError exception has been thrown, this usually is related"
                     "to a password length that exceeds the boundaries (too long)."
                 )
-                res = {}
             if "Token" not in res:
                 LOGGER.error("[!] Could not get master token.")
                 LOGGER.debug("Request response: %s", res)
