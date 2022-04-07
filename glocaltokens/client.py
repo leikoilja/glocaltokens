@@ -212,28 +212,28 @@ class GLocalAuthenticationTokens:
             LOGGER.error("Username and password are not set.")
             return None
 
-        try:
-            if not self.master_token:
-                LOGGER.debug(
-                    "There is no stored master_token, "
-                    "logging in using username and password"
-                )
+        if not self.master_token:
+            LOGGER.debug(
+                "There is no stored master_token, "
+                "logging in using username and password"
+            )
+            try:
                 res = perform_master_login(
                     self.username, self.password, self.get_android_id()
                 )
-                if "Token" not in res:
-                    LOGGER.error("[!] Could not get master token.")
-                    LOGGER.debug("Request response: %s", res)
-                    return None
-                self.master_token = res["Token"]
-            LOGGER.debug("Master token: %s", censor(self.master_token))
-            return self.master_token
-        except ValueError:
-            LOGGER.error(
-                "A ValueError exception has been thrown, this usually is related to a "
-                "password length that exceeds the boundaries (too long)."
-            )
-            return None
+            except ValueError:
+                LOGGER.error(
+                    "A ValueError exception has been thrown, this usually is related"
+                    "to a password length that exceeds the boundaries (too long)."
+                )
+                res = {}
+            if "Token" not in res:
+                LOGGER.error("[!] Could not get master token.")
+                LOGGER.debug("Request response: %s", res)
+                return None
+            self.master_token = res["Token"]
+        LOGGER.debug("Master token: %s", censor(self.master_token))
+        return self.master_token
 
     def get_access_token(self) -> str | None:
         """Return existing or fetch access_token"""
