@@ -299,7 +299,7 @@ requests = ">=2.0.0"
 
 [[package]]
 name = "grpc-stubs"
-version = "1.24.8"
+version = "1.24.9"
 description = "Mypy stubs for gRPC"
 category = "dev"
 optional = false
@@ -1038,8 +1038,8 @@ gpsoauth = [
     {file = "gpsoauth-1.0.0.tar.gz", hash = "sha256:1c4d6a980625b8ab6f6f1cf3e30d9b10a6c61ababb2b60bfe4870649e9c82be0"},
 ]
 grpc-stubs = [
-    {file = "grpc-stubs-1.24.8.tar.gz", hash = "sha256:0d64f8acc5c5d4910db97b78f070a8bef5dc72e9618547b6a0850ed49e41ef7a"},
-    {file = "grpc_stubs-1.24.8-py3-none-any.whl", hash = "sha256:c08f7a11b51c7a41d1e560b981e6802675cedf81ea1b583f0481286f823925d7"},
+    {file = "grpc-stubs-1.24.9.tar.gz", hash = "sha256:bc9f4de179a964b2eea8b39bab3e4a939b4a0dcb02703519234f7d1edcb3e0cc"},
+    {file = "grpc_stubs-1.24.9-py3-none-any.whl", hash = "sha256:fa82127a7838c29f7cbfad0849bbde042d4e8833df7cb37440fe9d9d366c7e8f"},
 ]
 grpcio = [
     {file = "grpcio-1.45.0-cp310-cp310-linux_armv7l.whl", hash = "sha256:0d74a159df9401747e57960f0772f4371486e3281919004efa9df8a82985abee"},
