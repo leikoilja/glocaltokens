@@ -217,9 +217,16 @@ class GLocalAuthenticationTokens:
                 "There is no stored master_token, "
                 "logging in using username and password"
             )
-            res = perform_master_login(
-                self.username, self.password, self.get_android_id()
-            )
+            res = {}
+            try:
+                res = perform_master_login(
+                    self.username, self.password, self.get_android_id()
+                )
+            except ValueError:
+                LOGGER.error(
+                    "A ValueError exception has been thrown, this usually is related"
+                    "to a password length that exceeds the boundaries (too long)."
+                )
             if "Token" not in res:
                 LOGGER.error("[!] Could not get master token.")
                 LOGGER.debug("Request response: %s", res)
@@ -507,6 +514,11 @@ class GLocalAuthenticationTokens:
         self.access_token = None
         self.access_token_date = None
         LOGGER.debug("Invalidated access_token")
+
+    def invalidate_master_token(self) -> None:
+        """Invalidates the current master token"""
+        self.master_token = None
+        LOGGER.debug("Invalidated master_token")
 
     def invalidate_homegraph(self) -> None:
         """Invalidates the stored homegraph data"""
