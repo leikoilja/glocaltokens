@@ -23,7 +23,7 @@ homepage = "https://github.com/leikoilja/glocaltokens"
 repository = "https://github.com/leikoilja/glocaltokens"
 
 [tool.poetry.dependencies]
-gpsoauth = "^1.0.0"
+gpsoauth = "^1.0.1"
 python = "^3.8"
 simplejson = "^3.17.2"
 
