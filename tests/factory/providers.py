@@ -1,5 +1,4 @@
 """Test factory providers"""
-# pylint: disable=no-self-use
 from __future__ import annotations
 
 from faker import Faker

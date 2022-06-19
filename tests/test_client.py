@@ -82,7 +82,6 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         GLocalAuthenticationTokens(master_token=faker.master_token())
         self.assertEqual(m_log.call_count, 0)
 
-    # pylint: disable=no-self-use
     @patch("glocaltokens.client.LOGGER.setLevel")
     def test_initialization__valid_verbose_logger(
         self, m_set_level: NonCallableMock
