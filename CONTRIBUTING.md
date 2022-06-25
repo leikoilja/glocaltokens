@@ -65,8 +65,6 @@ When writing unittests please follow the good practises like:
 With Poetry installed, run `poetry install` in the repo root.
 It will create a virualenv with all required packages.
 
-If GRPC fails to compile on MacOS, run `export CFLAGS="-DHAVE_UNISTD_H"` first. It should be resolved in GRPC 1.36.
-
 After that you can run [pre-commit](https://pre-commit.com/) with settings included in the
 repostory to have code style and linting checks.
 
@@ -86,13 +84,15 @@ $ poetry run pre-commit run --all-files
 
 ## Compiling proto file
 
-`v1.proto` is compiled with these commands from the repo root, [mypy-protobuf](https://github.com/dropbox/mypy-protobuf) needs to be installed:
+`v1.proto` is compiled with these commands from the repo root:
 
 ```console
+$ poetry install
 $ cd glocaltokens
-$ protoc --python-out=. google/internal/home/foyer/v1.proto
+$ poetry run python -m grpc_tools.protoc --proto_path=. --python_out=. google/internal/home/foyer/v1.proto
 $ cd ..
-$ protoc --plugin=protoc-gen-grpc_python=~/path/to/grpc_python_plugin --grpc_python_out=. --mypy_out=readable_stubs:. --mypy_grpc_out=readable_stubs:. glocaltokens/google/internal/home/foyer/v1.proto
-$ git commit
+$ poetry run python -m grpc_tools.protoc --proto_path=. --grpc_python_out=. --mypy_out=readable_stubs:. --mypy_grpc_out=readable_stubs:. glocaltokens/google/internal/home/foyer/v1.proto
+$ git commit -am "Update generated files"
 $ pre-commit run --hook-stage manual python-typing-update --all-files
+$ git commit -a --amend --no-edit
 ```

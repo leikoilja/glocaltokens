@@ -7,10 +7,23 @@ from abc import (
     abstractmethod,
 )
 
+from glocaltokens.google.internal.home.foyer.v1_pb2 import (
+    GetAssistantDeviceSettingsRequest,
+    GetAssistantDeviceSettingsResponse,
+    GetAssistantRoutinesRequest,
+    GetAssistantRoutinesResponse,
+    GetHomeGraphRequest,
+    GetHomeGraphResponse,
+    UpdateAssistantDeviceSettingsRequest,
+    UpdateAssistantDeviceSettingsResponse,
+)
+
 from grpc import (
     Channel,
     Server,
     ServicerContext,
+    UnaryStreamMultiCallable,
+    UnaryUnaryMultiCallable,
 )
 
 from typing import (
@@ -18,15 +31,16 @@ from typing import (
 )
 
 
-from .v1_pb2 import *
 class HomeControlServiceStub:
+    """Home Control Service"""
     def __init__(self, channel: Channel) -> None: ...
-    def GetAssistantRoutines(self,
-        request: GetAssistantRoutinesRequest,
-    ) -> Iterator[GetAssistantRoutinesResponse]: ...
+    GetAssistantRoutines: UnaryStreamMultiCallable[
+        GetAssistantRoutinesRequest,
+        GetAssistantRoutinesResponse]
 
 
 class HomeControlServiceServicer(metaclass=ABCMeta):
+    """Home Control Service"""
     @abstractmethod
     def GetAssistantRoutines(self,
         request: GetAssistantRoutinesRequest,
@@ -37,13 +51,15 @@ class HomeControlServiceServicer(metaclass=ABCMeta):
 def add_HomeControlServiceServicer_to_server(servicer: HomeControlServiceServicer, server: Server) -> None: ...
 
 class StructuresServiceStub:
+    """Structure Service"""
     def __init__(self, channel: Channel) -> None: ...
-    def GetHomeGraph(self,
-        request: GetHomeGraphRequest,
-    ) -> GetHomeGraphResponse: ...
+    GetHomeGraph: UnaryUnaryMultiCallable[
+        GetHomeGraphRequest,
+        GetHomeGraphResponse]
 
 
 class StructuresServiceServicer(metaclass=ABCMeta):
+    """Structure Service"""
     @abstractmethod
     def GetHomeGraph(self,
         request: GetHomeGraphRequest,
@@ -54,17 +70,19 @@ class StructuresServiceServicer(metaclass=ABCMeta):
 def add_StructuresServiceServicer_to_server(servicer: StructuresServiceServicer, server: Server) -> None: ...
 
 class HomeDevicesServiceStub:
+    """Home Devices Service"""
     def __init__(self, channel: Channel) -> None: ...
-    def GetAssistantDeviceSettings(self,
-        request: GetAssistantDeviceSettingsRequest,
-    ) -> Iterator[GetAssistantDeviceSettingsResponse]: ...
+    GetAssistantDeviceSettings: UnaryStreamMultiCallable[
+        GetAssistantDeviceSettingsRequest,
+        GetAssistantDeviceSettingsResponse]
 
-    def UpdateAssistantDeviceSettings(self,
-        request: UpdateAssistantDeviceSettingsRequest,
-    ) -> Iterator[UpdateAssistantDeviceSettingsResponse]: ...
+    UpdateAssistantDeviceSettings: UnaryStreamMultiCallable[
+        UpdateAssistantDeviceSettingsRequest,
+        UpdateAssistantDeviceSettingsResponse]
 
 
 class HomeDevicesServiceServicer(metaclass=ABCMeta):
+    """Home Devices Service"""
     @abstractmethod
     def GetAssistantDeviceSettings(self,
         request: GetAssistantDeviceSettingsRequest,
