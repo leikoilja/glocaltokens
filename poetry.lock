@@ -936,7 +936,7 @@ ifaddr = ">=0.1.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "163970a21cefd3fdfee913a69700e8093d10f4bf328ae641781dcf20b58b4d62"
+content-hash = "ce1ab1ac3b0858afcb50e336a253c395acbdab053daec187b86489ba9399f3ea"
 
 [metadata.files]
 appnope = [
