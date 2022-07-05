@@ -206,6 +206,15 @@ class GLocalAuthenticationTokens:
         """Checks if an specified token/object has expired"""
         return datetime.now().timestamp() - creation_dt.timestamp() > duration
 
+    @staticmethod
+    def _filter_username(username: str) -> str:
+        """Remove `+tag` part from login."""
+        plus_pos = username.find("+")
+        if plus_pos != -1:
+            at_pos = username.find("@")
+            return username[:plus_pos] + (username[at_pos:] if at_pos != -1 else "")
+        return username
+
     def get_master_token(self) -> str | None:
         """Get google master token from username and password"""
         if self.username is None or self.password is None:
@@ -220,7 +229,9 @@ class GLocalAuthenticationTokens:
             res = {}
             try:
                 res = perform_master_login(
-                    self.username, self.password, self.get_android_id()
+                    self._filter_username(self.username),
+                    self.password,
+                    self.get_android_id(),
                 )
             except ValueError:
                 LOGGER.error(
@@ -254,7 +265,7 @@ class GLocalAuthenticationTokens:
                 LOGGER.error("Username is not set.")
                 return None
             res = perform_oauth(
-                self.username,
+                self._filter_username(self.username),
                 master_token,
                 self.get_android_id(),
                 app=ACCESS_TOKEN_APP_NAME,

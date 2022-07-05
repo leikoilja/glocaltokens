@@ -410,6 +410,17 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
             received_device[JSON_KEY_NETWORK_DEVICE][JSON_KEY_IP], ip_address
         )
 
+    def test_username_filtering(self) -> None:
+        """Test that +tag part is removed."""
+        self.assertEqual(
+            self.client._filter_username("login@domain.com"), "login@domain.com"
+        )
+        self.assertEqual(
+            self.client._filter_username("login+tag@domain.com"), "login@domain.com"
+        )
+        self.assertEqual(self.client._filter_username("login"), "login")
+        self.assertEqual(self.client._filter_username("login+tag"), "login")
+
 
 class DeviceClientTests(TypeAssertions, TestCase):
     """Device specific unittests"""
