@@ -410,6 +410,19 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
             received_device[JSON_KEY_NETWORK_DEVICE][JSON_KEY_IP], ip_address
         )
 
+    def test_username_escaping(self) -> None:
+        """Test that plus sign is escaped."""
+        self.assertEqual(
+            self.client._escape_username("login@domain.com"), "login@domain.com"
+        )
+        self.assertEqual(
+            self.client._escape_username("login+tag@domain.com"),
+            "login%2Btag@domain.com",
+        )
+        self.assertEqual(self.client._escape_username("login"), "login")
+        # Such account should be impossible to create.
+        self.assertEqual(self.client._escape_username("login+tag"), "login%2Btag")
+
 
 class DeviceClientTests(TypeAssertions, TestCase):
     """Device specific unittests"""
