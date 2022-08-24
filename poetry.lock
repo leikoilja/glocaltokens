@@ -58,10 +58,10 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [package.extras]
-dev = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "mypy", "pytest-mypy-plugins", "zope.interface", "furo", "sphinx", "sphinx-notfound-page", "pre-commit", "cloudpickle"]
-docs = ["furo", "sphinx", "zope.interface", "sphinx-notfound-page"]
-tests = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "mypy", "pytest-mypy-plugins", "zope.interface", "cloudpickle"]
-tests_no_zope = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "mypy", "pytest-mypy-plugins", "cloudpickle"]
+dev = ["cloudpickle", "coverage[toml] (>=5.0.2)", "furo", "hypothesis", "mypy", "pre-commit", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins", "six", "sphinx", "sphinx-notfound-page", "zope.interface"]
+docs = ["furo", "sphinx", "sphinx-notfound-page", "zope.interface"]
+tests = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "mypy", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins", "six", "zope.interface"]
+tests_no_zope = ["cloudpickle", "coverage[toml] (>=5.0.2)", "hypothesis", "mypy", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins", "six"]
 
 [[package]]
 name = "backcall"
@@ -225,7 +225,7 @@ pyflakes = ">=2.4.0,<2.5.0"
 
 [[package]]
 name = "flake8-bugbear"
-version = "22.8.22"
+version = "22.8.23"
 description = "A plugin for flake8 finding likely bugs and design problems in your program. Contains warnings that don't belong in pyflakes and pycodestyle."
 category = "dev"
 optional = false
@@ -273,9 +273,9 @@ python-versions = ">=3.6"
 flake8 = ">=3"
 
 [package.extras]
-ci = ["coverage (>=4.0.0,<5.0.0)", "pytest (>=4)", "pytest-cov (>=2)", "flake8-builtins", "flake8-commas", "flake8-fixme", "flake8-print", "flake8-quotes", "flake8-todo", "coveralls"]
-dev = ["coverage (>=4.0.0,<5.0.0)", "pytest (>=4)", "pytest-cov (>=2)", "flake8-builtins", "flake8-commas", "flake8-fixme", "flake8-print", "flake8-quotes", "flake8-todo"]
-test = ["coverage (>=4.0.0,<5.0.0)", "pytest (>=4)", "pytest-cov (>=2)", "flake8-builtins", "flake8-commas", "flake8-fixme", "flake8-print", "flake8-quotes", "flake8-todo"]
+ci = ["coverage (>=4.0.0,<5.0.0)", "coveralls", "flake8-builtins", "flake8-commas", "flake8-fixme", "flake8-print", "flake8-quotes", "flake8-todo", "pytest (>=4)", "pytest-cov (>=2)"]
+dev = ["coverage (>=4.0.0,<5.0.0)", "flake8-builtins", "flake8-commas", "flake8-fixme", "flake8-print", "flake8-quotes", "flake8-todo", "pytest (>=4)", "pytest-cov (>=2)"]
+test = ["coverage (>=4.0.0,<5.0.0)", "flake8-builtins", "flake8-commas", "flake8-fixme", "flake8-print", "flake8-quotes", "flake8-todo", "pytest (>=4)", "pytest-cov (>=2)"]
 
 [[package]]
 name = "gpsoauth"
@@ -403,11 +403,11 @@ doc = ["Sphinx (>=1.3)"]
 kernel = ["ipykernel"]
 nbconvert = ["nbconvert"]
 nbformat = ["nbformat"]
-notebook = ["notebook", "ipywidgets"]
+notebook = ["ipywidgets", "notebook"]
 parallel = ["ipyparallel"]
 qtconsole = ["qtconsole"]
-test = ["pytest", "pytest-asyncio", "testpath", "pygments"]
-test_extra = ["pytest", "testpath", "curio", "matplotlib (!=3.2.0)", "nbformat", "numpy (>=1.19)", "pandas", "pygments", "trio"]
+test = ["pygments", "pytest", "pytest-asyncio", "testpath"]
+test_extra = ["curio", "matplotlib (!=3.2.0)", "nbformat", "numpy (>=1.19)", "pandas", "pygments", "pytest", "testpath", "trio"]
 
 [[package]]
 name = "isort"
@@ -418,10 +418,10 @@ optional = false
 python-versions = ">=3.6.1,<4.0"
 
 [package.extras]
-pipfile_deprecated_finder = ["pipreqs", "requirementslib"]
-requirements_deprecated_finder = ["pipreqs", "pip-api"]
 colors = ["colorama (>=0.4.3,<0.5.0)"]
+pipfile_deprecated_finder = ["pipreqs", "requirementslib"]
 plugins = ["setuptools"]
+requirements_deprecated_finder = ["pip-api", "pipreqs"]
 
 [[package]]
 name = "jedi"
@@ -474,7 +474,7 @@ optional = false
 python-versions = ">=3.6"
 
 [package.extras]
-build = ["twine", "wheel", "blurb"]
+build = ["blurb", "twine", "wheel"]
 docs = ["sphinx"]
 test = ["pytest (<5.4)", "pytest-cov"]
 
@@ -595,8 +595,8 @@ optional = false
 python-versions = ">=3.6"
 
 [package.extras]
-testing = ["pytest-benchmark", "pytest"]
-dev = ["tox", "pre-commit"]
+dev = ["pre-commit", "tox"]
+testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
 name = "pre-commit"
@@ -814,7 +814,7 @@ executing = "*"
 pure-eval = "*"
 
 [package.extras]
-tests = ["cython", "littleutils", "pygments", "typeguard", "pytest"]
+tests = ["cython", "littleutils", "pygments", "pytest", "typeguard"]
 
 [[package]]
 name = "text-unidecode"
@@ -885,7 +885,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4"
 
 [package.extras]
 brotli = ["brotlipy (>=0.6.0)"]
-secure = ["pyOpenSSL (>=0.14)", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "certifi", "ipaddress"]
+secure = ["certifi", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "ipaddress", "pyOpenSSL (>=0.14)"]
 socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 
 [[package]]
@@ -904,7 +904,7 @@ six = ">=1.9.0,<2"
 
 [package.extras]
 docs = ["proselint (>=0.10.2)", "sphinx (>=3)", "sphinx-argparse (>=0.2.5)", "sphinx-rtd-theme (>=0.4.3)", "towncrier (>=21.3)"]
-testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", "pytest (>=4)", "pytest-env (>=0.6.2)", "pytest-freezegun (>=0.4.1)", "pytest-mock (>=2)", "pytest-randomly (>=1)", "pytest-timeout (>=1)", "packaging (>=20.0)"]
+testing = ["coverage (>=4)", "coverage-enable-subprocess (>=1)", "flaky (>=3)", "packaging (>=20.0)", "pytest (>=4)", "pytest-env (>=0.6.2)", "pytest-freezegun (>=0.4.1)", "pytest-mock (>=2)", "pytest-randomly (>=1)", "pytest-timeout (>=1)"]
 
 [[package]]
 name = "wcwidth"
@@ -1045,8 +1045,8 @@ flake8 = [
     {file = "flake8-4.0.1.tar.gz", hash = "sha256:806e034dda44114815e23c16ef92f95c91e4c71100ff52813adf7132a6ad870d"},
 ]
 flake8-bugbear = [
-    {file = "flake8-bugbear-22.8.22.tar.gz", hash = "sha256:1d240736dc93ecad9ff21e1d521283b9461d132b3ff2170569bd5ff3dacda385"},
-    {file = "flake8_bugbear-22.8.22-py3-none-any.whl", hash = "sha256:b5718bf5d0d28a4cfd15054f4706fc2936f7339ed8366b919a1979eb5df50764"},
+    {file = "flake8-bugbear-22.8.23.tar.gz", hash = "sha256:de0717d11124a082118dd08387b34fd86b2721642ec2d8e92be66cfa5ea7c445"},
+    {file = "flake8_bugbear-22.8.23-py3-none-any.whl", hash = "sha256:1b0ebe0873d1cd55bf9f1588bfcb930db339018ef44a3981a26532daa9fd14a8"},
 ]
 flake8-comprehensions = [
     {file = "flake8-comprehensions-3.10.0.tar.gz", hash = "sha256:181158f7e7aa26a63a0a38e6017cef28c6adee71278ce56ce11f6ec9c4905058"},
