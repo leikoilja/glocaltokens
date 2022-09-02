@@ -29,9 +29,9 @@ protobuf = "^3.20.1"
 simplejson = "^3.17.2"
 # Note, we want to keep versions of grpcio, requests and zeroconf similar to Home Assistant
 # https://github.com/home-assistant/core/blob/2022.6.0/homeassistant/package_constraints.txt
-grpcio = "^1.46.1"
-requests = "^2.27.1"
-zeroconf = "^0.38.6"
+grpcio = ">=1.46.0"
+requests = ">=2.27.0"
+zeroconf = ">=0.38.0"
 
 [tool.poetry.dev-dependencies]
 black = "^22.3"
