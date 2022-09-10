@@ -33,7 +33,7 @@ grpcio = ">=1.46.0"
 requests = ">=2.27.0"
 zeroconf = ">=0.38.0"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 black = "^22.3"
 codespell = "^2.1.0"
 Faker = "^8.0.0"
@@ -53,6 +53,7 @@ mypy-protobuf = "^3.2.0"
 pre-commit = "^2.19.0"
 pylint = "^2.14.3"
 pytest = "^7.1.2"
+setuptools = "^65.3.0"
 
 [tool.poetry.urls]
 "Bug Tracker" = "https://github.com/leikoilja/glocaltokens/issues"
