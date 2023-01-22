@@ -114,7 +114,7 @@ extract master and access tokens
 
 Also, thank you very much to the guys at `pychromecast` which provided the code required to scan devices in the network.
 
-[workflow-shield]: https://img.shields.io/github/workflow/status/leikoilja/glocaltokens/Linting%20&%20Testing
+[workflow-shield]: https://img.shields.io/github/actions/workflow/status/leikoilja/glocaltokens/linting-and-testing.yaml?branch=master
 [workflow]: https://github.com/leikoilja/glocaltokens/actions
 [pypi-shield]: https://img.shields.io/pypi/v/glocaltokens
 [pypi]: https://pypi.org/project/glocaltokens/
