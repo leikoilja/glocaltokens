@@ -424,14 +424,14 @@ requests = ">=2.0.0"
 
 [[package]]
 name = "grpc-stubs"
-version = "1.24.11"
+version = "1.24.12"
 description = "Mypy stubs for gRPC"
 category = "dev"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "grpc-stubs-1.24.11.tar.gz", hash = "sha256:b02b0445b264eb3d310a2c14816c440f98f76d4ba2a5746adf148d57cca8b3a5"},
-    {file = "grpc_stubs-1.24.11-py3-none-any.whl", hash = "sha256:56d8f241c4b309c7c712d916be0e0c7b8b72b00cc61c0c08a4b50e1c13fd26e3"},
+    {file = "grpc-stubs-1.24.12.tar.gz", hash = "sha256:7ca7bff5a9bd6401c6cddedf14882c8cb6d5ff6017271ad36881c8eb5129d6cd"},
+    {file = "grpc_stubs-1.24.12-py3-none-any.whl", hash = "sha256:9cdc502ea7a4a69841e3328414181bc407b32a8339feae4397c82182b7a0a779"},
 ]
 
 [package.dependencies]
