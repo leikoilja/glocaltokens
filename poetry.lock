@@ -409,14 +409,14 @@ requests = ">=2.0.0"
 
 [[package]]
 name = "grpc-stubs"
-version = "1.24.11"
+version = "1.24.12"
 description = "Mypy stubs for gRPC"
 category = "dev"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "grpc-stubs-1.24.11.tar.gz", hash = "sha256:b02b0445b264eb3d310a2c14816c440f98f76d4ba2a5746adf148d57cca8b3a5"},
-    {file = "grpc_stubs-1.24.11-py3-none-any.whl", hash = "sha256:56d8f241c4b309c7c712d916be0e0c7b8b72b00cc61c0c08a4b50e1c13fd26e3"},
+    {file = "grpc-stubs-1.24.12.tar.gz", hash = "sha256:7ca7bff5a9bd6401c6cddedf14882c8cb6d5ff6017271ad36881c8eb5129d6cd"},
+    {file = "grpc_stubs-1.24.12-py3-none-any.whl", hash = "sha256:9cdc502ea7a4a69841e3328414181bc407b32a8339feae4397c82182b7a0a779"},
 ]
 
 [package.dependencies]
@@ -1432,18 +1432,6 @@ python-versions = "*"
 files = [
     {file = "text-unidecode-1.3.tar.gz", hash = "sha256:bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93"},
     {file = "text_unidecode-1.3-py2.py3-none-any.whl", hash = "sha256:1311f10e8b895935241623731c2ba64f4c455287888b18189350b67134a822e8"},
-]
-
-[[package]]
-name = "toml"
-version = "0.10.2"
-description = "Python Library for Tom's Obvious, Minimal Language"
-category = "dev"
-optional = false
-python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
-files = [
-    {file = "toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b"},
-    {file = "toml-0.10.2.tar.gz", hash = "sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f"},
 ]
 
 [[package]]
