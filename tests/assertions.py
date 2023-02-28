@@ -4,8 +4,11 @@ Common assertion helper classes used for unittesting
 # pylint: disable=invalid-name
 from unittest import TestCase
 
+from ghome_foyer_api.api_pb2 import (  # pylint: disable=no-name-in-module
+    GetHomeGraphResponse,
+)
+
 from glocaltokens.client import Device
-from glocaltokens.google.internal.home.foyer.v1_pb2 import GetHomeGraphResponse
 import glocaltokens.utils.token as token_utils
 
 
