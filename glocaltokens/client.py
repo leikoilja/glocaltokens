@@ -6,6 +6,11 @@ import json
 import logging
 import random
 
+from ghome_foyer_api.api_pb2 import (  # pylint: disable=no-name-in-module
+    GetHomeGraphRequest,
+    GetHomeGraphResponse,
+)
+from ghome_foyer_api.api_pb2_grpc import StructuresServiceStub
 from gpsoauth import perform_master_login, perform_oauth
 import grpc
 from zeroconf import Zeroconf
@@ -21,8 +26,6 @@ from .const import (
     GOOGLE_HOME_FOYER_API,
     HOMEGRAPH_DURATION,
 )
-from .google.internal.home.foyer.v1_pb2 import GetHomeGraphRequest, GetHomeGraphResponse
-from .google.internal.home.foyer.v1_pb2_grpc import StructuresServiceStub
 from .scanner import NetworkDevice, discover_devices
 from .types import DeviceDict
 from .utils import network as net_utils, token as token_utils

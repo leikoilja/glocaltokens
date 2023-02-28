@@ -81,18 +81,3 @@ You can also run the tests on all repository files manually with this command:
 ```console
 $ poetry run pre-commit run --all-files
 ```
-
-## Compiling proto file
-
-`v1.proto` is compiled with these commands from the repo root:
-
-```console
-$ poetry install
-$ cd glocaltokens
-$ poetry run python -m grpc_tools.protoc --proto_path=. --python_out=. google/internal/home/foyer/v1.proto
-$ cd ..
-$ poetry run python -m grpc_tools.protoc --proto_path=. --grpc_python_out=. --mypy_out=readable_stubs:. --mypy_grpc_out=readable_stubs:. glocaltokens/google/internal/home/foyer/v1.proto
-$ git commit -am "Update generated files"
-$ pre-commit run --hook-stage manual python-typing-update --all-files
-$ git commit -a --amend --no-edit
-```

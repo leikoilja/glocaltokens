@@ -3,13 +3,15 @@ from __future__ import annotations
 
 from faker import Faker
 from faker.providers import BaseProvider
+from ghome_foyer_api.api_pb2 import (  # pylint: disable=no-name-in-module
+    GetHomeGraphResponse,
+)
 
 from glocaltokens.const import (
     ACCESS_TOKEN_LENGTH,
     LOCAL_AUTH_TOKEN_LENGTH,
     MASTER_TOKEN_LENGTH,
 )
-from glocaltokens.google.internal.home.foyer.v1_pb2 import GetHomeGraphResponse
 from glocaltokens.utils.token import generate as generate_token
 
 faker = Faker()  # type: ignore
