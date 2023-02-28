@@ -9,7 +9,7 @@ from faker.providers import internet as internet_provider, python as python_prov
 
 from glocaltokens.scanner import CastListener, NetworkDevice
 
-faker = Faker()  # type: ignore
+faker = Faker()
 faker.add_provider(internet_provider)
 faker.add_provider(python_provider)
 

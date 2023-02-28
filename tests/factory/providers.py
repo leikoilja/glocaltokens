@@ -14,7 +14,7 @@ from glocaltokens.const import (
 )
 from glocaltokens.utils.token import generate as generate_token
 
-faker = Faker()  # type: ignore
+faker = Faker()
 
 
 class UtilsProvider(BaseProvider):
