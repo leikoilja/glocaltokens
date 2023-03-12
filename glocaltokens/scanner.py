@@ -57,7 +57,7 @@ class CastListener(ServiceListener):
         self._add_update_service(zc, type_, name, self.update_callback)
 
     def remove_service(self, _zc: Zeroconf, type_: str, name: str) -> None:
-        """Called when a cast has beeen lost (mDNS info expired or host down)."""
+        """Called when a cast has been lost (mDNS info expired or host down)."""
         LOGGER.debug("remove_service %s, %s", type_, name)
         if name in self.devices:
             del self.devices[name]
