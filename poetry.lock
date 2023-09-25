@@ -409,18 +409,19 @@ protobuf = ">=4.21.12,<5.0.0"
 
 [[package]]
 name = "gpsoauth"
-version = "1.0.2"
+version = "1.0.3"
 description = "A python client library for Google Play Services OAuth."
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "gpsoauth-1.0.2-py3-none-any.whl", hash = "sha256:8f195b5f30df3109a79e6c8d45f2bd45c0fe64dfef7a5abc033bc6508f961abf"},
-    {file = "gpsoauth-1.0.2.tar.gz", hash = "sha256:ebcae72eb325a7f06cbea95b9d5e64bec25370312db15e8e2e46c4d54e729e7a"},
+    {file = "gpsoauth-1.0.3-py3-none-any.whl", hash = "sha256:d3ea4145e17afe103c43063d8807e09a43e86b46bce778c34f23b56c90e8c96f"},
+    {file = "gpsoauth-1.0.3.tar.gz", hash = "sha256:7fa3b7da2a13c9c32d1c19848af88f519d1a9f00ba9deee924b3fef2bec76911"},
 ]
 
 [package.dependencies]
 pycryptodomex = ">=3.0"
 requests = ">=2.0.0"
+urllib3 = "<2.0"
 
 [[package]]
 name = "grpc-stubs"
