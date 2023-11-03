@@ -96,6 +96,7 @@ warn_no_return = true
 warn_unreachable = true
 
 [tool.codespell]
+ignore-words-list = "aas"
 quiet-level = 2
 skip = "poetry.lock,./.git/*,./.mypy_cache/*,*.egg-info"
 
