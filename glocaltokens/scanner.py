@@ -91,7 +91,8 @@ class CastListener(ServiceListener):
             return
 
         addresses = service.parsed_addresses()
-        ip_address = addresses[0] if addresses else service.server
+        server_name = service.server or service.name
+        ip_address = addresses[0] if addresses else server_name
 
         model_name = self.get_service_value(service, "md")
         friendly_name = self.get_service_value(service, "fn")
