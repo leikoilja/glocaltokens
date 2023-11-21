@@ -19,7 +19,7 @@ class UtilsTests(TestCase):
         self.assertNotEqual(secret_string, censored_string)
         self.assertTrue(censored_string.startswith(secret_string[0]))
         self.assertEqual(
-            censored_string, f"{secret_string[0]}{(len(secret_string)-1)*'*'}"
+            censored_string, f"{secret_string[0]}{(len(secret_string) - 1) * '*'}"
         )
 
         # With empty string

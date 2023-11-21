@@ -318,9 +318,9 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         """Test retries in  get_homegraph"""
         m_get_access_token.return_value = faker.word()
         rpc_error = grpc.RpcError()
-        rpc_error.code = mock.Mock()  # type: ignore[assignment]
+        rpc_error.code = mock.Mock()  # type: ignore[method-assign]
         rpc_error.code.return_value.name = "UNAUTHENTICATED"
-        rpc_error.details = mock.Mock()  # type: ignore[assignment]
+        rpc_error.details = mock.Mock()  # type: ignore[method-assign]
         m_structure_service_stub.return_value.GetHomeGraph.side_effect = rpc_error
         result = self.client.get_homegraph()
         self.assertEqual(result, None)
