@@ -170,8 +170,8 @@ class GLocalAuthenticationTokens:
             "Set GLocalAuthenticationTokens client "
             'username to "%s", password to "%s", '
             'master_token to "%s" and android_id to %s',
-            censor(username),
-            censor(password),
+            censor(username, hide_length=True),
+            censor(password, hide_length=True, hide_first_letter=True),
             censor(master_token),
             censor(android_id),
         )
