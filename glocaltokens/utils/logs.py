@@ -6,7 +6,7 @@ def censor(
     text: str | None, hide_length: bool = False, hide_first_letter: bool = False
 ) -> str:
     """
-    Replaces characters in a str with the asterisks
+    Hide sensitive information.
 
     text: The text to censure.
     """
