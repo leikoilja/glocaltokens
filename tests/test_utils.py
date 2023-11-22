@@ -25,3 +25,14 @@ class UtilsTests(TestCase):
         # With empty string
         censored_string = censor("")
         self.assertEqual(censored_string, "")
+
+        # Hide first letter
+        self.assertEqual(censor("abc", hide_first_letter=True), "***")
+
+        # Hide length
+        self.assertEqual(censor("abc", hide_length=True), "a<redacted>")
+
+        # Hide both
+        self.assertEqual(
+            censor("abc", hide_first_letter=True, hide_length=True), "<redacted>"
+        )
