@@ -500,13 +500,13 @@ urllib3 = "<2.0"
 
 [[package]]
 name = "grpc-stubs"
-version = "1.53.0.3"
+version = "1.53.0.4"
 description = "Mypy stubs for gRPC"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "grpc-stubs-1.53.0.3.tar.gz", hash = "sha256:6e5d75cdc88c0ba918e2f8395851f1e6a7c19a7c7fc3e902bde4601c7a1cbf96"},
-    {file = "grpc_stubs-1.53.0.3-py3-none-any.whl", hash = "sha256:312c3c697089344936c9779118a105bcc4ccc8eef053265f3f23086acdba2683"},
+    {file = "grpc-stubs-1.53.0.4.tar.gz", hash = "sha256:1ef24a1fe5ac0e7220289b5cd36763d7a9c20036129bb72ce2ad5a7f1d2399d5"},
+    {file = "grpc_stubs-1.53.0.4-py3-none-any.whl", hash = "sha256:2ac3466754e0b0a63661724113575a6f2f5fae11b69e0472171b349096eef7e9"},
 ]
 
 [package.dependencies]
