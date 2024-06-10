@@ -484,13 +484,13 @@ protobuf = ">=4.21.12,<5.0.0"
 
 [[package]]
 name = "gpsoauth"
-version = "1.1.0"
+version = "1.1.1"
 description = "A python client library for Google Play Services OAuth."
 optional = false
 python-versions = "<4.0,>=3.8"
 files = [
-    {file = "gpsoauth-1.1.0-py3-none-any.whl", hash = "sha256:cc8806d7f1057615dc50dada15edbd2c916d2e5f4d2575207ff72ff9cfee2b89"},
-    {file = "gpsoauth-1.1.0.tar.gz", hash = "sha256:040fb6685c691698ba7161a5e327a96daeecec1999d628ef48186d4b6defdd03"},
+    {file = "gpsoauth-1.1.1-py3-none-any.whl", hash = "sha256:0fa7959b1d52fc625d93928e4ad4349ac79c6bfe811981d4f91f3b687e1b6fc1"},
+    {file = "gpsoauth-1.1.1.tar.gz", hash = "sha256:58202ed303397d2927b464dc95e2714bffff85a1b0f88bf68f3ad63859ebe435"},
 ]
 
 [package.dependencies]
