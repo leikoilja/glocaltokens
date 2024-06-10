@@ -24,7 +24,7 @@ repository = "https://github.com/leikoilja/glocaltokens"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-gpsoauth = "^1.0.1"
+gpsoauth = "^1.1.1"
 simplejson = "^3.17.2"
 ghome-foyer-api = "^1.0.0"
 # Note, we want to keep versions of grpcio, requests and zeroconf similar to Home Assistant
