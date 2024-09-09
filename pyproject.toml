@@ -56,6 +56,10 @@ types-protobuf = "^4.24.0.4"
 "Bug Tracker" = "https://github.com/leikoilja/glocaltokens/issues"
 "Release Notes" = "https://github.com/leikoilja/glocaltokens/releases"
 
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
 [tool.pylint.master]
 extension-pkg-whitelist = [
     "_socket",
@@ -98,8 +102,4 @@ warn_unreachable = true
 [tool.codespell]
 ignore-words-list = "aas"
 quiet-level = 2
-skip = "poetry.lock,./.git/*,./.mypy_cache/*,*.egg-info"
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+skip = "poetry.lock,./.git/*,./.mypy_cache/*,./.venv/*,*.egg-info"
