@@ -1,0 +1,43 @@
+name: "Setup Python Environment"
+description: "Sets up pipx and Python environment paths for both bash and pwsh."
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup environment in bash (Linux, macOS)
+      id: env-bash
+      shell: bash
+      if: runner.os != 'Windows'
+      run: |
+        PIPX_HOME="$HOME/.pipx"
+        PIPX_BIN_DIR="$PIPX_HOME/bin"
+        echo "PIPX_HOME=$PIPX_HOME" >> $GITHUB_ENV
+        echo "PIPX_BIN_DIR=$PIPX_BIN_DIR" >> $GITHUB_ENV
+        echo "$PIPX_BIN_DIR" >> $GITHUB_PATH
+        PYTHON_USER_BASE="$(python3 -m site --user-base)"
+        echo "$PYTHON_USER_BASE/bin" >> $GITHUB_PATH
+        echo "python-user-base=$PYTHON_USER_BASE" >> $GITHUB_OUTPUT
+        echo "pipx-home=$PIPX_HOME" >> $GITHUB_OUTPUT
+
+    - name: Setup environment in pwsh (Windows)
+      id: env-pwsh
+      shell: pwsh
+      if: runner.os == 'Windows'
+      run: |
+        $PIPX_HOME = "$env:USERPROFILE\.pipx"
+        $PIPX_BIN_DIR = "$PIPX_HOME\bin"
+        echo "PIPX_HOME=$PIPX_HOME" | Out-File -Append -FilePath $env:GITHUB_ENV
+        echo "PIPX_BIN_DIR=$PIPX_BIN_DIR" | Out-File -Append -FilePath $env:GITHUB_ENV
+        echo "$PIPX_BIN_DIR" | Out-File -Append -FilePath $env:GITHUB_PATH
+        $PYTHON_USER_BASE = (python -m site --user-base)
+        echo "$PYTHON_USER_BASE\Scripts" | Out-File -Append -FilePath $env:GITHUB_PATH
+        echo "python-user-base=$PYTHON_USER_BASE" | Out-File -Append -FilePath $env:GITHUB_OUTPUT
+        echo "pipx-home=$PIPX_HOME" | Out-File -Append -FilePath $env:GITHUB_OUTPUT
+
+outputs:
+  python-user-base:
+    description: "The Python user base path"
+    value: ${{ steps.env-bash.outputs.python-user-base || steps.env-pwsh.outputs.python-user-base }}
+  pipx-home:
+    description: "Home directory of pipx"
+    value: ${{ steps.env-bash.outputs.pipx-home || steps.env-pwsh.outputs.pipx-home }}

@@ -27,8 +27,47 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install Poetry
-        uses: abatilo/actions-poetry@v3
+      - name: Setup Python Environment
+        uses: ./.github/actions/setup-environment
+        id: environment
+
+      - name: Get pipx and poetry latest versions
+        id: latest-versions
+        shell: bash
+        run: |
+          pipx_version=$(curl -s https://pypi.org/pypi/pipx/json | jq -r .info.version)
+          poetry_version=$(curl -s https://pypi.org/pypi/poetry/json | jq -r .info.version)
+          echo "pipx=$pipx_version" >> $GITHUB_OUTPUT
+          echo "poetry=$poetry_version" >> $GITHUB_OUTPUT
+          echo "PIP_USER: $PIP_USER"
+
+      - uses: actions/cache@v4
+        name: Cache pipx
+        with:
+          path: ${{ steps.environment.outputs.python-user-base }}
+          key: >
+            ${{ format('pip-user-{0}-{1}-{2}',
+            matrix.os,
+            matrix.python-version,
+            steps.latest-versions.outputs.pipx
+            ) }}
+
+      - uses: actions/cache@v4
+        name: Cache Poetry
+        with:
+          path: ${{ steps.environment.outputs.pipx-home }}
+          key: >
+            ${{ format('pipx-home-{0}-{1}-{2}',
+            matrix.os,
+            matrix.python-version,
+            steps.latest-versions.outputs.poetry
+            ) }}
+
+      - name: Install pipx
+        run: pip install --user --verbose pipx
+
+      - name: Install or update Poetry
+        run: pipx install poetry==${{ steps.latest-versions.outputs.poetry }}
 
       - name: Use local virtual environment
         run: |
@@ -36,18 +75,18 @@ jobs:
           poetry config virtualenvs.in-project true --local
 
       - uses: actions/cache@v4
-        id: cache-poetry-deps
         name: Cache Poetry dependencies
         with:
           path: ./.venv
-          key: venv-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
+          key: deps-${{ matrix.os }}-${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
           restore-keys: |
-            venv-${{ matrix.os }}-${{ matrix.python-version }}-
+            deps-${{ matrix.os }}-${{ matrix.python-version }}-
 
       - name: Install dependencies with Poetry
-        if: steps.cache-poetry-deps.outputs.cache-hit != 'true'
-        run: poetry install
+        run: |
+          poetry env use python3
+          poetry install
 
-      - name: Test package building
+      - name: Check if package builds
         run: |
           poetry build
