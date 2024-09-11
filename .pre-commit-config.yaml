@@ -1,8 +1,9 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v4.6.0
     hooks:
       - id: check-added-large-files
+      - id: check-case-conflict
       - id: check-yaml
       - id: end-of-file-fixer
       - id: trailing-whitespace
@@ -22,10 +23,10 @@ repos:
         require_serial: true
       - id: mypy
         name: mypy
-        entry: poetry run mypy glocaltokens tests
+        entry: poetry run mypy
         language: system
         types: [python]
-        pass_filenames: false
+        require_serial: true
       - id: flake8
         name: flake8
         entry: poetry run flake8
@@ -36,6 +37,7 @@ repos:
         entry: poetry run pylint
         language: system
         types: [python]
+        require_serial: true
       - id: pytest
         name: pytest
         language: system
@@ -49,7 +51,7 @@ repos:
         pass_filenames: false
         always_run: true
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v2.7.1
+    rev: v3.1.0
     hooks:
       - id: prettier
   - repo: https://github.com/cdce8p/python-typing-update
