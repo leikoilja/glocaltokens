@@ -31,43 +31,28 @@ jobs:
         uses: ./.github/actions/setup-environment
         id: environment
 
-      - name: Get pipx and poetry latest versions
+      - name: Get poetry latest version
         id: latest-versions
         shell: bash
         run: |
-          pipx_version=$(curl -s https://pypi.org/pypi/pipx/json | jq -r .info.version)
           poetry_version=$(curl -s https://pypi.org/pypi/poetry/json | jq -r .info.version)
-          echo "pipx=$pipx_version" >> $GITHUB_OUTPUT
           echo "poetry=$poetry_version" >> $GITHUB_OUTPUT
-          echo "PIP_USER: $PIP_USER"
-
-      - uses: actions/cache@v4
-        name: Cache pipx
-        with:
-          path: ${{ steps.environment.outputs.python-user-base }}
-          key: >
-            ${{ format('pip-user-{0}-{1}-{2}',
-            matrix.os,
-            matrix.python-version,
-            steps.latest-versions.outputs.pipx
-            ) }}
+          echo "Python user base: $(python -m site --user-base)"
 
       - uses: actions/cache@v4
         name: Cache Poetry
         with:
-          path: ${{ steps.environment.outputs.pipx-home }}
+          path: ${{ steps.environment.outputs.pip-user-base }}
           key: >
-            ${{ format('pipx-home-{0}-{1}-{2}',
+            ${{ format('pip-user-{0}-{1}-{2}',
             matrix.os,
             matrix.python-version,
             steps.latest-versions.outputs.poetry
             ) }}
 
-      - name: Install pipx
-        run: pip install --user --verbose pipx
-
       - name: Install or update Poetry
-        run: pipx install poetry==${{ steps.latest-versions.outputs.poetry }}
+        run: |
+          pip install --user poetry==${{ steps.latest-versions.outputs.poetry }}
 
       - name: Use local virtual environment
         run: |
