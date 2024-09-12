@@ -4,9 +4,6 @@ on:
   release:
     types: [published]
 
-env:
-  RUNS_ON: ubuntu-latest
-
 jobs:
   publish:
     name: Publish
@@ -25,5 +22,4 @@ jobs:
         env:
           TWINE_USERNAME: "__token__"
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-        run: |
-          uvx twine upload dist/*
+        run: uvx twine upload dist/*

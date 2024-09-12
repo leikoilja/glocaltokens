@@ -25,6 +25,4 @@ jobs:
         uses: ./.github/actions/install-deps
 
       - name: Check if package builds
-        run: |
-          uv build
-          echo Current version: $(git describe --tags --abbrev=0 | sed -e "s/^v//")
+        run: uv build
