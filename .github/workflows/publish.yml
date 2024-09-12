@@ -32,16 +32,14 @@ jobs:
           poetry config virtualenvs.in-project true --local
 
       - uses: actions/cache@v4
-        id: cache-poetry-deps
         name: Cache Poetry dependencies
         with:
           path: ./.venv
-          key: venv-${{ env.RUNS_ON }}-${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
+          key: deps-${{ env.RUNS_ON }}-${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
           restore-keys: |
-            venv-${{ env.RUNS_ON }}-${{ matrix.python-version }}-
+            deps-${{ env.RUNS_ON }}-${{ matrix.python-version }}-
 
       - name: Install dependencies with Poetry
-        if: steps.cache-poetry-deps.outputs.cache-hit != 'true'
         run: poetry install
 
       - name: Set version
