@@ -380,7 +380,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         self, m_get_google_devices: NonCallableMock
     ) -> None:
         """Test getting google devices as JSON"""
-        device_id = faker.uuid4()
+        device_id = str(faker.uuid4())
         device_name = faker.word()
         local_auth_token = faker.local_auth_token()
         ip_address = faker.ipv4()
@@ -433,7 +433,7 @@ class DeviceClientTests(TypeAssertions, TestCase):
 
         # With ip and port
         device = Device(
-            device_id=faker.uuid4(),
+            device_id=str(faker.uuid4()),
             device_name=faker.word(),
             network_device=NetworkDevice(
                 faker.word(),
@@ -453,7 +453,7 @@ class DeviceClientTests(TypeAssertions, TestCase):
 
         # Invalid local_auth_token
         device = Device(
-            device_id=faker.uuid4(),
+            device_id=str(faker.uuid4()),
             device_name=faker.word(),
             local_auth_token=faker.word(),
         )
