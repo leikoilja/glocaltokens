@@ -1,6 +1,6 @@
 [project]
 name = "glocaltokens"
-authors = [{ name = "Ilja Leiko", email="leikoilja@gmail.com" }]
+authors = [{ name = "Ilja Leiko", email = "leikoilja@gmail.com" }]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "License :: OSI Approved :: MIT License",
