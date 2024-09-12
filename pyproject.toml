@@ -1,6 +1,5 @@
 [project]
 name = "glocaltokens"
-version = "0.0.0"
 authors = [{ name = "Ilja Leiko", email="leikoilja@gmail.com" }]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -22,6 +21,7 @@ readme = "README.md"
 homepage = "https://github.com/leikoilja/glocaltokens"
 repository = "https://github.com/leikoilja/glocaltokens"
 requires-python = ">=3.9"
+dynamic = ["version"]
 dependencies = [
     "ghome-foyer-api >= 1.0.0",
     "gpsoauth >= 1.1.1",
@@ -58,8 +58,11 @@ dev-dependencies = [
 ]
 
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
 
 [tool.pylint.master]
 extension-pkg-whitelist = [

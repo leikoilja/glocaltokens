@@ -18,13 +18,12 @@ jobs:
       - name: Prepare and install deps
         uses: ./.github/actions/install-deps
 
-      - name: Set version
-        run: poetry version $(git describe --tags --abbrev=0 | sed -e "s/^v//")
-
       - name: Build package
         run: uv build
 
       - name: Publish to PyPI
+        env:
+          TWINE_USERNAME: "__token__"
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
         run: |
-          poetry config pypi-token.pypi ${{ secrets.PYPI_TOKEN }}
-          poetry publish
+          uvx twine upload dist/*
