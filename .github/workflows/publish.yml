@@ -22,7 +22,7 @@ jobs:
         run: poetry version $(git describe --tags --abbrev=0 | sed -e "s/^v//")
 
       - name: Build package
-        run: poetry build
+        run: uv build
 
       - name: Publish to PyPI
         run: |

@@ -26,4 +26,4 @@ jobs:
 
       - name: Check if package builds
         run: |
-          poetry build
+          uv build
