@@ -1,0 +1,67 @@
+name: "Common steps to install and cache dependencies"
+
+inputs:
+  python-version:
+    description: "Python version to set up"
+    required: false
+    default: "3.9"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python ${{ inputs.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Setup environment
+      id: environment
+      shell: bash
+      run: |
+        PYTHON_USER_BASE="$(python -m site --user-base)"
+        echo "$PYTHON_USER_BASE/bin" >> $GITHUB_PATH
+        echo "pip-user-base=$PYTHON_USER_BASE" >> $GITHUB_OUTPUT
+
+    - name: Get poetry latest version
+      id: latest-versions
+      shell: bash
+      run: |
+        poetry_version=$(curl -s https://pypi.org/pypi/poetry/json | jq -r .info.version)
+        echo "poetry=$poetry_version" >> $GITHUB_OUTPUT
+        echo "Python user base: $(python -m site --user-base)"
+
+    - uses: actions/cache@v4
+      name: Cache Poetry
+      with:
+        path: ${{ steps.environment.outputs.pip-user-base }}
+        key: >
+          ${{ format('pip-user-{0}-{1}-{2}',
+          runner.os,
+          inputs.python-version,
+          steps.latest-versions.outputs.poetry
+          ) }}
+
+    - name: Install or update Poetry
+      shell: bash
+      run: |
+        pip install --user poetry==${{ steps.latest-versions.outputs.poetry }}
+
+    - name: Use local virtual environment
+      shell: bash
+      run: |
+        poetry config virtualenvs.create true --local
+        poetry config virtualenvs.in-project true --local
+
+    - uses: actions/cache@v4
+      name: Cache Poetry dependencies
+      with:
+        path: ./.venv
+        key: deps-${{ runner.os }}-${{ inputs.python-version }}-${{ hashFiles('poetry.lock') }}
+        restore-keys: |
+          deps-${{ runner.os }}-${{ inputs.python-version }}-
+
+    - name: Install dependencies with Poetry
+      shell: bash
+      run: |
+        poetry env use python3
+        poetry install

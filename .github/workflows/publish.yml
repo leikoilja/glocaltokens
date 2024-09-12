@@ -10,37 +10,13 @@ env:
 jobs:
   publish:
     name: Publish
-    strategy:
-      matrix:
-        python-version: ["3.9"]
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repository
         uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install Poetry
-        uses: abatilo/actions-poetry@v3
-
-      - name: Use local virtual environment
-        run: |
-          poetry config virtualenvs.create true --local
-          poetry config virtualenvs.in-project true --local
-
-      - uses: actions/cache@v4
-        name: Cache Poetry dependencies
-        with:
-          path: ./.venv
-          key: deps-${{ env.RUNS_ON }}-${{ matrix.python-version }}-${{ hashFiles('poetry.lock') }}
-          restore-keys: |
-            deps-${{ env.RUNS_ON }}-${{ matrix.python-version }}-
-
-      - name: Install dependencies with Poetry
-        run: poetry install
+      - name: Prepare and install deps
+        uses: ./.github/actions/install-deps
 
       - name: Set version
         run: poetry version $(git describe --tags --abbrev=0 | sed -e "s/^v//")
