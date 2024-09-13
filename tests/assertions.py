@@ -1,6 +1,7 @@
 """
 Common assertion helper classes used for unittesting
 """
+
 # pylint: disable=invalid-name
 from unittest import TestCase
 

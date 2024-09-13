@@ -1,4 +1,5 @@
 """Types used for package typing"""
+
 from __future__ import annotations
 
 from typing import TypedDict

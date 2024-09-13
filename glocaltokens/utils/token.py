@@ -1,4 +1,5 @@
 """Token utilities"""
+
 import random
 import string
 
