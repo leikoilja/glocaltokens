@@ -6,8 +6,7 @@ from __future__ import annotations
 def censor(
     text: str | None, hide_length: bool = False, hide_first_letter: bool = False
 ) -> str:
-    """
-    Hide sensitive information.
+    """Hide sensitive information.
 
     text: The text to censure.
     """

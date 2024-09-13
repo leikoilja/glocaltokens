@@ -63,8 +63,7 @@ class HomegraphProvider(TokenProvider):
     def homegraph_devices(
         self, min_devices: int = 1, max_devices: int = 10, count: int | None = None
     ) -> list[GetHomeGraphResponse.Home.Device]:
-        """
-        Generates a random amount of devices, in the range specified.
+        """Generates a random amount of devices, in the range specified.
 
         min_devices:
           The number minimum of devices to generate. Should be greater than 0

@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 import logging
 from threading import Event
-from typing import Callable, NamedTuple
+from typing import NamedTuple
 
 from zeroconf import ServiceBrowser, ServiceInfo, ServiceListener, Zeroconf
 
@@ -25,8 +26,7 @@ class NetworkDevice(NamedTuple):
 
 
 class CastListener(ServiceListener):
-    """
-    Zeroconf Cast Services collection.
+    """Zeroconf Cast Services collection.
     Credit (pychromecast):
     https://github.com/home-assistant-libs/pychromecast/
     """

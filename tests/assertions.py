@@ -1,6 +1,4 @@
-"""
-Common assertion helper classes used for unittesting
-"""
+"""Common assertion helper classes used for unittesting"""
 
 # pylint: disable=invalid-name
 from unittest import TestCase
@@ -21,8 +19,7 @@ class DeviceAssertions(TestCase):
         homegraph_device: Device,
         homegraph_device_struct: GetHomeGraphResponse.Home.Device,
     ) -> None:
-        """
-        Custom assertion because we create Device class object
+        """Custom assertion because we create Device class object
         for each of received homegraph devices,
         while in testing homegraph devices that we create are of type Struct
         """

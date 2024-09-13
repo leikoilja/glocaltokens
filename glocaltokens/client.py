@@ -48,9 +48,7 @@ class Device:
         network_device: NetworkDevice | None = None,
         hardware: str | None = None,
     ):
-        """
-        Initializes a Device.
-        """
+        """Initializes a Device."""
         log_prefix = f"[Device - {device_name}(id={device_id})]"
         LOGGER.debug("%s Initializing new Device instance", log_prefix)
         self.device_id = device_id
@@ -136,8 +134,7 @@ class GLocalAuthenticationTokens:
         android_id: str | None = None,
         verbose: bool = False,
     ):
-        """
-        Initialize an GLocalAuthenticationTokens instance with google account
+        """Initialize an GLocalAuthenticationTokens instance with google account
         credentials
         :params
             username: google account username;
@@ -360,8 +357,7 @@ class GLocalAuthenticationTokens:
         force_homegraph_reload: bool = False,
         discovery_timeout: int = DISCOVERY_TIMEOUT,
     ) -> list[Device]:
-        """
-        Returns a list of google devices with their local authentication tokens,
+        """Returns a list of google devices with their local authentication tokens,
         and IP and ports if set in models_list.
 
         models_list: The list of accepted model names.
@@ -492,8 +488,7 @@ class GLocalAuthenticationTokens:
         zeroconf_instance: Zeroconf | None = None,
         force_homegraph_reload: bool = False,
     ) -> str:
-        """
-        Returns a json list of google devices with their local authentication tokens,
+        """Returns a json list of google devices with their local authentication tokens,
         and IP and ports if set in models_list.
 
         models_list: The list of accepted model names.

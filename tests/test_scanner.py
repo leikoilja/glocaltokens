@@ -16,9 +16,7 @@ faker.add_provider(python_provider)
 
 
 class NetworkDeviceTests(TestCase):
-    """
-    NetworkDevice specific tests
-    """
+    """NetworkDevice specific tests"""
 
     def test_initialization(self) -> None:
         """Initialization tests"""
