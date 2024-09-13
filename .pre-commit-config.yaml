@@ -9,9 +9,9 @@ repos:
       - id: trailing-whitespace
   - repo: local
     hooks:
-      - id: black
-        name: black
-        entry: uv run black
+      - id: ruff-format
+        name: ruff format
+        entry: uv run ruff format
         language: system
         types: [python]
         require_serial: true

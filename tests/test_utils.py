@@ -1,4 +1,5 @@
 """Utility tests"""
+
 from unittest import TestCase
 
 from faker import Faker
