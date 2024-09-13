@@ -6,9 +6,6 @@ on:
       - master
   pull_request:
 
-env:
-  RUNS_ON: ubuntu-latest
-
 jobs:
   pre-commit:
     name: Pre-commit
@@ -32,18 +29,18 @@ jobs:
           path: ~/.cache/pre-commit/
           key: >
             ${{ format('pre-commit-{0}-{1}-{2}',
-            env.RUNS_ON,
+            runner.os,
             matrix.python-version,
             hashFiles('.pre-commit-config.yaml')
             ) }}
           restore-keys: |
-            pre-commit-${{ env.RUNS_ON }}-${{ matrix.python-version }}-
-            pre-commit-${{ env.RUNS_ON }}-
+            pre-commit-${{ runner.os }}-${{ matrix.python-version }}-
+            pre-commit-${{ runner.os }}-
 
       - name: Run pre-commit on all files
         run: |
-          poetry run pre-commit run --all-files --show-diff-on-failure --color=always
+          uv run pre-commit run --all-files --show-diff-on-failure --color=always
 
       - name: Run python-typing-update
         run: |
-          poetry run pre-commit run --hook-stage manual python-typing-update --all-files --show-diff-on-failure --color=always
+          uv run pre-commit run --hook-stage manual python-typing-update --all-files --show-diff-on-failure --color=always
