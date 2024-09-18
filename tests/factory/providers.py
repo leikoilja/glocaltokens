@@ -1,4 +1,4 @@
-"""Test factory providers"""
+"""Test factory providers."""
 
 from __future__ import annotations
 
@@ -19,36 +19,36 @@ faker = Faker()
 
 
 class UtilsProvider(BaseProvider):
-    """Utility provider"""
+    """Utility provider."""
 
     def version(self) -> str:
-        """Generates random version"""
+        """Generate random version."""
         return f"{faker.pyint()}.{faker.pyint()}.{faker.pyint()}"
 
 
 class TokenProvider(BaseProvider):
-    """Token provider"""
+    """Token provider."""
 
     def master_token(self) -> str:
-        """Generates random master token"""
+        """Generate random master token."""
         return generate_token(MASTER_TOKEN_LENGTH, prefix="aas_et/")
 
     def access_token(self) -> str:
-        """Generates random access token"""
+        """Generate random access token."""
         return generate_token(ACCESS_TOKEN_LENGTH, prefix="ya29.")
 
     def local_auth_token(self) -> str:
-        """Generates random local_auth_token token"""
+        """Generate random local_auth_token token."""
         return generate_token(LOCAL_AUTH_TOKEN_LENGTH)
 
 
 class HomegraphProvider(TokenProvider):
-    """Homegraph provider"""
+    """Homegraph provider."""
 
     def homegraph_device(
         self, device_name: str | None = None
     ) -> GetHomeGraphResponse.Home.Device:
-        """Using the content from test requests as reference"""
+        """Create and return a mocked HomeGraph device object."""
         device_name = device_name if device_name else faker.word()
 
         return GetHomeGraphResponse.Home.Device(
@@ -63,7 +63,7 @@ class HomegraphProvider(TokenProvider):
     def homegraph_devices(
         self, min_devices: int = 1, max_devices: int = 10, count: int | None = None
     ) -> list[GetHomeGraphResponse.Home.Device]:
-        """Generates a random amount of devices, in the range specified.
+        """Generate a random amount of devices, in the range specified.
 
         min_devices:
           The number minimum of devices to generate. Should be greater than 0
