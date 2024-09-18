@@ -1,21 +1,24 @@
-"""Zeroconf based scanner"""
+"""Zeroconf based scanner."""
 
 from __future__ import annotations
 
 import logging
 from threading import Event
-from typing import Callable, NamedTuple
+from typing import TYPE_CHECKING, NamedTuple
 
 from zeroconf import ServiceBrowser, ServiceInfo, ServiceListener, Zeroconf
 
 from .const import DISCOVERY_TIMEOUT, GOOGLE_CAST_GROUP
 from .utils import network as net_utils
 
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
 LOGGER = logging.getLogger(__name__)
 
 
 class NetworkDevice(NamedTuple):
-    """Discovered Google device representation"""
+    """Discovered Google device representation."""
 
     name: str
     ip_address: str
@@ -25,10 +28,10 @@ class NetworkDevice(NamedTuple):
 
 
 class CastListener(ServiceListener):
-    """
-    Zeroconf Cast Services collection.
+    """Zeroconf Cast Services collection.
+
     Credit (pychromecast):
-    https://github.com/home-assistant-libs/pychromecast/
+    https://github.com/home-assistant-libs/pychromecast/.
     """
 
     def __init__(
@@ -37,6 +40,7 @@ class CastListener(ServiceListener):
         remove_callback: Callable[[], None] | None = None,
         update_callback: Callable[[], None] | None = None,
     ):
+        """Create cast listener."""
         self.devices: dict[str, NetworkDevice] = {}
         self.add_callback = add_callback
         self.remove_callback = remove_callback
@@ -58,7 +62,7 @@ class CastListener(ServiceListener):
         self._add_update_service(zc, type_, name, self.update_callback)
 
     def remove_service(self, _zc: Zeroconf, type_: str, name: str) -> None:
-        """Called when a cast has been lost (mDNS info expired or host down)."""
+        """Remove a cast device when its mDNS info expires or the host is down."""
         LOGGER.debug("remove_service %s, %s", type_, name)
         if name in self.devices:
             del self.devices[name]
@@ -146,13 +150,13 @@ def discover_devices(
     zeroconf_instance: Zeroconf | None = None,
     logging_level: int = logging.ERROR,
 ) -> list[NetworkDevice]:
-    """Discover devices"""
+    """Discover devices."""
     LOGGER.setLevel(logging_level)
 
     LOGGER.debug("Discovering devices...")
 
     def callback() -> None:
-        """Called when zeroconf has discovered a new device."""
+        """Handle the event when zeroconf discovers a new device."""
         if max_devices is not None and listener.count >= max_devices:
             discovery_complete.set()
 

@@ -1,4 +1,4 @@
-"""Client specific unittests"""
+"""Client specific unittests."""
 
 from __future__ import annotations
 
@@ -38,16 +38,16 @@ faker.add_provider(internet)
 
 
 class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, TestCase):
-    """GLocalAuthenticationTokens clien specific unittests"""
+    """GLocalAuthenticationTokens clien specific unittests."""
 
     def setUp(self) -> None:
-        """Setup method run before every test"""
+        """Set up the test client before each test."""
         self.client = GLocalAuthenticationTokens(
             username=faker.word(), password=faker.word()
         )
 
     def test_initialization(self) -> None:
-        """Valid initialization tests"""
+        """Valid initialization tests."""
         username = faker.word()
         password = faker.word()
         master_token = faker.master_token()
@@ -59,35 +59,35 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
             master_token=master_token,
             android_id=android_id,
         )
-        self.assertEqual(username, client.username)
-        self.assertEqual(password, client.password)
-        self.assertEqual(master_token, client.master_token)
-        self.assertEqual(android_id, client.android_id)
+        assert username == client.username
+        assert password == client.password
+        assert master_token == client.master_token
+        assert android_id == client.android_id
 
-        self.assertIsNone(client.access_token)
-        self.assertIsNone(client.homegraph)
-        self.assertIsNone(client.access_token_date)
-        self.assertIsNone(client.homegraph_date)
+        assert client.access_token is None
+        assert client.homegraph is None
+        assert client.access_token_date is None
+        assert client.homegraph_date is None
 
         assert client.master_token is not None
         self.assertIsAasEt(client.master_token)
 
     @patch("glocaltokens.client.LOGGER.error")
     def test_initialization__valid(self, m_log: NonCallableMock) -> None:
-        """Valid initialization tests"""
+        """Valid initialization tests."""
         # With username and password
         GLocalAuthenticationTokens(username=faker.word(), password=faker.word())
-        self.assertEqual(m_log.call_count, 0)
+        assert m_log.call_count == 0
 
         # With master_token
         GLocalAuthenticationTokens(master_token=faker.master_token())
-        self.assertEqual(m_log.call_count, 0)
+        assert m_log.call_count == 0
 
     @patch("glocaltokens.client.LOGGER.setLevel")
     def test_initialization__valid_verbose_logger(
         self, m_set_level: NonCallableMock
     ) -> None:
-        """Valid initialization tests with verbose logging"""
+        """Valid initialization tests with verbose logging."""
         # Non verbose
         GLocalAuthenticationTokens(username=faker.word(), password=faker.word())
         m_set_level.assert_called_once_with(logging.ERROR)
@@ -102,57 +102,53 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
 
     @patch("glocaltokens.client.LOGGER.error")
     def test_initialization__invalid(self, m_log: NonCallableMock) -> None:
-        """Invalid initialization tests"""
+        """Invalid initialization tests."""
         # Without username
         GLocalAuthenticationTokens(password=faker.word())
-        self.assertEqual(m_log.call_count, 1)
+        assert m_log.call_count == 1
 
         # Without password
         GLocalAuthenticationTokens(username=faker.word())
-        self.assertEqual(m_log.call_count, 2)
+        assert m_log.call_count == 2
 
         # Without username and password
         GLocalAuthenticationTokens()
-        self.assertEqual(m_log.call_count, 3)
+        assert m_log.call_count == 3
 
         # With invalid master_token
         GLocalAuthenticationTokens(master_token=faker.word())
-        self.assertEqual(m_log.call_count, 4)
+        assert m_log.call_count == 4
 
     def test_get_android_id(self) -> None:
-        """Test getting android id"""
+        """Test getting android id."""
         android_id = self.client.get_android_id()
-        self.assertTrue(len(android_id) == ANDROID_ID_LENGTH)
+        assert len(android_id) == ANDROID_ID_LENGTH
 
         # Make sure we get the same ID when called further
-        self.assertEqual(android_id, self.client.get_android_id())
+        assert android_id == self.client.get_android_id()
 
     # pylint: disable=protected-access
     def test_generate_android_id(self) -> None:
-        """Test generating mac string"""
+        """Test generating mac string."""
         android_id = GLocalAuthenticationTokens._generate_android_id()
-        self.assertTrue(len(android_id) == ANDROID_ID_LENGTH)
+        assert len(android_id) == ANDROID_ID_LENGTH
 
         # Make sure we get different generated mac string
-        self.assertNotEqual(
-            android_id, GLocalAuthenticationTokens._generate_android_id()
-        )
+        assert android_id != GLocalAuthenticationTokens._generate_android_id()
 
     def test_has_expired(self) -> None:
-        """Test expiry method"""
+        """Test expiry method."""
         duration_sec = 60
         now = datetime.now()
         token_dt_expired = now - timedelta(seconds=duration_sec + 1)
         token_dt_non_expired = now - timedelta(seconds=duration_sec - 1)
 
         # Expired
-        self.assertTrue(
-            GLocalAuthenticationTokens._has_expired(token_dt_expired, duration_sec)
-        )
+        assert GLocalAuthenticationTokens._has_expired(token_dt_expired, duration_sec)
 
         # Non expired
-        self.assertFalse(
-            GLocalAuthenticationTokens._has_expired(token_dt_non_expired, duration_sec)
+        assert not GLocalAuthenticationTokens._has_expired(
+            token_dt_non_expired, duration_sec
         )
 
     @patch("glocaltokens.client.LOGGER.error")
@@ -160,13 +156,13 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
     def test_get_master_token(
         self, m_perform_master_login: NonCallableMock, m_log: NonCallableMock
     ) -> None:
-        """Test getting master token"""
+        """Test getting master token."""
         # No token in response
-        self.assertIsNone(self.client.get_master_token())
+        assert self.client.get_master_token() is None
         m_perform_master_login.assert_called_once_with(
             self.client.username, self.client.password, self.client.get_android_id()
         )
-        self.assertEqual(m_log.call_count, 1)
+        assert m_log.call_count == 1
 
         # Reset mocks
         m_perform_master_login.reset_mock()
@@ -179,12 +175,12 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         m_perform_master_login.assert_called_once_with(
             self.client.username, self.client.password, self.client.get_android_id()
         )
-        self.assertEqual(expected_master_token, master_token)
-        self.assertEqual(m_log.call_count, 0)
+        assert expected_master_token == master_token
+        assert m_log.call_count == 0
 
         # Another request - must return the same token all the time
         master_token = self.client.get_master_token()
-        self.assertEqual(expected_master_token, master_token)
+        assert expected_master_token == master_token
 
         # Reset mocks
         m_perform_master_login.reset_mock()
@@ -194,8 +190,8 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         m_perform_master_login.side_effect = ValueError("Plaintext is too long.")
         self.client.invalidate_master_token()
         master_token = self.client.get_master_token()
-        self.assertIsNone(master_token)
-        self.assertEqual(m_log.call_count, 2)
+        assert master_token is None
+        assert m_log.call_count == 2
 
     @patch("glocaltokens.client.LOGGER.error")
     @patch("glocaltokens.client.perform_master_login")
@@ -206,12 +202,12 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         m_get_master_token: NonCallableMock,
         m_log: NonCallableMock,
     ) -> None:
-        """Test getting access token"""
+        """Test getting access token."""
         master_token = faker.master_token()
         m_get_master_token.return_value = {"Token": master_token}
 
         # No token in response
-        self.assertIsNone(self.client.get_access_token())
+        assert self.client.get_access_token() is None
         m_perform_oauth.assert_called_once_with(
             self.client.username,
             master_token,
@@ -220,7 +216,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
             service=ACCESS_TOKEN_SERVICE,
             client_sig=ACCESS_TOKEN_CLIENT_SIGNATURE,
         )
-        self.assertEqual(m_log.call_count, 1)
+        assert m_log.call_count == 1
 
         # Reset mocks
         m_perform_oauth.reset_mock()
@@ -238,8 +234,8 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
             service=ACCESS_TOKEN_SERVICE,
             client_sig=ACCESS_TOKEN_CLIENT_SIGNATURE,
         )
-        self.assertEqual(expected_access_token, access_token)
-        self.assertEqual(m_log.call_count, 0)
+        assert expected_access_token == access_token
+        assert m_log.call_count == 0
 
         # Reset mocks
         m_perform_oauth.reset_mock()
@@ -248,8 +244,8 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         # Another request with non expired token must return the same token
         # (no new requests)
         access_token = self.client.get_access_token()
-        self.assertEqual(expected_access_token, access_token)
-        self.assertEqual(m_perform_oauth.call_count, 0)
+        assert expected_access_token == access_token
+        assert m_perform_oauth.call_count == 0
 
         # Another request with expired token must return new token (new request)
         assert self.client.access_token_date is not None
@@ -257,7 +253,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
             ACCESS_TOKEN_DURATION + 1
         )
         access_token = self.client.get_access_token()
-        self.assertEqual(m_perform_oauth.call_count, 1)
+        assert m_perform_oauth.call_count == 1
 
     @patch("glocaltokens.client.grpc.ssl_channel_credentials")
     @patch("glocaltokens.client.grpc.access_token_call_credentials")
@@ -268,7 +264,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_access_token")
     def test_get_homegraph(
         self,
-        _m_get_access_token: NonCallableMock,
+        m_get_access_token: NonCallableMock,
         m_get_home_graph_request: NonCallableMock,
         m_structure_service_stub: NonCallableMock,
         m_secure_channel: NonCallableMock,
@@ -276,25 +272,27 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         m_access_token_call_credentials: NonCallableMock,
         m_ssl_channel_credentials: NonCallableMock,
     ) -> None:
-        """Test getting homegraph"""
+        """Test getting homegraph."""
         # New homegraph
         self.client.get_homegraph()
-        self.assertEqual(m_ssl_channel_credentials.call_count, 1)
-        self.assertEqual(m_access_token_call_credentials.call_count, 1)
-        self.assertEqual(m_composite_channel_credentials.call_count, 1)
-        self.assertEqual(m_secure_channel.call_count, 1)
-        self.assertEqual(m_structure_service_stub.call_count, 1)
-        self.assertEqual(m_get_home_graph_request.call_count, 1)
+        assert m_ssl_channel_credentials.call_count == 1
+        assert m_access_token_call_credentials.call_count == 1
+        assert m_composite_channel_credentials.call_count == 1
+        assert m_secure_channel.call_count == 1
+        assert m_structure_service_stub.call_count == 1
+        assert m_get_home_graph_request.call_count == 1
+        assert m_get_access_token.call_count == 1
 
         # Another request with non expired homegraph must return the same homegraph
         # (no new requests)
         self.client.get_homegraph()
-        self.assertEqual(m_ssl_channel_credentials.call_count, 1)
-        self.assertEqual(m_access_token_call_credentials.call_count, 1)
-        self.assertEqual(m_composite_channel_credentials.call_count, 1)
-        self.assertEqual(m_secure_channel.call_count, 1)
-        self.assertEqual(m_structure_service_stub.call_count, 1)
-        self.assertEqual(m_get_home_graph_request.call_count, 1)
+        assert m_ssl_channel_credentials.call_count == 1
+        assert m_access_token_call_credentials.call_count == 1
+        assert m_composite_channel_credentials.call_count == 1
+        assert m_secure_channel.call_count == 1
+        assert m_structure_service_stub.call_count == 1
+        assert m_get_home_graph_request.call_count == 1
+        assert m_get_access_token.call_count == 1
 
         # Expired homegraph
         assert self.client.homegraph_date is not None
@@ -302,12 +300,13 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
             HOMEGRAPH_DURATION + 1
         )
         self.client.get_homegraph()
-        self.assertEqual(m_ssl_channel_credentials.call_count, 2)
-        self.assertEqual(m_access_token_call_credentials.call_count, 2)
-        self.assertEqual(m_composite_channel_credentials.call_count, 2)
-        self.assertEqual(m_secure_channel.call_count, 2)
-        self.assertEqual(m_structure_service_stub.call_count, 2)
-        self.assertEqual(m_get_home_graph_request.call_count, 2)
+        assert m_ssl_channel_credentials.call_count == 2
+        assert m_access_token_call_credentials.call_count == 2
+        assert m_composite_channel_credentials.call_count == 2
+        assert m_secure_channel.call_count == 2
+        assert m_structure_service_stub.call_count == 2
+        assert m_get_home_graph_request.call_count == 2
+        assert m_get_access_token.call_count == 2
 
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_access_token")
     @patch("glocaltokens.client.StructuresServiceStub")
@@ -316,7 +315,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         m_structure_service_stub: NonCallableMock,
         m_get_access_token: NonCallableMock,
     ) -> None:
-        """Test retries in  get_homegraph"""
+        """Test retries in  get_homegraph."""
         m_get_access_token.return_value = faker.word()
         rpc_error = grpc.RpcError()
         rpc_error.code = mock.Mock()  # type: ignore[method-assign]
@@ -324,14 +323,12 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         rpc_error.details = mock.Mock()  # type: ignore[method-assign]
         m_structure_service_stub.return_value.GetHomeGraph.side_effect = rpc_error
         result = self.client.get_homegraph()
-        self.assertEqual(result, None)
-        self.assertEqual(
-            m_structure_service_stub.return_value.GetHomeGraph.call_count, 3
-        )
+        assert result is None
+        assert m_structure_service_stub.return_value.GetHomeGraph.call_count == 3
 
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_homegraph")
     def test_get_google_devices(self, m_get_homegraph: NonCallableMock) -> None:
-        """Test getting google devices"""
+        """Test getting google devices."""
         # With just one device returned from homegraph
         fake_device_name = faker.word()
         fake_ip_address = faker.ipv4()
@@ -343,13 +340,13 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
             disable_discovery=True,
             addresses={fake_device_name: fake_ip_address},
         )
-        self.assertEqual(len(google_devices), 1)
+        assert len(google_devices) == 1
 
         google_device = google_devices[0]
         self.assertDevice(google_device, homegraph_device)
-        self.assertIsNotNone(google_device.network_device)
+        assert google_device.network_device is not None
         if google_device.network_device is not None:
-            self.assertEqual(google_device.network_device.ip_address, fake_ip_address)
+            assert google_device.network_device.ip_address == fake_ip_address
 
         # With two devices returned from homegraph
         # but one device having the invalid token
@@ -368,19 +365,17 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
             disable_discovery=True,
             addresses={fake_device_name: fake_ip_address},
         )
-        self.assertEqual(len(google_devices), 1)
+        assert len(google_devices) == 1
         self.assertDevice(google_devices[0], homegraph_device_valid)
-        self.assertIsNotNone(google_devices[0].network_device)
+        assert google_devices[0].network_device is not None
         if google_devices[0].network_device is not None:
-            self.assertEqual(
-                google_devices[0].network_device.ip_address, fake_ip_address
-            )
+            assert google_devices[0].network_device.ip_address == fake_ip_address
 
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_google_devices")
     def test_get_google_devices_json(
         self, m_get_google_devices: NonCallableMock
     ) -> None:
-        """Test getting google devices as JSON"""
+        """Test getting google devices as JSON."""
         device_id = str(faker.uuid4())
         device_name = faker.word()
         local_auth_token = faker.local_auth_token()
@@ -400,36 +395,32 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         m_get_google_devices.return_value = [google_device]
 
         json_string = self.client.get_google_devices_json(disable_discovery=True)
-        self.assertEqual(m_get_google_devices.call_count, 1)
+        assert m_get_google_devices.call_count == 1
         received_json = json.loads(json_string)
         received_device = received_json[0]
-        self.assertEqual(received_device[JSON_KEY_DEVICE_NAME], device_name)
-        self.assertEqual(received_device[JSON_KEY_HARDWARE], hardware)
-        self.assertEqual(received_device[JSON_KEY_LOCAL_AUTH_TOKEN], local_auth_token)
-        self.assertEqual(received_device[JSON_KEY_NETWORK_DEVICE][JSON_KEY_PORT], port)
-        self.assertEqual(
-            received_device[JSON_KEY_NETWORK_DEVICE][JSON_KEY_IP], ip_address
-        )
+        assert received_device[JSON_KEY_DEVICE_NAME] == device_name
+        assert received_device[JSON_KEY_HARDWARE] == hardware
+        assert received_device[JSON_KEY_LOCAL_AUTH_TOKEN] == local_auth_token
+        assert received_device[JSON_KEY_NETWORK_DEVICE][JSON_KEY_PORT] == port
+        assert received_device[JSON_KEY_NETWORK_DEVICE][JSON_KEY_IP] == ip_address
 
     def test_username_escaping(self) -> None:
         """Test that plus sign is escaped."""
-        self.assertEqual(
-            self.client._escape_username("login@domain.com"), "login@domain.com"
+        assert self.client._escape_username("login@domain.com") == "login@domain.com"
+        assert (
+            self.client._escape_username("login+tag@domain.com")
+            == "login%2Btag@domain.com"
         )
-        self.assertEqual(
-            self.client._escape_username("login+tag@domain.com"),
-            "login%2Btag@domain.com",
-        )
-        self.assertEqual(self.client._escape_username("login"), "login")
+        assert self.client._escape_username("login") == "login"
         # Such account should be impossible to create.
-        self.assertEqual(self.client._escape_username("login+tag"), "login%2Btag")
+        assert self.client._escape_username("login+tag") == "login%2Btag"
 
 
 class DeviceClientTests(TypeAssertions, TestCase):
-    """Device specific unittests"""
+    """Device specific unittests."""
 
     def test_initialization__valid(self) -> None:
-        """Test initialization that is valid"""
+        """Test initialization that is valid."""
         local_auth_token = faker.local_auth_token()
 
         # With ip and port
@@ -446,11 +437,11 @@ class DeviceClientTests(TypeAssertions, TestCase):
             local_auth_token=local_auth_token,
         )
 
-        self.assertEqual(device.local_auth_token, local_auth_token)
+        assert device.local_auth_token == local_auth_token
 
     @patch("glocaltokens.client.LOGGER.warning")
     def test_initialization__invalid(self, m_log: NonCallableMock) -> None:
-        """Test initialization that is invalid"""
+        """Test initialization that is invalid."""
 
         # Invalid local_auth_token
         device = Device(
@@ -458,5 +449,5 @@ class DeviceClientTests(TypeAssertions, TestCase):
             device_name=faker.word(),
             local_auth_token=faker.word(),
         )
-        self.assertEqual(m_log.call_count, 1)
-        self.assertIsNone(device.local_auth_token)
+        assert m_log.call_count == 1
+        assert device.local_auth_token is None

@@ -1,4 +1,4 @@
-"""Types used for package typing"""
+"""Types used for package typing."""
 
 from __future__ import annotations
 

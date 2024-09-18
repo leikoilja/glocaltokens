@@ -1,4 +1,4 @@
-"""Globally used constants"""
+"""Globally used constants."""
 
 from __future__ import annotations
 
