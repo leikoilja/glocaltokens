@@ -1,4 +1,4 @@
-"""Log utilities"""
+"""Log utilities."""
 
 from __future__ import annotations
 

@@ -1,22 +1,24 @@
-"""Zeroconf based scanner"""
+"""Zeroconf based scanner."""
 
 from __future__ import annotations
 
-from collections.abc import Callable
 import logging
 from threading import Event
-from typing import NamedTuple
+from typing import TYPE_CHECKING, NamedTuple
 
 from zeroconf import ServiceBrowser, ServiceInfo, ServiceListener, Zeroconf
 
 from .const import DISCOVERY_TIMEOUT, GOOGLE_CAST_GROUP
 from .utils import network as net_utils
 
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
 LOGGER = logging.getLogger(__name__)
 
 
 class NetworkDevice(NamedTuple):
-    """Discovered Google device representation"""
+    """Discovered Google device representation."""
 
     name: str
     ip_address: str
@@ -28,7 +30,7 @@ class NetworkDevice(NamedTuple):
 class CastListener(ServiceListener):
     """Zeroconf Cast Services collection.
     Credit (pychromecast):
-    https://github.com/home-assistant-libs/pychromecast/
+    https://github.com/home-assistant-libs/pychromecast/.
     """
 
     def __init__(
@@ -146,7 +148,7 @@ def discover_devices(
     zeroconf_instance: Zeroconf | None = None,
     logging_level: int = logging.ERROR,
 ) -> list[NetworkDevice]:
-    """Discover devices"""
+    """Discover devices."""
     LOGGER.setLevel(logging_level)
 
     LOGGER.debug("Discovering devices...")

@@ -1,4 +1,4 @@
-"""Network utilities"""
+"""Network utilities."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ import socket
 
 
 def is_valid_ipv4_address(address: str) -> bool:
-    """Check if ip address is ipv4"""
+    """Check if ip address is ipv4."""
     try:
         socket.inet_pton(socket.AF_INET, address)
     except AttributeError:  # no inet_pton here, sorry
@@ -22,7 +22,7 @@ def is_valid_ipv4_address(address: str) -> bool:
 
 
 def is_valid_ipv6_address(address: str) -> bool:
-    """Check if ip address is ipv6"""
+    """Check if ip address is ipv6."""
     try:
         socket.inet_pton(socket.AF_INET6, address)
     except OSError:  # not a valid address
@@ -31,5 +31,5 @@ def is_valid_ipv6_address(address: str) -> bool:
 
 
 def is_valid_port(port: int) -> bool:
-    """Check if port is valid"""
+    """Check if port is valid."""
     return 0 <= port <= 65535
