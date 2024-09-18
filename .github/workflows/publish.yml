@@ -22,4 +22,4 @@ jobs:
         env:
           TWINE_USERNAME: "__token__"
           TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-        run: uvx twine upload dist/*
+        run: uvx twine upload --non-interactive --disable-progress-bar --skip-existing dist/*
