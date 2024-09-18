@@ -158,6 +158,7 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/test_client.py" = ["SLF001"]
+"example/*.py" = ["INP001"]
 
 [tool.ruff.lint.isort]
 force-sort-within-sections = true
@@ -189,7 +190,8 @@ good-names = [
 ]
 
 [tool.pylint.format]
-max-line-length = 88
+expected-line-ending-format = "LF"
+max-line-length = 100
 min-similarity-lines = 7
 
 [tool.pylint.messages_control]

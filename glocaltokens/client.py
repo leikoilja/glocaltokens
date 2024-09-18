@@ -52,7 +52,7 @@ class Device:
         network_device: NetworkDevice | None = None,
         hardware: str | None = None,
     ):
-        """Initializes a Device."""
+        """Initialize a Device."""
         log_prefix = f"[Device - {device_name}(id={device_id})]"
         LOGGER.debug("%s Initializing new Device instance", log_prefix)
         self.device_id = device_id
@@ -111,10 +111,11 @@ class Device:
         self.local_auth_token = local_auth_token
 
     def __str__(self) -> str:
+        """Return string representation of the device."""
         return str(self.as_dict())
 
     def as_dict(self) -> DeviceDict:
-        """Dictionary representation."""
+        """Return the dictionary representation of the device."""
         return {
             "device_id": self.device_id,
             "device_name": self.device_name,
@@ -138,17 +139,14 @@ class GLocalAuthenticationTokens:
         android_id: str | None = None,
         verbose: bool = False,
     ):
-        """Initialize an GLocalAuthenticationTokens instance with google account
-        credentials
-        :params
-            username: google account username;
-            password: google account password (can be an app password);
-            master_token: google master token (instead of username/password
-                combination);
-            android_id: the id of an android device. Will be randomly generated
-                if not set;
-            verbose: whether or not print debug logging information.
+        """Initialize a GLocalAuthenticationTokens instance with Google account credentials.
 
+        :params
+            username: Google account username;
+            password: Google account password (can be an app password);
+            master_token: Google master token (instead of username/password combination);
+            android_id: The ID of an Android device. Will be randomly generated if not set;
+            verbose: Whether or not to print debug logging information.
         """
         self.logging_level = logging.DEBUG if verbose else logging.ERROR
         LOGGER.setLevel(self.logging_level)
@@ -208,7 +206,7 @@ class GLocalAuthenticationTokens:
 
     @staticmethod
     def _has_expired(creation_dt: datetime, duration: int) -> bool:
-        """Checks if an specified token/object has expired."""
+        """Check if an specified token/object has expired."""
         return datetime.now().timestamp() - creation_dt.timestamp() > duration
 
     @staticmethod
@@ -287,7 +285,7 @@ class GLocalAuthenticationTokens:
         return self.access_token
 
     def get_homegraph(self, auth_attempts: int = 3) -> GetHomeGraphResponse | None:
-        """Returns the entire Google Home Foyer V2 service."""
+        """Return the entire Google Home Foyer V2 service."""
         if (
             self.homegraph is None
             or self.homegraph_date is None
@@ -361,8 +359,7 @@ class GLocalAuthenticationTokens:
         force_homegraph_reload: bool = False,
         discovery_timeout: int = DISCOVERY_TIMEOUT,
     ) -> list[Device]:
-        """Returns a list of google devices with their local authentication tokens,
-        and IP and ports if set in models_list.
+        """Return a list of Google devices with their local authentication tokens, IP, and ports.
 
         models_list: The list of accepted model names.
         disable_discovery: Whether or not the device's IP and port should
@@ -397,11 +394,9 @@ class GLocalAuthenticationTokens:
             )
 
         if addresses and not is_dict_with_valid_ipv4_addresses(addresses):
-            # We need to disable flake8-use-fstring because of the brackets,
-            # it causes a false positive.
             LOGGER.error(
                 "Invalid dictionary structure for addresses dictionary "
-                "argument. Correct structure is {'device_name': 'ipaddress'}"  # noqa
+                "argument. Correct structure is {'device_name': 'ipaddress'}"
             )
             return devices
 
@@ -492,11 +487,10 @@ class GLocalAuthenticationTokens:
         zeroconf_instance: Zeroconf | None = None,
         force_homegraph_reload: bool = False,
     ) -> str:
-        """Returns a json list of google devices with their local authentication tokens,
-        and IP and ports if set in models_list.
+        """Return a JSON list of devices with authentication tokens, IPs, and ports if models set.
 
         models_list: The list of accepted model names.
-        indent: The indentation for the json formatting.
+        indent: The indentation for the JSON formatting.
         disable_discovery: Whether or not the device's IP and port should
           be searched for in the network.
         addresses: Dict of network devices from the local network
@@ -517,18 +511,18 @@ class GLocalAuthenticationTokens:
         return json.dumps([obj.as_dict() for obj in google_devices], indent=indent)
 
     def invalidate_access_token(self) -> None:
-        """Invalidates the current access token."""
+        """Invalidate the current access token."""
         self.access_token = None
         self.access_token_date = None
         LOGGER.debug("Invalidated access_token")
 
     def invalidate_master_token(self) -> None:
-        """Invalidates the current master token."""
+        """Invalidate the current master token."""
         self.master_token = None
         LOGGER.debug("Invalidated master_token")
 
     def invalidate_homegraph(self) -> None:
-        """Invalidates the stored homegraph data."""
+        """Invalidate the stored homegraph data."""
         self.homegraph = None
         self.homegraph_date = None
         LOGGER.debug("Invalidated homegraph")
