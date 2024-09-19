@@ -1,25 +1,28 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
 [project]
 name = "glocaltokens"
-authors = [{ name = "Ilja Leiko", email = "leikoilja@gmail.com" }]
+description = "Tool to extract Google device local authentication tokens in Python"
+authors = [{name = "Ilja Leiko", email = "leikoilja@gmail.com"}]
+readme = "README.md"
+license = {text = "MIT"}
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Topic :: Software Development",
     "Typing :: Typed",
 ]
-description = "Tool to extract Google device local authentication tokens in Python"
 keywords = [
     "Authentication",
     "Google Home",
     "Google",
     "LocalAuthenticationTokens",
 ]
-include = ["glocaltokens/py.typed"]
-license = "MIT"
-readme = "README.md"
-homepage = "https://github.com/leikoilja/glocaltokens"
-repository = "https://github.com/leikoilja/glocaltokens"
 requires-python = ">=3.9"
 dynamic = ["version"]
 dependencies = [
@@ -34,6 +37,7 @@ dependencies = [
 ]
 
 [project.urls]
+"Homepage" = "https://github.com/leikoilja/glocaltokens"
 "Bug Tracker" = "https://github.com/leikoilja/glocaltokens/issues"
 "Release Notes" = "https://github.com/leikoilja/glocaltokens/releases"
 
@@ -50,10 +54,6 @@ dev-dependencies = [
     "ruff>=0.6.4",
     "types-protobuf>=4.25.0.20240417",
 ]
-
-[build-system]
-requires = ["hatchling", "hatch-vcs"]
-build-backend = "hatchling.build"
 
 [tool.hatch.version]
 source = "vcs"
