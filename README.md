@@ -22,11 +22,13 @@ Note: the package was written and tested on Python 3.
 - Install the python package.
 
 Using uv:
+
 ```console
 $ uv add glocaltokens
 ```
 
 Using pip:
+
 ```console
 $ pip install glocaltokens
 ```
