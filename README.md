@@ -19,10 +19,18 @@ You will probably need to run the script repeatedly storing the tokens somewhere
 
 Note: the package was written and tested on Python 3.
 
-- Install the python package
+- Install the python package.
 
+Using uv:
+
+```console
+$ uv add glocaltokens
 ```
-pip install glocaltokens
+
+Using pip:
+
+```console
+$ pip install glocaltokens
 ```
 
 Use in your program as (see examples folder for detailed example):
