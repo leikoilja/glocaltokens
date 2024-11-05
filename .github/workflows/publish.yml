@@ -1,5 +1,7 @@
 name: Publish to PyPI
 
+concurrency: release
+
 on:
   release:
     types: [published]
@@ -8,6 +10,9 @@ jobs:
   publish:
     name: Publish
     runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      id-token: write
     steps:
       - name: Check out the repository
         uses: actions/checkout@v4
@@ -19,7 +24,4 @@ jobs:
         run: uv build
 
       - name: Publish to PyPI
-        env:
-          TWINE_USERNAME: "__token__"
-          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
-        run: uvx twine upload --non-interactive --disable-progress-bar --skip-existing dist/*
+        run: uv publish
