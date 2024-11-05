@@ -12,6 +12,7 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Topic :: Software Development",
@@ -26,34 +27,33 @@ keywords = [
 requires-python = ">=3.9"
 dynamic = ["version"]
 dependencies = [
-    "ghome-foyer-api>=1.0.0",
+    "ghome-foyer-api>=1.1.1",
     "gpsoauth>=1.1.1",
     "simplejson>=3.19.3",
     # Note, we want to keep versions of grpcio, requests and zeroconf similar to Home Assistant
-    # https://github.com/home-assistant/core/blob/2024.9.0/homeassistant/package_constraints.txt
-    "grpcio>=1.59.0",
+    # https://github.com/home-assistant/core/blob/2024.11.0/homeassistant/package_constraints.txt
+    "grpcio>=1.66.0",
     "requests>=2.32.3",
-    "zeroconf>=0.133.0",
+    "zeroconf>=0.136.0",
+]
+
+[dependency-groups]
+dev = [
+    "codespell>=2.3.0",
+    "faker>=30.8.2",
+    "grpc-stubs>=1.53.0.5",
+    "mock>=5.1.0",
+    "mypy>=1.13.0",
+    "pylint>=3.3.1",
+    "pytest>=8.3.3",
+    "ruff>=0.7.2",
+    "types-protobuf>=5.28.0",
 ]
 
 [project.urls]
 "Homepage" = "https://github.com/leikoilja/glocaltokens"
 "Bug Tracker" = "https://github.com/leikoilja/glocaltokens/issues"
 "Release Notes" = "https://github.com/leikoilja/glocaltokens/releases"
-
-[tool.uv]
-dev-dependencies = [
-    "codespell>=2.3.0",
-    "faker>=20.1.0",
-    "grpc-stubs>=1.53.0.5",
-    "mock>=5.1.0",
-    "mypy>=1.11.0",
-    "pre-commit>=3.8.0",
-    "pylint>=3.2.7",
-    "pytest>=7.4.4",
-    "ruff>=0.6.4",
-    "types-protobuf>=4.25.0.20240417",
-]
 
 [tool.hatch.version]
 source = "vcs"
@@ -207,6 +207,7 @@ disable = [
     "too-many-arguments",
     "too-many-instance-attributes",
     "too-many-locals",
+    "too-many-positional-arguments",
     "consider-using-namedtuple-or-dataclass",
     "consider-using-assignment-expr",
 ]
