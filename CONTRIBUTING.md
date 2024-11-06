@@ -45,7 +45,7 @@ People _love_ thorough bug reports. I'm not even kidding.
 ## Use a Consistent Coding Style
 
 Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and run `uv sync` to setup the developer environment.
-We use [black](https://github.com/ambv/black) and [prettier](https://prettier.io/)
+We use [ruff](https://docs.astral.sh/ruff/) and [prettier](https://prettier.io/)
 to make sure the code follows the style.
 
 `pre-commit` can be used to run all checks with one command (see dedicated section below).
@@ -71,7 +71,7 @@ repository to have code style and linting checks.
 Activate `pre-commit` git hook:
 
 ```console
-$ uv run pre-commit install
+$ uvx pre-commit install
 ```
 
 Now the pre-commit tests will be done every time you commit.
@@ -79,5 +79,5 @@ Now the pre-commit tests will be done every time you commit.
 You can also run the tests on all repository files manually with this command:
 
 ```console
-$ uv run pre-commit run --all-files
+$ uvx pre-commit run --all-files
 ```
