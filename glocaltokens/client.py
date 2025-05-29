@@ -311,8 +311,7 @@ class GLocalAuthenticationTokens:
                 channel_credentials = grpc.composite_channel_credentials(scc, tok)
 
                 LOGGER.debug(
-                    "%s Establishing secure channel with "
-                    "the Google Home Foyer API...",
+                    "%s Establishing secure channel with the Google Home Foyer API...",
                     log_prefix,
                 )
                 with grpc.secure_channel(

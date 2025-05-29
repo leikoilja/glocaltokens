@@ -39,6 +39,6 @@ class TypeAssertions(TestCase):
 
     def assertIsAasEt(self, variable: str) -> None:
         """Assert the given variable follows AAS token format."""
-        assert token_utils.is_aas_et(
-            variable
-        ), f"Given variable {variable} doesn't follow the AAS_ET format"
+        assert token_utils.is_aas_et(variable), (
+            f"Given variable {variable} doesn't follow the AAS_ET format"
+        )
