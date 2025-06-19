@@ -27,13 +27,13 @@ keywords = [
 requires-python = ">=3.9"
 dynamic = ["version"]
 dependencies = [
-    "ghome-foyer-api>=1.2.1",
+    "ghome-foyer-api>=1.2.3",
     "gpsoauth>=1.1.1",
     "simplejson>=3.20.1",
     # Note, we want to keep versions of grpcio, requests and zeroconf similar to Home Assistant
-    # https://github.com/home-assistant/core/blob/2025.5.0/homeassistant/package_constraints.txt
-    "grpcio>=1.71.0",
-    "requests>=2.32.3",
+    # https://github.com/home-assistant/core/blob/2025.6.0/homeassistant/package_constraints.txt
+    "grpcio>=1.72.1",
+    "requests>=2.32.4",
     "zeroconf>=0.147.0",
 ]
 
@@ -43,10 +43,10 @@ dev = [
     "faker>=37.3.0",
     "grpc-stubs>=1.53.0.6",
     "mock>=5.2.0",
-    "mypy>=1.15.0",
+    "mypy>=1.16.1",
     "pylint>=3.3.7",
     "pytest>=8.3.5",
-    "ruff>=0.11.11",
+    "ruff>=0.12.0",
     "types-protobuf>=5.29.1",
 ]
 
@@ -115,7 +115,6 @@ select = [
     "S317", # suspicious-xml-sax-usage
     "S318", # suspicious-xml-mini-dom-usage
     "S319", # suspicious-xml-pull-dom-usage
-    "S320", # suspicious-xmle-tree-usage
     "S601", # paramiko-call
     "S602", # subprocess-popen-with-shell-equals-true
     "S604", # call-with-shell-equals-true
