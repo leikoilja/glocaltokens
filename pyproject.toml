@@ -58,6 +58,9 @@ dev = [
 [tool.hatch.version]
 source = "vcs"
 
+[tool.hatch.version.raw-options]
+fallback_version = "0.0.0"
+
 [tool.ruff]
 required-version = ">=0.6.0"
 target-version = "py39"
