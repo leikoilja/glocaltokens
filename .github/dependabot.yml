@@ -1,10 +1,11 @@
 version: 2
 updates:
-  - package-ecosystem: pip
+  - package-ecosystem: uv
     directory: "/"
-    versioning-strategy: lockfile-only
     schedule:
-      interval: daily
+      interval: weekly
+    allow:
+      - dependency-type: development
     labels:
       - "dependencies"
   - package-ecosystem: github-actions
