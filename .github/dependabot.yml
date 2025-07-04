@@ -4,8 +4,6 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
-    allow:
-      - dependency-type: development
     labels:
       - "dependencies"
   - package-ecosystem: github-actions
