@@ -185,8 +185,8 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "ghome-foyer-api", specifier = ">=1.2.3" },
-    { name = "gpsoauth", specifier = ">=1.1.1" },
+    { name = "ghome-foyer-api", specifier = ">=1.2.2" },
+    { name = "gpsoauth", specifier = ">=2.0.0" },
     { name = "grpcio", specifier = ">=1.72.1" },
     { name = "requests", specifier = ">=2.32.4" },
     { name = "simplejson", specifier = ">=3.20.1" },
@@ -208,16 +208,16 @@ dev = [
 
 [[package]]
 name = "gpsoauth"
-version = "1.1.1"
+version = "2.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pycryptodomex" },
     { name = "requests" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/8c/b3/3494be6889ba70c17dc478a94c096ed891458f8ed10ca6ebc66ba1963764/gpsoauth-1.1.1.tar.gz", hash = "sha256:58202ed303397d2927b464dc95e2714bffff85a1b0f88bf68f3ad63859ebe435", size = 6627, upload-time = "2024-06-10T01:20:29.6Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/1a/6a/f4fd84bcfd513d512711a2a14039ac431201c440c29a8f76af5584a34614/gpsoauth-2.0.0.tar.gz", hash = "sha256:9e3b765a6a4e0364dec1bc4157bd3ed7e5ec3066589e285d0b46986910aa6bd2", size = 6501, upload-time = "2025-07-04T01:30:24.296Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/7b/ad/89f0921a402cdaf715ecb9d3b8509a6a71999b01eb471f60553bf5d4e926/gpsoauth-1.1.1-py3-none-any.whl", hash = "sha256:0fa7959b1d52fc625d93928e4ad4349ac79c6bfe811981d4f91f3b687e1b6fc1", size = 7300, upload-time = "2024-06-10T01:20:28.228Z" },
+    { url = "https://files.pythonhosted.org/packages/fe/7a/1dc1e06235732d1a1037640ec6aabd8fc18597a909848885376f1a0cffe3/gpsoauth-2.0.0-py3-none-any.whl", hash = "sha256:fb8bf9cb8b6e6bee1dbedbbbe8958ace71cddaccf5950e79b38c4d2ae9870641", size = 7362, upload-time = "2025-07-04T01:30:23.101Z" },
 ]
 
 [[package]]
