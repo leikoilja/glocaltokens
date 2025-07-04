@@ -27,8 +27,8 @@ keywords = [
 requires-python = ">=3.9"
 dynamic = ["version"]
 dependencies = [
-    "ghome-foyer-api>=1.2.3",
-    "gpsoauth>=1.1.1",
+    "ghome-foyer-api>=1.2.2",
+    "gpsoauth>=2.0.0",
     "simplejson>=3.20.1",
     # Note, we want to keep versions of grpcio, requests and zeroconf similar to Home Assistant
     # https://github.com/home-assistant/core/blob/2025.6.0/homeassistant/package_constraints.txt
