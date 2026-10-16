@@ -325,12 +325,18 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         assert expected_access_token == access_token
         assert m_perform_oauth.call_count == 0
 
-        # Another request with expired token must return new token (new request)
-        assert self.client.access_token_date is not None
-        self.client.access_token_date = self.client.access_token_date - timedelta(
-            ACCESS_TOKEN_DURATION + 1
+        # Just before expiry the token is still used (no new request)
+        self.client.access_token_date = datetime.now(UTC) - timedelta(
+            seconds=ACCESS_TOKEN_DURATION - 1
         )
-        access_token = self.client.get_access_token()
+        self.client.get_access_token()
+        assert m_perform_oauth.call_count == 0
+
+        # Just after expiry a new token is requested
+        self.client.access_token_date = datetime.now(UTC) - timedelta(
+            seconds=ACCESS_TOKEN_DURATION + 1
+        )
+        self.client.get_access_token()
         assert m_perform_oauth.call_count == 1
 
     @patch("glocaltokens.client.grpc.ssl_channel_credentials")
@@ -375,10 +381,16 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         assert m_get_home_graph_request.call_count == 1
         assert m_get_access_token.call_count == 1
 
-        # Expired homegraph
-        assert self.client.homegraph_date is not None
-        self.client.homegraph_date = self.client.homegraph_date - timedelta(
-            HOMEGRAPH_DURATION + 1
+        # Just before expiry the homegraph is still used (no new requests)
+        self.client.homegraph_date = datetime.now(UTC) - timedelta(
+            seconds=HOMEGRAPH_DURATION - 1
+        )
+        self.client.get_homegraph()
+        assert m_secure_channel.call_count == 1
+
+        # Just after expiry a new homegraph is requested
+        self.client.homegraph_date = datetime.now(UTC) - timedelta(
+            seconds=HOMEGRAPH_DURATION + 1
         )
         self.client.get_homegraph()
         assert m_ssl_channel_credentials.call_count == 2
