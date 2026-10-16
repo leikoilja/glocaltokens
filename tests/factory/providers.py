@@ -4,9 +4,7 @@ from __future__ import annotations
 
 from faker import Faker
 from faker.providers import BaseProvider
-from ghome_foyer_api.api_pb2 import (  # pylint: disable=no-name-in-module
-    GetHomeGraphResponse,
-)
+from ghome_foyer_api.api_pb2 import GetHomeGraphResponse  # pylint: disable=no-name-in-module
 
 from glocaltokens.const import (
     ACCESS_TOKEN_LENGTH,
@@ -49,7 +47,7 @@ class HomegraphProvider(TokenProvider):
         self, device_name: str | None = None
     ) -> GetHomeGraphResponse.Home.Device:
         """Create and return a mocked HomeGraph device object."""
-        device_name = device_name if device_name else faker.word()
+        device_name = device_name or faker.word()
 
         return GetHomeGraphResponse.Home.Device(
             local_auth_token=self.local_auth_token(),
@@ -75,7 +73,5 @@ class HomegraphProvider(TokenProvider):
         """
         return [
             self.homegraph_device()
-            for n in range(
-                count if count else faker.random.randint(min_devices, max_devices)
-            )
+            for n in range(count or faker.random.randint(min_devices, max_devices))
         ]

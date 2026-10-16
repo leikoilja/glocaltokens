@@ -46,8 +46,7 @@ from glocaltokens.client import GLocalAuthenticationTokens
 #
 # Call get_google_devices_json() afterwards to get timers/alarms as oftens as you want to update.
 client = GLocalAuthenticationTokens(
-  username="<YOUR_GOOGLE_USERNAME>",
-  password="<YOUR_GOOGLE_PASSWORD>"
+    username="<YOUR_GOOGLE_USERNAME>", password="<YOUR_GOOGLE_PASSWORD>"
 )
 
 # Get master token
@@ -68,11 +67,13 @@ from glocaltokens.const import GOOGLE_HOME_MODELS
 google_devices_select = client.get_google_devices_json(GOOGLE_HOME_MODELS)
 
 # But if you need to select just a set of models, or add new models, you can use a list of str
-google_devices_select_2 = client.get_google_devices_json([
-    f"Google Home",
-    f"Google Home Mini",
-    f"Google Nest Mini",
-])
+google_devices_select_2 = client.get_google_devices_json(
+    [
+        f"Google Home",
+        f"Google Home Mini",
+        f"Google Nest Mini",
+    ]
+)
 ```
 
 ### Predefined models list
@@ -97,8 +98,7 @@ from glocaltokens.client import GLocalAuthenticationTokens
 
 # Using google username and password first, and only once
 client = GLocalAuthenticationTokens(
-  username="<YOUR_GOOGLE_USERNAME>",
-  password="<YOUR_GOOGLE_PASSWORD>"
+    username="<YOUR_GOOGLE_USERNAME>", password="<YOUR_GOOGLE_PASSWORD>"
 )
 
 # Get master token
@@ -106,7 +106,6 @@ master_token = client.get_master_token()
 print("[*] Master token", master_token)
 
 """Now store master_token somewhere"""
-
 ```
 
 ## Contributing
