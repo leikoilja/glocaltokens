@@ -195,6 +195,18 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         assert master_token is None
         assert m_log.call_count == 2
 
+    @patch("glocaltokens.client.perform_master_login")
+    def test_get_master_token__stored_without_password(
+        self, m_perform_master_login: NonCallableMock
+    ) -> None:
+        """Test a stored master token is returned without username and password."""
+        master_token = faker.master_token()
+        client = GLocalAuthenticationTokens(
+            username=faker.word(), master_token=master_token
+        )
+        assert client.get_master_token() == master_token
+        m_perform_master_login.assert_not_called()
+
     @patch("glocaltokens.client.LOGGER.error")
     @patch("glocaltokens.client.perform_master_login")
     @patch("glocaltokens.client.perform_oauth")
