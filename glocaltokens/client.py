@@ -15,6 +15,7 @@ from ghome_foyer_api.api_pb2_grpc import StructuresServiceStub
 import gpsoauth
 from gpsoauth import exchange_token, perform_master_login, perform_oauth
 import grpc
+import requests
 
 from .const import (
     ACCESS_TOKEN_APP_NAME,
@@ -24,9 +25,11 @@ from .const import (
     ANDROID_ID_LENGTH,
     DEFAULT_DISCOVERY_PORT,
     DISCOVERY_TIMEOUT,
+    EMAIL_ACCESS_TOKEN_SERVICE,
     GOOGLE_HOME_FOYER_API,
     HOMEGRAPH_DURATION,
     REQUEST_TIMEOUT,
+    TOKEN_INFO_URL,
 )
 from .scanner import NetworkDevice, discover_devices
 from .utils import network as net_utils, token as token_utils
@@ -363,6 +366,41 @@ class GLocalAuthenticationTokens:
             self.access_token_date,
         )
         return self.access_token
+
+    def get_email(self) -> str | None:
+        """Return the verified email address of the account, if Google gives it.
+
+        A master token doesn't say which account it belongs to. This gets an
+        access token that may only read the email address, and asks Google whose
+        it is.
+        """
+        master_token = self.get_master_token()
+        if master_token is None:
+            LOGGER.debug("Unable to obtain master token.")
+            return None
+        with _request_timeout():
+            res = perform_oauth(
+                self._escape_username(self.username or ""),
+                master_token,
+                self.get_android_id(),
+                app=ACCESS_TOKEN_APP_NAME,
+                service=EMAIL_ACCESS_TOKEN_SERVICE,
+                client_sig=ACCESS_TOKEN_CLIENT_SIGNATURE,
+            )
+        if "Auth" not in res:
+            LOGGER.debug("Could not get an access token for the email address")
+            LOGGER.debug("Request response: %s", res)
+            return None
+        token_info = requests.get(
+            TOKEN_INFO_URL,
+            params={"access_token": res["Auth"]},
+            timeout=REQUEST_TIMEOUT,
+        ).json()
+        if str(token_info.get("email_verified")).lower() != "true":
+            LOGGER.debug("Google gave no verified email address")
+            return None
+        email: str | None = token_info.get("email") or None
+        return email
 
     def get_homegraph(self, auth_attempts: int = 3) -> GetHomeGraphResponse | None:
         """Return the entire Google Home Foyer V2 service."""

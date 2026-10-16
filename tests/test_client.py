@@ -336,6 +336,65 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         m_send.assert_called_once()
         assert m_send.call_args.kwargs["timeout"] is None
 
+    @patch("glocaltokens.client.requests.get")
+    @patch("glocaltokens.client.perform_oauth")
+    def test_get_email(
+        self, m_perform_oauth: NonCallableMock, m_get: NonCallableMock
+    ) -> None:
+        """Test the email address is read with a token that may only read it."""
+        email = faker.email()
+        access_token = faker.access_token()
+        m_perform_oauth.return_value = {"Auth": access_token}
+        m_get.return_value.json.return_value = {
+            "email": email,
+            "email_verified": "true",
+        }
+        client = GLocalAuthenticationTokens(master_token=faker.master_token())
+
+        assert client.get_email() == email
+        assert m_perform_oauth.call_args.kwargs["service"] == (
+            "oauth2:https://www.googleapis.com/auth/userinfo.email"
+        )
+        assert m_get.call_args.kwargs["params"] == {"access_token": access_token}
+        assert m_get.call_args.kwargs["timeout"] == REQUEST_TIMEOUT
+
+    @patch("glocaltokens.client.requests.get")
+    @patch("glocaltokens.client.perform_oauth")
+    def test_get_email__unverified(
+        self, m_perform_oauth: NonCallableMock, m_get: NonCallableMock
+    ) -> None:
+        """Test an email address that Google hasn't verified is not returned."""
+        m_perform_oauth.return_value = {"Auth": faker.access_token()}
+        m_get.return_value.json.return_value = {
+            "email": faker.email(),
+            "email_verified": "false",
+        }
+        client = GLocalAuthenticationTokens(master_token=faker.master_token())
+
+        assert client.get_email() is None
+
+    @patch("glocaltokens.client.requests.get")
+    @patch("glocaltokens.client.perform_oauth")
+    def test_get_email__no_access_token(
+        self, m_perform_oauth: NonCallableMock, m_get: NonCallableMock
+    ) -> None:
+        """Test nothing is asked about the email address when Google refuses the token."""
+        m_perform_oauth.return_value = {"Error": "BadAuthentication"}
+        client = GLocalAuthenticationTokens(master_token=faker.master_token())
+
+        assert client.get_email() is None
+        m_get.assert_not_called()
+
+    @patch("requests.adapters.HTTPAdapter.send")
+    def test_get_email__request_timeout(self, m_send: NonCallableMock) -> None:
+        """Test the access token request for the email address has a timeout."""
+        m_send.side_effect = requests.ConnectionError("No network")
+        client = GLocalAuthenticationTokens(master_token=faker.master_token())
+        with pytest.raises(requests.ConnectionError, match="No network"):
+            client.get_email()
+        m_send.assert_called_once()
+        assert m_send.call_args.kwargs["timeout"] == REQUEST_TIMEOUT
+
     @patch("glocaltokens.client.LOGGER.error")
     @patch("glocaltokens.client.perform_master_login")
     @patch("glocaltokens.client.perform_oauth")

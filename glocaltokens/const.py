@@ -8,6 +8,11 @@ ACCESS_TOKEN_APP_NAME: Final = "com.google.android.apps.chromecast.app"
 ACCESS_TOKEN_CLIENT_SIGNATURE: Final = "24bb24c05e47e0aefa68a58a766179d9b613a600"
 ACCESS_TOKEN_DURATION: Final = 60 * 60
 ACCESS_TOKEN_SERVICE: Final = "oauth2:https://www.google.com/accounts/OAuthLogin"
+# An access token that may only read the account's email address
+EMAIL_ACCESS_TOKEN_SERVICE: Final = (
+    "oauth2:https://www.googleapis.com/auth/userinfo.email"
+)
+TOKEN_INFO_URL: Final = "https://www.googleapis.com/oauth2/v3/tokeninfo"
 
 ANDROID_ID_LENGTH: Final = 16
 MASTER_TOKEN_LENGTH: Final = 216

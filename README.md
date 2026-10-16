@@ -107,6 +107,16 @@ master_token = client.get_master_token()
 Treat the `oauth_token` cookie like a password. If the exchange fails, sign in again to get a new cookie.
 After that, use the stored master token as shown above.
 
+### Finding the account of a master token
+
+A master token doesn't say which Google account it belongs to. `get_email()` asks Google and returns the account's
+verified email address, or `None` if Google doesn't give one:
+
+```python
+client = GLocalAuthenticationTokens(master_token="<YOUR_MASTER_TOKEN>")
+print(client.get_email())
+```
+
 ## Getting device tokens
 
 `get_google_devices()` returns a list of `Device` objects, and `get_google_devices_json()` returns the same list as a JSON string:
