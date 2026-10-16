@@ -6,6 +6,9 @@ on:
       - master
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   pre-commit:
     name: Pre-commit
@@ -14,33 +17,43 @@ jobs:
         python-version: ["3.12", "3.14"]
       fail-fast: false
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Check out the repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Prepare and install deps
         uses: ./.github/actions/install-deps
         with:
           python-version: ${{ matrix.python-version }}
 
-      - uses: actions/cache@v6
-        name: Cache pre-commit hooks
+      # Hook environments (prek) and formatter plugins (dprint) are
+      # downloaded on first use; both only change with their config files.
+      - name: Cache prek hooks and dprint plugins
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          path: ~/.cache/pre-commit/
+          path: |
+            ~/.cache/prek/
+            ~/.cache/dprint/
           key: >
-            ${{ format('pre-commit-{0}-{1}-{2}',
-            runner.os,
+            ${{ format('prek-{0}-{1}',
             matrix.python-version,
-            hashFiles('.pre-commit-config.yaml')
+            hashFiles('.pre-commit-config.yaml', 'dprint.json')
             ) }}
           restore-keys: |
-            pre-commit-${{ runner.os }}-${{ matrix.python-version }}-
-            pre-commit-${{ runner.os }}-
+            prek-${{ matrix.python-version }}-
 
-      - name: Run pre-commit on all files
+      - name: Run prek on all files
         run: |
-          uvx pre-commit run --all-files --show-diff-on-failure --color=always
+          uvx prek run --all-files --show-diff-on-failure --color=always
 
       - name: Run python-typing-update
         run: |
-          uvx pre-commit run --hook-stage manual python-typing-update --all-files --show-diff-on-failure --color=always
+          uvx prek run --hook-stage manual python-typing-update --all-files --show-diff-on-failure --color=always
+
+      # The runtime floors follow Home Assistant's pins, so test them too.
+      - name: Run tests with the lowest allowed dependencies
+        run: |
+          uv run --isolated --resolution lowest-direct pytest

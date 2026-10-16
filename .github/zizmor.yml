@@ -1,0 +1,4 @@
+rules:
+  # `./` paths to local actions are the long-standing form; keep them.
+  self-repository:
+    disable: true
