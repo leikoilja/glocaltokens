@@ -29,7 +29,6 @@ dynamic = ["version"]
 dependencies = [
     "ghome-foyer-api>=1.2.2",
     "gpsoauth>=2.0.0",
-    "simplejson>=3.20.1",
     # Note, we want to keep versions of grpcio, requests and zeroconf similar to Home Assistant
     # https://github.com/home-assistant/core/blob/2025.6.0/homeassistant/package_constraints.txt
     "grpcio>=1.72.1",
@@ -46,7 +45,7 @@ dev = [
     "mypy>=1.16.1",
     "pylint>=3.3.7",
     "pytest>=8.3.5",
-    "ruff>=0.12.0",
+    "ruff>=0.17.1",
     "types-protobuf>=5.29.1",
 ]
 
@@ -62,7 +61,7 @@ source = "vcs"
 fallback_version = "0.0.0"
 
 [tool.ruff]
-required-version = ">=0.6.0"
+required-version = ">=0.17.1"
 target-version = "py39"
 
 [tool.ruff.lint]
@@ -142,6 +141,7 @@ ignore = [
     "PLR0912", # Too many branches ({branches} > {max_branches})
     "PLR0913", # Too many arguments to function call ({c_args} > {max_args})
     "PLR0915", # Too many statements ({statements} > {max_statements})
+    "PLR0917", # Too many positional arguments ({c_pos} > {max_pos})
     "PLR2004", # Magic value used in comparison, consider replacing {value} with a constant variable
     "PLW2901", # Outer {outer_kind} variable {name} overwritten by inner {inner_kind} target
     "TRY003", # Avoid specifying long messages outside the exception class

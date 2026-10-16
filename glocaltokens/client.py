@@ -8,10 +8,7 @@ import logging
 import random
 from typing import TYPE_CHECKING
 
-from ghome_foyer_api.api_pb2 import (  # pylint: disable=no-name-in-module
-    GetHomeGraphRequest,
-    GetHomeGraphResponse,
-)
+from ghome_foyer_api.api_pb2 import GetHomeGraphRequest, GetHomeGraphResponse  # pylint: disable=no-name-in-module
 from ghome_foyer_api.api_pb2_grpc import StructuresServiceStub
 from gpsoauth import perform_master_login, perform_oauth
 import grpc
@@ -374,7 +371,7 @@ class GLocalAuthenticationTokens:
 
         # Set models_list to empty list if None
         LOGGER.debug("Initializing models list if empty...")
-        models_list = models_list if models_list else []
+        models_list = models_list or []
 
         if force_homegraph_reload:
             LOGGER.debug("Forcing homegraph reload")
@@ -419,7 +416,7 @@ class GLocalAuthenticationTokens:
                     return device
             return None
 
-        address_dict = addresses if addresses else {}
+        address_dict = addresses or {}
 
         LOGGER.debug("Iterating in %d homegraph devices", len(homegraph.home.devices))
         for item in homegraph.home.devices:
