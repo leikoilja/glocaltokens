@@ -1,6 +1,5 @@
 """Example to fetch local authentication tokens."""
 
-import json
 from os import getenv
 
 from glocaltokens.client import GLocalAuthenticationTokens
@@ -28,10 +27,10 @@ if __name__ == "__main__":
        Needs Master token to generate.
     3. Local authentication tokens - Are individual google device local
     authentication tokens used to send requests to specific google assistant
-    devidevices
+    devices.
 
     If you do not want to store the Google account password in plaintext,
-    get the master token once, and set it as an override value.
+    get the master token once, and set it as GOOGLE_MASTER_TOKEN.
 
     It's safer/easier to generate an app password and
     use it instead of the actual password.
@@ -59,6 +58,4 @@ if __name__ == "__main__":
     # Get google device local authentication tokens (live about 1 day)
     print("\n[*] Google devices local authentication tokens")
     google_devices = client.get_google_devices_json()
-    # Pretty print json data
-    google_devices_str = json.dumps(google_devices, indent=2)
-    print("[*] Google devices", google_devices_str)
+    print("[*] Google devices", google_devices)

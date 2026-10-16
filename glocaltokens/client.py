@@ -362,8 +362,8 @@ class GLocalAuthenticationTokens:
         disable_discovery: Whether or not the device's IP and port should
           be searched for in the network.
         addresses: Dict of network devices from the local network
-          ({"name": "ip_address"}). If set to `None` will try to automatically
-          discover network devices. Disable discovery by setting to `{}`.
+          ({"name": "ip_address"}). Only used when discovery is disabled
+          or finds no devices.
         zeroconf_instance: If you already have an initialized zeroconf instance,
           use it here.
         force_homegraph_reload: If the stored homegraph should be generated again.
@@ -491,8 +491,8 @@ class GLocalAuthenticationTokens:
         disable_discovery: Whether or not the device's IP and port should
           be searched for in the network.
         addresses: Dict of network devices from the local network
-          ({"name": "ip_address"}). If set to `None` will try to automatically
-          discover network devices. Disable discovery by setting to `{}`.
+          ({"name": "ip_address"}). Only used when discovery is disabled
+          or finds no devices.
         zeroconf_instance: If you already have an initialized zeroconf instance,
           use it here.
         force_homegraph_reload: If the stored homegraph should be generated again.
