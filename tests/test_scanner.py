@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import logging
+from threading import Event
+import time
 from unittest import TestCase, mock
 from unittest.mock import NonCallableMock, patch
 
@@ -10,6 +12,7 @@ from faker import Faker
 from faker.providers import internet as internet_provider, python as python_provider
 import pytest
 
+from glocaltokens.const import GOOGLE_CAST_GROUP
 from glocaltokens.scanner import LOGGER, CastListener, NetworkDevice, discover_devices
 
 faker = Faker()
@@ -71,6 +74,46 @@ class NetworkDeviceTests(TestCase):
             name: NetworkDevice(friendly_name, ip_address, port, model, unique_id)
         }
         add_callback.assert_called_once_with()
+
+    def test_service_info__invalid_utf8(self) -> None:
+        """Skip a service whose TXT value is not valid UTF-8 without raising."""
+        service = mock.Mock(name="Service")
+        service.parsed_addresses.return_value = [faker.ipv4_private()]
+        service.port = faker.port_number(is_user=True)
+        service.properties = {b"fn": b"\xff\xfe", b"md": b"Chromecast", b"cd": b"id"}
+        zc = mock.Mock(name="Zeroconf")
+        zc.get_service_info.return_value = service
+
+        listener = CastListener()
+        listener.add_service(zc, faker.word(), faker.word())
+        assert listener.count == 0
+
+    @patch("glocaltokens.scanner.ServiceInfo")
+    def test_service_info__deadline(self, m_service_info: NonCallableMock) -> None:
+        """Service lookups wait no longer than the discovery deadline."""
+        zc = mock.Mock(name="Zeroconf")
+        zc.get_service_info.return_value = None
+
+        # Out of time: only details zeroconf already has are used
+        cached = m_service_info.return_value
+        cached.load_from_cache.return_value = False
+        listener = CastListener(deadline=time.monotonic() - 1)
+        listener.add_service(zc, "type", "name")
+        assert listener.count == 0
+
+        cached.load_from_cache.return_value = True
+        cached.parsed_addresses.return_value = [faker.ipv4_private()]
+        cached.port = faker.port_number(is_user=True)
+        cached.properties = {b"fn": b"Home", b"md": b"Google Home", b"cd": b"id"}
+        listener.add_service(zc, "type", "name")
+        assert listener.count == 1
+        cached.load_from_cache.assert_called_with(zc)
+        zc.get_service_info.assert_not_called()
+
+        CastListener(deadline=time.monotonic() + 1).add_service(zc, "type", "name")
+        assert zc.get_service_info.call_count == 4
+        for call in zc.get_service_info.call_args_list:
+            assert 0 < call.kwargs["timeout"] <= 1000
 
     @patch("glocaltokens.scanner.LOGGER.error")
     def test_service_info__invalid(self, m_error: NonCallableMock) -> None:
@@ -157,6 +200,37 @@ class DiscoverDevicesTests(TestCase):
         with pytest.raises(OSError, match="No network"):
             discover_devices(timeout=0)
         m_zeroconf.return_value.close.assert_called_once_with()
+
+    @patch("glocaltokens.scanner.Event")
+    @patch("glocaltokens.scanner.ServiceBrowser")
+    @patch("glocaltokens.scanner.Zeroconf", mock.Mock())
+    def test_max_devices__counts_wanted_devices(
+        self, m_service_browser: NonCallableMock, m_event: NonCallableMock
+    ) -> None:
+        """Devices that discovery filters out do not count towards max_devices."""
+        discovery_complete = m_event.return_value = Event()
+        complete_after: list[bool] = []
+
+        def browse(_zc: object, _type: str, listener: CastListener) -> mock.Mock:
+            for unique_id, model in (
+                ("chromecast", "Chromecast"),
+                ("group", GOOGLE_CAST_GROUP),
+                ("home", "Google Home"),
+            ):
+                listener.devices[unique_id] = NetworkDevice(
+                    unique_id, faker.ipv4_private(), 8009, model, unique_id
+                )
+                assert listener.add_callback is not None
+                listener.add_callback()
+                complete_after.append(discovery_complete.is_set())
+            return mock.Mock()
+
+        m_service_browser.side_effect = browse
+        devices = discover_devices(
+            models_list=["Google Home", GOOGLE_CAST_GROUP], max_devices=1
+        )
+        assert complete_after == [False, False, True]
+        assert [device.unique_id for device in devices] == ["home"]
 
     @patch("glocaltokens.scanner.Event")
     @patch("glocaltokens.scanner.ServiceBrowser")
