@@ -142,7 +142,7 @@ class GLocalAuthenticationTokens:
         :params
             username: Google account username;
             password: Google account password (can be an app password);
-            master_token: Google master token (instead of username/password combination);
+            master_token: Google master token (instead of password, username is still required);
             android_id: The ID of an Android device. Will be randomly generated if not set;
             verbose: Whether or not to print debug logging information.
         """
@@ -213,12 +213,12 @@ class GLocalAuthenticationTokens:
         return username.replace("+", "%2B")
 
     def get_master_token(self) -> str | None:
-        """Get google master token from username and password."""
-        if self.username is None or self.password is None:
-            LOGGER.error("Username and password are not set.")
-            return None
-
+        """Return the stored master token, or get one with username and password."""
         if not self.master_token:
+            if self.username is None or self.password is None:
+                LOGGER.error("Username and password are not set.")
+                return None
+
             LOGGER.debug(
                 "There is no stored master_token, "
                 "logging in using username and password"
