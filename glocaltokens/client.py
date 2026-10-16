@@ -204,9 +204,9 @@ class GLocalAuthenticationTokens:
             oauth_token: `oauth_token` cookie from a browser sign-in, exchanged for
               a master token instead of logging in with the password.
         """
-        self.logging_level = logging.DEBUG if verbose else logging.ERROR
-        LOGGER.setLevel(self.logging_level)
+        self.logging_level: int | None = logging.DEBUG if verbose else None
         if verbose:
+            LOGGER.setLevel(logging.DEBUG)
             # Show the debug output in scripts; does nothing if the
             # application has already configured logging.
             logging.basicConfig()
@@ -567,6 +567,7 @@ class GLocalAuthenticationTokens:
         addresses: dict[str, str] | None = None,
         zeroconf_instance: Zeroconf | None = None,
         force_homegraph_reload: bool = False,
+        discovery_timeout: int = DISCOVERY_TIMEOUT,
     ) -> str:
         """Return a JSON list of devices with authentication tokens, IPs, and ports if models set.
 
@@ -580,6 +581,7 @@ class GLocalAuthenticationTokens:
         zeroconf_instance: If you already have an initialized zeroconf instance,
           use it here.
         force_homegraph_reload: If the stored homegraph should be generated again.
+        discovery_timeout: Timeout for zeroconf discovery in seconds.
         """
 
         google_devices = self.get_google_devices(
@@ -588,6 +590,7 @@ class GLocalAuthenticationTokens:
             addresses=addresses,
             zeroconf_instance=zeroconf_instance,
             force_homegraph_reload=force_homegraph_reload,
+            discovery_timeout=discovery_timeout,
         )
         return json.dumps([obj.as_dict() for obj in google_devices], indent=indent)
 

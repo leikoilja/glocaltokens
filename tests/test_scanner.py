@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from unittest import TestCase, mock
 from unittest.mock import NonCallableMock, patch
 
@@ -9,7 +10,7 @@ from faker import Faker
 from faker.providers import internet as internet_provider, python as python_provider
 import pytest
 
-from glocaltokens.scanner import CastListener, NetworkDevice, discover_devices
+from glocaltokens.scanner import LOGGER, CastListener, NetworkDevice, discover_devices
 
 faker = Faker()
 faker.add_provider(internet_provider)
@@ -127,6 +128,24 @@ class DiscoverDevicesTests(TestCase):
         # Own instance is closed
         discover_devices(timeout=0)
         m_zeroconf.return_value.close.assert_called_once_with()
+
+    @patch("glocaltokens.scanner.ServiceBrowser", mock.Mock())
+    @patch("glocaltokens.scanner.Zeroconf", mock.Mock())
+    def test_discovery__keeps_application_log_level(self) -> None:
+        """Without logging_level, discovery leaves the level to the application."""
+        package_logger = logging.getLogger("glocaltokens")
+        package_logger.setLevel(logging.CRITICAL)
+        try:
+            discover_devices(timeout=0)
+            package_logger.setLevel(logging.DEBUG)
+            assert LOGGER.level == logging.NOTSET
+            assert LOGGER.getEffectiveLevel() == logging.DEBUG
+
+            discover_devices(timeout=0, logging_level=logging.ERROR)
+            assert LOGGER.level == logging.ERROR
+        finally:
+            package_logger.setLevel(logging.NOTSET)
+            LOGGER.setLevel(logging.NOTSET)
 
     @patch("glocaltokens.scanner.ServiceBrowser")
     @patch("glocaltokens.scanner.Zeroconf")
