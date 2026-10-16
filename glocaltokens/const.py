@@ -17,6 +17,8 @@ LOCAL_AUTH_TOKEN_LENGTH: Final = 108
 GOOGLE_HOME_FOYER_API: Final = "googlehomefoyer-pa.googleapis.com:443"
 
 HOMEGRAPH_DURATION: Final = 24 * 60 * 60
+# Seconds to wait for a response from Google
+REQUEST_TIMEOUT: Final = 10
 
 DISCOVERY_TIMEOUT: Final = 2
 DEFAULT_DISCOVERY_PORT: Final = 0

@@ -13,7 +13,10 @@ from unittest.mock import NonCallableMock, patch
 
 from faker import Faker
 from faker.providers import internet
+import gpsoauth
 import grpc
+import pytest
+import requests
 
 from glocaltokens.client import Device, GLocalAuthenticationTokens
 from glocaltokens.const import (
@@ -29,6 +32,7 @@ from glocaltokens.const import (
     JSON_KEY_LOCAL_AUTH_TOKEN,
     JSON_KEY_NETWORK_DEVICE,
     JSON_KEY_PORT,
+    REQUEST_TIMEOUT,
 )
 from glocaltokens.scanner import NetworkDevice
 from tests.assertions import DeviceAssertions, TypeAssertions
@@ -228,6 +232,45 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         assert client.get_master_token() == master_token
         m_perform_master_login.assert_not_called()
 
+    @patch("requests.adapters.HTTPAdapter.send")
+    def test_get_master_token__request_timeout(self, m_send: NonCallableMock) -> None:
+        """Test requests to Google made through gpsoauth have a timeout."""
+        m_send.side_effect = requests.ConnectionError("No network")
+        with pytest.raises(requests.ConnectionError, match="No network"):
+            self.client.get_master_token()
+        m_send.assert_called_once()
+        assert m_send.call_args.kwargs["timeout"] == REQUEST_TIMEOUT
+
+    @patch("requests.adapters.HTTPAdapter.send")
+    def test_get_access_token__request_timeout(self, m_send: NonCallableMock) -> None:
+        """Test the access token request made through gpsoauth has a timeout."""
+        m_send.side_effect = requests.ConnectionError("No network")
+        client = GLocalAuthenticationTokens(
+            username=faker.word(), master_token=faker.master_token()
+        )
+        with pytest.raises(requests.ConnectionError, match="No network"):
+            client.get_access_token()
+        m_send.assert_called_once()
+        assert m_send.call_args.kwargs["timeout"] == REQUEST_TIMEOUT
+
+    @patch("requests.adapters.HTTPAdapter.send")
+    def test_gpsoauth_timeout__not_applied_to_other_callers(
+        self, m_send: NonCallableMock
+    ) -> None:
+        """Test gpsoauth requests made outside glocaltokens keep their timeout."""
+        m_send.side_effect = requests.ConnectionError("No network")
+        with pytest.raises(requests.ConnectionError, match="No network"):
+            gpsoauth.perform_oauth(
+                faker.email(),
+                faker.master_token(),
+                faker.word(),
+                "service",
+                "app",
+                "sig",
+            )
+        m_send.assert_called_once()
+        assert m_send.call_args.kwargs["timeout"] is None
+
     @patch("glocaltokens.client.LOGGER.error")
     @patch("glocaltokens.client.perform_master_login")
     @patch("glocaltokens.client.perform_oauth")
@@ -317,6 +360,9 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         assert m_structure_service_stub.call_count == 1
         assert m_get_home_graph_request.call_count == 1
         assert m_get_access_token.call_count == 1
+        m_structure_service_stub.return_value.GetHomeGraph.assert_called_once_with(
+            m_get_home_graph_request.return_value, timeout=REQUEST_TIMEOUT
+        )
 
         # Another request with non expired homegraph must return the same homegraph
         # (no new requests)
@@ -486,3 +532,5 @@ class DeviceClientTests(TypeAssertions, TestCase):
         )
         assert m_log.call_count == 1
         assert device.local_auth_token is None
+        # A device that failed validation can still be represented
+        assert device.as_dict()["network_device"] == {"ip": None, "port": None}

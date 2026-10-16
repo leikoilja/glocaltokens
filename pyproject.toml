@@ -47,6 +47,7 @@ dev = [
     "ruff>=0.17.1",
     "types-grpcio>=1.84.0.20260928",
     "types-protobuf>=7.35.1.20260906",
+    "types-requests>=2.33.0.20261006",
 ]
 
 [project.urls]

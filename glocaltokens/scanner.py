@@ -173,18 +173,20 @@ def discover_devices(
     else:
         LOGGER.debug("Using attribute Zeroconf instance")
         zc = zeroconf_instance
-    LOGGER.debug("Creating zeroconf service browser for _googlecast._tcp.local.")
-    service_browser = ServiceBrowser(zc, "_googlecast._tcp.local.", listener)
+    try:
+        LOGGER.debug("Creating zeroconf service browser for _googlecast._tcp.local.")
+        service_browser = ServiceBrowser(zc, "_googlecast._tcp.local.", listener)
 
-    # Wait for the timeout or the maximum number of devices
-    LOGGER.debug("Waiting for discovery completion...")
-    discovery_complete.wait(timeout)
+        # Wait for the timeout or the maximum number of devices
+        LOGGER.debug("Waiting for discovery completion...")
+        discovery_complete.wait(timeout)
 
-    # Stop discovery
-    service_browser.cancel()
-    # A supplied instance belongs to the caller, who may still be using it.
-    if not zeroconf_instance:
-        zc.close()
+        # Stop discovery
+        service_browser.cancel()
+    finally:
+        # A supplied instance belongs to the caller, who may still be using it.
+        if not zeroconf_instance:
+            zc.close()
 
     devices: list[NetworkDevice] = []
     LOGGER.debug("Got %d devices. Iterating...", listener.count)

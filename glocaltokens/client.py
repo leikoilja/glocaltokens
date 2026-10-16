@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from contextlib import contextmanager
+from contextvars import ContextVar
 from datetime import UTC, datetime
 import json
 import logging
@@ -10,6 +12,7 @@ from typing import TYPE_CHECKING, override
 
 from ghome_foyer_api.api_pb2 import GetHomeGraphRequest, GetHomeGraphResponse  # pylint: disable=no-name-in-module
 from ghome_foyer_api.api_pb2_grpc import StructuresServiceStub
+import gpsoauth
 from gpsoauth import perform_master_login, perform_oauth
 import grpc
 
@@ -23,6 +26,7 @@ from .const import (
     DISCOVERY_TIMEOUT,
     GOOGLE_HOME_FOYER_API,
     HOMEGRAPH_DURATION,
+    REQUEST_TIMEOUT,
 )
 from .scanner import NetworkDevice, discover_devices
 from .utils import network as net_utils, token as token_utils
@@ -30,11 +34,64 @@ from .utils.logs import censor
 from .utils.network import is_valid_ipv4_address
 
 if TYPE_CHECKING:
+    from collections.abc import Iterator, Mapping
+
+    from requests import PreparedRequest, Response
     from zeroconf import Zeroconf
 
     from .types import DeviceDict
 
 LOGGER = logging.getLogger(__name__)
+
+
+# Timeout for gpsoauth requests made by glocaltokens; see _TimeoutAuthHTTPAdapter.
+_gpsoauth_timeout: ContextVar[float | None] = ContextVar(
+    "_gpsoauth_timeout", default=None
+)
+
+
+class _TimeoutAuthHTTPAdapter(gpsoauth.AuthHTTPAdapter):
+    """gpsoauth's HTTP adapter with a timeout for glocaltokens' own requests.
+
+    gpsoauth sends its requests without a timeout and has no option to set one,
+    so a stalled connection would make it wait forever. The timeout only applies
+    inside _request_timeout(), so other gpsoauth users are not affected.
+    """
+
+    @override
+    def send(
+        self,
+        request: PreparedRequest,
+        stream: bool = False,
+        timeout: float | tuple[float, float] | tuple[float, None] | None = None,
+        verify: bool | str = True,
+        cert: bytes | str | tuple[bytes | str, bytes | str] | None = None,
+        proxies: Mapping[str, str] | None = None,
+    ) -> Response:
+        if timeout is None:
+            timeout = _gpsoauth_timeout.get()
+        return super().send(
+            request,
+            stream=stream,
+            timeout=timeout,
+            verify=verify,
+            cert=cert,
+            proxies=proxies,
+        )
+
+
+# gpsoauth looks the adapter up by this name for every request.
+gpsoauth.AuthHTTPAdapter = _TimeoutAuthHTTPAdapter  # type: ignore[misc]
+
+
+@contextmanager
+def _request_timeout() -> Iterator[None]:
+    """Apply REQUEST_TIMEOUT to gpsoauth requests made in this context."""
+    token = _gpsoauth_timeout.set(REQUEST_TIMEOUT)
+    try:
+        yield
+    finally:
+        _gpsoauth_timeout.reset(token)
 
 
 class Device:
@@ -56,6 +113,8 @@ class Device:
         self.local_auth_token = None
         self.network_device = network_device
         self.hardware = hardware
+        self.ip_address: str | None = None
+        self.port: int | None = None
 
         # Token and name validations
         if not self.device_name:
@@ -74,11 +133,8 @@ class Device:
             LOGGER.debug(
                 "%s network_device is provided, using its IP and PORT", log_prefix
             )
-            self.ip_address: str | None = network_device.ip_address
-            self.port: int | None = network_device.port
-        else:
-            self.ip_address = None
-            self.port = None
+            self.ip_address = network_device.ip_address
+            self.port = network_device.port
 
         # IP and PORT validation
         if (
@@ -228,14 +284,15 @@ class GLocalAuthenticationTokens:
             )
             res = {}
             try:
-                res = perform_master_login(
-                    self._escape_username(self.username),
-                    self.password,
-                    self.get_android_id(),
-                )
+                with _request_timeout():
+                    res = perform_master_login(
+                        self._escape_username(self.username),
+                        self.password,
+                        self.get_android_id(),
+                    )
             except ValueError:
                 LOGGER.exception(
-                    "A ValueError exception has been thrown, this usually is related"
+                    "A ValueError exception has been thrown, this usually is related "
                     "to a password length that exceeds the boundaries (too long)."
                 )
             if "Token" not in res:
@@ -264,14 +321,15 @@ class GLocalAuthenticationTokens:
             if self.username is None:
                 LOGGER.error("Username is not set.")
                 return None
-            res = perform_oauth(
-                self._escape_username(self.username),
-                master_token,
-                self.get_android_id(),
-                app=ACCESS_TOKEN_APP_NAME,
-                service=ACCESS_TOKEN_SERVICE,
-                client_sig=ACCESS_TOKEN_CLIENT_SIGNATURE,
-            )
+            with _request_timeout():
+                res = perform_oauth(
+                    self._escape_username(self.username),
+                    master_token,
+                    self.get_android_id(),
+                    app=ACCESS_TOKEN_APP_NAME,
+                    service=ACCESS_TOKEN_SERVICE,
+                    client_sig=ACCESS_TOKEN_CLIENT_SIGNATURE,
+                )
             if "Auth" not in res:
                 LOGGER.error("[!] Could not get access token.")
                 LOGGER.debug("Request response: %s", res)
@@ -325,7 +383,9 @@ class GLocalAuthenticationTokens:
                     LOGGER.debug("%s Getting HomeGraph request...", log_prefix)
                     request = GetHomeGraphRequest(string1="", num2="")
                     LOGGER.debug("%s Fetching HomeGraph...", log_prefix)
-                    response = rpc_service.GetHomeGraph(request)
+                    response = rpc_service.GetHomeGraph(
+                        request, timeout=REQUEST_TIMEOUT
+                    )
                     LOGGER.debug("%s Storing obtained HomeGraph...", log_prefix)
                     self.homegraph = response
                 self.homegraph_date = datetime.now(UTC)
