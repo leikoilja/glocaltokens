@@ -208,7 +208,7 @@ Some errors are raised instead, and your code should handle them:
 
 - `requests.RequestException` when glocaltokens cannot get a master or access token from Google,
   for example without an internet connection or when Google does not reply within 10 seconds.
-  The device methods raise it too when they need a new access token first.
+  The device methods raise it too when they need a new access token first, and so does `get_email()`.
 - `OSError` when network discovery cannot start, for example because no network interface is available.
   Pass `disable_discovery=True` if you do not need IP addresses and ports.
 
