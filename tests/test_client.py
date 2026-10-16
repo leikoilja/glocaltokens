@@ -18,7 +18,7 @@ import grpc
 import pytest
 import requests
 
-from glocaltokens.client import Device, GLocalAuthenticationTokens
+from glocaltokens.client import LOGGER, Device, GLocalAuthenticationTokens
 from glocaltokens.const import (
     ACCESS_TOKEN_APP_NAME,
     ACCESS_TOKEN_CLIENT_SIGNATURE,
@@ -99,10 +99,8 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         """Valid initialization tests with verbose logging."""
         # Non verbose
         GLocalAuthenticationTokens(username=faker.word(), password=faker.word())
-        m_set_level.assert_called_once_with(logging.ERROR)
+        m_set_level.assert_not_called()
         m_basic_config.assert_not_called()
-
-        m_set_level.reset_mock()
 
         # Verbose
         GLocalAuthenticationTokens(
@@ -126,6 +124,16 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
                 check=True,
             )
             assert ("DEBUG:glocaltokens.client" in result.stderr) is expected
+
+    def test_initialization__keeps_application_log_level(self) -> None:
+        """A non-verbose client keeps the level the application set."""
+        package_logger = logging.getLogger("glocaltokens")
+        package_logger.setLevel(logging.DEBUG)
+        try:
+            GLocalAuthenticationTokens(username=faker.word(), password=faker.word())
+            assert LOGGER.getEffectiveLevel() == logging.DEBUG
+        finally:
+            package_logger.setLevel(logging.NOTSET)
 
     @patch("glocaltokens.client.LOGGER.error")
     def test_initialization__invalid(self, m_log: NonCallableMock) -> None:
@@ -544,8 +552,11 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         )
         m_get_google_devices.return_value = [google_device]
 
-        json_string = self.client.get_google_devices_json(disable_discovery=True)
+        json_string = self.client.get_google_devices_json(
+            disable_discovery=True, discovery_timeout=5
+        )
         assert m_get_google_devices.call_count == 1
+        assert m_get_google_devices.call_args.kwargs["discovery_timeout"] == 5
         received_json = json.loads(json_string)
         received_device = received_json[0]
         assert received_device[JSON_KEY_DEVICE_NAME] == device_name

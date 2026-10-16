@@ -178,13 +178,14 @@ Both `get_google_devices()` and `get_google_devices_json()` accept these argumen
 | `addresses`              | `None`  | `{"device name": "IPv4 address"}`, used when discovery is disabled or finds nothing.         |
 | `zeroconf_instance`      | `None`  | An existing `zeroconf.Zeroconf` instance to use for discovery. glocaltokens leaves it open.  |
 | `force_homegraph_reload` | `False` | Fetch new tokens from Google even if the cached ones are less than 24 hours old.             |
+| `discovery_timeout`      | `2`     | How long to search the local network, in seconds.                                            |
 
-`get_google_devices()` also accepts `discovery_timeout`, how long to search the network in seconds (default `2`),
-and `get_google_devices_json()` accepts `indent` for the JSON output (default `2`).
+`get_google_devices_json()` also accepts `indent` for the JSON output (default `2`).
 
 ## Troubleshooting
 
 If you get no devices or no tokens, create the client with `verbose=True` to print debug logs that show each step.
+Without `verbose=True`, glocaltokens follows the level your application sets for the `glocaltokens` logger.
 The logs mask your password and tokens, but they also include Google's responses to failed requests, so check them before you share them, for example in an issue.
 
 ### Errors

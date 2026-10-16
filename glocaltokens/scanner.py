@@ -151,10 +151,12 @@ def discover_devices(
     max_devices: int | None = None,
     timeout: int = DISCOVERY_TIMEOUT,
     zeroconf_instance: Zeroconf | None = None,
-    logging_level: int = logging.ERROR,
+    logging_level: int | None = None,
 ) -> list[NetworkDevice]:
     """Discover devices."""
-    LOGGER.setLevel(logging_level)
+    # Leave the level to the application unless the caller asks for one.
+    if logging_level is not None:
+        LOGGER.setLevel(logging_level)
 
     LOGGER.debug("Discovering devices...")
 
