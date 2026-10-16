@@ -116,7 +116,7 @@ The client caches the tokens it gets from Google for 24 hours. Pass `force_homeg
 
 ### Selecting models
 
-By default you get every device on your account. To get only some models, pass a list of model names as `models_list`.
+By default you get all devices with valid local authentication tokens, without filtering by model. To get only some models, pass a list of model names as `models_list`.
 The names are the `hardware` values in the output above.
 
 `GOOGLE_HOME_MODELS` in [`const.py`](glocaltokens/const.py) lists some common models:
@@ -142,7 +142,7 @@ The list is not complete. If your model is missing, use your own list, or add it
 To fill in `ip` and `port`, glocaltokens looks for devices on your local network with mDNS (zeroconf),
 so it must run on the same network as your devices. Devices it does not find have `null` for both.
 
-If discovery does not work on your network, turn it off and give the IP address of each device, using its name in the Google Home app:
+If discovery does not work on your network, turn it off and give the IPv4 address of each device, using its name in the Google Home app:
 
 ```python
 google_devices = client.get_google_devices_json(
@@ -151,17 +151,19 @@ google_devices = client.get_google_devices_json(
 )
 ```
 
+Only IPv4 addresses are supported. If any entry is not a valid IPv4 address, glocaltokens logs an error and returns no devices at all.
+
 ### Options
 
 Both `get_google_devices()` and `get_google_devices_json()` accept these arguments:
 
-| Argument                 | Default | Description                                                                        |
-| ------------------------ | ------- | ---------------------------------------------------------------------------------- |
-| `models_list`            | `None`  | Only return these models. `None` returns every device.                             |
-| `disable_discovery`      | `False` | Do not search the local network for device IP addresses and ports.                 |
-| `addresses`              | `None`  | `{"device name": "IP address"}`, used when discovery is disabled or finds nothing. |
-| `zeroconf_instance`      | `None`  | An existing `zeroconf.Zeroconf` instance to use for discovery.                     |
-| `force_homegraph_reload` | `False` | Fetch new tokens from Google even if the cached ones are less than 24 hours old.   |
+| Argument                 | Default | Description                                                                                  |
+| ------------------------ | ------- | -------------------------------------------------------------------------------------------- |
+| `models_list`            | `None`  | Only return these models. `None` returns all devices with valid local authentication tokens. |
+| `disable_discovery`      | `False` | Do not search the local network for device IP addresses and ports.                           |
+| `addresses`              | `None`  | `{"device name": "IPv4 address"}`, used when discovery is disabled or finds nothing.         |
+| `zeroconf_instance`      | `None`  | An existing `zeroconf.Zeroconf` instance to use for discovery. glocaltokens leaves it open.  |
+| `force_homegraph_reload` | `False` | Fetch new tokens from Google even if the cached ones are less than 24 hours old.             |
 
 `get_google_devices()` also accepts `discovery_timeout`, how long to search the network in seconds (default `2`),
 and `get_google_devices_json()` accepts `indent` for the JSON output (default `2`).
