@@ -2,11 +2,7 @@
 
 from unittest import TestCase
 
-from faker import Faker
-
 from glocaltokens.utils.logs import censor
-
-faker = Faker()
 
 
 class UtilsTests(TestCase):
@@ -15,11 +11,7 @@ class UtilsTests(TestCase):
     def test_censor(self) -> None:
         """Testing sensitive info censoring."""
         # With word
-        secret_string = faker.word()
-        censored_string = censor(secret_string)
-        assert secret_string != censored_string
-        assert censored_string.startswith(secret_string[0])
-        assert censored_string == f"{secret_string[0]}{(len(secret_string) - 1) * '*'}"
+        assert censor("secret") == "s*****"
 
         # With empty string
         censored_string = censor("")
