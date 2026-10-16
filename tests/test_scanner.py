@@ -7,6 +7,7 @@ from unittest.mock import NonCallableMock, patch
 
 from faker import Faker
 from faker.providers import internet as internet_provider, python as python_provider
+import pytest
 
 from glocaltokens.scanner import CastListener, NetworkDevice, discover_devices
 
@@ -110,4 +111,15 @@ class DiscoverDevicesTests(TestCase):
 
         # Own instance is closed
         discover_devices(timeout=0)
+        m_zeroconf.return_value.close.assert_called_once_with()
+
+    @patch("glocaltokens.scanner.ServiceBrowser")
+    @patch("glocaltokens.scanner.Zeroconf")
+    def test_zeroconf_closing__on_error(
+        self, m_zeroconf: NonCallableMock, m_service_browser: NonCallableMock
+    ) -> None:
+        """Close the own Zeroconf instance even if discovery fails."""
+        m_service_browser.side_effect = OSError("No network")
+        with pytest.raises(OSError, match="No network"):
+            discover_devices(timeout=0)
         m_zeroconf.return_value.close.assert_called_once_with()

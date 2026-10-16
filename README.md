@@ -173,6 +173,23 @@ and `get_google_devices_json()` accepts `indent` for the JSON output (default `2
 If you get no devices or no tokens, create the client with `verbose=True` to print debug logs that show each step.
 The logs mask your password and tokens, but they also include Google's responses to failed requests, so check them before you share them, for example in an issue.
 
+### Errors
+
+Most failures are logged and return `None` from the token methods, or no devices from the device methods:
+an empty list from `get_google_devices()` and `"[]"` from `get_google_devices_json()`.
+Check the result before you use it.
+
+Some errors are raised instead, and your code should handle them:
+
+- `requests.RequestException` when glocaltokens cannot get a master or access token from Google,
+  for example without an internet connection or when Google does not reply within 10 seconds.
+  The device methods raise it too when they need a new access token first.
+- `OSError` when network discovery cannot start, for example because no network interface is available.
+  Pass `disable_discovery=True` if you do not need IP addresses and ports.
+
+If Google does not reply within 10 seconds when the device methods fetch the device list itself,
+they log the error and return no devices.
+
 ## Contributing
 
 See [Contributing guidelines](CONTRIBUTING.md).
