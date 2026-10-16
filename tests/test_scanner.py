@@ -88,12 +88,26 @@ class NetworkDeviceTests(TestCase):
         listener.add_service(zc, faker.word(), faker.word())
         assert listener.count == 0
 
-    def test_service_info__deadline(self) -> None:
+    @patch("glocaltokens.scanner.ServiceInfo")
+    def test_service_info__deadline(self, m_service_info: NonCallableMock) -> None:
         """Service lookups wait no longer than the discovery deadline."""
         zc = mock.Mock(name="Zeroconf")
         zc.get_service_info.return_value = None
 
-        CastListener(deadline=time.monotonic() - 1).add_service(zc, "type", "name")
+        # Out of time: only details zeroconf already has are used
+        cached = m_service_info.return_value
+        cached.load_from_cache.return_value = False
+        listener = CastListener(deadline=time.monotonic() - 1)
+        listener.add_service(zc, "type", "name")
+        assert listener.count == 0
+
+        cached.load_from_cache.return_value = True
+        cached.parsed_addresses.return_value = [faker.ipv4_private()]
+        cached.port = faker.port_number(is_user=True)
+        cached.properties = {b"fn": b"Home", b"md": b"Google Home", b"cd": b"id"}
+        listener.add_service(zc, "type", "name")
+        assert listener.count == 1
+        cached.load_from_cache.assert_called_with(zc)
         zc.get_service_info.assert_not_called()
 
         CastListener(deadline=time.monotonic() + 1).add_service(zc, "type", "name")

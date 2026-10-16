@@ -98,6 +98,10 @@ class CastListener(ServiceListener):
                     lookup_timeout, int((self.deadline - time.monotonic()) * 1000)
                 )
                 if lookup_timeout <= 0:
+                    # Out of time: still use details zeroconf already has.
+                    cached = ServiceInfo(type_, name)
+                    if cached.load_from_cache(zc):
+                        service = cached
                     break
             try:
                 service = zc.get_service_info(type_, name, timeout=lookup_timeout)
