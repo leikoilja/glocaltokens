@@ -18,7 +18,7 @@ glocaltokens gets three kinds of tokens, each from the one before:
 2. **Access token**: lives 1 hour. glocaltokens gets a new one from the master token when it expires.
 3. **Local authentication tokens**: one per device, used to send requests to that device. They only live about 1 day, so you will need to get new ones regularly.
 
-Store the master token, not your password: with the master token and your username, glocaltokens can get the other tokens whenever you need them.
+Store the master token, not your password: with the master token alone, glocaltokens can get the other tokens whenever you need them.
 
 ## Installation
 
@@ -80,10 +80,8 @@ master_token = client.get_master_token()
 
 """Now store master_token somewhere"""
 
-# Later, use the stored master token instead of the password
-client = GLocalAuthenticationTokens(
-    username="<YOUR_GOOGLE_USERNAME>", master_token=master_token
-)
+# Later, use the stored master token instead of the username and password
+client = GLocalAuthenticationTokens(master_token=master_token)
 ```
 
 ### If logging in with a password fails
@@ -95,13 +93,12 @@ This uses [gpsoauth's alternative flow](https://github.com/simon-weber/gpsoauth#
 1. Open https://accounts.google.com/EmbeddedSetup and sign in to your Google account.
 2. Click "I agree" when asked. The page may keep loading forever; you can ignore that.
 3. Copy the value of the `oauth_token` cookie, for example from the cookies list in your browser's developer tools.
-4. Pass it to the client with your username, then get the master token and store it:
+4. Pass it to the client, then get the master token and store it:
 
 ```python
-client = GLocalAuthenticationTokens(
-    username="<YOUR_GOOGLE_USERNAME>", oauth_token="<YOUR_OAUTH_TOKEN_COOKIE>"
-)
+client = GLocalAuthenticationTokens(oauth_token="<YOUR_OAUTH_TOKEN_COOKIE>")
 master_token = client.get_master_token()
+email = client.get_email()
 ```
 
 Treat the `oauth_token` cookie like a password. If the exchange fails, sign in again to get a new cookie.
@@ -109,8 +106,9 @@ After that, use the stored master token as shown above.
 
 ### Finding the account of a master token
 
-A master token doesn't say which Google account it belongs to. `get_email()` asks Google and returns the account's
-verified email address, or `None` if Google doesn't give one:
+A master token doesn't say which Google account it belongs to. `get_email()` returns the account's email address,
+or `None` if Google doesn't give one. If the client got the master token itself, `get_email()` returns the address Google sent with it.
+Otherwise it asks Google, and returns the address only if Google has verified it:
 
 ```python
 client = GLocalAuthenticationTokens(master_token="<YOUR_MASTER_TOKEN>")

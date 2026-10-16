@@ -205,12 +205,17 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
 
         # With token in response
         expected_master_token = faker.master_token()
-        m_perform_master_login.return_value = {"Token": expected_master_token}
+        email = faker.email()
+        m_perform_master_login.return_value = {
+            "Token": expected_master_token,
+            "Email": email,
+        }
         master_token = self.client.get_master_token()
         m_perform_master_login.assert_called_once_with(
             self.client.username, self.client.password, self.client.get_android_id()
         )
         assert expected_master_token == master_token
+        assert self.client.email == email
         assert m_log.call_count == 0
 
         # Another request - must return the same token all the time
@@ -264,12 +269,35 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         m_exchange_token.assert_not_called()
 
     @patch("glocaltokens.client.LOGGER.error")
-    def test_initialization__oauth_token_without_username(
-        self, m_log: NonCallableMock
+    @patch("glocaltokens.client.perform_oauth")
+    @patch("glocaltokens.client.exchange_token")
+    def test_get_master_token__oauth_token_without_username(
+        self,
+        m_exchange_token: NonCallableMock,
+        m_perform_oauth: NonCallableMock,
+        m_log: NonCallableMock,
     ) -> None:
-        """Test an oauth_token alone is not enough to log in."""
-        GLocalAuthenticationTokens(oauth_token=faker.word())
-        assert m_log.call_count == 1
+        """Test an oauth_token alone is enough, and Google's email is kept."""
+        oauth_token = faker.word()
+        client = GLocalAuthenticationTokens(oauth_token=oauth_token)
+        assert m_log.call_count == 0
+
+        master_token = faker.master_token()
+        email = faker.email()
+        m_exchange_token.return_value = {"Token": master_token, "Email": email}
+        assert client.get_master_token() == master_token
+        m_exchange_token.assert_called_once_with(
+            "", oauth_token, client.get_android_id()
+        )
+        assert client.email == email
+        assert client.username is None
+
+        # get_email() needs no further request
+        assert client.get_email() == email
+        m_perform_oauth.assert_not_called()
+
+        client.invalidate_master_token()
+        assert client.email is None
 
     @patch("requests.adapters.HTTPAdapter.send")
     def test_get_master_token__oauth_token_request_timeout(
@@ -289,13 +317,30 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
     def test_get_master_token__stored_without_password(
         self, m_perform_master_login: NonCallableMock
     ) -> None:
-        """Test a stored master token is returned without username and password."""
+        """Test a stored master token is returned without a password."""
         master_token = faker.master_token()
         client = GLocalAuthenticationTokens(
             username=faker.word(), master_token=master_token
         )
         assert client.get_master_token() == master_token
         m_perform_master_login.assert_not_called()
+
+    @patch("glocaltokens.client.perform_oauth")
+    def test_get_access_token__without_username(
+        self, m_perform_oauth: NonCallableMock
+    ) -> None:
+        """Test a master token alone is enough to get an access token."""
+        access_token = faker.access_token()
+        m_perform_oauth.return_value = {"Auth": access_token}
+        master_token = faker.master_token()
+        client = GLocalAuthenticationTokens(master_token=master_token)
+
+        assert client.get_access_token() == access_token
+        assert m_perform_oauth.call_args.args == (
+            "",
+            master_token,
+            client.get_android_id(),
+        )
 
     @patch("requests.adapters.HTTPAdapter.send")
     def test_get_master_token__request_timeout(self, m_send: NonCallableMock) -> None:
