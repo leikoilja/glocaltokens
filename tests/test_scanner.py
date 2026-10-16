@@ -42,19 +42,34 @@ class NetworkDeviceTests(TestCase):
     @patch("glocaltokens.scanner.LOGGER.error")
     def test_service_info__valid(self, m_error: NonCallableMock) -> None:
         """Valid service_info tests."""
+        ip_address = faker.ipv4_private()
+        port = faker.port_number(is_user=True)
+        friendly_name = faker.word()
+        model = faker.word()
+        unique_id = faker.hexify("^" * 32)
+
         service = mock.Mock(name="Service")
-        service.parsed_addresses.return_value = None
-        service.server = faker.ipv4_private()
-        service.port = faker.port_number()
+        service.parsed_addresses.return_value = [ip_address]
+        service.port = port
+        service.properties = {
+            b"fn": friendly_name.encode(),
+            b"md": model.encode(),
+            b"cd": unique_id.encode(),
+        }
 
         zc = mock.Mock(name="Zeroconf")
         zc.get_service_info.return_value = service
 
-        listener = CastListener()
+        add_callback = mock.Mock(name="add_callback")
+        listener = CastListener(add_callback=add_callback)
         type_ = faker.word()
         name = faker.word()
         listener.add_service(zc, type_, name)
         assert m_error.call_count == 0
+        assert listener.devices == {
+            name: NetworkDevice(friendly_name, ip_address, port, model, unique_id)
+        }
+        add_callback.assert_called_once_with()
 
     @patch("glocaltokens.scanner.LOGGER.error")
     def test_service_info__invalid(self, m_error: NonCallableMock) -> None:
@@ -71,7 +86,7 @@ class NetworkDeviceTests(TestCase):
 
         # With invalid IP
         service.server = faker.word()
-        service.port = faker.port_number()
+        service.port = faker.port_number(is_user=True)
         listener.add_service(zc, type_, name)
         assert m_error.call_count == 1
 
@@ -122,4 +137,20 @@ class DiscoverDevicesTests(TestCase):
         m_service_browser.side_effect = OSError("No network")
         with pytest.raises(OSError, match="No network"):
             discover_devices(timeout=0)
+        m_zeroconf.return_value.close.assert_called_once_with()
+
+    @patch("glocaltokens.scanner.Event")
+    @patch("glocaltokens.scanner.ServiceBrowser")
+    @patch("glocaltokens.scanner.Zeroconf")
+    def test_discovery_cleanup__interrupted(
+        self,
+        m_zeroconf: NonCallableMock,
+        m_service_browser: NonCallableMock,
+        m_event: NonCallableMock,
+    ) -> None:
+        """Stop the browser and close the own Zeroconf if the wait is interrupted."""
+        m_event.return_value.wait.side_effect = KeyboardInterrupt
+        with pytest.raises(KeyboardInterrupt):
+            discover_devices(timeout=0)
+        m_service_browser.return_value.cancel.assert_called_once_with()
         m_zeroconf.return_value.close.assert_called_once_with()
