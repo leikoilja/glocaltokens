@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 from threading import Event
-from typing import TYPE_CHECKING, NamedTuple
+from typing import TYPE_CHECKING, NamedTuple, override
 
 from zeroconf import ServiceBrowser, ServiceInfo, ServiceListener, Zeroconf
 
@@ -51,16 +51,19 @@ class CastListener(ServiceListener):
         """Number of discovered cast services."""
         return len(self.devices)
 
+    @override
     def add_service(self, zc: Zeroconf, type_: str, name: str) -> None:
         """Add a service to the collection."""
         LOGGER.debug("add_service %s, %s", type_, name)
         self._add_update_service(zc, type_, name, self.add_callback)
 
+    @override
     def update_service(self, zc: Zeroconf, type_: str, name: str) -> None:
         """Update a service in the collection."""
         LOGGER.debug("update_service %s, %s", type_, name)
         self._add_update_service(zc, type_, name, self.update_callback)
 
+    @override
     def remove_service(self, _zc: Zeroconf, type_: str, name: str) -> None:
         """Remove a cast device when its mDNS info expires or the host is down."""
         LOGGER.debug("remove_service %s, %s", type_, name)

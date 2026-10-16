@@ -5,6 +5,7 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 import json
 import logging
+from typing import override
 from unittest import TestCase, mock
 from unittest.mock import NonCallableMock, patch
 
@@ -40,6 +41,7 @@ faker.add_provider(internet)
 class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, TestCase):
     """GLocalAuthenticationTokens clien specific unittests."""
 
+    @override
     def setUp(self) -> None:
         """Set up the test client before each test."""
         self.client = GLocalAuthenticationTokens(

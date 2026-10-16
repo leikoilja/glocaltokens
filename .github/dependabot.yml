@@ -2,15 +2,33 @@ version: 2
 updates:
   - package-ecosystem: uv
     directory: "/"
+    # Never raise floors in pyproject.toml: the runtime floors follow Home
+    # Assistant's pins, and a newer floor would stop glocaltokens installing there.
+    versioning-strategy: lockfile-only
     schedule:
       interval: weekly
+    # A release has a week to be yanked before it is proposed here.
+    cooldown:
+      default-days: 7
+    labels:
+      - "dependencies"
+  - package-ecosystem: pre-commit
+    directory: "/"
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
     labels:
       - "dependencies"
   - package-ecosystem: github-actions
     directories:
+      # Workflows in .github/workflows
       - "/"
+      # Composite actions are not covered by "/" and must be listed explicitly
       - "/.github/actions/*"
     schedule:
-      interval: daily
+      interval: weekly
+    cooldown:
+      default-days: 7
     labels:
       - "dependencies"

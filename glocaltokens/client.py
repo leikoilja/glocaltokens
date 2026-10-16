@@ -6,7 +6,7 @@ from datetime import datetime
 import json
 import logging
 import random
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 from ghome_foyer_api.api_pb2 import GetHomeGraphRequest, GetHomeGraphResponse  # pylint: disable=no-name-in-module
 from ghome_foyer_api.api_pb2_grpc import StructuresServiceStub
@@ -107,6 +107,7 @@ class Device:
         )
         self.local_auth_token = local_auth_token
 
+    @override
     def __str__(self) -> str:
         """Return string representation of the device."""
         return str(self.as_dict())
