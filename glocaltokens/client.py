@@ -199,9 +199,9 @@ class GLocalAuthenticationTokens:
         """Initialize a GLocalAuthenticationTokens instance with Google account credentials.
 
         :params
-            username: Google account username;
+            username: Google account username, only required with password;
             password: Google account password (can be an app password);
-            master_token: Google master token (instead of password, username is still required);
+            master_token: Google master token, instead of password;
             android_id: The ID of an Android device. Will be randomly generated if not set;
             verbose: Whether or not to print debug logging information;
             oauth_token: `oauth_token` cookie from a browser sign-in, exchanged for
@@ -221,6 +221,8 @@ class GLocalAuthenticationTokens:
         self.master_token: str | None = master_token
         self.oauth_token: str | None = oauth_token
         self.android_id: str | None = android_id
+        # Email address Google returns when this client gets a master token
+        self.email: str | None = None
         self.access_token: str | None = None
         self.access_token_date: datetime | None = None
         self.homegraph: GetHomeGraphResponse | None = None
@@ -242,11 +244,11 @@ class GLocalAuthenticationTokens:
         )
 
         # Validation
-        can_log_in = self.username and (self.password or self.oauth_token)
+        can_log_in = self.oauth_token or (self.username and self.password)
         if not can_log_in and not self.master_token:
             LOGGER.error(
-                "You must either provide google username with password "
-                "or oauth_token, or google master token"
+                "You must either provide google username with password, "
+                "oauth_token, or google master token"
             )
             return
         if self.master_token and not token_utils.is_aas_et(self.master_token):
@@ -281,20 +283,21 @@ class GLocalAuthenticationTokens:
         return username.replace("+", "%2B")
 
     def get_master_token(self) -> str | None:
-        """Return the stored master token, or get one with the username.
+        """Return the stored master token, or get a new one.
 
         A new master token comes from exchanging the oauth_token if one is set,
         otherwise from logging in with the password.
         """
         if not self.master_token:
             res = {}
-            if self.username is not None and self.oauth_token:
+            if self.oauth_token:
                 LOGGER.debug(
                     "There is no stored master_token, exchanging the oauth_token"
                 )
+                # Google doesn't need the email address to exchange the cookie
                 with _request_timeout():
                     res = exchange_token(
-                        self._escape_username(self.username),
+                        self._escape_username(self.username or ""),
                         self.oauth_token,
                         self.get_android_id(),
                     )
@@ -324,6 +327,7 @@ class GLocalAuthenticationTokens:
                 LOGGER.debug("Request response: %s", res)
                 return None
             self.master_token = res["Token"]
+            self.email = res.get("Email") or None
         LOGGER.debug("Master token: %s", censor(self.master_token))
         return self.master_token
 
@@ -342,12 +346,10 @@ class GLocalAuthenticationTokens:
             if master_token is None:
                 LOGGER.debug("Unable to obtain master token.")
                 return None
-            if self.username is None:
-                LOGGER.error("Username is not set.")
-                return None
+            # Google doesn't need the email address once there is a master token
             with _request_timeout():
                 res = perform_oauth(
-                    self._escape_username(self.username),
+                    self._escape_username(self.username or ""),
                     master_token,
                     self.get_android_id(),
                     app=ACCESS_TOKEN_APP_NAME,
@@ -368,13 +370,17 @@ class GLocalAuthenticationTokens:
         return self.access_token
 
     def get_email(self) -> str | None:
-        """Return the verified email address of the account, if Google gives it.
+        """Return the email address of the account, if Google gives it.
 
-        A master token doesn't say which account it belongs to. This gets an
-        access token that may only read the email address, and asks Google's
-        userinfo endpoint whose it is.
+        If this client got the master token itself, this is the address Google
+        returned with it. Otherwise, as a master token doesn't say which account
+        it belongs to, this gets an access token that may only read the email
+        address and asks Google's userinfo endpoint, which returns only an
+        address Google has verified.
         """
         master_token = self.get_master_token()
+        if self.email is not None:
+            return self.email
         if master_token is None:
             LOGGER.debug("Unable to obtain master token.")
             return None
@@ -648,6 +654,7 @@ class GLocalAuthenticationTokens:
     def invalidate_master_token(self) -> None:
         """Invalidate the current master token."""
         self.master_token = None
+        self.email = None
         LOGGER.debug("Invalidated master_token")
 
     def invalidate_homegraph(self) -> None:
