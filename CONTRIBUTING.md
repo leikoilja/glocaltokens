@@ -7,9 +7,9 @@ Contributing to this project should be as easy and transparent as possible, whet
 - Submitting a fix
 - Proposing new features
 
-## Github is used for everything
+## GitHub is used for everything
 
-Github is used to host code, to track issues and feature requests, as well as accept pull requests.
+GitHub is used to host code, to track issues and feature requests, as well as accept pull requests.
 
 Pull requests are the best way to propose changes to the codebase.
 
@@ -19,16 +19,66 @@ Pull requests are the best way to propose changes to the codebase.
 4. Test your contribution.
 5. Issue that pull request!
 
-## Any contributions you make will be under the MIT Software License
+## Setting up
 
-In short, when you submit code changes, your submissions are understood to be under the same [MIT License](http://choosealicense.com/licenses/mit/) that covers the project. Feel free to contact the maintainers if that's a concern.
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and run `uv sync` in the repo root.
+It will create a virtualenv with all required packages. glocaltokens needs Python 3.12 or newer;
+uv downloads a matching Python if you do not have one.
 
-## Report bugs using Github's [issues](../../issues)
+## Checks
+
+We use [ruff](https://docs.astral.sh/ruff/) and [dprint](https://dprint.dev/)
+to make sure the code follows the style, and mypy and pylint to check it.
+
+You can run all checks with [prek](https://prek.j178.dev/), a faster drop-in replacement for `pre-commit`,
+using the settings included in the repository.
+
+Activate the `prek` git hook:
+
+```console
+$ uvx prek install
+```
+
+Now the checks will run every time you commit.
+
+You can also run the checks on all repository files manually with this command:
+
+```console
+$ uvx prek run --all-files
+```
+
+## Tests
+
+The checks above also run the tests. To run only the tests:
+
+```console
+$ uv run pytest
+```
+
+When writing unittests please follow the good practises like:
+
+- Use `faker` to fake the data. See [examples](https://faker.readthedocs.io/en/master/)
+- Use `unittest.mock` to patch objects/methods. See [examples](https://realpython.com/python-mock-library/)
+
+## Labels and releases
+
+Release notes are drafted automatically from merged pull requests. Labels decide where each pull request goes
+in the notes and which version comes next:
+
+- `breaking`: a major version.
+- `feature`: a minor version.
+- Anything else: a patch version.
+- `skip-release`: leaves the pull request out of the release notes.
+
+The next release uses the biggest of these among the pull requests merged since the last release.
+
+Pull requests that only change dependencies, documentation, tests or GitHub files are labelled automatically.
+Pull requests that change Python code need a label from a maintainer, such as `bug`, `feature` or `refactoring`.
+
+## Report bugs using GitHub's [issues](../../issues)
 
 GitHub issues are used to track public bugs.
 Report a bug by [opening a new issue](../../issues/new/choose); it's that easy!
-
-## Write bug reports with detail, background, and sample code
 
 **Great Bug Reports** tend to have:
 
@@ -40,44 +90,8 @@ Report a bug by [opening a new issue](../../issues/new/choose); it's that easy!
 - What actually happens
 - Notes (possibly including why you think this might be happening, or stuff you tried that didn't work)
 
-People _love_ thorough bug reports. I'm not even kidding.
+Debug logs from `verbose=True` help a lot, but check them for anything private before you post them.
 
-## Use a Consistent Coding Style
+## Any contributions you make will be under the MIT Software License
 
-Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and run `uv sync` to setup the developer environment.
-We use [ruff](https://docs.astral.sh/ruff/) and [dprint](https://dprint.dev/)
-to make sure the code follows the style.
-
-`prek` can be used to run all checks with one command (see dedicated section below).
-
-## Test your code modification
-
-You can use the `prek` settings implemented in this repository to have
-linting tools check your contributions (see dedicated section below).
-
-When writing unittests please follow the good practises like:
-
-- Use `faker` to fake the data. See [examples](https://faker.readthedocs.io/en/master/)
-- Use `mock` to patch objects/methods. See [examples](https://realpython.com/python-mock-library/)
-
-## Pre-commit
-
-With uv installed, run `uv sync` in the repo root.
-It will create a virtualenv with all required packages.
-
-After that you can run [prek](https://prek.j178.dev/), a faster drop-in replacement for `pre-commit`,
-with settings included in the repository to have code style and linting checks.
-
-Activate the `prek` git hook:
-
-```console
-$ uvx prek install
-```
-
-Now the checks will run every time you commit.
-
-You can also run the tests on all repository files manually with this command:
-
-```console
-$ uvx prek run --all-files
-```
+In short, when you submit code changes, your submissions are understood to be under the same [MIT License](http://choosealicense.com/licenses/mit/) that covers the project. Feel free to contact the maintainers if that's a concern.
