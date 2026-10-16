@@ -2,30 +2,23 @@
 
 from __future__ import annotations
 
-import socket
+from ipaddress import IPv4Address, IPv6Address
 
 
 def is_valid_ipv4_address(address: str) -> bool:
     """Check if ip address is ipv4."""
     try:
-        socket.inet_pton(socket.AF_INET, address)
-    except AttributeError:  # no inet_pton here, sorry
-        try:
-            socket.inet_aton(address)
-        except OSError:
-            return False
-        return address.count(".") == 3
-    except OSError:  # not a valid address
+        IPv4Address(address)
+    except ValueError:
         return False
-
     return True
 
 
 def is_valid_ipv6_address(address: str) -> bool:
     """Check if ip address is ipv6."""
     try:
-        socket.inet_pton(socket.AF_INET6, address)
-    except OSError:  # not a valid address
+        IPv6Address(address)
+    except ValueError:
         return False
     return True
 

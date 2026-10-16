@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 import json
 import logging
+import subprocess
+import sys
 from typing import override
 from unittest import TestCase, mock
 from unittest.mock import NonCallableMock, patch
@@ -85,14 +87,16 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         GLocalAuthenticationTokens(master_token=faker.master_token())
         assert m_log.call_count == 0
 
+    @patch("glocaltokens.client.logging.basicConfig")
     @patch("glocaltokens.client.LOGGER.setLevel")
     def test_initialization__valid_verbose_logger(
-        self, m_set_level: NonCallableMock
+        self, m_set_level: NonCallableMock, m_basic_config: NonCallableMock
     ) -> None:
         """Valid initialization tests with verbose logging."""
         # Non verbose
         GLocalAuthenticationTokens(username=faker.word(), password=faker.word())
         m_set_level.assert_called_once_with(logging.ERROR)
+        m_basic_config.assert_not_called()
 
         m_set_level.reset_mock()
 
@@ -101,6 +105,23 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
             username=faker.word(), password=faker.word(), verbose=True
         )
         m_set_level.assert_called_once_with(logging.DEBUG)
+        m_basic_config.assert_called_once_with()
+
+    def test_initialization__verbose_output(self) -> None:
+        """Verbose logging reaches stderr in a script without logging configured."""
+        script = (
+            "from glocaltokens.client import GLocalAuthenticationTokens\n"
+            "client = GLocalAuthenticationTokens(username='u', password='p', verbose={})\n"
+            "client.get_android_id()\n"
+        )
+        for verbose, expected in ((True, True), (False, False)):
+            result = subprocess.run(
+                [sys.executable, "-c", script.format(verbose)],
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+            assert ("DEBUG:glocaltokens.client" in result.stderr) is expected
 
     @patch("glocaltokens.client.LOGGER.error")
     def test_initialization__invalid(self, m_log: NonCallableMock) -> None:
@@ -141,7 +162,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
     def test_has_expired(self) -> None:
         """Test expiry method."""
         duration_sec = 60
-        now = datetime.now()
+        now = datetime.now(UTC)
         token_dt_expired = now - timedelta(seconds=duration_sec + 1)
         token_dt_non_expired = now - timedelta(seconds=duration_sec - 1)
 

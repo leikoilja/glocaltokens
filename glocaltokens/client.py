@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import UTC, datetime
 import json
 import logging
 import random
@@ -34,7 +34,6 @@ if TYPE_CHECKING:
 
     from .types import DeviceDict
 
-logging.basicConfig(level=logging.ERROR)
 LOGGER = logging.getLogger(__name__)
 
 
@@ -148,6 +147,10 @@ class GLocalAuthenticationTokens:
         """
         self.logging_level = logging.DEBUG if verbose else logging.ERROR
         LOGGER.setLevel(self.logging_level)
+        if verbose:
+            # Show the debug output in scripts; does nothing if the
+            # application has already configured logging.
+            logging.basicConfig()
 
         LOGGER.debug("Initializing new GLocalAuthenticationTokens instance.")
 
@@ -205,7 +208,7 @@ class GLocalAuthenticationTokens:
     @staticmethod
     def _has_expired(creation_dt: datetime, duration: int) -> bool:
         """Check if an specified token/object has expired."""
-        return datetime.now().timestamp() - creation_dt.timestamp() > duration
+        return datetime.now(UTC).timestamp() - creation_dt.timestamp() > duration
 
     @staticmethod
     def _escape_username(username: str) -> str:
@@ -274,7 +277,7 @@ class GLocalAuthenticationTokens:
                 LOGGER.debug("Request response: %s", res)
                 return None
             self.access_token = res["Auth"]
-            self.access_token_date = datetime.now()
+            self.access_token_date = datetime.now(UTC)
         LOGGER.debug(
             "Access token: %s, datetime %s",
             censor(self.access_token),
@@ -325,7 +328,7 @@ class GLocalAuthenticationTokens:
                     response = rpc_service.GetHomeGraph(request)
                     LOGGER.debug("%s Storing obtained HomeGraph...", log_prefix)
                     self.homegraph = response
-                self.homegraph_date = datetime.now()
+                self.homegraph_date = datetime.now(UTC)
             except grpc.RpcError as rpc_error:
                 LOGGER.debug("%s Got an RpcError", log_prefix)
                 if (
