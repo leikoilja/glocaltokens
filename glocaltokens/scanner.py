@@ -182,7 +182,9 @@ def discover_devices(
 
     # Stop discovery
     service_browser.cancel()
-    service_browser.zc.close()
+    # A supplied instance belongs to the caller, who may still be using it.
+    if not zeroconf_instance:
+        zc.close()
 
     devices: list[NetworkDevice] = []
     LOGGER.debug("Got %d devices. Iterating...", listener.count)

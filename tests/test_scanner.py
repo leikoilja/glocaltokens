@@ -8,7 +8,7 @@ from unittest.mock import NonCallableMock, patch
 from faker import Faker
 from faker.providers import internet as internet_provider, python as python_provider
 
-from glocaltokens.scanner import CastListener, NetworkDevice
+from glocaltokens.scanner import CastListener, NetworkDevice, discover_devices
 
 faker = Faker()
 faker.add_provider(internet_provider)
@@ -88,3 +88,26 @@ class NetworkDeviceTests(TestCase):
 
         # No devices should be added
         assert listener.count == 0
+
+
+class DiscoverDevicesTests(TestCase):
+    """discover_devices specific tests."""
+
+    @patch("glocaltokens.scanner.ServiceBrowser")
+    @patch("glocaltokens.scanner.Zeroconf")
+    def test_zeroconf_closing(
+        self, m_zeroconf: NonCallableMock, m_service_browser: NonCallableMock
+    ) -> None:
+        """Close only the Zeroconf instance discovery created itself."""
+        # Like the real ServiceBrowser, keep the instance it was given as `zc`
+        m_service_browser.side_effect = lambda zc, *_: mock.Mock(zc=zc)
+
+        # Supplied instance stays open
+        zc = mock.Mock(name="Zeroconf")
+        discover_devices(timeout=0, zeroconf_instance=zc)
+        zc.close.assert_not_called()
+        m_zeroconf.assert_not_called()
+
+        # Own instance is closed
+        discover_devices(timeout=0)
+        m_zeroconf.return_value.close.assert_called_once_with()
