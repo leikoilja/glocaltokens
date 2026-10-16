@@ -12,7 +12,8 @@ ACCESS_TOKEN_SERVICE: Final = "oauth2:https://www.google.com/accounts/OAuthLogin
 EMAIL_ACCESS_TOKEN_SERVICE: Final = (
     "oauth2:https://www.googleapis.com/auth/userinfo.email"
 )
-TOKEN_INFO_URL: Final = "https://www.googleapis.com/oauth2/v3/tokeninfo"
+# From https://accounts.google.com/.well-known/openid-configuration
+USERINFO_URL: Final = "https://openidconnect.googleapis.com/v1/userinfo"
 
 ANDROID_ID_LENGTH: Final = 16
 MASTER_TOKEN_LENGTH: Final = 216

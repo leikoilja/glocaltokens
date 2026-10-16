@@ -29,7 +29,7 @@ from .const import (
     GOOGLE_HOME_FOYER_API,
     HOMEGRAPH_DURATION,
     REQUEST_TIMEOUT,
-    TOKEN_INFO_URL,
+    USERINFO_URL,
 )
 from .scanner import NetworkDevice, discover_devices
 from .utils import network as net_utils, token as token_utils
@@ -371,8 +371,8 @@ class GLocalAuthenticationTokens:
         """Return the verified email address of the account, if Google gives it.
 
         A master token doesn't say which account it belongs to. This gets an
-        access token that may only read the email address, and asks Google whose
-        it is.
+        access token that may only read the email address, and asks Google's
+        userinfo endpoint whose it is.
         """
         master_token = self.get_master_token()
         if master_token is None:
@@ -391,15 +391,22 @@ class GLocalAuthenticationTokens:
             LOGGER.debug("Could not get an access token for the email address")
             LOGGER.debug("Request response: %s", res)
             return None
-        token_info = requests.get(
-            TOKEN_INFO_URL,
-            params={"access_token": res["Auth"]},
+        # Send the token in a header: a URL ends up in debug logs and errors
+        response = requests.get(
+            USERINFO_URL,
+            headers={"Authorization": f"Bearer {res['Auth']}"},
             timeout=REQUEST_TIMEOUT,
-        ).json()
-        if str(token_info.get("email_verified")).lower() != "true":
+        )
+        if not response.ok:
+            LOGGER.debug(
+                "Could not get the email address: HTTP %s", response.status_code
+            )
+            return None
+        user_info = response.json()
+        if str(user_info.get("email_verified")).lower() != "true":
             LOGGER.debug("Google gave no verified email address")
             return None
-        email: str | None = token_info.get("email") or None
+        email: str | None = user_info.get("email") or None
         return email
 
     def get_homegraph(self, auth_attempts: int = 3) -> GetHomeGraphResponse | None:

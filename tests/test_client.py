@@ -345,9 +345,10 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         email = faker.email()
         access_token = faker.access_token()
         m_perform_oauth.return_value = {"Auth": access_token}
+        m_get.return_value.ok = True
         m_get.return_value.json.return_value = {
             "email": email,
-            "email_verified": "true",
+            "email_verified": True,
         }
         client = GLocalAuthenticationTokens(master_token=faker.master_token())
 
@@ -355,7 +356,9 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         assert m_perform_oauth.call_args.kwargs["service"] == (
             "oauth2:https://www.googleapis.com/auth/userinfo.email"
         )
-        assert m_get.call_args.kwargs["params"] == {"access_token": access_token}
+        assert m_get.call_args.kwargs["headers"] == {
+            "Authorization": f"Bearer {access_token}"
+        }
         assert m_get.call_args.kwargs["timeout"] == REQUEST_TIMEOUT
 
     @patch("glocaltokens.client.requests.get")
@@ -365,13 +368,58 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
     ) -> None:
         """Test an email address that Google hasn't verified is not returned."""
         m_perform_oauth.return_value = {"Auth": faker.access_token()}
+        m_get.return_value.ok = True
         m_get.return_value.json.return_value = {
             "email": faker.email(),
-            "email_verified": "false",
+            "email_verified": False,
         }
         client = GLocalAuthenticationTokens(master_token=faker.master_token())
 
         assert client.get_email() is None
+
+    @patch("glocaltokens.client.requests.get")
+    @patch("glocaltokens.client.perform_oauth")
+    def test_get_email__http_error(
+        self, m_perform_oauth: NonCallableMock, m_get: NonCallableMock
+    ) -> None:
+        """Test an error response from Google gives no email address."""
+        m_perform_oauth.return_value = {"Auth": faker.access_token()}
+        m_get.return_value.ok = False
+        m_get.return_value.status_code = 401
+        client = GLocalAuthenticationTokens(master_token=faker.master_token())
+
+        assert client.get_email() is None
+        m_get.return_value.json.assert_not_called()
+
+    @patch("requests.adapters.HTTPAdapter.send")
+    @patch("glocaltokens.client.perform_oauth")
+    def test_get_email__token_not_in_url_or_logs(
+        self, m_perform_oauth: NonCallableMock, m_send: NonCallableMock
+    ) -> None:
+        """Test the access token is sent in a header, never in the URL or logs.
+
+        Requests and urllib3 put the URL in debug logs and in connection errors.
+        """
+        access_token = faker.access_token()
+        email = faker.email()
+        m_perform_oauth.return_value = {"Auth": access_token}
+        response = requests.Response()
+        response.status_code = 200
+        response._content = json.dumps(  # pylint: disable=protected-access
+            {"email": email, "email_verified": True}
+        ).encode()
+        m_send.return_value = response
+        client = GLocalAuthenticationTokens(
+            master_token=faker.master_token(), verbose=True
+        )
+
+        with self.assertLogs(level=logging.DEBUG) as logs:
+            assert client.get_email() == email
+
+        request = m_send.call_args.args[0]
+        assert access_token not in request.url
+        assert request.headers["Authorization"] == f"Bearer {access_token}"
+        assert not any(access_token in line for line in logs.output)
 
     @patch("glocaltokens.client.requests.get")
     @patch("glocaltokens.client.perform_oauth")
