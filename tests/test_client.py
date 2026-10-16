@@ -220,6 +220,63 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         assert master_token is None
         assert m_log.call_count == 2
 
+    @patch("glocaltokens.client.LOGGER.error")
+    @patch("glocaltokens.client.perform_master_login")
+    @patch("glocaltokens.client.exchange_token")
+    def test_get_master_token__oauth_token(
+        self,
+        m_exchange_token: NonCallableMock,
+        m_perform_master_login: NonCallableMock,
+        m_log: NonCallableMock,
+    ) -> None:
+        """Test getting a master token by exchanging an oauth_token cookie."""
+        oauth_token = faker.word()
+        client = GLocalAuthenticationTokens(
+            username=faker.word(), password=faker.word(), oauth_token=oauth_token
+        )
+        assert m_log.call_count == 0
+
+        # Failed exchange
+        m_exchange_token.return_value = {"Error": "BadAuthentication"}
+        assert client.get_master_token() is None
+        assert m_log.call_count == 1
+
+        # Successful exchange, preferred over the password
+        expected_master_token = faker.master_token()
+        m_exchange_token.return_value = {"Token": expected_master_token}
+        assert client.get_master_token() == expected_master_token
+        m_exchange_token.assert_called_with(
+            client.username, oauth_token, client.get_android_id()
+        )
+        m_perform_master_login.assert_not_called()
+
+        # The stored master token is used from now on
+        m_exchange_token.reset_mock()
+        assert client.get_master_token() == expected_master_token
+        m_exchange_token.assert_not_called()
+
+    @patch("glocaltokens.client.LOGGER.error")
+    def test_initialization__oauth_token_without_username(
+        self, m_log: NonCallableMock
+    ) -> None:
+        """Test an oauth_token alone is not enough to log in."""
+        GLocalAuthenticationTokens(oauth_token=faker.word())
+        assert m_log.call_count == 1
+
+    @patch("requests.adapters.HTTPAdapter.send")
+    def test_get_master_token__oauth_token_request_timeout(
+        self, m_send: NonCallableMock
+    ) -> None:
+        """Test the oauth_token exchange made through gpsoauth has a timeout."""
+        m_send.side_effect = requests.ConnectionError("No network")
+        client = GLocalAuthenticationTokens(
+            username=faker.word(), oauth_token=faker.word()
+        )
+        with pytest.raises(requests.ConnectionError, match="No network"):
+            client.get_master_token()
+        m_send.assert_called_once()
+        assert m_send.call_args.kwargs["timeout"] == REQUEST_TIMEOUT
+
     @patch("glocaltokens.client.perform_master_login")
     def test_get_master_token__stored_without_password(
         self, m_perform_master_login: NonCallableMock

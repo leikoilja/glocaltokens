@@ -7,6 +7,8 @@ from glocaltokens.client import GLocalAuthenticationTokens
 # Creds to use when logging in
 GOOGLE_USERNAME = getenv("GOOGLE_USERNAME", None)
 GOOGLE_PASSWORD = getenv("GOOGLE_PASSWORD", None)
+# Or the oauth_token cookie from a browser sign-in, see the README
+GOOGLE_OAUTH_TOKEN = getenv("GOOGLE_OAUTH_TOKEN", None)
 
 # Optional Overrides (Set to None to ignore)
 DEVICE_ID = getenv("DEVICE_ID", None)
@@ -45,6 +47,7 @@ if __name__ == "__main__":
         username=GOOGLE_USERNAME,
         password=GOOGLE_PASSWORD,
         master_token=GOOGLE_MASTER_TOKEN,
+        oauth_token=GOOGLE_OAUTH_TOKEN,
         android_id=DEVICE_ID,
         verbose=True,
     )

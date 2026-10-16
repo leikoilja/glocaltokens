@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING, override
 from ghome_foyer_api.api_pb2 import GetHomeGraphRequest, GetHomeGraphResponse  # pylint: disable=no-name-in-module
 from ghome_foyer_api.api_pb2_grpc import StructuresServiceStub
 import gpsoauth
-from gpsoauth import perform_master_login, perform_oauth
+from gpsoauth import exchange_token, perform_master_login, perform_oauth
 import grpc
 
 from .const import (
@@ -191,6 +191,7 @@ class GLocalAuthenticationTokens:
         master_token: str | None = None,
         android_id: str | None = None,
         verbose: bool = False,
+        oauth_token: str | None = None,
     ):
         """Initialize a GLocalAuthenticationTokens instance with Google account credentials.
 
@@ -199,7 +200,9 @@ class GLocalAuthenticationTokens:
             password: Google account password (can be an app password);
             master_token: Google master token (instead of password, username is still required);
             android_id: The ID of an Android device. Will be randomly generated if not set;
-            verbose: Whether or not to print debug logging information.
+            verbose: Whether or not to print debug logging information;
+            oauth_token: `oauth_token` cookie from a browser sign-in, exchanged for
+              a master token instead of logging in with the password.
         """
         self.logging_level = logging.DEBUG if verbose else logging.ERROR
         LOGGER.setLevel(self.logging_level)
@@ -213,6 +216,7 @@ class GLocalAuthenticationTokens:
         self.username: str | None = username
         self.password: str | None = password
         self.master_token: str | None = master_token
+        self.oauth_token: str | None = oauth_token
         self.android_id: str | None = android_id
         self.access_token: str | None = None
         self.access_token_date: datetime | None = None
@@ -226,18 +230,20 @@ class GLocalAuthenticationTokens:
         LOGGER.debug(
             "Set GLocalAuthenticationTokens client "
             'username to "%s", password to "%s", '
-            'master_token to "%s" and android_id to %s',
+            'master_token to "%s", oauth_token to "%s" and android_id to %s',
             censor(username, hide_length=True),
             censor(password, hide_length=True, hide_first_letter=True),
             censor(master_token),
+            censor(oauth_token, hide_length=True),
             censor(android_id),
         )
 
         # Validation
-        if (not self.username or not self.password) and not self.master_token:
+        can_log_in = self.username and (self.password or self.oauth_token)
+        if not can_log_in and not self.master_token:
             LOGGER.error(
-                "You must either provide google username/password "
-                "or google master token"
+                "You must either provide google username with password "
+                "or oauth_token, or google master token"
             )
             return
         if self.master_token and not token_utils.is_aas_et(self.master_token):
@@ -272,29 +278,44 @@ class GLocalAuthenticationTokens:
         return username.replace("+", "%2B")
 
     def get_master_token(self) -> str | None:
-        """Return the stored master token, or get one with username and password."""
-        if not self.master_token:
-            if self.username is None or self.password is None:
-                LOGGER.error("Username and password are not set.")
-                return None
+        """Return the stored master token, or get one with the username.
 
-            LOGGER.debug(
-                "There is no stored master_token, "
-                "logging in using username and password"
-            )
+        A new master token comes from exchanging the oauth_token if one is set,
+        otherwise from logging in with the password.
+        """
+        if not self.master_token:
             res = {}
-            try:
+            if self.username is not None and self.oauth_token:
+                LOGGER.debug(
+                    "There is no stored master_token, exchanging the oauth_token"
+                )
                 with _request_timeout():
-                    res = perform_master_login(
+                    res = exchange_token(
                         self._escape_username(self.username),
-                        self.password,
+                        self.oauth_token,
                         self.get_android_id(),
                     )
-            except ValueError:
-                LOGGER.exception(
-                    "A ValueError exception has been thrown, this usually is related "
-                    "to a password length that exceeds the boundaries (too long)."
+            elif self.username is not None and self.password is not None:
+                LOGGER.debug(
+                    "There is no stored master_token, "
+                    "logging in using username and password"
                 )
+                try:
+                    with _request_timeout():
+                        res = perform_master_login(
+                            self._escape_username(self.username),
+                            self.password,
+                            self.get_android_id(),
+                        )
+                except ValueError:
+                    LOGGER.exception(
+                        "A ValueError exception has been thrown, this usually is "
+                        "related to a password length that exceeds the boundaries "
+                        "(too long)."
+                    )
+            else:
+                LOGGER.error("Username and password or oauth_token are not set.")
+                return None
             if "Token" not in res:
                 LOGGER.error("[!] Could not get master token.")
                 LOGGER.debug("Request response: %s", res)

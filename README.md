@@ -14,7 +14,7 @@ These local authentication tokens are needed to control Google Home devices
 
 glocaltokens gets three kinds of tokens, each from the one before:
 
-1. **Master token**: starts with `aas_et/` and is long lived. You get it once with your Google username and password.
+1. **Master token**: starts with `aas_et/` and is long lived. You get it once with your Google username and password, or with a browser sign-in (see "If logging in with a password fails" below).
 2. **Access token**: lives 1 hour. glocaltokens gets a new one from the master token when it expires.
 3. **Local authentication tokens**: one per device, used to send requests to that device. They only live about 1 day, so you will need to get new ones regularly.
 
@@ -89,9 +89,23 @@ client = GLocalAuthenticationTokens(
 ### If logging in with a password fails
 
 Logging in with a password does not work for every account. If `get_master_token()` returns `None`,
-or your account uses a passkey, get a master token another way, for example with
-[gpsoauth's alternative flow](https://github.com/simon-weber/gpsoauth#alternative-flow),
-and pass it to the client together with your username.
+or your account uses a passkey, sign in with a browser instead and let glocaltokens exchange that sign-in for a master token.
+This uses [gpsoauth's alternative flow](https://github.com/simon-weber/gpsoauth#alternative-flow):
+
+1. Open https://accounts.google.com/EmbeddedSetup and sign in to your Google account.
+2. Click "I agree" when asked. The page may keep loading forever; you can ignore that.
+3. Copy the value of the `oauth_token` cookie, for example from the cookies list in your browser's developer tools.
+4. Pass it to the client with your username, then get the master token and store it:
+
+```python
+client = GLocalAuthenticationTokens(
+    username="<YOUR_GOOGLE_USERNAME>", oauth_token="<YOUR_OAUTH_TOKEN_COOKIE>"
+)
+master_token = client.get_master_token()
+```
+
+Treat the `oauth_token` cookie like a password. If the exchange fails, sign in again to get a new cookie.
+After that, use the stored master token as shown above.
 
 ## Getting device tokens
 
