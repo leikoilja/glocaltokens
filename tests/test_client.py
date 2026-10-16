@@ -205,12 +205,17 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
 
         # With token in response
         expected_master_token = faker.master_token()
-        m_perform_master_login.return_value = {"Token": expected_master_token}
+        email = faker.email()
+        m_perform_master_login.return_value = {
+            "Token": expected_master_token,
+            "Email": email,
+        }
         master_token = self.client.get_master_token()
         m_perform_master_login.assert_called_once_with(
             self.client.username, self.client.password, self.client.get_android_id()
         )
         assert expected_master_token == master_token
+        assert self.client.email == email
         assert m_log.call_count == 0
 
         # Another request - must return the same token all the time
