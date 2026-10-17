@@ -129,10 +129,17 @@ print(client.get_email())
       "port": 8009
     },
     "hardware": "Google Nest Mini",
+    "cloud_device_id": "...",
     "local_auth_token": "..."
   }
 ]
 ```
+
+`device_name` is the name in the Google Home app. A speaker pair is found on the network at its leading speaker, but keeps the pair's name.
+For a `Device` found on the network, `network_device.name` has the name the device announces there.
+
+`cloud_device_id` is the ID Google gives the device, or `null` if Google gives none. Devices report the same ID at `/setup/eureka_info`,
+so you can use it to match a device at an address you know.
 
 The client caches the tokens it gets from Google for 24 hours. Pass `force_homegraph_reload=True` to fetch new ones sooner.
 
