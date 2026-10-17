@@ -39,6 +39,7 @@ GOOGLE_HOME_MODELS: Final = [
 ]
 GOOGLE_CAST_GROUP: Final = "Google Cast Group"
 
+JSON_KEY_CLOUD_DEVICE_ID: Final = "cloud_device_id"
 JSON_KEY_DEVICE_NAME: Final = "device_name"
 JSON_KEY_NETWORK_DEVICE: Final = "network_device"
 JSON_KEY_HARDWARE: Final = "hardware"

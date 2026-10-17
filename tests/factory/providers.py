@@ -52,7 +52,7 @@ class HomegraphProvider(TokenProvider):
         return GetHomeGraphResponse.Home.Device(
             local_auth_token=self.local_auth_token(),
             device_info=GetHomeGraphResponse.Home.Device.DeviceInfo(
-                device_id=str(faker.uuid4),
+                device_id=str(faker.uuid4()),
                 agent_info=GetHomeGraphResponse.Home.Device.DeviceInfo.AgentInfo(
                     unique_id=faker.hexify("^" * 32)
                 ),
