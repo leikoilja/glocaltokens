@@ -9,6 +9,7 @@ import json
 import logging
 import random
 from typing import TYPE_CHECKING, override
+import warnings
 
 from ghome_foyer_api.api_pb2 import GetHomeGraphRequest, GetHomeGraphResponse  # pylint: disable=no-name-in-module
 from ghome_foyer_api.api_pb2_grpc import StructuresServiceStub
@@ -199,7 +200,7 @@ class GLocalAuthenticationTokens:
         password: str | None = None,
         master_token: str | None = None,
         android_id: str | None = None,
-        verbose: bool = False,
+        verbose: bool | None = None,
         oauth_token: str | None = None,
     ):
         """Initialize a GLocalAuthenticationTokens instance with Google account credentials.
@@ -209,16 +210,17 @@ class GLocalAuthenticationTokens:
             password: Google account password (can be an app password);
             master_token: Google master token, instead of password;
             android_id: The ID of an Android device. Will be randomly generated if not set;
-            verbose: Whether or not to print debug logging information;
+            verbose: Deprecated and ignored, configure logging in your application instead;
             oauth_token: `oauth_token` cookie from a browser sign-in, exchanged for
               a master token instead of logging in with the password.
         """
-        self.logging_level: int | None = logging.DEBUG if verbose else None
-        if verbose:
-            LOGGER.setLevel(logging.DEBUG)
-            # Show the debug output in scripts; does nothing if the
-            # application has already configured logging.
-            logging.basicConfig()
+        if verbose is not None:
+            warnings.warn(
+                "verbose is deprecated and ignored, set the level of the "
+                "glocaltokens logger in your application instead",
+                DeprecationWarning,
+                stacklevel=2,
+            )
 
         LOGGER.debug("Initializing new GLocalAuthenticationTokens instance.")
 
@@ -549,7 +551,6 @@ class GLocalAuthenticationTokens:
                 models_list,
                 timeout=discovery_timeout,
                 zeroconf_instance=zeroconf_instance,
-                logging_level=self.logging_level,
             )
 
         def find_device(unique_id: str) -> NetworkDevice | None:

@@ -1,5 +1,6 @@
 """Example to fetch local authentication tokens."""
 
+import logging
 from os import getenv
 
 from glocaltokens.client import GLocalAuthenticationTokens
@@ -17,6 +18,9 @@ GOOGLE_ACCESS_TOKEN = getenv("GOOGLE_ACCESS_TOKEN", None)
 
 
 if __name__ == "__main__":
+    logging.basicConfig()
+    logging.getLogger("glocaltokens").setLevel(logging.DEBUG)
+
     print(
         """
     The client generates tokens that can be used when
@@ -49,7 +53,6 @@ if __name__ == "__main__":
         master_token=GOOGLE_MASTER_TOKEN,
         oauth_token=GOOGLE_OAUTH_TOKEN,
         android_id=DEVICE_ID,
-        verbose=True,
     )
 
     # Get master token

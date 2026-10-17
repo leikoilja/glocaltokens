@@ -90,7 +90,7 @@ Report a bug by [opening a new issue](../../issues/new/choose); it's that easy!
 - What actually happens
 - Notes (possibly including why you think this might be happening, or stuff you tried that didn't work)
 
-Debug logs from `verbose=True` help a lot, but check them for anything private before you post them.
+Debug logs for the `glocaltokens` logger help a lot ([Troubleshooting](README.md#troubleshooting) shows how to turn them on), but check them for anything private before you post them.
 
 ## Any contributions you make will be under the MIT Software License
 
