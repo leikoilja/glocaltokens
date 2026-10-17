@@ -589,7 +589,7 @@ class GLocalAuthenticationTokens:
                         ip_address=address_dict[item.device_name],
                         port=DEFAULT_DISCOVERY_PORT,
                         model=item.hardware.model,
-                        unique_id=item.device_info.device_id,
+                        unique_id=unique_id,
                     )
 
                 device = Device(
