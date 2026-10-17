@@ -136,10 +136,10 @@ print(client.get_email())
 ```
 
 `device_name` is the name in the Google Home app. A speaker pair is found on the network at its leading speaker, but keeps the pair's name.
-For a `Device` found on the network, `network_device.name` has the name the device announces there.
+The JSON doesn't include the name a device announces on the network. For a `Device` object found there, it is in `network_device.name`.
 
-`cloud_device_id` is the ID Google gives the device, or `null` if Google gives none. Devices report the same ID at `/setup/eureka_info`,
-so you can use it to match a device at an address you know.
+`cloud_device_id` is the ID Google gives the device, or `null` if Google gives none. To match a device at an address you know,
+compare it with `device_info.cloud_device_id` from the device's `/setup/eureka_info?params=device_info`, ignoring case.
 
 The client caches the tokens it gets from Google for 24 hours. Pass `force_homegraph_reload=True` to fetch new ones sooner.
 
