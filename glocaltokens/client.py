@@ -28,6 +28,7 @@ from .const import (
     EMAIL_ACCESS_TOKEN_SERVICE,
     GOOGLE_HOME_FOYER_API,
     HOMEGRAPH_DURATION,
+    LOCAL_AUTH_TOKEN_LENGTH,
     REQUEST_TIMEOUT,
     USERINFO_URL,
 )
@@ -129,9 +130,10 @@ class Device:
             # another format.
             log = LOGGER.warning if network_device else LOGGER.debug
             log(
-                "%s local_auth_token isn't 108 characters as expected for a Cast "
+                "%s local_auth_token isn't %d characters as expected for a Cast "
                 "device, skipping it",
                 log_prefix,
+                LOCAL_AUTH_TOKEN_LENGTH,
             )
             return
 
