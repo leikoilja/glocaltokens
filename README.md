@@ -86,7 +86,7 @@ client = GLocalAuthenticationTokens(master_token=master_token)
 
 ### If logging in with a password fails
 
-Logging in with a password does not work for every account. If `get_master_token()` returns `None`,
+Logging in with a password does not work for every account. If `get_master_token()` raises `AuthenticationError` (see [Errors](#errors)),
 or your account uses a passkey, sign in with a browser instead and let glocaltokens exchange that sign-in for a master token.
 This uses [gpsoauth's alternative flow](https://github.com/simon-weber/gpsoauth#alternative-flow):
 
@@ -181,7 +181,7 @@ google_devices = client.get_google_devices_json(
 )
 ```
 
-Only IPv4 addresses are supported. If any entry is not a valid IPv4 address, glocaltokens logs an error and returns no devices at all.
+Only IPv4 addresses are supported. If any entry is not a valid IPv4 address, the device methods raise `ValueError`.
 
 ### Options
 
@@ -200,7 +200,7 @@ Both `get_google_devices()` and `get_google_devices_json()` accept these argumen
 
 ## Troubleshooting
 
-If you get no devices or no tokens, turn on debug logs for glocaltokens to see each step:
+If you get no devices or an error, turn on debug logs for glocaltokens to see each step:
 
 ```python
 import logging
@@ -215,20 +215,50 @@ glocaltokens masks your password and tokens in its logs, but they also include G
 
 ### Errors
 
-Most failures are logged and return `None` from the token methods, or no devices from the device methods:
-an empty list from `get_google_devices()` and `"[]"` from `get_google_devices_json()`.
-Check the result before you use it.
+The token and device methods raise an error when they can't get what you asked for. They don't return `None` or an empty list instead.
+An account without devices is not an error: `get_google_devices()` returns an empty list and `get_google_devices_json()` returns `"[]"`.
+`get_email()` returns `None` if Google gives no email address, including when Google refuses the request for it.
 
-Some errors are raised instead, and your code should handle them:
+glocaltokens raises these errors when Google gives no tokens or devices. They are in `glocaltokens.exceptions` and are subclasses of `GLocalTokensError`, so you can catch both at once:
 
-- `requests.RequestException` when glocaltokens cannot get a master or access token from Google,
-  for example without an internet connection or when Google does not reply within 10 seconds.
-  The device methods raise it too when they need a new access token first, and so does `get_email()`.
+- `AuthenticationError`: Google gave no master token or access token, the username and password are too long together to log in with,
+  or the client has no master token and neither an `oauth_token` nor a username and password to get one with.
+  This usually means you need to sign in again (see [Authentication](#authentication)).
+  Its `error` attribute is the reason Google gave, such as `BadAuthentication` or `NeedsBrowser`, or `None` if there isn't one.
+  `get_master_token()`, `get_access_token()`, `get_email()` and the device methods raise it.
+- `HomegraphError`: Google didn't return your devices. The device methods raise it.
+  Its `code` attribute is the [gRPC status code](https://grpc.github.io/grpc/core/md_doc_statuscodes.html) of the failed request as a `grpc.StatusCode`.
+  For example, `UNAVAILABLE` and `DEADLINE_EXCEEDED` mean Google is unavailable or did not reply within 10 seconds: try again later.
+  `UNAUTHENTICATED` means Google kept rejecting the access token, even after glocaltokens got a new one. If that keeps happening, sign in again.
+
+These errors from the libraries glocaltokens uses also reach your code:
+
+- `requests.RequestException` when a request to Google fails, for example without an internet connection or when Google does not reply within 10 seconds.
+  A request for a token also raises it when Google answers that you should try later (HTTP 5xx or 429).
+  `get_master_token()`, `get_access_token()`, `get_email()` and the device methods raise it. Try again later.
 - `OSError` when network discovery cannot start, for example because no network interface is available.
   Pass `disable_discovery=True` if you do not need IP addresses and ports.
 
-If Google does not reply within 10 seconds when the device methods fetch the device list itself,
-they log the error and return no devices.
+A mistake in your call raises `ValueError`: creating the client without credentials or with a `master_token` that doesn't start with `aas_et/`,
+or passing `addresses` that aren't a dictionary of IPv4 addresses to the device methods.
+
+This example tells "sign in again" from "try again later". To keep it simple, it treats every `HomegraphError` as temporary;
+check its `code` to also handle `UNAUTHENTICATED` that keeps happening:
+
+```python
+import requests
+
+from glocaltokens.client import GLocalAuthenticationTokens
+from glocaltokens.exceptions import AuthenticationError, HomegraphError
+
+client = GLocalAuthenticationTokens(master_token="<YOUR_MASTER_TOKEN>")
+try:
+    devices = client.get_google_devices()
+except AuthenticationError as err:
+    print(f"Sign in again to get a new master token: {err}")
+except (HomegraphError, requests.RequestException) as err:
+    print(f"Try again later: {err}")
+```
 
 ## Contributing
 
