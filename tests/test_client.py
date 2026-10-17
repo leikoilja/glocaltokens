@@ -637,7 +637,10 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         assert m_structure_service_stub.return_value.GetHomeGraph.call_count == 3
 
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_homegraph")
-    def test_get_google_devices(self, m_get_homegraph: NonCallableMock) -> None:
+    @patch("glocaltokens.client.LOGGER.warning")
+    def test_get_google_devices(
+        self, m_warning: NonCallableMock, m_get_homegraph: NonCallableMock
+    ) -> None:
         """Test getting google devices."""
         # With just one device returned from homegraph
         fake_device_name = faker.word()
@@ -677,6 +680,9 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         )
         assert len(google_devices) == 1
         self.assertDevice(google_devices[0], homegraph_device_valid)
+        # Devices without a Cast token, like Google Wifi and Nest Wifi routers,
+        # are skipped quietly
+        m_warning.assert_not_called()
         assert google_devices[0].network_device is not None
         if google_devices[0].network_device is not None:
             assert google_devices[0].network_device.ip_address == fake_ip_address
@@ -756,13 +762,25 @@ class DeviceClientTests(TypeAssertions, TestCase):
     def test_initialization__invalid(self, m_log: NonCallableMock) -> None:
         """Test initialization that is invalid."""
 
-        # Invalid local_auth_token
+        # Invalid local_auth_token, for example from a Google Wifi or Nest Wifi router
         device = Device(
             device_id=str(faker.uuid4()),
             device_name=faker.word(),
             local_auth_token=faker.word(),
         )
-        assert m_log.call_count == 1
+        m_log.assert_not_called()
         assert device.local_auth_token is None
         # A device that failed validation can still be represented
         assert device.as_dict()["network_device"] == {"ip": None, "port": None}
+
+        # A Cast device found on the network with an invalid token is worth a warning
+        device = Device(
+            device_id=str(faker.uuid4()),
+            device_name=faker.word(),
+            local_auth_token=faker.word(),
+            network_device=NetworkDevice(
+                faker.word(), faker.ipv4(), 8009, faker.word(), faker.word()
+            ),
+        )
+        assert m_log.call_count == 1
+        assert device.local_auth_token is None
