@@ -7,6 +7,7 @@ import logging
 from threading import Event
 import time
 from typing import TYPE_CHECKING, NamedTuple, override
+import warnings
 
 from zeroconf import ServiceBrowser, ServiceInfo, ServiceListener, Zeroconf
 
@@ -184,9 +185,13 @@ def discover_devices(
     logging_level: int | None = None,
 ) -> list[NetworkDevice]:
     """Discover devices."""
-    # Leave the level to the application unless the caller asks for one.
     if logging_level is not None:
-        LOGGER.setLevel(logging_level)
+        warnings.warn(
+            "logging_level is deprecated and ignored, set the level of the "
+            "glocaltokens logger in your application instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
 
     LOGGER.debug("Discovering devices...")
 

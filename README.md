@@ -200,9 +200,18 @@ Both `get_google_devices()` and `get_google_devices_json()` accept these argumen
 
 ## Troubleshooting
 
-If you get no devices or no tokens, create the client with `verbose=True` to print debug logs that show each step.
-Without `verbose=True`, glocaltokens follows the level your application sets for the `glocaltokens` logger.
-The logs mask your password and tokens, but they also include Google's responses to failed requests, so check them before you share them, for example in an issue.
+If you get no devices or no tokens, turn on debug logs for glocaltokens to see each step:
+
+```python
+import logging
+
+logging.basicConfig()
+logging.getLogger("glocaltokens").setLevel(logging.DEBUG)
+```
+
+glocaltokens doesn't set log levels, so it follows your application's logging configuration.
+The client's `verbose` argument and the `logging_level` argument of `discover_devices()` are deprecated: they only emit a `DeprecationWarning`.
+glocaltokens masks your password and tokens in its logs, but they also include Google's responses to failed requests, so check them before you share them, for example in an issue.
 
 ### Errors
 

@@ -218,7 +218,7 @@ class DiscoverDevicesTests(TestCase):
     @patch("glocaltokens.scanner.ServiceBrowser", mock.Mock())
     @patch("glocaltokens.scanner.Zeroconf", mock.Mock())
     def test_discovery__keeps_application_log_level(self) -> None:
-        """Without logging_level, discovery leaves the level to the application."""
+        """Discovery leaves the level to the application."""
         package_logger = logging.getLogger("glocaltokens")
         package_logger.setLevel(logging.CRITICAL)
         try:
@@ -227,11 +227,11 @@ class DiscoverDevicesTests(TestCase):
             assert LOGGER.level == logging.NOTSET
             assert LOGGER.getEffectiveLevel() == logging.DEBUG
 
-            discover_devices(timeout=0, logging_level=logging.ERROR)
-            assert LOGGER.level == logging.ERROR
+            with pytest.warns(DeprecationWarning, match="logging_level is deprecated"):
+                discover_devices(timeout=0, logging_level=logging.ERROR)
+            assert LOGGER.level == logging.NOTSET
         finally:
             package_logger.setLevel(logging.NOTSET)
-            LOGGER.setLevel(logging.NOTSET)
 
     @patch("glocaltokens.scanner.ServiceBrowser")
     @patch("glocaltokens.scanner.Zeroconf")

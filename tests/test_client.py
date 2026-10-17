@@ -5,11 +5,10 @@ from __future__ import annotations
 from datetime import UTC, datetime, timedelta
 import json
 import logging
-import subprocess
-import sys
 from typing import override
 from unittest import TestCase, mock
 from unittest.mock import NonCallableMock, patch
+import warnings
 
 from faker import Faker
 from faker.providers import internet
@@ -93,41 +92,27 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         assert m_log.call_count == 0
 
     @patch("glocaltokens.client.logging.basicConfig")
-    @patch("glocaltokens.client.LOGGER.setLevel")
-    def test_initialization__valid_verbose_logger(
-        self, m_set_level: NonCallableMock, m_basic_config: NonCallableMock
+    def test_initialization__verbose_deprecated(
+        self, m_basic_config: NonCallableMock
     ) -> None:
-        """Valid initialization tests with verbose logging."""
-        # Non verbose
-        GLocalAuthenticationTokens(username=faker.word(), password=faker.word())
-        m_set_level.assert_not_called()
+        """The verbose argument warns and leaves logging to the application."""
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
+            GLocalAuthenticationTokens(master_token=faker.master_token())
+
+        for verbose in (True, False):
+            with pytest.warns(
+                DeprecationWarning, match="verbose is deprecated"
+            ) as record:
+                GLocalAuthenticationTokens(
+                    master_token=faker.master_token(), verbose=verbose
+                )
+            assert record[0].filename == __file__
+            assert LOGGER.level == logging.NOTSET
         m_basic_config.assert_not_called()
 
-        # Verbose
-        GLocalAuthenticationTokens(
-            username=faker.word(), password=faker.word(), verbose=True
-        )
-        m_set_level.assert_called_once_with(logging.DEBUG)
-        m_basic_config.assert_called_once_with()
-
-    def test_initialization__verbose_output(self) -> None:
-        """Verbose logging reaches stderr in a script without logging configured."""
-        script = (
-            "from glocaltokens.client import GLocalAuthenticationTokens\n"
-            "client = GLocalAuthenticationTokens(username='u', password='p', verbose={})\n"
-            "client.get_android_id()\n"
-        )
-        for verbose, expected in ((True, True), (False, False)):
-            result = subprocess.run(
-                [sys.executable, "-c", script.format(verbose)],
-                capture_output=True,
-                text=True,
-                check=True,
-            )
-            assert ("DEBUG:glocaltokens.client" in result.stderr) is expected
-
     def test_initialization__keeps_application_log_level(self) -> None:
-        """A non-verbose client keeps the level the application set."""
+        """The client keeps the level the application set."""
         package_logger = logging.getLogger("glocaltokens")
         package_logger.setLevel(logging.DEBUG)
         try:
@@ -455,9 +440,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
             {"email": email, "email_verified": True}
         ).encode()
         m_send.return_value = response
-        client = GLocalAuthenticationTokens(
-            master_token=faker.master_token(), verbose=True
-        )
+        client = GLocalAuthenticationTokens(master_token=faker.master_token())
 
         with self.assertLogs(level=logging.DEBUG) as logs:
             assert client.get_email() == email
