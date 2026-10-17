@@ -247,6 +247,33 @@ class DiscoverDevicesTests(TestCase):
     @patch("glocaltokens.scanner.Event")
     @patch("glocaltokens.scanner.ServiceBrowser")
     @patch("glocaltokens.scanner.Zeroconf", mock.Mock())
+    def test_max_devices__counts_device_added_on_update(
+        self, m_service_browser: NonCallableMock, m_event: NonCallableMock
+    ) -> None:
+        """A device that discovery first adds on an update counts towards max_devices."""
+        discovery_complete = m_event.return_value = Event()
+
+        def browse(_zc: object, _type: str, listener: CastListener) -> mock.Mock:
+            service = mock.Mock(name="Service")
+            service.port = 8009
+            service.properties = {b"fn": b"Home", b"md": b"Google Home", b"cd": b"id"}
+            zc = mock.Mock(name="Zeroconf")
+            zc.get_service_info.return_value = service
+            # Skipped, as a link-local IPv6 address can't be used
+            service.parsed_addresses.return_value = ["fe80::1"]
+            listener.add_service(zc, "type", "name")
+            # zeroconf sends an update when an IPv4 address arrives
+            service.parsed_addresses.return_value = [faker.ipv4_private()]
+            listener.update_service(zc, "type", "name")
+            return mock.Mock()
+
+        m_service_browser.side_effect = browse
+        discover_devices(max_devices=1, timeout=1)
+        assert discovery_complete.is_set()
+
+    @patch("glocaltokens.scanner.Event")
+    @patch("glocaltokens.scanner.ServiceBrowser")
+    @patch("glocaltokens.scanner.Zeroconf", mock.Mock())
     def test_max_devices__counts_wanted_devices(
         self, m_service_browser: NonCallableMock, m_event: NonCallableMock
     ) -> None:
