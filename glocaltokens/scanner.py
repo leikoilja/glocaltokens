@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import ipaddress
 import logging
 from threading import Event
 import time
@@ -10,12 +11,21 @@ from typing import TYPE_CHECKING, NamedTuple, override
 from zeroconf import ServiceBrowser, ServiceInfo, ServiceListener, Zeroconf
 
 from .const import DISCOVERY_TIMEOUT, GOOGLE_CAST_GROUP, SERVICE_INFO_TIMEOUT
-from .utils import network as net_utils
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
 LOGGER = logging.getLogger(__name__)
+
+
+def _is_reachable(address: str) -> bool:
+    """Whether a discovered address can be used to reach the device.
+
+    A link-local IPv6 address can't be, as it only works with its interface,
+    which zeroconf's parsed_addresses() leaves out.
+    """
+    ip = ipaddress.ip_address(address)
+    return ip.version == 4 or not ip.is_link_local
 
 
 class NetworkDevice(NamedTuple):
@@ -115,9 +125,8 @@ class CastListener(ServiceListener):
             LOGGER.debug("_add_update_service failed to add %s, %s", type_, name)
             return
 
-        addresses = service.parsed_addresses()
-        server_name = service.server or service.name
-        ip_address = addresses[0] if addresses else server_name
+        # zeroconf lists IPv4 addresses first
+        ip_address = next(filter(_is_reachable, service.parsed_addresses()), None)
 
         model_name = self.get_service_value(service, "md")
         friendly_name = self.get_service_value(service, "fn")
@@ -126,14 +135,14 @@ class CastListener(ServiceListener):
         if not model_name or not friendly_name or not service.port or not unique_id:
             LOGGER.debug(
                 "Discovered device %s has incomplete service info, skipping...",
-                ip_address,
+                name,
             )
             return
 
-        if not net_utils.is_valid_ipv4_address(
-            ip_address
-        ) and not net_utils.is_valid_ipv6_address(ip_address):
-            LOGGER.error("Discovered device has invalid IP address: %s", ip_address)
+        if ip_address is None:
+            LOGGER.debug(
+                "Discovered device %s has no reachable IP address, skipping...", name
+            )
             return
 
         if not 0 <= service.port <= 65535:

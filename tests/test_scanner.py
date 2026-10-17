@@ -115,11 +115,39 @@ class NetworkDeviceTests(TestCase):
         for call in zc.get_service_info.call_args_list:
             assert 0 < call.kwargs["timeout"] <= 1000
 
+    def test_service_info__address_choice(self) -> None:
+        """IPv4 is preferred, and a link-local IPv6 address is never used."""
+        ipv4 = faker.ipv4_private()
+        ipv6 = "2001:db8::1"
+        link_local = "fe80::bbc8:4475:d22a:d8de"
+        service = mock.Mock(name="Service")
+        service.port = faker.port_number(is_user=True)
+        service.properties = {b"fn": b"Home", b"md": b"Google Home", b"cd": b"id"}
+        zc = mock.Mock(name="Zeroconf")
+        zc.get_service_info.return_value = service
+
+        # zeroconf lists IPv4 addresses before IPv6 ones
+        for addresses, expected in (
+            ([ipv4, ipv6], ipv4),
+            ([ipv4, link_local], ipv4),
+            ([link_local, ipv6], ipv6),
+            ([ipv6], ipv6),
+            ([link_local], None),
+            ([], None),
+        ):
+            service.parsed_addresses.return_value = addresses
+            listener = CastListener()
+            listener.add_service(zc, "type", "name")
+            if expected is None:
+                assert listener.count == 0, addresses
+            else:
+                assert listener.devices["name"].ip_address == expected, addresses
+
     @patch("glocaltokens.scanner.LOGGER.error")
     def test_service_info__invalid(self, m_error: NonCallableMock) -> None:
         """Invalid service_info tests."""
         service = mock.Mock(name="Service")
-        service.parsed_addresses.return_value = None
+        service.parsed_addresses.return_value = [faker.ipv4_private()]
 
         zc = mock.Mock(name="Zeroconf")
         zc.get_service_info.return_value = service
@@ -128,23 +156,15 @@ class NetworkDeviceTests(TestCase):
         type_ = faker.word()
         name = faker.word()
 
-        # With invalid IP
-        service.server = faker.word()
-        service.port = faker.port_number(is_user=True)
+        # With negative port
+        service.port = faker.pyint(min_value=-9999, max_value=-1)
         listener.add_service(zc, type_, name)
         assert m_error.call_count == 1
 
-        # With negative port
-        service.server = faker.ipv4_private()
-        service.port = faker.pyint(min_value=-9999, max_value=-1)
+        # With greater port
+        service.port = faker.pyint(min_value=65536, max_value=999999)
         listener.add_service(zc, type_, name)
         assert m_error.call_count == 2
-
-        # With greater port
-        service.server = faker.ipv4_private()
-        service.port = faker.pyint(min_value=65535, max_value=999999)
-        listener.add_service(zc, type_, name)
-        assert m_error.call_count == 3
 
         # No devices should be added
         assert listener.count == 0
