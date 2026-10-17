@@ -34,7 +34,7 @@ from .const import (
     USERINFO_URL,
 )
 from .scanner import NetworkDevice, discover_devices
-from .utils import network as net_utils, token as token_utils
+from .utils import token as token_utils
 from .utils.logs import censor
 from .utils.network import is_valid_ipv4_address
 
@@ -147,19 +147,6 @@ class Device:
             )
             self.ip_address = network_device.ip_address
             self.port = network_device.port
-
-        # IP and PORT validation
-        if (
-            self.ip_address
-            and not net_utils.is_valid_ipv4_address(self.ip_address)
-            and not net_utils.is_valid_ipv6_address(self.ip_address)
-        ):
-            LOGGER.error("%s IP(%s) is invalid", log_prefix, self.ip_address)
-            return
-
-        if self.port and not net_utils.is_valid_port(self.port):
-            LOGGER.error("%s PORT(%s) is invalid", log_prefix, self.port)
-            return
 
         LOGGER.debug(
             '%s Set device_name to "%s", '
@@ -445,35 +432,21 @@ class GLocalAuthenticationTokens:
                 LOGGER.debug("%s Unable to obtain access token.", log_prefix)
                 return None
             try:
-                LOGGER.debug("%s Creating SSL channel credentials...", log_prefix)
                 scc = grpc.ssl_channel_credentials(root_certificates=None)
-                LOGGER.debug("%s Creating access token call credentials...", log_prefix)
                 tok = grpc.access_token_call_credentials(access_token)
-                LOGGER.debug("%s Compositing channel credentials...", log_prefix)
                 channel_credentials = grpc.composite_channel_credentials(scc, tok)
-
-                LOGGER.debug(
-                    "%s Establishing secure channel with the Google Home Foyer API...",
-                    log_prefix,
-                )
                 with grpc.secure_channel(
                     GOOGLE_HOME_FOYER_API, channel_credentials
                 ) as channel:
-                    LOGGER.debug(
-                        "%s Getting channels StructuresServiceStub...", log_prefix
-                    )
                     rpc_service = StructuresServiceStub(channel)
-                    LOGGER.debug("%s Getting HomeGraph request...", log_prefix)
                     request = GetHomeGraphRequest(string1="", num2="")
                     LOGGER.debug("%s Fetching HomeGraph...", log_prefix)
                     response = rpc_service.GetHomeGraph(
                         request, timeout=REQUEST_TIMEOUT
                     )
-                    LOGGER.debug("%s Storing obtained HomeGraph...", log_prefix)
                     self.homegraph = response
                 self.homegraph_date = datetime.now(UTC)
             except grpc.RpcError as rpc_error:
-                LOGGER.debug("%s Got an RpcError", log_prefix)
                 if (
                     rpc_error.code().name  # pylint: disable=no-member
                     == "UNAUTHENTICATED"
