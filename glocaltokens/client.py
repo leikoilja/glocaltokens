@@ -5,6 +5,7 @@ from __future__ import annotations
 from contextlib import contextmanager
 from contextvars import ContextVar
 from datetime import UTC, datetime
+from http import HTTPStatus
 import json
 import logging
 import random
@@ -33,6 +34,7 @@ from .const import (
     REQUEST_TIMEOUT,
     USERINFO_URL,
 )
+from .exceptions import AuthenticationError, HomegraphError
 from .scanner import NetworkDevice, discover_devices
 from .utils import token as token_utils
 from .utils.logs import censor
@@ -59,8 +61,11 @@ class _TimeoutAuthHTTPAdapter(gpsoauth.AuthHTTPAdapter):
     """gpsoauth's HTTP adapter with a timeout for glocaltokens' own requests.
 
     gpsoauth sends its requests without a timeout and has no option to set one,
-    so a stalled connection would make it wait forever. The timeout only applies
-    inside _request_timeout(), so other gpsoauth users are not affected.
+    so a stalled connection would make it wait forever. gpsoauth also reads any
+    answer as a login response, so an answer that means "try later" would look
+    like Google refusing the credentials: this adapter raises HTTPError for it.
+    Both only apply inside _request_timeout(), so other gpsoauth users are not
+    affected.
     """
 
     @override
@@ -73,9 +78,10 @@ class _TimeoutAuthHTTPAdapter(gpsoauth.AuthHTTPAdapter):
         cert: bytes | str | tuple[bytes | str, bytes | str] | None = None,
         proxies: Mapping[str, str] | None = None,
     ) -> Response:
+        own_timeout = _gpsoauth_timeout.get()
         if timeout is None:
-            timeout = _gpsoauth_timeout.get()
-        return super().send(
+            timeout = own_timeout
+        response = super().send(
             request,
             stream=stream,
             timeout=timeout,
@@ -83,6 +89,18 @@ class _TimeoutAuthHTTPAdapter(gpsoauth.AuthHTTPAdapter):
             cert=cert,
             proxies=proxies,
         )
+        if own_timeout is not None and (
+            response.status_code >= HTTPStatus.INTERNAL_SERVER_ERROR
+            or response.status_code == HTTPStatus.TOO_MANY_REQUESTS
+        ):
+            # Read Google's answer, so the error keeps it, then close the
+            # connection, as the error may be kept for long; gpsoauth mounts a
+            # new adapter for each request.
+            text = response.text
+            LOGGER.debug("Request response: HTTP %s %s", response.status_code, text)
+            self.close()
+            response.raise_for_status()
+        return response
 
 
 # gpsoauth looks the adapter up by this name for every request.
@@ -91,7 +109,7 @@ gpsoauth.AuthHTTPAdapter = _TimeoutAuthHTTPAdapter  # type: ignore[misc]
 
 @contextmanager
 def _request_timeout() -> Iterator[None]:
-    """Apply REQUEST_TIMEOUT to gpsoauth requests made in this context."""
+    """Apply REQUEST_TIMEOUT and HTTPError to gpsoauth requests in this context."""
     token = _gpsoauth_timeout.set(REQUEST_TIMEOUT)
     try:
         yield
@@ -163,6 +181,9 @@ class GLocalAuthenticationTokens:
             verbose: Deprecated and ignored, configure logging in your application instead;
             oauth_token: `oauth_token` cookie from a browser sign-in, exchanged for
               a master token instead of logging in with the password.
+
+        Raises ValueError if there are no credentials, or if master_token
+        doesn't start with "aas_et/".
         """
         if verbose is not None:
             warnings.warn(
@@ -204,14 +225,14 @@ class GLocalAuthenticationTokens:
         # Validation
         can_log_in = self.oauth_token or (self.username and self.password)
         if not can_log_in and not self.master_token:
-            LOGGER.error(
+            raise ValueError(
                 "You must either provide google username with password, "
                 "oauth_token, or google master token"
             )
-            return
-        if self.master_token and not token_utils.is_aas_et(self.master_token):
-            LOGGER.error("master_token doesn't follow the AAS_ET format")
-            return
+        # Only check the prefix: is_aas_et() also checks today's length, which
+        # Google may change for the tokens get_master_token() gets
+        if self.master_token and not self.master_token.startswith("aas_et/"):
+            raise ValueError("master_token doesn't follow the AAS_ET format")
 
     @staticmethod
     def _generate_android_id() -> str:
@@ -240,14 +261,16 @@ class GLocalAuthenticationTokens:
         """Escape plus sign for some exotic accounts."""
         return username.replace("+", "%2B")
 
-    def get_master_token(self) -> str | None:
+    def get_master_token(self) -> str:
         """Return the stored master token, or get a new one.
 
         A new master token comes from exchanging the oauth_token if one is set,
         otherwise from logging in with the password.
+
+        Raises AuthenticationError if Google gives no master token, or if there
+        is no oauth_token or username and password to get one with.
         """
         if not self.master_token:
-            res = {}
             if self.oauth_token:
                 LOGGER.debug(
                     "There is no stored master_token, exchanging the oauth_token"
@@ -259,7 +282,7 @@ class GLocalAuthenticationTokens:
                         self.oauth_token,
                         self.get_android_id(),
                     )
-            elif self.username is not None and self.password is not None:
+            elif self.username and self.password:
                 LOGGER.debug(
                     "There is no stored master_token, "
                     "logging in using username and password"
@@ -271,26 +294,36 @@ class GLocalAuthenticationTokens:
                             self.password,
                             self.get_android_id(),
                         )
-                except ValueError:
-                    LOGGER.exception(
-                        "A ValueError exception has been thrown, this usually is "
-                        "related to a password length that exceeds the boundaries "
-                        "(too long)."
-                    )
+                except ValueError as error:
+                    # Some requests errors, such as InvalidProxyURL, are ValueErrors
+                    if isinstance(error, requests.RequestException):
+                        raise
+                    # gpsoauth encrypts the username and password together
+                    raise AuthenticationError(
+                        "Could not log in with the password to get a master "
+                        "token, the username and password may be too long together"
+                    ) from error
             else:
-                LOGGER.error("Username and password or oauth_token are not set.")
-                return None
-            if "Token" not in res:
-                LOGGER.error("[!] Could not get master token.")
+                raise AuthenticationError(
+                    "No master token, and no username and password or "
+                    "oauth_token to get one with"
+                )
+            if not res.get("Token"):
                 LOGGER.debug("Request response: %s", res)
-                return None
+                raise AuthenticationError(
+                    "Google gave no master token", res.get("Error")
+                )
             self.master_token = res["Token"]
             self.email = res.get("Email") or None
         LOGGER.debug("Master token: %s", censor(self.master_token))
         return self.master_token
 
-    def get_access_token(self) -> str | None:
-        """Return existing or fetch access_token."""
+    def get_access_token(self) -> str:
+        """Return existing or fetch access_token.
+
+        Raises AuthenticationError if Google gives no access token, or no
+        master token to get one with.
+        """
         if (
             self.access_token is None
             or self.access_token_date is None
@@ -301,9 +334,6 @@ class GLocalAuthenticationTokens:
                 "or it has expired, getting a new one..."
             )
             master_token = self.get_master_token()
-            if master_token is None:
-                LOGGER.debug("Unable to obtain master token.")
-                return None
             # Google doesn't need the email address once there is a master token
             with _request_timeout():
                 res = perform_oauth(
@@ -314,10 +344,11 @@ class GLocalAuthenticationTokens:
                     service=ACCESS_TOKEN_SERVICE,
                     client_sig=ACCESS_TOKEN_CLIENT_SIGNATURE,
                 )
-            if "Auth" not in res:
-                LOGGER.error("[!] Could not get access token.")
+            if not res.get("Auth"):
                 LOGGER.debug("Request response: %s", res)
-                return None
+                raise AuthenticationError(
+                    "Google gave no access token", res.get("Error")
+                )
             self.access_token = res["Auth"]
             self.access_token_date = datetime.now(UTC)
         LOGGER.debug(
@@ -335,13 +366,12 @@ class GLocalAuthenticationTokens:
         it belongs to, this gets an access token that may only read the email
         address and asks Google's userinfo endpoint, which returns only an
         address Google has verified.
+
+        Raises AuthenticationError if Google gives no master token.
         """
         master_token = self.get_master_token()
         if self.email is not None:
             return self.email
-        if master_token is None:
-            LOGGER.debug("Unable to obtain master token.")
-            return None
         with _request_timeout():
             res = perform_oauth(
                 self._escape_username(self.username or ""),
@@ -351,7 +381,7 @@ class GLocalAuthenticationTokens:
                 service=EMAIL_ACCESS_TOKEN_SERVICE,
                 client_sig=ACCESS_TOKEN_CLIENT_SIGNATURE,
             )
-        if "Auth" not in res:
+        if not res.get("Auth"):
             LOGGER.debug("Could not get an access token for the email address")
             LOGGER.debug("Request response: %s", res)
             return None
@@ -373,24 +403,25 @@ class GLocalAuthenticationTokens:
         email: str | None = user_info.get("email") or None
         return email
 
-    def get_homegraph(self, auth_attempts: int = 3) -> GetHomeGraphResponse | None:
-        """Return the entire Google Home Foyer V2 service."""
+    def get_homegraph(self, auth_attempts: int = 3) -> GetHomeGraphResponse:
+        """Return the entire Google Home Foyer V2 service.
+
+        auth_attempts: How many times to try, with a new access token each
+          time Google rejects the access token.
+
+        Raises HomegraphError if Google doesn't return the home graph, and
+        AuthenticationError if Google gives no access token.
+        """
         if (
             self.homegraph is None
             or self.homegraph_date is None
             or self._has_expired(self.homegraph_date, HOMEGRAPH_DURATION)
         ):
-            if auth_attempts == 0:
-                LOGGER.error("Reached maximum number of authentication attempts")
-                return None
             LOGGER.debug(
                 "There is no stored homegraph, or it has expired, getting a new one..."
             )
             log_prefix = "[GRPC]"
             access_token = self.get_access_token()
-            if not access_token:
-                LOGGER.debug("%s Unable to obtain access token.", log_prefix)
-                return None
             try:
                 scc = grpc.ssl_channel_credentials(root_certificates=None)
                 tok = grpc.access_token_call_credentials(access_token)
@@ -407,23 +438,19 @@ class GLocalAuthenticationTokens:
                     self.homegraph = response
                 self.homegraph_date = datetime.now(UTC)
             except grpc.RpcError as rpc_error:
-                if (
-                    rpc_error.code().name  # pylint: disable=no-member
-                    == "UNAUTHENTICATED"
-                ):
-                    LOGGER.warning(
-                        "%s The access token has expired. Getting a new one.",
-                        log_prefix,
-                    )
+                code = rpc_error.code()  # pylint: disable=no-member
+                if code == grpc.StatusCode.UNAUTHENTICATED:
                     self.invalidate_access_token()
-                    return self.get_homegraph(auth_attempts - 1)
-                LOGGER.exception(
-                    "%s Received unknown RPC error: code=%s message=%s",
-                    log_prefix,
-                    rpc_error.code(),  # pylint: disable=no-member
+                    if auth_attempts > 1:
+                        LOGGER.warning(
+                            "%s The access token has expired. Getting a new one.",
+                            log_prefix,
+                        )
+                        return self.get_homegraph(auth_attempts - 1)
+                raise HomegraphError(
+                    code,
                     rpc_error.details(),  # pylint: disable=no-member
-                )
-                return None
+                ) from rpc_error
         return self.homegraph
 
     def get_google_devices(
@@ -447,7 +474,23 @@ class GLocalAuthenticationTokens:
           use it here.
         force_homegraph_reload: If the stored homegraph should be generated again.
         discovery_timeout: Timeout for zeroconf discovery in seconds.
+
+        Raises ValueError if addresses isn't a dict of IPv4 addresses, and the
+        errors of get_homegraph().
         """
+
+        def is_dict_with_valid_ipv4_addresses(data: dict[str, str]) -> bool:
+            # Validate the data structure is correct and that each entry contains a
+            # valid IPv4 address.
+            return isinstance(data, dict) and all(
+                isinstance(x, str) and is_valid_ipv4_address(x) for x in data.values()
+            )
+
+        if addresses and not is_dict_with_valid_ipv4_addresses(addresses):
+            raise ValueError(
+                "Invalid dictionary structure for addresses dictionary "
+                "argument. Correct structure is {'device_name': 'ipaddress'}"
+            )
 
         # Set models_list to empty list if None
         LOGGER.debug("Initializing models list if empty...")
@@ -461,25 +504,6 @@ class GLocalAuthenticationTokens:
         homegraph = self.get_homegraph()
 
         devices: list[Device] = []
-
-        def is_dict_with_valid_ipv4_addresses(data: dict[str, str]) -> bool:
-            # Validate the data structure is correct and that each entry contains a
-            # valid IPv4 address.
-            return isinstance(data, dict) and all(
-                isinstance(x, str) and is_valid_ipv4_address(x) for x in data.values()
-            )
-
-        if addresses and not is_dict_with_valid_ipv4_addresses(addresses):
-            LOGGER.error(
-                "Invalid dictionary structure for addresses dictionary "
-                "argument. Correct structure is {'device_name': 'ipaddress'}"
-            )
-            return devices
-
-        if homegraph is None:
-            LOGGER.debug("Failed to fetch homegraph")
-            return devices
-
         network_devices: list[NetworkDevice] = []
         if disable_discovery is False:
             LOGGER.debug("Automatically discovering network devices...")
@@ -592,6 +616,8 @@ class GLocalAuthenticationTokens:
           use it here.
         force_homegraph_reload: If the stored homegraph should be generated again.
         discovery_timeout: Timeout for zeroconf discovery in seconds.
+
+        Raises the errors of get_google_devices().
         """
 
         google_devices = self.get_google_devices(
