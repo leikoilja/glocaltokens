@@ -85,16 +85,19 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         assert client.master_token is not None
         self.assertIsAasEt(client.master_token)
 
-    @patch("glocaltokens.client.LOGGER.error")
-    def test_initialization__valid(self, m_log: NonCallableMock) -> None:
+    def test_initialization__valid(self) -> None:
         """Valid initialization tests."""
         # With username and password
         GLocalAuthenticationTokens(username=faker.word(), password=faker.word())
-        assert m_log.call_count == 0
 
         # With master_token
         GLocalAuthenticationTokens(master_token=faker.master_token())
-        assert m_log.call_count == 0
+
+        # With oauth_token
+        GLocalAuthenticationTokens(oauth_token=faker.word())
+
+        # With a master_token of another length than today's
+        GLocalAuthenticationTokens(master_token=f"aas_et/{faker.word()}")
 
     @patch("glocaltokens.client.logging.basicConfig")
     def test_initialization__verbose_deprecated(
@@ -126,24 +129,28 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         finally:
             package_logger.setLevel(logging.NOTSET)
 
-    @patch("glocaltokens.client.LOGGER.error")
-    def test_initialization__invalid(self, m_log: NonCallableMock) -> None:
+    def test_initialization__invalid(self) -> None:
         """Invalid initialization tests."""
+        no_credentials = "You must either provide"
         # Without username
-        GLocalAuthenticationTokens(password=faker.word())
-        assert m_log.call_count == 1
+        with pytest.raises(ValueError, match=no_credentials):
+            GLocalAuthenticationTokens(password=faker.word())
 
         # Without password
-        GLocalAuthenticationTokens(username=faker.word())
-        assert m_log.call_count == 2
+        with pytest.raises(ValueError, match=no_credentials):
+            GLocalAuthenticationTokens(username=faker.word())
 
         # Without username and password
-        GLocalAuthenticationTokens()
-        assert m_log.call_count == 3
+        with pytest.raises(ValueError, match=no_credentials):
+            GLocalAuthenticationTokens()
 
         # With invalid master_token
-        GLocalAuthenticationTokens(master_token=faker.word())
-        assert m_log.call_count == 4
+        master_token = faker.password(length=40, special_chars=False)
+        with pytest.raises(ValueError, match="AAS_ET format") as exc_info:
+            GLocalAuthenticationTokens(
+                username=faker.word(), password=faker.word(), master_token=master_token
+            )
+        assert master_token not in str(exc_info.value)
 
     def test_get_android_id(self) -> None:
         """Test getting android id."""
@@ -316,6 +323,8 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
             client.get_access_token()
         with pytest.raises(AuthenticationError, match="No master token"):
             client.get_email()
+        with pytest.raises(AuthenticationError, match="No master token"):
+            client.get_google_devices(disable_discovery=True)
         m_perform_master_login.assert_not_called()
         m_exchange_token.assert_not_called()
         m_perform_oauth.assert_not_called()
@@ -804,21 +813,6 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
                 assert get_home_graph.call_count == 1
                 assert self.client.homegraph is None
 
-    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_access_token")
-    @patch("glocaltokens.client.StructuresServiceStub")
-    def test_get_homegraph__no_access_token(
-        self,
-        m_structure_service_stub: NonCallableMock,
-        m_get_access_token: NonCallableMock,
-    ) -> None:
-        """Test an AuthenticationError for the access token propagates."""
-        m_get_access_token.side_effect = AuthenticationError(
-            "Google gave no access token", "BadAuthentication"
-        )
-        with pytest.raises(AuthenticationError):
-            self.client.get_homegraph()
-        m_structure_service_stub.assert_not_called()
-
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_homegraph")
     @patch("glocaltokens.client.LOGGER.warning")
     def test_get_google_devices(
@@ -895,6 +889,23 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         with pytest.raises(HomegraphError):
             self.client.get_google_devices_json()
         m_discover_devices.assert_not_called()
+
+    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_homegraph")
+    def test_get_google_devices__invalid_addresses(
+        self, m_get_homegraph: NonCallableMock
+    ) -> None:
+        """Test addresses that aren't a dict of IPv4 addresses raise ValueError."""
+        for addresses in (
+            {faker.word(): faker.ipv6()},
+            {faker.word(): faker.word()},
+            [faker.ipv4()],
+        ):
+            with self.subTest(addresses), pytest.raises(ValueError, match="addresses"):
+                self.client.get_google_devices(
+                    disable_discovery=True,
+                    addresses=addresses,  # type: ignore[arg-type]
+                )
+        m_get_homegraph.assert_not_called()
 
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_homegraph")
     def test_get_google_devices__no_devices(

@@ -181,6 +181,9 @@ class GLocalAuthenticationTokens:
             verbose: Deprecated and ignored, configure logging in your application instead;
             oauth_token: `oauth_token` cookie from a browser sign-in, exchanged for
               a master token instead of logging in with the password.
+
+        Raises ValueError if there are no credentials, or if master_token
+        doesn't start with "aas_et/".
         """
         if verbose is not None:
             warnings.warn(
@@ -222,14 +225,14 @@ class GLocalAuthenticationTokens:
         # Validation
         can_log_in = self.oauth_token or (self.username and self.password)
         if not can_log_in and not self.master_token:
-            LOGGER.error(
+            raise ValueError(
                 "You must either provide google username with password, "
                 "oauth_token, or google master token"
             )
-            return
-        if self.master_token and not token_utils.is_aas_et(self.master_token):
-            LOGGER.error("master_token doesn't follow the AAS_ET format")
-            return
+        # Only check the prefix: is_aas_et() also checks today's length, which
+        # Google may change for the tokens get_master_token() gets
+        if self.master_token and not self.master_token.startswith("aas_et/"):
+            raise ValueError("master_token doesn't follow the AAS_ET format")
 
     @staticmethod
     def _generate_android_id() -> str:
@@ -472,8 +475,22 @@ class GLocalAuthenticationTokens:
         force_homegraph_reload: If the stored homegraph should be generated again.
         discovery_timeout: Timeout for zeroconf discovery in seconds.
 
-        Raises the errors of get_homegraph().
+        Raises ValueError if addresses isn't a dict of IPv4 addresses, and the
+        errors of get_homegraph().
         """
+
+        def is_dict_with_valid_ipv4_addresses(data: dict[str, str]) -> bool:
+            # Validate the data structure is correct and that each entry contains a
+            # valid IPv4 address.
+            return isinstance(data, dict) and all(
+                isinstance(x, str) and is_valid_ipv4_address(x) for x in data.values()
+            )
+
+        if addresses and not is_dict_with_valid_ipv4_addresses(addresses):
+            raise ValueError(
+                "Invalid dictionary structure for addresses dictionary "
+                "argument. Correct structure is {'device_name': 'ipaddress'}"
+            )
 
         # Set models_list to empty list if None
         LOGGER.debug("Initializing models list if empty...")
@@ -487,21 +504,6 @@ class GLocalAuthenticationTokens:
         homegraph = self.get_homegraph()
 
         devices: list[Device] = []
-
-        def is_dict_with_valid_ipv4_addresses(data: dict[str, str]) -> bool:
-            # Validate the data structure is correct and that each entry contains a
-            # valid IPv4 address.
-            return isinstance(data, dict) and all(
-                isinstance(x, str) and is_valid_ipv4_address(x) for x in data.values()
-            )
-
-        if addresses and not is_dict_with_valid_ipv4_addresses(addresses):
-            LOGGER.error(
-                "Invalid dictionary structure for addresses dictionary "
-                "argument. Correct structure is {'device_name': 'ipaddress'}"
-            )
-            return devices
-
         network_devices: list[NetworkDevice] = []
         if disable_discovery is False:
             LOGGER.debug("Automatically discovering network devices...")
