@@ -699,6 +699,47 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         assert google_devices[0].network_device == network_device
         assert google_devices[0].ip_address == network_device.ip_address
 
+    @patch("glocaltokens.client.discover_devices")
+    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_homegraph")
+    @patch("glocaltokens.client.LOGGER.warning")
+    def test_get_google_devices__discovered_invalid_token(
+        self,
+        m_warning: NonCallableMock,
+        m_get_homegraph: NonCallableMock,
+        m_discover_devices: NonCallableMock,
+    ) -> None:
+        """Test that a discovered device with an invalid token is skipped with a warning."""
+        homegraph_device = faker.homegraph_device()
+        homegraph_device.local_auth_token = faker.word()
+        m_get_homegraph.return_value.home.devices = [homegraph_device]
+        m_discover_devices.return_value = [
+            NetworkDevice(
+                homegraph_device.device_name,
+                faker.ipv4(),
+                8009,
+                homegraph_device.hardware.model,
+                homegraph_device.device_info.agent_info.unique_id,
+            )
+        ]
+
+        assert not self.client.get_google_devices()
+        m_warning.assert_called_once()
+        assert "local_auth_token isn't" in m_warning.call_args.args[0]
+
+    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_homegraph")
+    @patch("glocaltokens.client.LOGGER.error")
+    def test_get_google_devices__empty_device_name(
+        self, m_error: NonCallableMock, m_get_homegraph: NonCallableMock
+    ) -> None:
+        """Test that a device without a name is skipped with an error."""
+        homegraph_device = faker.homegraph_device()
+        homegraph_device.device_name = ""
+        m_get_homegraph.return_value.home.devices = [homegraph_device]
+
+        assert not self.client.get_google_devices(disable_discovery=True)
+        m_error.assert_called_once()
+        assert "device_name must be provided" in m_error.call_args.args[0]
+
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_google_devices")
     def test_get_google_devices_json(
         self, m_get_google_devices: NonCallableMock
@@ -752,49 +793,40 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
 class DeviceClientTests(TypeAssertions, TestCase):
     """Device specific unittests."""
 
-    def test_initialization__valid(self) -> None:
-        """Test initialization that is valid."""
+    def test_initialization(self) -> None:
+        """Test that a Device stores its arguments as given."""
+        device_id = str(faker.uuid4())
+        device_name = faker.word()
         local_auth_token = faker.local_auth_token()
+        network_device = NetworkDevice(
+            faker.word(), faker.ipv4(), faker.port_number(), faker.word(), faker.word()
+        )
+        hardware = faker.word()
+        cloud_device_id = faker.word()
 
-        # With ip and port
         device = Device(
-            device_id=str(faker.uuid4()),
-            device_name=faker.word(),
-            network_device=NetworkDevice(
-                faker.word(),
-                faker.ipv4(),
-                faker.port_number(),
-                faker.word(),
-                faker.word(),
-            ),
+            device_id=device_id,
+            device_name=device_name,
+            local_auth_token=local_auth_token,
+            network_device=network_device,
+            hardware=hardware,
+            cloud_device_id=cloud_device_id,
+        )
+        assert device.device_id == device_id
+        assert device.device_name == device_name
+        assert device.local_auth_token == local_auth_token
+        assert device.network_device == network_device
+        assert device.hardware == hardware
+        assert device.cloud_device_id == cloud_device_id
+        assert device.ip_address == network_device.ip_address
+        assert device.port == network_device.port
+
+        # Without a network device, and with a token get_google_devices() skips
+        local_auth_token = faker.word()
+        device = Device(
+            device_id=device_id,
+            device_name=device_name,
             local_auth_token=local_auth_token,
         )
-
         assert device.local_auth_token == local_auth_token
-
-    @patch("glocaltokens.client.LOGGER.warning")
-    def test_initialization__invalid(self, m_log: NonCallableMock) -> None:
-        """Test initialization that is invalid."""
-
-        # Invalid local_auth_token, for example from a Google Wifi or Nest Wifi router
-        device = Device(
-            device_id=str(faker.uuid4()),
-            device_name=faker.word(),
-            local_auth_token=faker.word(),
-        )
-        m_log.assert_not_called()
-        assert device.local_auth_token is None
-        # A device that failed validation can still be represented
         assert device.as_dict()["network_device"] == {"ip": None, "port": None}
-
-        # A Cast device found on the network with an invalid token is worth a warning
-        device = Device(
-            device_id=str(faker.uuid4()),
-            device_name=faker.word(),
-            local_auth_token=faker.word(),
-            network_device=NetworkDevice(
-                faker.word(), faker.ipv4(), 8009, faker.word(), faker.word()
-            ),
-        )
-        assert m_log.call_count == 1
-        assert device.local_auth_token is None

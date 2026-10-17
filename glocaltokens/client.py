@@ -112,54 +112,14 @@ class Device:
         cloud_device_id: str | None = None,
     ):
         """Initialize a Device."""
-        log_prefix = f"[Device - {device_name}(id={device_id})]"
-        LOGGER.debug("%s Initializing new Device instance", log_prefix)
         self.device_id = device_id
         self.device_name = device_name
-        self.local_auth_token = None
+        self.local_auth_token = local_auth_token
         self.network_device = network_device
         self.hardware = hardware
         self.cloud_device_id = cloud_device_id
-        self.ip_address: str | None = None
-        self.port: int | None = None
-
-        # Token and name validations
-        if not self.device_name:
-            LOGGER.error("%s device_name must be provided", log_prefix)
-            return
-        if not token_utils.is_local_auth_token(local_auth_token):
-            # Only a device found on the network is known to be a Cast device;
-            # others, such as Google Wifi and Nest Wifi routers, get tokens of
-            # another format.
-            log = LOGGER.warning if network_device else LOGGER.debug
-            log(
-                "%s local_auth_token isn't %d characters as expected for a Cast "
-                "device, skipping it",
-                log_prefix,
-                LOCAL_AUTH_TOKEN_LENGTH,
-            )
-            return
-
-        # Setting IP and PORT
-        if network_device:
-            LOGGER.debug(
-                "%s network_device is provided, using its IP and PORT", log_prefix
-            )
-            self.ip_address = network_device.ip_address
-            self.port = network_device.port
-
-        LOGGER.debug(
-            '%s Set device_name to "%s", '
-            'local_auth_token to "%s", '
-            'IP to "%s", PORT to "%s" and hardware to "%s"',
-            log_prefix,
-            device_name,
-            censor(local_auth_token),
-            self.ip_address,
-            self.port,
-            hardware,
-        )
-        self.local_auth_token = local_auth_token
+        self.ip_address = network_device.ip_address if network_device else None
+        self.port = network_device.port if network_device else None
 
     @override
     def __str__(self) -> str:
@@ -539,55 +499,72 @@ class GLocalAuthenticationTokens:
 
         LOGGER.debug("Iterating in %d homegraph devices", len(homegraph.home.devices))
         for item in homegraph.home.devices:
-            if item.local_auth_token != "":
-                # This checks if the current item is a valid model,
-                # only if there are models in models_list.
-                # If models_list is empty, the check should be omitted,
-                # and accept all items.
-                if models_list and item.hardware.model not in models_list:
-                    LOGGER.debug("%s not in models_list", item.hardware.model)
-                    continue
-
-                network_device = None
-                unique_id = item.device_info.agent_info.unique_id
-                if network_devices:
-                    LOGGER.debug(
-                        "Looking for '%s' (id=%s) in local network",
-                        item.device_name,
-                        unique_id,
-                    )
-                    network_device = find_device(unique_id)
-                elif item.device_name in address_dict:
-                    network_device = NetworkDevice(
-                        name=item.device_name,
-                        ip_address=address_dict[item.device_name],
-                        port=DEFAULT_DISCOVERY_PORT,
-                        model=item.hardware.model,
-                        unique_id=unique_id,
-                    )
-
-                device = Device(
-                    device_id=item.device_info.device_id,
-                    device_name=item.device_name,
-                    local_auth_token=item.local_auth_token,
-                    network_device=network_device,
-                    hardware=item.hardware.model,
-                    cloud_device_id=unique_id or None,
-                )
-                if device.local_auth_token:
-                    LOGGER.debug("Adding %s to devices list", device.device_name)
-                    devices.append(device)
-                else:
-                    LOGGER.debug(
-                        "%s device initialization failed "
-                        "because of missing local_auth_token, skipping.",
-                        device.device_name,
-                    )
-            else:
+            if not item.local_auth_token:
                 LOGGER.debug(
                     "'%s' local_auth_token is not found in Homegraph, skipping",
                     item.device_name,
                 )
+                continue
+            # This checks if the current item is a valid model,
+            # only if there are models in models_list.
+            # If models_list is empty, the check should be omitted,
+            # and accept all items.
+            if models_list and item.hardware.model not in models_list:
+                LOGGER.debug("%s not in models_list", item.hardware.model)
+                continue
+
+            network_device = None
+            unique_id = item.device_info.agent_info.unique_id
+            if network_devices:
+                LOGGER.debug(
+                    "Looking for '%s' (id=%s) in local network",
+                    item.device_name,
+                    unique_id,
+                )
+                network_device = find_device(unique_id)
+            elif item.device_name in address_dict:
+                network_device = NetworkDevice(
+                    name=item.device_name,
+                    ip_address=address_dict[item.device_name],
+                    port=DEFAULT_DISCOVERY_PORT,
+                    model=item.hardware.model,
+                    unique_id=unique_id,
+                )
+
+            log_prefix = (
+                f"[Device - {item.device_name}(id={item.device_info.device_id})]"
+            )
+            if not item.device_name:
+                LOGGER.error("%s device_name must be provided", log_prefix)
+                continue
+            if not token_utils.is_local_auth_token(item.local_auth_token):
+                # Only a device found on the network or given in addresses is
+                # known to be a Cast device; others, such as Google Wifi and
+                # Nest Wifi routers, get tokens of another format.
+                log = LOGGER.warning if network_device else LOGGER.debug
+                log(
+                    "%s local_auth_token isn't %d characters as expected for a "
+                    "Cast device, skipping it",
+                    log_prefix,
+                    LOCAL_AUTH_TOKEN_LENGTH,
+                )
+                continue
+
+            device = Device(
+                device_id=item.device_info.device_id,
+                device_name=item.device_name,
+                local_auth_token=item.local_auth_token,
+                network_device=network_device,
+                hardware=item.hardware.model,
+                cloud_device_id=unique_id or None,
+            )
+            LOGGER.debug(
+                "Adding %s to devices list (IP %s, port %s)",
+                device.device_name,
+                device.ip_address,
+                device.port,
+            )
+            devices.append(device)
 
         LOGGER.debug("Successfully initialized %d Google Home devices", len(devices))
         return devices
