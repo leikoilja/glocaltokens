@@ -109,6 +109,7 @@ class Device:
         local_auth_token: str,
         network_device: NetworkDevice | None = None,
         hardware: str | None = None,
+        cloud_device_id: str | None = None,
     ):
         """Initialize a Device."""
         log_prefix = f"[Device - {device_name}(id={device_id})]"
@@ -118,6 +119,7 @@ class Device:
         self.local_auth_token = None
         self.network_device = network_device
         self.hardware = hardware
+        self.cloud_device_id = cloud_device_id
         self.ip_address: str | None = None
         self.port: int | None = None
 
@@ -187,6 +189,7 @@ class Device:
                 "port": self.port,
             },
             "hardware": self.hardware,
+            "cloud_device_id": self.cloud_device_id,
             "local_auth_token": self.local_auth_token,
         }
 
@@ -573,8 +576,8 @@ class GLocalAuthenticationTokens:
                     continue
 
                 network_device = None
+                unique_id = item.device_info.agent_info.unique_id
                 if network_devices:
-                    unique_id = item.device_info.agent_info.unique_id
                     LOGGER.debug(
                         "Looking for '%s' (id=%s) in local network",
                         item.device_name,
@@ -587,17 +590,16 @@ class GLocalAuthenticationTokens:
                         ip_address=address_dict[item.device_name],
                         port=DEFAULT_DISCOVERY_PORT,
                         model=item.hardware.model,
-                        unique_id=item.device_info.device_id,
+                        unique_id=unique_id,
                     )
 
                 device = Device(
                     device_id=item.device_info.device_id,
-                    device_name=network_device.name
-                    if network_device is not None
-                    else item.device_name,
+                    device_name=item.device_name,
                     local_auth_token=item.local_auth_token,
                     network_device=network_device,
                     hardware=item.hardware.model,
+                    cloud_device_id=unique_id or None,
                 )
                 if device.local_auth_token:
                     LOGGER.debug("Adding %s to devices list", device.device_name)

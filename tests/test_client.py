@@ -25,6 +25,7 @@ from glocaltokens.const import (
     ACCESS_TOKEN_SERVICE,
     ANDROID_ID_LENGTH,
     HOMEGRAPH_DURATION,
+    JSON_KEY_CLOUD_DEVICE_ID,
     JSON_KEY_DEVICE_NAME,
     JSON_KEY_HARDWARE,
     JSON_KEY_IP,
@@ -670,6 +671,41 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         if google_devices[0].network_device is not None:
             assert google_devices[0].network_device.ip_address == fake_ip_address
 
+        # A device without a cloud device ID in the home graph
+        homegraph_device.device_info.ClearField("agent_info")
+        m_get_homegraph.return_value.home.devices = [homegraph_device]
+        google_devices = self.client.get_google_devices(
+            disable_discovery=True,
+            addresses={fake_device_name: fake_ip_address},
+        )
+        assert len(google_devices) == 1
+        self.assertDevice(google_devices[0], homegraph_device)
+        assert google_devices[0].as_dict()[JSON_KEY_CLOUD_DEVICE_ID] is None
+
+    @patch("glocaltokens.client.discover_devices")
+    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_homegraph")
+    def test_get_google_devices_discovered(
+        self, m_get_homegraph: NonCallableMock, m_discover_devices: NonCallableMock
+    ) -> None:
+        """Test that a discovered device keeps its name from the home graph."""
+        homegraph_device = faker.homegraph_device(device_name="Den speakers")
+        m_get_homegraph.return_value.home.devices = [homegraph_device]
+        # A speaker pair announces the name of its leading speaker
+        network_device = NetworkDevice(
+            "Den speaker left",
+            faker.ipv4(),
+            8009,
+            homegraph_device.hardware.model,
+            homegraph_device.device_info.agent_info.unique_id,
+        )
+        m_discover_devices.return_value = [network_device]
+
+        google_devices = self.client.get_google_devices()
+        assert len(google_devices) == 1
+        self.assertDevice(google_devices[0], homegraph_device)
+        assert google_devices[0].network_device == network_device
+        assert google_devices[0].ip_address == network_device.ip_address
+
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_google_devices")
     def test_get_google_devices_json(
         self, m_get_google_devices: NonCallableMock
@@ -690,6 +726,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
                 device_name, ip_address, port, hardware, unique_id
             ),
             hardware=hardware,
+            cloud_device_id=unique_id,
         )
         m_get_google_devices.return_value = [google_device]
 
@@ -702,6 +739,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         received_device = received_json[0]
         assert received_device[JSON_KEY_DEVICE_NAME] == device_name
         assert received_device[JSON_KEY_HARDWARE] == hardware
+        assert received_device[JSON_KEY_CLOUD_DEVICE_ID] == unique_id
         assert received_device[JSON_KEY_LOCAL_AUTH_TOKEN] == local_auth_token
         assert received_device[JSON_KEY_NETWORK_DEVICE][JSON_KEY_PORT] == port
         assert received_device[JSON_KEY_NETWORK_DEVICE][JSON_KEY_IP] == ip_address

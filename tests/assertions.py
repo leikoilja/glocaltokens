@@ -29,6 +29,9 @@ class DeviceAssertions(TestCase):
             homegraph_device.device_id == homegraph_device_struct.device_info.device_id
         )
         assert homegraph_device.device_name == homegraph_device_struct.device_name
+        assert homegraph_device.cloud_device_id == (
+            homegraph_device_struct.device_info.agent_info.unique_id or None
+        )
         assert homegraph_device.hardware == homegraph_device_struct.hardware.model
 
 
