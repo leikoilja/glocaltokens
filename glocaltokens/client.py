@@ -124,9 +124,13 @@ class Device:
             LOGGER.error("%s device_name must be provided", log_prefix)
             return
         if not token_utils.is_local_auth_token(local_auth_token):
-            LOGGER.warning(
-                "%s local_auth_token does not follow Google Home token format. "
-                "Ignore for non-Google Home devices",
+            # Only a device found on the network is known to be a Cast device;
+            # others, such as Google Wifi and Nest Wifi routers, get tokens of
+            # another format.
+            log = LOGGER.warning if network_device else LOGGER.debug
+            log(
+                "%s local_auth_token isn't 108 characters as expected for a Cast "
+                "device, skipping it",
                 log_prefix,
             )
             return
@@ -596,7 +600,7 @@ class GLocalAuthenticationTokens:
                     LOGGER.debug("Adding %s to devices list", device.device_name)
                     devices.append(device)
                 else:
-                    LOGGER.warning(
+                    LOGGER.debug(
                         "%s device initialization failed "
                         "because of missing local_auth_token, skipping.",
                         device.device_name,
