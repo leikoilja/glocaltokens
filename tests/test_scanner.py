@@ -143,6 +143,29 @@ class NetworkDeviceTests(TestCase):
             else:
                 assert listener.devices["name"].ip_address == expected, addresses
 
+    def test_service_info__update_adds_ipv4(self) -> None:
+        """An IPv4 address that arrives after IPv6 replaces it on update.
+
+        zeroconf sends an update when a new address record for the device's
+        host arrives, and the listener then looks the service up again.
+        """
+        ipv4 = faker.ipv4_private()
+        ipv6 = "2001:db8::1"
+        service = mock.Mock(name="Service")
+        service.port = faker.port_number(is_user=True)
+        service.properties = {b"fn": b"Home", b"md": b"Google Home", b"cd": b"id"}
+        zc = mock.Mock(name="Zeroconf")
+        zc.get_service_info.return_value = service
+        listener = CastListener()
+
+        service.parsed_addresses.return_value = [ipv6]
+        listener.add_service(zc, "type", "name")
+        assert listener.devices["name"].ip_address == ipv6
+
+        service.parsed_addresses.return_value = [ipv4, ipv6]
+        listener.update_service(zc, "type", "name")
+        assert listener.devices["name"].ip_address == ipv4
+
     @patch("glocaltokens.scanner.LOGGER.error")
     def test_service_info__invalid(self, m_error: NonCallableMock) -> None:
         """Invalid service_info tests."""
