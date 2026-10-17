@@ -49,8 +49,6 @@ class CastListener(ServiceListener):
     def __init__(
         self,
         add_callback: Callable[[], None] | None = None,
-        remove_callback: Callable[[], None] | None = None,
-        update_callback: Callable[[], None] | None = None,
         deadline: float | None = None,
     ):
         """Create cast listener.
@@ -60,8 +58,6 @@ class CastListener(ServiceListener):
         self.devices: dict[str, NetworkDevice] = {}
         self.deadline = deadline
         self.add_callback = add_callback
-        self.remove_callback = remove_callback
-        self.update_callback = update_callback
 
     @property
     def count(self) -> int:
@@ -78,7 +74,7 @@ class CastListener(ServiceListener):
     def update_service(self, zc: Zeroconf, type_: str, name: str) -> None:
         """Update a service in the collection."""
         LOGGER.debug("update_service %s, %s", type_, name)
-        self._add_update_service(zc, type_, name, self.update_callback)
+        self._add_update_service(zc, type_, name, None)
 
     @override
     def remove_service(self, _zc: Zeroconf, type_: str, name: str) -> None:
@@ -86,8 +82,6 @@ class CastListener(ServiceListener):
         LOGGER.debug("remove_service %s, %s", type_, name)
         if name in self.devices:
             del self.devices[name]
-        if self.remove_callback:
-            self.remove_callback()
 
     def _add_update_service(
         self,

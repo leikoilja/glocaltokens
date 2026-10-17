@@ -6,12 +6,9 @@ from faker import Faker
 from faker.providers import BaseProvider
 from ghome_foyer_api.api_pb2 import GetHomeGraphResponse  # pylint: disable=no-name-in-module
 
-from glocaltokens.const import (
-    ACCESS_TOKEN_LENGTH,
-    LOCAL_AUTH_TOKEN_LENGTH,
-    MASTER_TOKEN_LENGTH,
-)
-from glocaltokens.utils.token import generate as generate_token
+from glocaltokens.const import LOCAL_AUTH_TOKEN_LENGTH, MASTER_TOKEN_LENGTH
+
+ACCESS_TOKEN_LENGTH = 315
 
 faker = Faker()
 
@@ -29,15 +26,15 @@ class TokenProvider(BaseProvider):
 
     def master_token(self) -> str:
         """Generate random master token."""
-        return generate_token(MASTER_TOKEN_LENGTH, prefix="aas_et/")
+        return "aas_et/" + self.lexify("?" * MASTER_TOKEN_LENGTH)
 
     def access_token(self) -> str:
         """Generate random access token."""
-        return generate_token(ACCESS_TOKEN_LENGTH, prefix="ya29.")
+        return "ya29." + self.lexify("?" * ACCESS_TOKEN_LENGTH)
 
     def local_auth_token(self) -> str:
         """Generate random local_auth_token token."""
-        return generate_token(LOCAL_AUTH_TOKEN_LENGTH)
+        return self.lexify("?" * LOCAL_AUTH_TOKEN_LENGTH)
 
 
 class HomegraphProvider(TokenProvider):
