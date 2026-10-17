@@ -49,19 +49,16 @@ class CastListener(ServiceListener):
     def __init__(
         self,
         add_callback: Callable[[], None] | None = None,
-        remove_callback: Callable[[], None] | None = None,
-        update_callback: Callable[[], None] | None = None,
         deadline: float | None = None,
     ):
         """Create cast listener.
 
+        add_callback: called after a service is added or updated.
         deadline: time.monotonic() value after which service lookups stop.
         """
         self.devices: dict[str, NetworkDevice] = {}
         self.deadline = deadline
         self.add_callback = add_callback
-        self.remove_callback = remove_callback
-        self.update_callback = update_callback
 
     @property
     def count(self) -> int:
@@ -72,13 +69,13 @@ class CastListener(ServiceListener):
     def add_service(self, zc: Zeroconf, type_: str, name: str) -> None:
         """Add a service to the collection."""
         LOGGER.debug("add_service %s, %s", type_, name)
-        self._add_update_service(zc, type_, name, self.add_callback)
+        self._add_update_service(zc, type_, name)
 
     @override
     def update_service(self, zc: Zeroconf, type_: str, name: str) -> None:
         """Update a service in the collection."""
         LOGGER.debug("update_service %s, %s", type_, name)
-        self._add_update_service(zc, type_, name, self.update_callback)
+        self._add_update_service(zc, type_, name)
 
     @override
     def remove_service(self, _zc: Zeroconf, type_: str, name: str) -> None:
@@ -86,16 +83,8 @@ class CastListener(ServiceListener):
         LOGGER.debug("remove_service %s, %s", type_, name)
         if name in self.devices:
             del self.devices[name]
-        if self.remove_callback:
-            self.remove_callback()
 
-    def _add_update_service(
-        self,
-        zc: Zeroconf,
-        type_: str,
-        name: str,
-        callback: Callable[[], None] | None,
-    ) -> None:
+    def _add_update_service(self, zc: Zeroconf, type_: str, name: str) -> None:
         """Add or update a service."""
         if name.endswith("_sub._googlecast._tcp.local."):
             LOGGER.debug("_add_update_service ignoring %s, %s", type_, name)
@@ -160,8 +149,8 @@ class CastListener(ServiceListener):
             unique_id=unique_id,
         )
 
-        if callback:
-            callback()
+        if self.add_callback:
+            self.add_callback()
 
     @staticmethod
     def get_service_value(service: ServiceInfo, key: str) -> str | None:
@@ -201,7 +190,7 @@ def discover_devices(
         )
 
     def callback() -> None:
-        """Handle the event when zeroconf discovers a new device."""
+        """Handle zeroconf adding or updating a device."""
         if max_devices is not None and (
             sum(map(is_wanted, listener.devices.values())) >= max_devices
         ):

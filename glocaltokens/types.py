@@ -20,4 +20,4 @@ class DeviceDict(TypedDict):
     hardware: str | None
     cloud_device_id: str | None
     network_device: NetworkDeviceDict
-    local_auth_token: str | None
+    local_auth_token: str

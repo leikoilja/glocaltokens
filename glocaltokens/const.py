@@ -17,7 +17,6 @@ USERINFO_URL: Final = "https://openidconnect.googleapis.com/v1/userinfo"
 
 ANDROID_ID_LENGTH: Final = 16
 MASTER_TOKEN_LENGTH: Final = 216
-ACCESS_TOKEN_LENGTH: Final = 315
 LOCAL_AUTH_TOKEN_LENGTH: Final = 108
 
 GOOGLE_HOME_FOYER_API: Final = "googlehomefoyer-pa.googleapis.com:443"
@@ -38,11 +37,3 @@ GOOGLE_HOME_MODELS: Final = [
     "Lenovo Smart Clock",
 ]
 GOOGLE_CAST_GROUP: Final = "Google Cast Group"
-
-JSON_KEY_CLOUD_DEVICE_ID: Final = "cloud_device_id"
-JSON_KEY_DEVICE_NAME: Final = "device_name"
-JSON_KEY_NETWORK_DEVICE: Final = "network_device"
-JSON_KEY_HARDWARE: Final = "hardware"
-JSON_KEY_IP: Final = "ip"
-JSON_KEY_LOCAL_AUTH_TOKEN: Final = "local_auth_token"
-JSON_KEY_PORT: Final = "port"
