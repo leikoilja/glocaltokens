@@ -128,8 +128,6 @@ class Device:
         network_device: NetworkDevice | None = None,
         hardware: str | None = None,
         cloud_device_id: str | None = None,
-        manufacturer: str | None = None,
-        software_version: str | None = None,
     ):
         """Initialize a Device."""
         self.device_id = device_id
@@ -138,8 +136,6 @@ class Device:
         self.network_device = network_device
         self.hardware = hardware
         self.cloud_device_id = cloud_device_id
-        self.manufacturer = manufacturer
-        self.software_version = software_version
         self.ip_address = network_device.ip_address if network_device else None
         self.port = network_device.port if network_device else None
 
@@ -158,8 +154,6 @@ class Device:
                 "port": self.port,
             },
             "hardware": self.hardware,
-            "manufacturer": self.manufacturer,
-            "software_version": self.software_version,
             "cloud_device_id": self.cloud_device_id,
             "local_auth_token": self.local_auth_token,
         }
@@ -587,8 +581,6 @@ class GLocalAuthenticationTokens:
                 network_device=network_device,
                 hardware=item.hardware.model,
                 cloud_device_id=unique_id or None,
-                manufacturer=item.hardware.manufacturer or None,
-                software_version=item.hardware.sw_version or None,
             )
             LOGGER.debug(
                 "Adding %s to devices list (IP %s, port %s)",
