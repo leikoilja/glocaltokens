@@ -274,15 +274,15 @@ wheels = [
 
 [[package]]
 name = "ghome-foyer-api"
-version = "2.0.0"
+version = "3.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "grpcio" },
     { name = "protobuf" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/28/9a/266f97688945f43acaa4cd6d912fa9cf196b7f95be602d10c8cddd9c1d7d/ghome_foyer_api-2.0.0.tar.gz", hash = "sha256:d48ba16f1ab6ddd5b9f56d7780f034f7e8c00441958cb21eca881076bfd89557", size = 17523, upload-time = "2026-10-16T11:01:34.706Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/1c/d9/e34a6ec813406156f7e0acaa26f375446d11ce01f98a6d6a50e5a79d7af9/ghome_foyer_api-3.0.0.tar.gz", hash = "sha256:ef507f7a96b3ab1c4e878ffd1cab5636d067df0f9346ccef976aee0f3a9526e7", size = 21308, upload-time = "2026-10-25T20:05:00.239Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8e/a6/e53e7fd781171128f7fe34438e8d5582c4d6a5d71422a7cd7351f388747d/ghome_foyer_api-2.0.0-py3-none-any.whl", hash = "sha256:0f597030d6a3da858a92d857d6800f9c2fa46ad7a3f7865505f7faa2c132ad3e", size = 18629, upload-time = "2026-10-16T11:01:33.502Z" },
+    { url = "https://files.pythonhosted.org/packages/f6/a0/c85ec03aa44d84b7534f597293cc79516a57d7c340b5142b5194db51f74c/ghome_foyer_api-3.0.0-py3-none-any.whl", hash = "sha256:10e32babb562a5551eefd17a94e6bae4851918a44a28cb083184caf553c1f291", size = 22498, upload-time = "2026-10-25T20:04:58.864Z" },
 ]
 
 [[package]]
@@ -312,7 +312,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "ghome-foyer-api", specifier = ">=2.0.0" },
+    { name = "ghome-foyer-api", specifier = ">=3.0.0" },
     { name = "gpsoauth", specifier = ">=2.0.0" },
     { name = "grpcio", specifier = ">=1.83.1" },
     { name = "requests", specifier = ">=2.34.2" },
