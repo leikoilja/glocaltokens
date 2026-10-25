@@ -18,6 +18,8 @@ class DeviceDict(TypedDict):
     device_id: str
     device_name: str
     hardware: str | None
+    manufacturer: str | None
+    software_version: str | None
     cloud_device_id: str | None
     network_device: NetworkDeviceDict
     local_auth_token: str
