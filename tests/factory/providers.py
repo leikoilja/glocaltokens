@@ -55,7 +55,11 @@ class HomegraphProvider(TokenProvider):
                 ),
             ),
             device_name=device_name,
-            hardware=GetHomeGraphResponse.Home.Device.Hardware(model=faker.word()),
+            hardware=GetHomeGraphResponse.Home.Device.Hardware(
+                model=faker.word(),
+                manufacturer=faker.word(),
+                sw_version=faker.numerify("#.#.#"),
+            ),
         )
 
     def homegraph_devices(

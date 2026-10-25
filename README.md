@@ -129,6 +129,8 @@ print(client.get_email())
       "port": 8009
     },
     "hardware": "Google Nest Mini",
+    "manufacturer": "...",
+    "software_version": "...",
     "cloud_device_id": "...",
     "local_auth_token": "..."
   }
@@ -137,6 +139,8 @@ print(client.get_email())
 
 `device_name` is the name in the Google Home app. A speaker pair is found on the network at its leading speaker, but keeps the pair's name.
 The JSON doesn't include the name a device announces on the network. For a `Device` object found there, it is in `network_device.name`.
+
+`manufacturer` and `software_version` are the manufacturer and software version that Google lists for the device, or `null` if Google lists none.
 
 `cloud_device_id` is the ID Google gives the device, or `null` if Google gives none.
 To match a device at an address you know, request `https://<ip>:8443/setup/eureka_info?params=device_info` and compare `cloud_device_id` with `device_info.cloud_device_id` in the response, ignoring case.

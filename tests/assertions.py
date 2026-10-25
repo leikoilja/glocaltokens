@@ -33,6 +33,12 @@ class DeviceAssertions(TestCase):
             homegraph_device_struct.device_info.agent_info.unique_id or None
         )
         assert homegraph_device.hardware == homegraph_device_struct.hardware.model
+        assert homegraph_device.manufacturer == (
+            homegraph_device_struct.hardware.manufacturer or None
+        )
+        assert homegraph_device.software_version == (
+            homegraph_device_struct.hardware.sw_version or None
+        )
 
 
 class TypeAssertions(TestCase):
