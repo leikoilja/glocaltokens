@@ -864,11 +864,8 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         if google_devices[0].network_device is not None:
             assert google_devices[0].network_device.ip_address == fake_ip_address
 
-        # A device without a cloud device ID, manufacturer or software version
-        # in the home graph
+        # A device without a cloud device ID in the home graph
         homegraph_device.device_info.ClearField("agent_info")
-        homegraph_device.hardware.ClearField("manufacturer")
-        homegraph_device.hardware.ClearField("sw_version")
         m_get_homegraph.return_value.home.devices = [homegraph_device]
         google_devices = self.client.get_google_devices(
             disable_discovery=True,
@@ -877,8 +874,6 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         assert len(google_devices) == 1
         self.assertDevice(google_devices[0], homegraph_device)
         assert google_devices[0].as_dict()["cloud_device_id"] is None
-        assert google_devices[0].as_dict()["manufacturer"] is None
-        assert google_devices[0].as_dict()["software_version"] is None
 
     @patch("glocaltokens.client.discover_devices")
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_homegraph")
@@ -997,8 +992,6 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         ip_address = faker.ipv4()
         port = faker.port_number()
         hardware = faker.word()
-        manufacturer = faker.word()
-        software_version = faker.numerify("#.#.#")
         unique_id = faker.word()
         google_device = Device(
             device_id=device_id,
@@ -1008,8 +1001,6 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
                 device_name, ip_address, port, hardware, unique_id
             ),
             hardware=hardware,
-            manufacturer=manufacturer,
-            software_version=software_version,
             cloud_device_id=unique_id,
         )
         m_get_google_devices.return_value = [google_device]
@@ -1023,8 +1014,6 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         received_device = received_json[0]
         assert received_device["device_name"] == device_name
         assert received_device["hardware"] == hardware
-        assert received_device["manufacturer"] == manufacturer
-        assert received_device["software_version"] == software_version
         assert received_device["cloud_device_id"] == unique_id
         assert received_device["local_auth_token"] == local_auth_token
         assert received_device["network_device"]["port"] == port
@@ -1054,8 +1043,6 @@ class DeviceClientTests(TypeAssertions, TestCase):
             faker.word(), faker.ipv4(), faker.port_number(), faker.word(), faker.word()
         )
         hardware = faker.word()
-        manufacturer = faker.word()
-        software_version = faker.numerify("#.#.#")
         cloud_device_id = faker.word()
 
         device = Device(
@@ -1064,8 +1051,6 @@ class DeviceClientTests(TypeAssertions, TestCase):
             local_auth_token=local_auth_token,
             network_device=network_device,
             hardware=hardware,
-            manufacturer=manufacturer,
-            software_version=software_version,
             cloud_device_id=cloud_device_id,
         )
         assert device.device_id == device_id
@@ -1073,8 +1058,6 @@ class DeviceClientTests(TypeAssertions, TestCase):
         assert device.local_auth_token == local_auth_token
         assert device.network_device == network_device
         assert device.hardware == hardware
-        assert device.manufacturer == manufacturer
-        assert device.software_version == software_version
         assert device.cloud_device_id == cloud_device_id
         assert device.ip_address == network_device.ip_address
         assert device.port == network_device.port
