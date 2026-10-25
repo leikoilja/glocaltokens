@@ -19,5 +19,7 @@ class DeviceDict(TypedDict):
     device_name: str
     hardware: str | None
     cloud_device_id: str | None
+    home_id: str | None
+    home_name: str | None
     network_device: NetworkDeviceDict
     local_auth_token: str

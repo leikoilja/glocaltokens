@@ -12,8 +12,8 @@ import random
 from typing import TYPE_CHECKING, override
 import warnings
 
-from ghome_foyer_api.api_pb2 import GetHomeGraphRequest, GetHomeGraphResponse  # pylint: disable=no-name-in-module
-from ghome_foyer_api.api_pb2_grpc import StructuresServiceStub
+from ghome_foyer_api.api_pb2 import GetHomeGraphRequest, GetHomeGraphResponse, HomeGraph  # pylint: disable=no-name-in-module
+from ghome_foyer_api.home_graph import get_home_graph_bytes
 import gpsoauth
 from gpsoauth import exchange_token, perform_master_login, perform_oauth
 import grpc
@@ -128,6 +128,8 @@ class Device:
         network_device: NetworkDevice | None = None,
         hardware: str | None = None,
         cloud_device_id: str | None = None,
+        home_id: str | None = None,
+        home_name: str | None = None,
     ):
         """Initialize a Device."""
         self.device_id = device_id
@@ -136,6 +138,8 @@ class Device:
         self.network_device = network_device
         self.hardware = hardware
         self.cloud_device_id = cloud_device_id
+        self.home_id = home_id
+        self.home_name = home_name
         self.ip_address = network_device.ip_address if network_device else None
         self.port = network_device.port if network_device else None
 
@@ -155,6 +159,8 @@ class Device:
             },
             "hardware": self.hardware,
             "cloud_device_id": self.cloud_device_id,
+            "home_id": self.home_id,
+            "home_name": self.home_name,
             "local_auth_token": self.local_auth_token,
         }
 
@@ -205,6 +211,8 @@ class GLocalAuthenticationTokens:
         self.access_token: str | None = None
         self.access_token_date: datetime | None = None
         self.homegraph: GetHomeGraphResponse | None = None
+        # The same response as homegraph, with each home separately
+        self.home_graph: HomeGraph | None = None
         self.homegraph_date: datetime | None = None
         LOGGER.debug(
             "Set GLocalAuthenticationTokens client access_token, homegraph, "
@@ -406,14 +414,39 @@ class GLocalAuthenticationTokens:
     def get_homegraph(self, auth_attempts: int = 3) -> GetHomeGraphResponse:
         """Return the entire Google Home Foyer V2 service.
 
+        It merges all homes of the account into one home, which has the rooms
+        and devices of every home but the ID and name of only one of them. Use
+        get_home_graph() to read each home separately.
+
         auth_attempts: How many times to try, with a new access token each
           time Google rejects the access token.
 
         Raises HomegraphError if Google doesn't return the home graph, and
         AuthenticationError if Google gives no access token.
         """
+        return self._get_home_graphs(auth_attempts)[1]
+
+    def get_home_graph(self, auth_attempts: int = 3) -> HomeGraph:
+        """Return the home graph with each home of the account separately.
+
+        It comes from the same request as get_homegraph(), so calling both
+        fetches it once.
+
+        auth_attempts: How many times to try, with a new access token each
+          time Google rejects the access token.
+
+        Raises HomegraphError if Google doesn't return the home graph, and
+        AuthenticationError if Google gives no access token.
+        """
+        return self._get_home_graphs(auth_attempts)[0]
+
+    def _get_home_graphs(
+        self, auth_attempts: int
+    ) -> tuple[HomeGraph, GetHomeGraphResponse]:
+        """Return the stored home graph in both forms, or fetch it."""
         if (
-            self.homegraph is None
+            self.home_graph is None
+            or self.homegraph is None
             or self.homegraph_date is None
             or self._has_expired(self.homegraph_date, HOMEGRAPH_DURATION)
         ):
@@ -429,13 +462,14 @@ class GLocalAuthenticationTokens:
                 with grpc.secure_channel(
                     GOOGLE_HOME_FOYER_API, channel_credentials
                 ) as channel:
-                    rpc_service = StructuresServiceStub(channel)
                     request = GetHomeGraphRequest(string1="", num2="")
                     LOGGER.debug("%s Fetching HomeGraph...", log_prefix)
-                    response = rpc_service.GetHomeGraph(
-                        request, timeout=REQUEST_TIMEOUT
+                    response = get_home_graph_bytes(
+                        channel, request, timeout=REQUEST_TIMEOUT
                     )
-                    self.homegraph = response
+                    # Parse it both ways: as one merged home, and home by home
+                    self.homegraph = GetHomeGraphResponse.FromString(response)
+                    self.home_graph = HomeGraph.FromString(response)
                 self.homegraph_date = datetime.now(UTC)
             except grpc.RpcError as rpc_error:
                 code = rpc_error.code()  # pylint: disable=no-member
@@ -446,12 +480,12 @@ class GLocalAuthenticationTokens:
                             "%s The access token has expired. Getting a new one.",
                             log_prefix,
                         )
-                        return self.get_homegraph(auth_attempts - 1)
+                        return self._get_home_graphs(auth_attempts - 1)
                 raise HomegraphError(
                     code,
                     rpc_error.details(),  # pylint: disable=no-member
                 ) from rpc_error
-        return self.homegraph
+        return self.home_graph, self.homegraph
 
     def get_google_devices(
         self,
@@ -461,6 +495,7 @@ class GLocalAuthenticationTokens:
         zeroconf_instance: Zeroconf | None = None,
         force_homegraph_reload: bool = False,
         discovery_timeout: int = DISCOVERY_TIMEOUT,
+        home_id: str | None = None,
     ) -> list[Device]:
         """Return a list of Google devices with their local authentication tokens, IP, and ports.
 
@@ -474,9 +509,11 @@ class GLocalAuthenticationTokens:
           use it here.
         force_homegraph_reload: If the stored homegraph should be generated again.
         discovery_timeout: Timeout for zeroconf discovery in seconds.
+        home_id: Only return the devices of the home with this ID, the
+          home_id of a Device or the id of a home in get_home_graph().
 
         Raises ValueError if addresses isn't a dict of IPv4 addresses, and the
-        errors of get_homegraph().
+        errors of get_home_graph().
         """
 
         def is_dict_with_valid_ipv4_addresses(data: dict[str, str]) -> bool:
@@ -501,7 +538,7 @@ class GLocalAuthenticationTokens:
             self.invalidate_homegraph()
 
         LOGGER.debug("Getting homegraph...")
-        homegraph = self.get_homegraph()
+        home_graph = self.get_home_graph()
 
         devices: list[Device] = []
         network_devices: list[NetworkDevice] = []
@@ -521,12 +558,14 @@ class GLocalAuthenticationTokens:
 
         address_dict = addresses or {}
 
-        LOGGER.debug("Iterating in %d homegraph devices", len(homegraph.home.devices))
-        for item in homegraph.home.devices:
+        homes = [home for home in home_graph.homes if home_id in (None, home.id)]
+        items = [(home, item) for home in homes for item in home.devices]
+        LOGGER.debug("Iterating in %d homegraph devices", len(items))
+        for home, item in items:
             if not item.local_auth_token:
                 LOGGER.debug(
                     "'%s' local_auth_token is not found in Homegraph, skipping",
-                    item.device_name,
+                    item.display_name,
                 )
                 continue
             # This checks if the current item is a valid model,
@@ -538,27 +577,25 @@ class GLocalAuthenticationTokens:
                 continue
 
             network_device = None
-            unique_id = item.device_info.agent_info.unique_id
+            unique_id = item.id.agent_info.unique_id
             if network_devices:
                 LOGGER.debug(
                     "Looking for '%s' (id=%s) in local network",
-                    item.device_name,
+                    item.display_name,
                     unique_id,
                 )
                 network_device = find_device(unique_id)
-            elif item.device_name in address_dict:
+            elif item.display_name in address_dict:
                 network_device = NetworkDevice(
-                    name=item.device_name,
-                    ip_address=address_dict[item.device_name],
+                    name=item.display_name,
+                    ip_address=address_dict[item.display_name],
                     port=DEFAULT_DISCOVERY_PORT,
                     model=item.hardware.model,
                     unique_id=unique_id,
                 )
 
-            log_prefix = (
-                f"[Device - {item.device_name}(id={item.device_info.device_id})]"
-            )
-            if not item.device_name:
+            log_prefix = f"[Device - {item.display_name}(id={item.id.device_id})]"
+            if not item.display_name:
                 LOGGER.error("%s device_name must be provided", log_prefix)
                 continue
             if not token_utils.is_local_auth_token(item.local_auth_token):
@@ -575,12 +612,14 @@ class GLocalAuthenticationTokens:
                 continue
 
             device = Device(
-                device_id=item.device_info.device_id,
-                device_name=item.device_name,
+                device_id=item.id.device_id,
+                device_name=item.display_name,
                 local_auth_token=item.local_auth_token,
                 network_device=network_device,
                 hardware=item.hardware.model,
                 cloud_device_id=unique_id or None,
+                home_id=home.id or None,
+                home_name=home.display_name or None,
             )
             LOGGER.debug(
                 "Adding %s to devices list (IP %s, port %s)",
@@ -602,6 +641,7 @@ class GLocalAuthenticationTokens:
         zeroconf_instance: Zeroconf | None = None,
         force_homegraph_reload: bool = False,
         discovery_timeout: int = DISCOVERY_TIMEOUT,
+        home_id: str | None = None,
     ) -> str:
         """Return a JSON list of devices with authentication tokens, IPs, and ports if models set.
 
@@ -616,6 +656,8 @@ class GLocalAuthenticationTokens:
           use it here.
         force_homegraph_reload: If the stored homegraph should be generated again.
         discovery_timeout: Timeout for zeroconf discovery in seconds.
+        home_id: Only return the devices of the home with this ID, the
+          home_id of a Device or the id of a home in get_home_graph().
 
         Raises the errors of get_google_devices().
         """
@@ -627,6 +669,7 @@ class GLocalAuthenticationTokens:
             zeroconf_instance=zeroconf_instance,
             force_homegraph_reload=force_homegraph_reload,
             discovery_timeout=discovery_timeout,
+            home_id=home_id,
         )
         return json.dumps([obj.as_dict() for obj in google_devices], indent=indent)
 
@@ -645,5 +688,6 @@ class GLocalAuthenticationTokens:
     def invalidate_homegraph(self) -> None:
         """Invalidate the stored homegraph data."""
         self.homegraph = None
+        self.home_graph = None
         self.homegraph_date = None
         LOGGER.debug("Invalidated homegraph")

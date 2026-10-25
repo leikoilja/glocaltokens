@@ -15,6 +15,7 @@ import warnings
 
 from faker import Faker
 from faker.providers import internet
+from ghome_foyer_api.api_pb2 import HomeGraph  # pylint: disable=no-name-in-module
 import gpsoauth
 import grpc
 import pytest
@@ -694,41 +695,44 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
     @patch("glocaltokens.client.grpc.access_token_call_credentials")
     @patch("glocaltokens.client.grpc.composite_channel_credentials")
     @patch("glocaltokens.client.grpc.secure_channel")
-    @patch("glocaltokens.client.StructuresServiceStub")
+    @patch("glocaltokens.client.get_home_graph_bytes")
     @patch("glocaltokens.client.GetHomeGraphRequest")
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_access_token")
     def test_get_homegraph(
         self,
         m_get_access_token: NonCallableMock,
         m_get_home_graph_request: NonCallableMock,
-        m_structure_service_stub: NonCallableMock,
+        m_get_home_graph_bytes: NonCallableMock,
         m_secure_channel: NonCallableMock,
         m_composite_channel_credentials: NonCallableMock,
         m_access_token_call_credentials: NonCallableMock,
         m_ssl_channel_credentials: NonCallableMock,
     ) -> None:
         """Test getting homegraph."""
+        m_get_home_graph_bytes.return_value = b""
         # New homegraph
         self.client.get_homegraph()
         assert m_ssl_channel_credentials.call_count == 1
         assert m_access_token_call_credentials.call_count == 1
         assert m_composite_channel_credentials.call_count == 1
         assert m_secure_channel.call_count == 1
-        assert m_structure_service_stub.call_count == 1
         assert m_get_home_graph_request.call_count == 1
         assert m_get_access_token.call_count == 1
-        m_structure_service_stub.return_value.GetHomeGraph.assert_called_once_with(
-            m_get_home_graph_request.return_value, timeout=REQUEST_TIMEOUT
+        m_get_home_graph_bytes.assert_called_once_with(
+            m_secure_channel.return_value.__enter__.return_value,
+            m_get_home_graph_request.return_value,
+            timeout=REQUEST_TIMEOUT,
         )
 
         # Another request with non expired homegraph must return the same homegraph
-        # (no new requests)
+        # (no new requests), in both forms
         self.client.get_homegraph()
+        self.client.get_home_graph()
         assert m_ssl_channel_credentials.call_count == 1
         assert m_access_token_call_credentials.call_count == 1
         assert m_composite_channel_credentials.call_count == 1
         assert m_secure_channel.call_count == 1
-        assert m_structure_service_stub.call_count == 1
+        assert m_get_home_graph_bytes.call_count == 1
         assert m_get_home_graph_request.call_count == 1
         assert m_get_access_token.call_count == 1
 
@@ -743,65 +747,97 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         self.client.homegraph_date = datetime.now(UTC) - timedelta(
             seconds=HOMEGRAPH_DURATION + 1
         )
-        self.client.get_homegraph()
+        self.client.get_home_graph()
         assert m_ssl_channel_credentials.call_count == 2
         assert m_access_token_call_credentials.call_count == 2
         assert m_composite_channel_credentials.call_count == 2
         assert m_secure_channel.call_count == 2
-        assert m_structure_service_stub.call_count == 2
+        assert m_get_home_graph_bytes.call_count == 2
         assert m_get_home_graph_request.call_count == 2
         assert m_get_access_token.call_count == 2
 
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_access_token")
-    @patch("glocaltokens.client.StructuresServiceStub")
+    @patch("glocaltokens.client.get_home_graph_bytes")
+    def test_get_home_graph__homes(
+        self,
+        m_get_home_graph_bytes: NonCallableMock,
+        m_get_access_token: NonCallableMock,
+    ) -> None:
+        """Test one response gives each home separately and the merged view."""
+        m_get_access_token.return_value = faker.word()
+        home_device = faker.homegraph_device()
+        m_get_home_graph_bytes.return_value = HomeGraph(
+            homes=[
+                HomeGraph.Home(id="home-1", display_name="Home", devices=[home_device]),
+                HomeGraph.Home(id="home-2", display_name="Test home"),
+            ]
+        ).SerializeToString()
+
+        home_graph = self.client.get_home_graph()
+        assert [home.display_name for home in home_graph.homes] == ["Home", "Test home"]
+        assert list(home_graph.homes[0].devices) == [home_device]
+        assert not home_graph.homes[1].devices
+
+        # The merged view has the last home's name with every home's devices
+        homegraph = self.client.get_homegraph()
+        assert homegraph.home.home_name == "Test home"
+        assert [device.device_name for device in homegraph.home.devices] == [
+            home_device.display_name
+        ]
+        assert m_get_home_graph_bytes.call_count == 1
+
+        # Both forms are dropped together
+        self.client.invalidate_homegraph()
+        assert self.client.homegraph is None
+        assert self.client.home_graph is None
+
+    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_access_token")
+    @patch("glocaltokens.client.get_home_graph_bytes")
     def test_get_homegraph_retries(
         self,
-        m_structure_service_stub: NonCallableMock,
+        m_get_home_graph_bytes: NonCallableMock,
         m_get_access_token: NonCallableMock,
     ) -> None:
         """Test get_homegraph() gets a new access token when Google rejects it."""
         m_get_access_token.return_value = faker.word()
         rpc_error = fake_rpc_error(grpc.StatusCode.UNAUTHENTICATED)
-        m_structure_service_stub.return_value.GetHomeGraph.side_effect = [
-            rpc_error,
-            mock.sentinel.homegraph,
-        ]
-        assert self.client.get_homegraph() is mock.sentinel.homegraph
-        assert m_structure_service_stub.return_value.GetHomeGraph.call_count == 2
+        response = HomeGraph(homes=[HomeGraph.Home(display_name="Home")])
+        m_get_home_graph_bytes.side_effect = [rpc_error, response.SerializeToString()]
+        assert self.client.get_homegraph().home.home_name == "Home"
+        assert m_get_home_graph_bytes.call_count == 2
         assert m_get_access_token.call_count == 2
 
         # Google keeps rejecting the access token
         self.client.invalidate_homegraph()
-        m_structure_service_stub.reset_mock()
-        m_structure_service_stub.return_value.GetHomeGraph.side_effect = rpc_error
+        m_get_home_graph_bytes.reset_mock()
+        m_get_home_graph_bytes.side_effect = rpc_error
         with pytest.raises(HomegraphError, match="UNAUTHENTICATED") as exc_info:
             self.client.get_homegraph()
         assert exc_info.value.code == grpc.StatusCode.UNAUTHENTICATED
         assert exc_info.value.__cause__ is rpc_error
-        assert m_structure_service_stub.return_value.GetHomeGraph.call_count == 3
+        assert m_get_home_graph_bytes.call_count == 3
 
         # The access token rejected on the last attempt isn't kept either
         self.client.access_token = faker.word()
         with pytest.raises(HomegraphError):
-            self.client.get_homegraph(auth_attempts=1)
+            self.client.get_home_graph(auth_attempts=1)
         assert self.client.access_token is None
 
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_access_token")
-    @patch("glocaltokens.client.StructuresServiceStub")
+    @patch("glocaltokens.client.get_home_graph_bytes")
     def test_get_homegraph__rpc_error(
         self,
-        m_structure_service_stub: NonCallableMock,
+        m_get_home_graph_bytes: NonCallableMock,
         m_get_access_token: NonCallableMock,
     ) -> None:
         """Test other gRPC errors raise HomegraphError without a retry."""
         m_get_access_token.return_value = faker.word()
         for code in (grpc.StatusCode.UNAVAILABLE, grpc.StatusCode.DEADLINE_EXCEEDED):
             with self.subTest(code=code):
-                m_structure_service_stub.reset_mock()
+                m_get_home_graph_bytes.reset_mock()
                 details = faker.sentence()
                 rpc_error = fake_rpc_error(code, details)
-                get_home_graph = m_structure_service_stub.return_value.GetHomeGraph
-                get_home_graph.side_effect = rpc_error
+                m_get_home_graph_bytes.side_effect = rpc_error
 
                 with pytest.raises(HomegraphError) as exc_info:
                     self.client.get_homegraph()
@@ -810,20 +846,23 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
                 assert str(exc_info.value) == (
                     f"Could not get the home graph: {code.name} ({details})"
                 )
-                assert get_home_graph.call_count == 1
+                assert m_get_home_graph_bytes.call_count == 1
                 assert self.client.homegraph is None
+                assert self.client.home_graph is None
 
-    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_homegraph")
+    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_home_graph")
     @patch("glocaltokens.client.LOGGER.warning")
     def test_get_google_devices(
-        self, m_warning: NonCallableMock, m_get_homegraph: NonCallableMock
+        self, m_warning: NonCallableMock, m_get_home_graph: NonCallableMock
     ) -> None:
         """Test getting google devices."""
         # With just one device returned from homegraph
         fake_device_name = faker.word()
         fake_ip_address = faker.ipv4()
         homegraph_device = faker.homegraph_device(device_name=fake_device_name)
-        m_get_homegraph.return_value.home.devices = [homegraph_device]
+        m_get_home_graph.return_value.homes = [
+            HomeGraph.Home(devices=[homegraph_device])
+        ]
 
         # With no discover_devices, with no model_list
         google_devices = self.client.get_google_devices(
@@ -847,9 +886,13 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         )  # setting invalid token intentionally
         # Note that we initialize the list with homegraph_device_invalid
         # which should be ignored
-        m_get_homegraph.return_value.home.devices = [
-            homegraph_device_invalid,
-            homegraph_device_valid,
+        m_get_home_graph.return_value.homes = [
+            HomeGraph.Home(
+                devices=[
+                    homegraph_device_invalid,
+                    homegraph_device_valid,
+                ]
+            )
         ]
         google_devices = self.client.get_google_devices(
             disable_discovery=True,
@@ -865,8 +908,10 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
             assert google_devices[0].network_device.ip_address == fake_ip_address
 
         # A device without a cloud device ID in the home graph
-        homegraph_device.device_info.ClearField("agent_info")
-        m_get_homegraph.return_value.home.devices = [homegraph_device]
+        homegraph_device.id.ClearField("agent_info")
+        m_get_home_graph.return_value.homes = [
+            HomeGraph.Home(devices=[homegraph_device])
+        ]
         google_devices = self.client.get_google_devices(
             disable_discovery=True,
             addresses={fake_device_name: fake_ip_address},
@@ -876,12 +921,12 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         assert google_devices[0].as_dict()["cloud_device_id"] is None
 
     @patch("glocaltokens.client.discover_devices")
-    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_homegraph")
+    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_home_graph")
     def test_get_google_devices__homegraph_error(
-        self, m_get_homegraph: NonCallableMock, m_discover_devices: NonCallableMock
+        self, m_get_home_graph: NonCallableMock, m_discover_devices: NonCallableMock
     ) -> None:
-        """Test the device methods raise the error of get_homegraph()."""
-        m_get_homegraph.side_effect = HomegraphError(
+        """Test the device methods raise the error of get_home_graph()."""
+        m_get_home_graph.side_effect = HomegraphError(
             grpc.StatusCode.UNAVAILABLE, faker.sentence()
         )
         with pytest.raises(HomegraphError):
@@ -890,9 +935,9 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
             self.client.get_google_devices_json()
         m_discover_devices.assert_not_called()
 
-    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_homegraph")
+    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_home_graph")
     def test_get_google_devices__invalid_addresses(
-        self, m_get_homegraph: NonCallableMock
+        self, m_get_home_graph: NonCallableMock
     ) -> None:
         """Test addresses that aren't a dict of IPv4 addresses raise ValueError."""
         for addresses in (
@@ -905,32 +950,77 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
                     disable_discovery=True,
                     addresses=addresses,  # type: ignore[arg-type]
                 )
-        m_get_homegraph.assert_not_called()
+        m_get_home_graph.assert_not_called()
 
-    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_homegraph")
+    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_home_graph")
     def test_get_google_devices__no_devices(
-        self, m_get_homegraph: NonCallableMock
+        self, m_get_home_graph: NonCallableMock
     ) -> None:
         """Test an account without devices gives an empty list."""
-        m_get_homegraph.return_value.home.devices = []
+        m_get_home_graph.return_value.homes = [HomeGraph.Home(devices=[])]
         assert not self.client.get_google_devices(disable_discovery=True)
         assert self.client.get_google_devices_json(disable_discovery=True) == "[]"
 
+    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_home_graph")
+    def test_get_google_devices__homes(self, m_get_home_graph: NonCallableMock) -> None:
+        """Test devices say which home they're in, and home_id selects a home."""
+        home_device = faker.homegraph_device()
+        holiday_device = faker.homegraph_device()
+        m_get_home_graph.return_value.homes = [
+            HomeGraph.Home(id="home-1", display_name="Home", devices=[home_device]),
+            HomeGraph.Home(
+                id="home-2", display_name="Holiday", devices=[holiday_device]
+            ),
+            HomeGraph.Home(id="home-3", display_name="Empty"),
+        ]
+
+        devices = self.client.get_google_devices(disable_discovery=True)
+        assert [(d.device_id, d.home_id, d.home_name) for d in devices] == [
+            (home_device.id.device_id, "home-1", "Home"),
+            (holiday_device.id.device_id, "home-2", "Holiday"),
+        ]
+
+        devices = self.client.get_google_devices(
+            disable_discovery=True, home_id="home-2"
+        )
+        assert [d.device_id for d in devices] == [holiday_device.id.device_id]
+        received = json.loads(
+            self.client.get_google_devices_json(
+                disable_discovery=True, home_id="home-2"
+            )
+        )
+        assert [(d["home_id"], d["home_name"]) for d in received] == [
+            ("home-2", "Holiday")
+        ]
+        assert not self.client.get_google_devices(
+            disable_discovery=True, home_id="home-3"
+        )
+        assert not self.client.get_google_devices(
+            disable_discovery=True, home_id="unknown"
+        )
+
+        # A home without an ID or name gives None, like other missing values
+        m_get_home_graph.return_value.homes = [HomeGraph.Home(devices=[home_device])]
+        devices = self.client.get_google_devices(disable_discovery=True)
+        assert (devices[0].home_id, devices[0].home_name) == (None, None)
+
     @patch("glocaltokens.client.discover_devices")
-    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_homegraph")
+    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_home_graph")
     def test_get_google_devices_discovered(
-        self, m_get_homegraph: NonCallableMock, m_discover_devices: NonCallableMock
+        self, m_get_home_graph: NonCallableMock, m_discover_devices: NonCallableMock
     ) -> None:
         """Test that a discovered device keeps its name from the home graph."""
         homegraph_device = faker.homegraph_device(device_name="Den speakers")
-        m_get_homegraph.return_value.home.devices = [homegraph_device]
+        m_get_home_graph.return_value.homes = [
+            HomeGraph.Home(devices=[homegraph_device])
+        ]
         # A speaker pair announces the name of its leading speaker
         network_device = NetworkDevice(
             "Den speaker left",
             faker.ipv4(),
             8009,
             homegraph_device.hardware.model,
-            homegraph_device.device_info.agent_info.unique_id,
+            homegraph_device.id.agent_info.unique_id,
         )
         m_discover_devices.return_value = [network_device]
 
@@ -941,25 +1031,27 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         assert google_devices[0].ip_address == network_device.ip_address
 
     @patch("glocaltokens.client.discover_devices")
-    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_homegraph")
+    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_home_graph")
     @patch("glocaltokens.client.LOGGER.warning")
     def test_get_google_devices__discovered_invalid_token(
         self,
         m_warning: NonCallableMock,
-        m_get_homegraph: NonCallableMock,
+        m_get_home_graph: NonCallableMock,
         m_discover_devices: NonCallableMock,
     ) -> None:
         """Test that a discovered device with an invalid token is skipped with a warning."""
         homegraph_device = faker.homegraph_device()
         homegraph_device.local_auth_token = faker.word()
-        m_get_homegraph.return_value.home.devices = [homegraph_device]
+        m_get_home_graph.return_value.homes = [
+            HomeGraph.Home(devices=[homegraph_device])
+        ]
         m_discover_devices.return_value = [
             NetworkDevice(
-                homegraph_device.device_name,
+                homegraph_device.display_name,
                 faker.ipv4(),
                 8009,
                 homegraph_device.hardware.model,
-                homegraph_device.device_info.agent_info.unique_id,
+                homegraph_device.id.agent_info.unique_id,
             )
         ]
 
@@ -967,15 +1059,17 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         m_warning.assert_called_once()
         assert "local_auth_token isn't" in m_warning.call_args.args[0]
 
-    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_homegraph")
+    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_home_graph")
     @patch("glocaltokens.client.LOGGER.error")
     def test_get_google_devices__empty_device_name(
-        self, m_error: NonCallableMock, m_get_homegraph: NonCallableMock
+        self, m_error: NonCallableMock, m_get_home_graph: NonCallableMock
     ) -> None:
         """Test that a device without a name is skipped with an error."""
         homegraph_device = faker.homegraph_device()
-        homegraph_device.device_name = ""
-        m_get_homegraph.return_value.home.devices = [homegraph_device]
+        homegraph_device.display_name = ""
+        m_get_home_graph.return_value.homes = [
+            HomeGraph.Home(devices=[homegraph_device])
+        ]
 
         assert not self.client.get_google_devices(disable_discovery=True)
         m_error.assert_called_once()
