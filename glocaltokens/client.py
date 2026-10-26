@@ -14,6 +14,7 @@ import warnings
 
 from ghome_foyer_api.api_pb2 import GetHomeGraphRequest, GetHomeGraphResponse, HomeGraph  # pylint: disable=no-name-in-module
 from ghome_foyer_api.home_graph import get_home_graph_bytes
+from google.protobuf.message import DecodeError
 import gpsoauth
 from gpsoauth import exchange_token, perform_master_login, perform_oauth
 import grpc
@@ -467,9 +468,16 @@ class GLocalAuthenticationTokens:
                     response = get_home_graph_bytes(
                         channel, request, timeout=REQUEST_TIMEOUT
                     )
-                    # Parse it both ways: as one merged home, and home by home
-                    self.homegraph = GetHomeGraphResponse.FromString(response)
-                    self.home_graph = HomeGraph.FromString(response)
+                # Parse it both ways: as one merged home, and home by home
+                try:
+                    homegraph = GetHomeGraphResponse.FromString(response)
+                    home_graph = HomeGraph.FromString(response)
+                except DecodeError as error:
+                    # gRPC used to report this as INTERNAL when it parsed the response
+                    raise HomegraphError(
+                        grpc.StatusCode.INTERNAL, str(error)
+                    ) from error
+                self.homegraph, self.home_graph = homegraph, home_graph
                 self.homegraph_date = datetime.now(UTC)
             except grpc.RpcError as rpc_error:
                 code = rpc_error.code()  # pylint: disable=no-member

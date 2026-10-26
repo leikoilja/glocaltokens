@@ -16,6 +16,7 @@ import warnings
 from faker import Faker
 from faker.providers import internet
 from ghome_foyer_api.api_pb2 import HomeGraph  # pylint: disable=no-name-in-module
+from google.protobuf.message import DecodeError
 import gpsoauth
 import grpc
 import pytest
@@ -766,23 +767,27 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         """Test one response gives each home separately and the merged view."""
         m_get_access_token.return_value = faker.word()
         home_device = faker.homegraph_device()
+        test_home_device = faker.homegraph_device()
         m_get_home_graph_bytes.return_value = HomeGraph(
             homes=[
                 HomeGraph.Home(id="home-1", display_name="Home", devices=[home_device]),
-                HomeGraph.Home(id="home-2", display_name="Test home"),
+                HomeGraph.Home(
+                    id="home-2", display_name="Test home", devices=[test_home_device]
+                ),
             ]
         ).SerializeToString()
 
         home_graph = self.client.get_home_graph()
         assert [home.display_name for home in home_graph.homes] == ["Home", "Test home"]
         assert list(home_graph.homes[0].devices) == [home_device]
-        assert not home_graph.homes[1].devices
+        assert list(home_graph.homes[1].devices) == [test_home_device]
 
         # The merged view has the last home's name with every home's devices
         homegraph = self.client.get_homegraph()
         assert homegraph.home.home_name == "Test home"
         assert [device.device_name for device in homegraph.home.devices] == [
-            home_device.display_name
+            home_device.display_name,
+            test_home_device.display_name,
         ]
         assert m_get_home_graph_bytes.call_count == 1
 
@@ -849,6 +854,25 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
                 assert m_get_home_graph_bytes.call_count == 1
                 assert self.client.homegraph is None
                 assert self.client.home_graph is None
+
+    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_access_token")
+    @patch("glocaltokens.client.get_home_graph_bytes")
+    def test_get_homegraph__decode_error(
+        self,
+        m_get_home_graph_bytes: NonCallableMock,
+        m_get_access_token: NonCallableMock,
+    ) -> None:
+        """Test a response that can't be parsed raises HomegraphError."""
+        m_get_access_token.return_value = faker.word()
+        # A string with bad UTF-8, in a field only HomeGraph names
+        m_get_home_graph_bytes.return_value = b"\x12\x07\x1a\x05\x3a\x03\x32\x01\xff"
+
+        with pytest.raises(HomegraphError) as exc_info:
+            self.client.get_homegraph()
+        assert exc_info.value.code == grpc.StatusCode.INTERNAL
+        assert isinstance(exc_info.value.__cause__, DecodeError)
+        assert self.client.homegraph is None
+        assert self.client.home_graph is None
 
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_home_graph")
     @patch("glocaltokens.client.LOGGER.warning")
