@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from faker import Faker
 from faker.providers import BaseProvider
-from ghome_foyer_api.api_pb2 import GetHomeGraphResponse  # pylint: disable=no-name-in-module
+from ghome_foyer_api.api_pb2 import HomeGraph  # pylint: disable=no-name-in-module
 
 from glocaltokens.const import LOCAL_AUTH_TOKEN_LENGTH, MASTER_TOKEN_LENGTH
 
@@ -40,27 +40,25 @@ class TokenProvider(BaseProvider):
 class HomegraphProvider(TokenProvider):
     """Homegraph provider."""
 
-    def homegraph_device(
-        self, device_name: str | None = None
-    ) -> GetHomeGraphResponse.Home.Device:
+    def homegraph_device(self, device_name: str | None = None) -> HomeGraph.Device:
         """Create and return a mocked HomeGraph device object."""
         device_name = device_name or faker.word()
 
-        return GetHomeGraphResponse.Home.Device(
+        return HomeGraph.Device(
             local_auth_token=self.local_auth_token(),
-            device_info=GetHomeGraphResponse.Home.Device.DeviceInfo(
+            id=HomeGraph.DeviceId(
                 device_id=str(faker.uuid4()),
-                agent_info=GetHomeGraphResponse.Home.Device.DeviceInfo.AgentInfo(
+                agent_info=HomeGraph.DeviceId.AgentInfo(
                     unique_id=faker.hexify("^" * 32)
                 ),
             ),
-            device_name=device_name,
-            hardware=GetHomeGraphResponse.Home.Device.Hardware(model=faker.word()),
+            display_name=device_name,
+            hardware=HomeGraph.Device.Hardware(model=faker.word()),
         )
 
     def homegraph_devices(
         self, min_devices: int = 1, max_devices: int = 10, count: int | None = None
-    ) -> list[GetHomeGraphResponse.Home.Device]:
+    ) -> list[HomeGraph.Device]:
         """Generate a random amount of devices, in the range specified.
 
         min_devices:

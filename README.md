@@ -130,6 +130,8 @@ print(client.get_email())
     },
     "hardware": "Google Nest Mini",
     "cloud_device_id": "...",
+    "home_id": "...",
+    "home_name": "Home",
     "local_auth_token": "..."
   }
 ]
@@ -141,6 +143,10 @@ The JSON doesn't include the name a device announces on the network. For a `Devi
 `cloud_device_id` is the ID Google gives the device, or `null` if Google gives none.
 To match a device at an address you know, request `https://<ip>:8443/setup/eureka_info?params=device_info` and compare `cloud_device_id` with `device_info.cloud_device_id` in the response, ignoring case.
 The device's certificate is self-signed, so turn off certificate verification for this request.
+
+`home_id` and `home_name` are the ID and name of the home the device is in, in the Google Home app.
+If your account has several homes, pass a `home_id` to get only that home's devices.
+To list every home, including homes without devices, use `get_home_graph()`: each entry of its `homes` has an `id` and a `display_name`.
 
 The client caches the tokens it gets from Google for 24 hours. Pass `force_homegraph_reload=True` to fetch new ones sooner.
 
@@ -195,6 +201,7 @@ Both `get_google_devices()` and `get_google_devices_json()` accept these argumen
 | `zeroconf_instance`      | `None`  | An existing `zeroconf.Zeroconf` instance to use for discovery. glocaltokens leaves it open.  |
 | `force_homegraph_reload` | `False` | Fetch new tokens from Google even if the cached ones are less than 24 hours old.             |
 | `discovery_timeout`      | `2`     | How long to search the local network, in seconds.                                            |
+| `home_id`                | `None`  | Only return the devices of the home with this ID. `None` returns the devices of every home.  |
 
 `get_google_devices_json()` also accepts `indent` for the JSON output (default `2`).
 
