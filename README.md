@@ -241,13 +241,16 @@ The sync and async methods share the cached tokens and home graph. Don't use one
 How your session affects the requests to Google:
 
 - The home graph, which has the device tokens, comes over gRPC, not through your session. The other requests go through it.
-- They check Google's certificate even if your session doesn't check certificates.
+- They check Google's certificate even if your session doesn't check certificates. Like the sync sign-in requests, they trust the system's certificate
+  authorities and those in the bundle `requests` uses, which is certifi's unless the `REQUESTS_CA_BUNDLE` or `CURL_CA_BUNDLE` environment variable names
+  another file or directory. glocaltokens reads these variables when it's imported. If it can't load that bundle, the async requests raise `OSError`,
+  as `requests` does.
 - Your session's middlewares apply to them. An exception a middleware raises reaches your code.
 - Your session's `raise_for_status` setting doesn't apply to them: glocaltokens handles each answer itself, as described in [Errors](#errors).
 - Cookies in your session's cookie jar for Google's addresses are sent with them, and cookies Google sets are kept in the jar.
 - Your session's default headers are sent with them, except those glocaltokens sets itself, such as `User-Agent`.
 - They use your session's proxy settings. A session that glocaltokens creates follows the `HTTP_PROXY`, `HTTPS_PROXY` and `NO_PROXY` environment variables,
-  but aiohttp only supports proxies with `http://` addresses.
+  but aiohttp ignores proxy addresses there that start with `https://`.
 - Don't pass a session with default `auth` credentials: they would be sent to Google.
 
 ## Troubleshooting
@@ -290,6 +293,8 @@ These errors from the libraries glocaltokens uses also reach your code:
   `get_master_token()`, `get_access_token()`, `get_email()` and the device methods raise it. Try again later.
 - `OSError` when network discovery cannot start, for example because no network interface is available.
   Pass `disable_discovery=True` if you do not need IP addresses and ports.
+- `OSError` when the certificate bundle that `REQUESTS_CA_BUNDLE` or `CURL_CA_BUNDLE` names can't be loaded. Each request to Google raises it.
+  Correct or unset the variable.
 
 A mistake in your call raises `ValueError`: creating the client without credentials or with a `master_token` that doesn't start with `aas_et/`,
 or passing `addresses` that aren't a dictionary of IPv4 addresses to the device methods.

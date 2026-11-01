@@ -1,12 +1,18 @@
 """Tests of the client's async methods, with invented data on loopback servers."""
 
+# pylint: disable=too-many-lines
+
 from __future__ import annotations
 
 import asyncio
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 import json
+import os
 import ssl
+import subprocess
+import sys
+from tempfile import TemporaryDirectory
 from typing import TYPE_CHECKING, TypedDict, Unpack, override
 from unittest import IsolatedAsyncioTestCase
 from unittest.mock import AsyncMock, NonCallableMock, patch
@@ -30,6 +36,7 @@ from glocaltokens.client import (
 )
 from glocaltokens.const import (
     ACCESS_TOKEN_DURATION,
+    DEFAULT_DISCOVERY_PORT,
     GOOGLE_HOME_FOYER_API,
     HOMEGRAPH_DURATION,
 )
@@ -44,11 +51,13 @@ faker = Faker()
 faker.add_provider(HomegraphProvider)
 
 
-def text(body: str, status: int = 200) -> Callable[[], Awaitable[web.Response]]:
-    """Return an answer of plain text, as Google's login service gives."""
+def text(
+    body: str, status: int = 200, content_type: str = "text/plain"
+) -> Callable[[], Awaitable[web.Response]]:
+    """Return a text answer, by default plain text, as Google's login service gives."""
 
     async def answer() -> web.Response:
-        return web.Response(text=body, status=status)
+        return web.Response(text=body, status=status, content_type=content_type)
 
     return answer
 
@@ -365,6 +374,13 @@ class SignInTests(AsyncClientTestCase):
         with pytest.raises(json.JSONDecodeError):
             await client.async_get_email()
 
+        # Empty JSON answers, which aiohttp reads as None
+        for body in ("", "   \n"):
+            self.google.queue("/auth", text("Auth=ya29.email\n"))
+            self.google.queue("/userinfo", text(body, content_type="application/json"))
+            with self.subTest(body=body), pytest.raises(json.JSONDecodeError):
+                await client.async_get_email()
+
         async def html() -> web.Response:
             return web.Response(text="<html></html>", content_type="text/html")
 
@@ -607,6 +623,7 @@ class TLSTests(IsolatedAsyncioTestCase):
 
     def test_settings(self) -> None:
         """Google's certificate is checked, and session tickets are allowed."""
+        assert isinstance(_GOOGLE_SSL_CONTEXT, ssl.SSLContext)
         assert _GOOGLE_SSL_CONTEXT.verify_mode == ssl.CERT_REQUIRED
         assert _GOOGLE_SSL_CONTEXT.check_hostname
         assert not _GOOGLE_SSL_CONTEXT.options & ssl.OP_NO_TICKET  # pylint: disable=no-member
@@ -659,6 +676,107 @@ class TLSTests(IsolatedAsyncioTestCase):
             ca.configure_trust(trusting)
             with patch("glocaltokens.client._GOOGLE_SSL_CONTEXT", trusting):
                 assert await client.async_get_email() == email
+
+    async def test_requests_bundle_trusted(self) -> None:
+        """The bundle requests uses is trusted, chosen as requests chooses it."""
+        google, ca = await self.https_google()
+        session = await self.unchecked_session()
+        certifi = requests.utils.DEFAULT_CA_BUNDLE_PATH
+        with (
+            ca.cert_pem.tempfile() as trusted,
+            trustme.CA().cert_pem.tempfile() as other,
+        ):
+            # The variables, the default bundle of requests, and whether the
+            # invented CA is trusted
+            cases: list[tuple[dict[str, str], str, bool]] = [
+                ({"REQUESTS_CA_BUNDLE": trusted}, certifi, True),
+                ({"CURL_CA_BUNDLE": trusted}, certifi, True),
+                # Without either variable, the default (certifi's)
+                ({}, trusted, True),
+                # REQUESTS_CA_BUNDLE comes first
+                (
+                    {"REQUESTS_CA_BUNDLE": trusted, "CURL_CA_BUNDLE": other},
+                    certifi,
+                    True,
+                ),
+                (
+                    {"REQUESTS_CA_BUNDLE": other, "CURL_CA_BUNDLE": trusted},
+                    certifi,
+                    False,
+                ),
+                # A variable replaces the default
+                ({"CURL_CA_BUNDLE": other}, trusted, False),
+            ]
+            for variables, default, is_trusted in cases:
+                with (
+                    self.subTest(
+                        variables={
+                            name: "trusted" if path == trusted else "other"
+                            for name, path in variables.items()
+                        },
+                        default="trusted" if default == trusted else "certifi",
+                    ),
+                    patch.dict(os.environ),
+                ):
+                    os.environ.pop("REQUESTS_CA_BUNDLE", None)
+                    os.environ.pop("CURL_CA_BUNDLE", None)
+                    os.environ.update(variables)
+                    with patch("requests.utils.DEFAULT_CA_BUNDLE_PATH", default):
+                        context = _google_ssl_context()
+                    master_token = faker.master_token()
+                    client = GLocalAuthenticationTokens(
+                        oauth_token="oauth2_4/invented", session=session
+                    )
+                    with (
+                        patch("gpsoauth.AUTH_URL", google.url("/auth")),
+                        patch("glocaltokens.client._GOOGLE_SSL_CONTEXT", context),
+                    ):
+                        if is_trusted:
+                            google.queue("/auth", text(f"Token={master_token}\n"))
+                            assert await client.async_get_master_token() == master_token
+                        else:
+                            with pytest.raises(aiohttp.ClientConnectorCertificateError):
+                                await client.async_get_master_token()
+
+    def test_requests_bundle_directory(self) -> None:
+        """REQUESTS_CA_BUNDLE can name a directory of certificates, as for requests."""
+        with (
+            TemporaryDirectory() as directory,
+            patch.dict(os.environ, {"REQUESTS_CA_BUNDLE": directory}),
+        ):
+            _google_ssl_context()
+
+    def test_unloadable_bundle(self) -> None:
+        """A bundle that can't be loaded fails the async requests, not the import."""
+        missing = "/nonexistent/glocaltokens-bundle.pem"
+        # Any request would go to a closed loopback port, never to Google
+        script = """
+import asyncio
+import sys
+
+import gpsoauth
+
+from glocaltokens.client import GLocalAuthenticationTokens
+
+gpsoauth.AUTH_URL = "https://127.0.0.1:9/auth"
+client = GLocalAuthenticationTokens(master_token=sys.argv[1])
+try:
+    asyncio.run(client.async_get_access_token())
+except OSError as error:
+    print(error)
+"""
+        environment = os.environ | {"REQUESTS_CA_BUNDLE": missing}
+        result = subprocess.run(
+            [sys.executable, "-c", script, faker.master_token()],
+            env=environment,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        assert result.returncode == 0, result.stderr
+        assert result.stdout.startswith(
+            f"Could not load the TLS CA certificate bundle {missing}: "
+        )
 
 
 class HomeGraphServer:
@@ -916,6 +1034,22 @@ class DevicesTests(HomeGraphTestCase):
         )
         assert [device.device_id for device in devices] == [office_device.id.device_id]
         assert home_graph == graph
+        devices = await self.client.async_get_google_devices(
+            disable_discovery=True, home_id="home-2"
+        )
+        assert [device.device_id for device in devices] == [office_device.id.device_id]
+
+    async def test_addresses(self) -> None:
+        """A device given in addresses gets that address, as with get_google_devices()."""
+        device = faker.homegraph_device()
+        self.google.queue(HomeGraph(homes=[HomeGraph.Home(devices=[device])]))
+        devices, _ = await self.client.async_get_google_devices_and_home_graph(
+            disable_discovery=True, addresses={device.display_name: "192.0.2.20"}
+        )
+        assert (devices[0].ip_address, devices[0].port) == (
+            "192.0.2.20",
+            DEFAULT_DISCOVERY_PORT,
+        )
 
     async def test_discovery(self) -> None:
         """Discovery runs with the caller's arguments and gives devices their addresses."""

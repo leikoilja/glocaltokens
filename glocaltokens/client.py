@@ -10,6 +10,8 @@ from datetime import UTC, datetime
 from http import HTTPStatus
 import json
 import logging
+import os
+from pathlib import Path
 import random
 import ssl
 from typing import TYPE_CHECKING, Final, override
@@ -140,16 +142,44 @@ def _google_ssl_context() -> ssl.SSLContext:
     """Return the TLS settings of the async methods' requests to Google.
 
     They check Google's certificate even if the caller's session doesn't check
-    certificates. Like gpsoauth, they offer no ALPN and allow TLS session
-    tickets, as gpsoauth found that Google refuses its logins otherwise.
+    certificates. Like gpsoauth's sign-in requests, they trust the system's
+    certificate authorities and those of the bundle requests uses: certifi's,
+    unless REQUESTS_CA_BUNDLE or CURL_CA_BUNDLE names another file or directory.
+    Like gpsoauth, they offer no ALPN and allow TLS session tickets, as gpsoauth
+    found that Google refuses its logins otherwise.
     """
     context = ssl.create_default_context()
     context.options &= ~ssl.OP_NO_TICKET  # pylint: disable=no-member
+    bundle = (
+        os.environ.get("REQUESTS_CA_BUNDLE")
+        or os.environ.get("CURL_CA_BUNDLE")
+        or requests.utils.DEFAULT_CA_BUNDLE_PATH
+    )
+    try:
+        if Path(bundle).is_dir():
+            context.load_verify_locations(capath=bundle)
+        else:
+            context.load_verify_locations(cafile=bundle)
+    except OSError as error:
+        msg = f"Could not load the TLS CA certificate bundle {bundle}: {error}"
+        raise OSError(msg) from error
     return context
 
 
-# Created on import, as loading the certificates blocks
-_GOOGLE_SSL_CONTEXT: Final = _google_ssl_context()
+def _google_ssl() -> ssl.SSLContext:
+    """Return the TLS settings of the requests to Google, or raise why there are none."""
+    if isinstance(_GOOGLE_SSL_CONTEXT, OSError):
+        raise OSError(*_GOOGLE_SSL_CONTEXT.args)
+    return _GOOGLE_SSL_CONTEXT
+
+
+# Created on import, as loading the certificates blocks. A bundle that can't be
+# loaded fails the async requests rather than the import, as requests fails
+# each of its own requests then.
+try:
+    _GOOGLE_SSL_CONTEXT: ssl.SSLContext | OSError = _google_ssl_context()
+except OSError as bundle_error:
+    _GOOGLE_SSL_CONTEXT = bundle_error
 
 # The request gpsoauth 2.0.0 sends, which it can't send through another HTTP
 # client. Keep the fields and their order in step with gpsoauth. The headers
@@ -621,7 +651,7 @@ class GLocalAuthenticationTokens:
                 USERINFO_URL,
                 # Send the token in a header: a URL ends up in debug logs and errors
                 headers={"Authorization": f"Bearer {res['Auth']}"},
-                ssl=_GOOGLE_SSL_CONTEXT,
+                ssl=_google_ssl(),
                 timeout=aiohttp.ClientTimeout(total=REQUEST_TIMEOUT),
                 raise_for_status=False,
             ) as response,
@@ -631,7 +661,11 @@ class GLocalAuthenticationTokens:
                     "Could not get the email address: HTTP %s", response.status
                 )
                 return None
-            return _verified_email(await response.json())
+            user_info = await response.json()
+            if user_info is None:
+                # aiohttp gives None for an empty body, where json.loads() raises
+                user_info = json.loads(await response.text())
+            return _verified_email(user_info)
 
     @asynccontextmanager
     async def _client_session(self) -> AsyncIterator[aiohttp.ClientSession]:
@@ -658,7 +692,7 @@ class GLocalAuthenticationTokens:
                 gpsoauth.AUTH_URL,
                 data=urlencode(data).encode(),
                 headers=_AUTH_HEADERS,
-                ssl=_GOOGLE_SSL_CONTEXT,
+                ssl=_google_ssl(),
                 timeout=aiohttp.ClientTimeout(total=REQUEST_TIMEOUT),
                 raise_for_status=False,
             ) as response,
