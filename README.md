@@ -221,6 +221,8 @@ Both `get_google_devices()` and `get_google_devices_json()` accept these argumen
 The methods that ask Google have async counterparts: `async_get_master_token()`, `async_get_access_token()`, `async_get_email()`,
 `async_get_home_graph()` and `async_get_google_devices()`.
 They return the same results and raise the same glocaltokens errors, and they wait for Google and the network without blocking your event loop.
+With discovery on, the first device call imports glocaltokens' discovery code and zeroconf on your event loop, unless they're already imported:
+import `glocaltokens.scanner` when your application starts to avoid that short delay.
 Two methods have no async counterpart. Instead of `get_homegraph()`, which merges every home into one, use `async_get_home_graph()`.
 Instead of `get_google_devices_json()`, use `json.dumps([device.as_dict() for device in devices])`.
 

@@ -979,14 +979,12 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
                 self.client.get_google_devices,
                 self.client.get_google_devices_json,
             ):
-                with (
-                    self.subTest(get_devices.__name__),
-                    pytest.raises(ModuleNotFoundError) as exc_info,
-                ):
-                    get_devices(force_homegraph_reload=True)
-                message = str(exc_info.value)
-                assert "glocaltokens[discovery]" in message
-                assert "disable_discovery=True" in message
+                with self.subTest(get_devices.__name__):
+                    with pytest.raises(ModuleNotFoundError) as exc_info:
+                        get_devices(force_homegraph_reload=True)
+                    message = str(exc_info.value)
+                    assert "glocaltokens[discovery]" in message
+                    assert "disable_discovery=True" in message
             m_get_home_graph.assert_not_called()
             # The stored home graph wasn't dropped for the reload
             assert self.client.home_graph is stored_graph

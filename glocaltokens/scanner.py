@@ -13,7 +13,8 @@ import warnings
 
 from .const import DISCOVERY_TIMEOUT, GOOGLE_CAST_GROUP, SERVICE_INFO_TIMEOUT
 
-# Still exported from here, as before it moved: the alias tells type checkers
+# Re-exported for code that imports it from here: "as NetworkDevice" marks it
+# public for type checkers
 from .types import NetworkDevice as NetworkDevice  # noqa: PLC0414  # pylint: disable=useless-import-alias
 
 try:
@@ -33,7 +34,7 @@ except ModuleNotFoundError as error:
         raise
     raise ModuleNotFoundError(
         "Discovering devices needs zeroconf: install glocaltokens[discovery], "
-        "or turn discovery off with discover=False "
+        "or turn discovery off in the device methods with discover=False "
         "(disable_discovery=True in the sync methods)",
         name="zeroconf",
     ) from error

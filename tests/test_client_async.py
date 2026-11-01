@@ -1143,14 +1143,12 @@ class DevicesTests(HomeGraphTestCase):
                 self.client.async_get_google_devices,
                 self.client.async_get_google_devices_and_home_graph,
             ):
-                with (
-                    self.subTest(get_devices.__name__),
-                    pytest.raises(ModuleNotFoundError) as exc_info,
-                ):
-                    await get_devices(reload_home_graph=True)
-                message = str(exc_info.value)
-                assert "glocaltokens[discovery]" in message
-                assert "discover=False" in message
+                with self.subTest(get_devices.__name__):
+                    with pytest.raises(ModuleNotFoundError) as exc_info:
+                        await get_devices(reload_home_graph=True)
+                    message = str(exc_info.value)
+                    assert "glocaltokens[discovery]" in message
+                    assert "discover=False" in message
         # Only the request without discovery reached Google, and the stored
         # home graph wasn't dropped for the reload
         assert self.google.calls == 1
