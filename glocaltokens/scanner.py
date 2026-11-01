@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING, NamedTuple, override
 import warnings
 
 from zeroconf import (
+    Error as ZeroconfError,
     ServiceBrowser,
     ServiceInfo,
     ServiceListener,
@@ -247,29 +248,26 @@ async def async_discover_devices(
     LOGGER.debug("Discovering devices...")
     deadline = time.monotonic() + timeout
     devices: dict[str, NetworkDevice] = {}
-    # The lookup whose result is kept, by service name
+    # How many changes each service has had: only a lookup started for the
+    # latest one may keep its answer
+    changes: dict[str, int] = {}
+    # The latest lookup of each service, to cancel when the service changes
     owners: dict[str, asyncio.Task[None]] = {}
-    # Every lookup that hasn't finished, including ones whose result is no
+    # Every lookup that hasn't finished, including ones whose answer is no
     # longer kept, so that none outlives discovery
     pending: set[asyncio.Task[None]] = set()
     discovery_complete = asyncio.Event()
 
-    async def look_up(zc: Zeroconf, type_: str, name: str) -> None:
-        service = AsyncServiceInfo(type_, name)
-        lookup_timeout = min(
-            SERVICE_INFO_TIMEOUT, int((deadline - time.monotonic()) * 1000)
-        )
+    async def look_up(zc: Zeroconf, type_: str, name: str, change: int) -> None:
         try:
-            if lookup_timeout > 0:
-                found = await service.async_request(zc, lookup_timeout)
-            else:
-                # Out of time: still use details zeroconf already has.
-                found = service.load_from_cache(zc)
-        except OSError:
+            service = AsyncServiceInfo(type_, name)
+            found = await _async_request(service, zc, deadline)
+        except (OSError, ZeroconfError):
             # As discover_devices(): give up on this service
-            found = False
+            LOGGER.debug("Failed to look up %s, %s", type_, name, exc_info=True)
+            return
         # A later update or removal of the service replaced this lookup
-        if owners.get(name) is not asyncio.current_task():
+        if changes[name] != change:
             return
         device = _network_device(service, name) if found else None
         if device is None:
@@ -286,6 +284,7 @@ async def async_discover_devices(
         state_change: ServiceStateChange,
     ) -> None:
         LOGGER.debug("%s %s, %s", state_change.name, service_type, name)
+        change = changes[name] = changes.get(name, 0) + 1
         if owner := owners.pop(name, None):
             _cancel_once(owner)
         if state_change is ServiceStateChange.Removed:
@@ -293,7 +292,8 @@ async def async_discover_devices(
             return
         if name.endswith("_sub._googlecast._tcp.local."):
             return
-        task = asyncio.create_task(look_up(zeroconf, service_type, name))
+        # An eager task factory can run the lookup before this returns
+        task = asyncio.create_task(look_up(zeroconf, service_type, name, change))
         owners[name] = task
         pending.add(task)
         task.add_done_callback(pending.discard)
@@ -317,6 +317,9 @@ async def async_discover_devices(
             await browser.async_cancel()
             for task in pending:
                 _cancel_once(task)
+            # ponytail: cancelling discovery again during this wait cancels
+            # the lookups again, cutting their cleanup short; shield the wait
+            # if that matters
             await asyncio.gather(*pending, return_exceptions=True)
     finally:
         # A supplied instance belongs to the caller, who may still be using it.
@@ -324,6 +327,22 @@ async def async_discover_devices(
             await own_zeroconf.async_close()
 
     return _wanted_devices(devices.values(), models_list)
+
+
+async def _async_request(
+    service: AsyncServiceInfo, zc: Zeroconf, deadline: float
+) -> bool:
+    """Look a service up until the deadline, as CastListener does."""
+    for _ in range(4):
+        lookup_timeout = min(
+            SERVICE_INFO_TIMEOUT, int((deadline - time.monotonic()) * 1000)
+        )
+        if lookup_timeout <= 0:
+            # Out of time: still use details zeroconf already has.
+            return service.load_from_cache(zc)
+        if await service.async_request(zc, lookup_timeout):
+            return True
+    return False
 
 
 def _cancel_once(task: asyncio.Task[None]) -> None:

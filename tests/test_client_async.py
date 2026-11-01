@@ -233,8 +233,13 @@ class SignInTests(AsyncClientTestCase):
                 received = self.google.received[0]
 
                 assert received.body == sent.body.encode()
-                for header in ("Content-Type", "User-Agent", "Accept-Encoding"):
-                    assert received.headers[header] == sent.headers[header]
+                # The same headers in the same order, after Host, which
+                # requests only adds when it sends the request. The test
+                # server may change the case of names, which HTTP ignores.
+                assert [
+                    (name.lower(), value)
+                    for name, value in list(received.headers.items())[1:]
+                ] == [(name.lower(), value) for name, value in sent.headers.items()]
 
     async def test_get_master_token(self) -> None:
         """A master token comes from the oauth_token, else from the password."""
@@ -366,6 +371,58 @@ class SignInTests(AsyncClientTestCase):
         self.google.queue("/auth", text("Auth=ya29.email\n"))
         self.google.queue("/userinfo", html)
         with pytest.raises(aiohttp.ContentTypeError):
+            await client.async_get_email()
+
+
+class FailureTests(AsyncClientTestCase):
+    """Requests that get no answer."""
+
+    async def test_no_answer_in_time(self) -> None:
+        """Requests time out after REQUEST_TIMEOUT seconds in all."""
+        never = asyncio.Event()
+
+        async def hang() -> web.StreamResponse:
+            await never.wait()
+            raise AssertionError("never answers")
+
+        client = self.client(oauth_token="oauth2_4/invented")
+        with patch("glocaltokens.client.REQUEST_TIMEOUT", 0.2):
+            self.google.queue("/auth", hang)
+            with pytest.raises(TimeoutError):
+                await client.async_get_master_token()
+
+            client.master_token = faker.master_token()
+            self.google.queue("/auth", text("Auth=ya29.email\n"))
+            self.google.queue("/userinfo", hang)
+            with pytest.raises(TimeoutError):
+                await client.async_get_email()
+
+    async def test_connection_dropped(self) -> None:
+        """A connection that closes without an answer raises aiohttp.ClientError."""
+
+        async def drop(
+            reader: asyncio.StreamReader, writer: asyncio.StreamWriter
+        ) -> None:
+            await reader.readuntil(b"\r\n\r\n")
+            writer.close()
+
+        server = await asyncio.start_server(drop, "127.0.0.1", 0)
+        self.addAsyncCleanup(server.wait_closed)
+        self.addCleanup(server.close)
+        port = server.sockets[0].getsockname()[1]
+        client = self.client(oauth_token="oauth2_4/invented")
+        with (
+            patch("gpsoauth.AUTH_URL", f"http://127.0.0.1:{port}/auth"),
+            pytest.raises(aiohttp.ClientError),
+        ):
+            await client.async_get_master_token()
+
+        client.master_token = faker.master_token()
+        self.google.queue("/auth", text("Auth=ya29.email\n"))
+        with (
+            patch("glocaltokens.client.USERINFO_URL", f"http://127.0.0.1:{port}/"),
+            pytest.raises(aiohttp.ClientError),
+        ):
             await client.async_get_email()
 
 
@@ -531,6 +588,23 @@ class SessionTests(AsyncClientTestCase):
 class TLSTests(IsolatedAsyncioTestCase):
     """The TLS settings of the requests to Google."""
 
+    async def https_google(self) -> tuple[FakeGoogle, trustme.CA]:
+        """Start a fake Google whose certificate comes from an invented CA."""
+        ca = trustme.CA()
+        server_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+        ca.issue_cert("127.0.0.1").configure_cert(server_context)
+        server_context.set_alpn_protocols(["http/1.1"])
+        google = FakeGoogle()
+        await google.start(server_context)
+        self.addAsyncCleanup(google.server.close)
+        return google, ca
+
+    async def unchecked_session(self) -> aiohttp.ClientSession:
+        """Return a session that checks no certificates."""
+        session = aiohttp.ClientSession(connector=aiohttp.TCPConnector(ssl=False))
+        self.addAsyncCleanup(session.close)
+        return session
+
     def test_settings(self) -> None:
         """Google's certificate is checked, and session tickets are allowed."""
         assert _GOOGLE_SSL_CONTEXT.verify_mode == ssl.CERT_REQUIRED
@@ -543,33 +617,48 @@ class TLSTests(IsolatedAsyncioTestCase):
         With a certificate the settings trust, the login offers no ALPN, which
         gpsoauth found Google refuses logins for.
         """
-        ca = trustme.CA()
-        server_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-        ca.issue_cert("127.0.0.1").configure_cert(server_context)
-        server_context.set_alpn_protocols(["http/1.1"])
-        google = FakeGoogle()
-        await google.start(server_context)
-        self.addAsyncCleanup(google.server.close)
+        google, ca = await self.https_google()
         master_token = faker.master_token()
         google.queue("/auth", text(f"Token={master_token}\n"))
+        client = GLocalAuthenticationTokens(
+            oauth_token="oauth2_4/invented", session=await self.unchecked_session()
+        )
+        with patch("gpsoauth.AUTH_URL", google.url("/auth")):
+            # An invented CA isn't trusted, whatever the session checks
+            with pytest.raises(aiohttp.ClientConnectorCertificateError):
+                await client.async_get_master_token()
+            assert not google.received
 
-        async with aiohttp.ClientSession(
-            connector=aiohttp.TCPConnector(ssl=False)
-        ) as session:
-            client = GLocalAuthenticationTokens(
-                oauth_token="oauth2_4/invented", session=session
-            )
-            with patch("gpsoauth.AUTH_URL", google.url("/auth")):
-                # An invented CA isn't trusted, whatever the session checks
-                with pytest.raises(aiohttp.ClientConnectorCertificateError):
-                    await client.async_get_master_token()
-                assert not google.received
-
-                trusting = _google_ssl_context()
-                ca.configure_trust(trusting)
-                with patch("glocaltokens.client._GOOGLE_SSL_CONTEXT", trusting):
-                    assert await client.async_get_master_token() == master_token
+            trusting = _google_ssl_context()
+            ca.configure_trust(trusting)
+            with patch("glocaltokens.client._GOOGLE_SSL_CONTEXT", trusting):
+                assert await client.async_get_master_token() == master_token
         assert google.received[0].alpn is None
+
+    async def test_userinfo_certificate_checked(self) -> None:
+        """The userinfo request, which carries an access token, checks the certificate too."""
+        google, ca = await self.https_google()
+        plain = FakeGoogle()
+        await plain.start()
+        self.addAsyncCleanup(plain.server.close)
+        email = faker.email()
+        plain.queue("/auth", text("Auth=ya29.email\n"), text("Auth=ya29.email\n"))
+        google.queue("/userinfo", user_info(email))
+        client = GLocalAuthenticationTokens(
+            master_token=faker.master_token(), session=await self.unchecked_session()
+        )
+        with (
+            patch("gpsoauth.AUTH_URL", plain.url("/auth")),
+            patch("glocaltokens.client.USERINFO_URL", google.url("/userinfo")),
+        ):
+            with pytest.raises(aiohttp.ClientConnectorCertificateError):
+                await client.async_get_email()
+            assert not google.received
+
+            trusting = _google_ssl_context()
+            ca.configure_trust(trusting)
+            with patch("glocaltokens.client._GOOGLE_SSL_CONTEXT", trusting):
+                assert await client.async_get_email() == email
 
 
 class HomeGraphServer:

@@ -208,9 +208,10 @@ Both `get_google_devices()` and `get_google_devices_json()` accept these argumen
 
 ## Using asyncio
 
-Each method that asks Google has an async counterpart: `async_get_master_token()`, `async_get_access_token()`, `async_get_email()`,
-`async_get_homegraph()`, `async_get_home_graph()` and `async_get_google_devices()`.
+Each method that asks Google has an async counterpart, except `get_google_devices_json()`: `async_get_master_token()`, `async_get_access_token()`,
+`async_get_email()`, `async_get_homegraph()`, `async_get_home_graph()` and `async_get_google_devices()`.
 They return the same results and raise the same glocaltokens errors, and they wait for Google and the network without blocking your event loop.
+For a JSON string of the devices, use `json.dumps([device.as_dict() for device in devices])`.
 
 To use your application's aiohttp session, pass it as `session`. glocaltokens never closes it. Without one, each request uses a new session that is closed afterwards.
 
@@ -239,10 +240,12 @@ The sync and async methods share the cached tokens and home graph. Don't use one
 
 How your session affects the requests to Google:
 
+- The home graph, which has the device tokens, comes over gRPC, not through your session. The other requests go through it.
 - They check Google's certificate even if your session doesn't check certificates.
 - Your session's middlewares apply to them. An exception a middleware raises reaches your code.
 - Your session's `raise_for_status` setting doesn't apply to them: glocaltokens handles each answer itself, as described in [Errors](#errors).
 - Cookies in your session's cookie jar for Google's addresses are sent with them, and cookies Google sets are kept in the jar.
+- Your session's default headers are sent with them, except those glocaltokens sets itself, such as `User-Agent`.
 - They use your session's proxy settings. A session that glocaltokens creates follows the `HTTP_PROXY`, `HTTPS_PROXY` and `NO_PROXY` environment variables,
   but aiohttp only supports proxies with `http://` addresses.
 - Don't pass a session with default `auth` credentials: they would be sent to Google.

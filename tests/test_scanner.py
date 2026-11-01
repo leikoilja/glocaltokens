@@ -13,19 +13,20 @@ from unittest.mock import NonCallableMock, patch
 from faker import Faker
 from faker.providers import internet as internet_provider, python as python_provider
 import pytest
-from zeroconf import ServiceStateChange
+from zeroconf import BadTypeInNameException, ServiceStateChange
 
-from glocaltokens.const import GOOGLE_CAST_GROUP
+from glocaltokens.const import GOOGLE_CAST_GROUP, SERVICE_INFO_TIMEOUT
 from glocaltokens.scanner import (
     LOGGER,
     CastListener,
     NetworkDevice,
+    _async_request,
     async_discover_devices,
     discover_devices,
 )
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+    from collections.abc import Callable, Coroutine
 
     from zeroconf import Zeroconf
 
@@ -356,7 +357,8 @@ class FakeServiceInfo:
     on_cancel says what a cancelled lookup does: "raise" at once, "hold" its
     cleanup until finish_cleanup is set and then raise, or "complete" with its
     answer once finish_cleanup is set, as a lookup that cancellation reaches
-    too late would.
+    too late would. Requests answer False at once while misses remain, and
+    raise error if it is set.
     """
 
     def __init__(self, type_: str, name: str) -> None:
@@ -371,6 +373,10 @@ class FakeServiceInfo:
         self.finish_cleanup = asyncio.Event()
         self.on_cancel = "raise"
         self.task: asyncio.Task[object] | None = None
+        self.requests: list[tuple[object, float]] = []
+        self.misses = 0
+        self.error: Exception | None = None
+        self.cached: NetworkDevice | None = None
 
     def describe(self, device: NetworkDevice) -> None:
         """Answer with the service of this device."""
@@ -388,12 +394,21 @@ class FakeServiceInfo:
         return self.addresses
 
     def load_from_cache(self, _zc: object) -> bool:
-        """Have nothing cached."""
-        return False
+        """Answer with the cached device, if there is one."""
+        if self.cached is None:
+            return False
+        self.describe(self.cached)
+        return True
 
-    async def async_request(self, _zc: object, _timeout: float) -> bool:
+    # The signature of zeroconf's AsyncServiceInfo.async_request()
+    async def async_request(self, zc: object, timeout: float) -> bool:  # noqa: ASYNC109
         """Wait for the test to answer, or handle cancellation as asked."""
         self.task = asyncio.current_task()
+        self.requests.append((zc, timeout))
+        if self.error is not None:
+            raise self.error
+        if len(self.requests) <= self.misses:
+            return False
         try:
             await self.answer.wait()
         except asyncio.CancelledError:
@@ -464,13 +479,23 @@ class AsyncDiscoveryTests(IsolatedAsyncioTestCase):
         self.browsers: list[FakeBrowser] = []
         self.lookups: list[FakeServiceInfo] = []
         self.own_zeroconfs: list[FakeAsyncZeroconf] = []
+        # Answers the lookups of these services have when they start
+        self.known: dict[str, NetworkDevice] = {}
+        # Errors the lookups of these services raise
+        self.failing: dict[str, Exception] = {}
 
         def browser(zc: Zeroconf, type_: str, handlers: list[Handler]) -> FakeBrowser:
             self.browsers.append(FakeBrowser(zc, type_, handlers))
             return self.browsers[-1]
 
         def lookup(type_: str, name: str) -> FakeServiceInfo:
+            if not name.endswith(f".{type_}"):
+                # As zeroconf does for an alias of another type
+                raise BadTypeInNameException(name)
             self.lookups.append(FakeServiceInfo(type_, name))
+            if name in self.known:
+                self.lookups[-1].describe(self.known[name])
+            self.lookups[-1].error = self.failing.get(name)
             return self.lookups[-1]
 
         def own_zeroconf() -> FakeAsyncZeroconf:
@@ -527,13 +552,17 @@ class AsyncDiscoveryTests(IsolatedAsyncioTestCase):
         task = await self.start(max_devices=1, zeroconf_instance=self.caller_zeroconf)
         assert self.browsers[0].zc is self.caller_zeroconf
         assert self.browsers[0].type == CAST_SERVICE
-        await self.change("group", ServiceStateChange.Added)
+        await self.change(f"group.{CAST_SERVICE}", ServiceStateChange.Added)
         self.lookups[0].describe(group)
-        await self.change("speaker", ServiceStateChange.Added)
+        await self.change(f"speaker.{CAST_SERVICE}", ServiceStateChange.Added)
         # A speaker group doesn't count towards max_devices: the speaker ends it
         assert not task.done()
         self.lookups[1].describe(speaker)
         assert await asyncio.wait_for(task, 5) == [speaker]
+        # With 10 seconds left, each lookup gets zeroconf's usual 3000 ms
+        assert self.lookups[1].requests == [
+            (self.caller_zeroconf, SERVICE_INFO_TIMEOUT)
+        ]
         assert self.browsers[0].cancelled.is_set()
         assert not self.caller_zeroconf.mock_calls  # type: ignore[attr-defined]
         assert not self.own_zeroconfs
@@ -541,10 +570,10 @@ class AsyncDiscoveryTests(IsolatedAsyncioTestCase):
     async def test_timeout(self) -> None:
         """Without enough devices, discovery ends at the timeout and closes its own Zeroconf."""
         speaker = network_device()
-        task = await self.start(listen=0.05)
-        await self.change("speaker", ServiceStateChange.Added)
+        task = await self.start(listen=0.3)
+        await self.change(f"speaker.{CAST_SERVICE}", ServiceStateChange.Added)
         self.lookups[0].describe(speaker)
-        await self.change("unanswered", ServiceStateChange.Added)
+        await self.change(f"unanswered.{CAST_SERVICE}", ServiceStateChange.Added)
         assert await asyncio.wait_for(task, 5) == [speaker]
         assert self.lookups[1].task is not None
         assert self.lookups[1].task.cancelled()
@@ -552,11 +581,11 @@ class AsyncDiscoveryTests(IsolatedAsyncioTestCase):
 
     async def test_removed_while_looking_up(self) -> None:
         """A lookup that ends after its service was removed adds nothing."""
-        task = await self.start(listen=0.05)
-        await self.change("speaker", ServiceStateChange.Added)
+        task = await self.start(listen=0.3)
+        await self.change(f"speaker.{CAST_SERVICE}", ServiceStateChange.Added)
         lookup = self.lookups[0]
         lookup.on_cancel = "complete"
-        await self.change("speaker", ServiceStateChange.Removed)
+        await self.change(f"speaker.{CAST_SERVICE}", ServiceStateChange.Removed)
         await lookup.cancelled.wait()
         lookup.describe(network_device())
         lookup.finish_cleanup.set()
@@ -564,20 +593,20 @@ class AsyncDiscoveryTests(IsolatedAsyncioTestCase):
 
     async def test_removed_after_found(self) -> None:
         """A device whose service is removed isn't returned."""
-        task = await self.start(listen=0.05)
-        await self.change("speaker", ServiceStateChange.Added)
+        task = await self.start(listen=0.3)
+        await self.change(f"speaker.{CAST_SERVICE}", ServiceStateChange.Added)
         self.lookups[0].describe(network_device())
         await self.until(lambda: self.lookups[0].task and self.lookups[0].task.done())
-        await self.change("speaker", ServiceStateChange.Removed)
+        await self.change(f"speaker.{CAST_SERVICE}", ServiceStateChange.Removed)
         assert await asyncio.wait_for(task, 5) == []
 
     async def test_later_update_kept(self) -> None:
         """An earlier lookup that ends after a later one doesn't replace its answer."""
         earlier, later = network_device(), network_device()
-        task = await self.start(listen=0.05)
-        await self.change("speaker", ServiceStateChange.Added)
+        task = await self.start(listen=0.3)
+        await self.change(f"speaker.{CAST_SERVICE}", ServiceStateChange.Added)
         self.lookups[0].on_cancel = "complete"
-        await self.change("speaker", ServiceStateChange.Updated)
+        await self.change(f"speaker.{CAST_SERVICE}", ServiceStateChange.Updated)
         self.lookups[1].describe(later)
         await self.until(lambda: self.lookups[1].task and self.lookups[1].task.done())
         self.lookups[0].describe(earlier)
@@ -595,11 +624,11 @@ class AsyncDiscoveryTests(IsolatedAsyncioTestCase):
                 self.browsers.clear()
                 self.lookups.clear()
                 speaker = network_device()
-                task = await self.start(listen=0.05)
-                await self.change("speaker", ServiceStateChange.Added)
+                task = await self.start(listen=0.3)
+                await self.change(f"speaker.{CAST_SERVICE}", ServiceStateChange.Added)
                 retired = self.lookups[0]
                 retired.on_cancel = "hold"
-                await self.change("speaker", retire)
+                await self.change(f"speaker.{CAST_SERVICE}", retire)
                 await retired.cancelled.wait()
                 if retire is ServiceStateChange.Updated:
                     self.lookups[1].describe(speaker)
@@ -627,7 +656,7 @@ class AsyncDiscoveryTests(IsolatedAsyncioTestCase):
     async def test_cancelled(self) -> None:
         """Cancelling discovery stops browsing and the lookups, and closes its own Zeroconf."""
         task = await self.start()
-        await self.change("speaker", ServiceStateChange.Added)
+        await self.change(f"speaker.{CAST_SERVICE}", ServiceStateChange.Added)
         task.cancel()
         with pytest.raises(asyncio.CancelledError):
             await task
@@ -636,12 +665,85 @@ class AsyncDiscoveryTests(IsolatedAsyncioTestCase):
         assert self.lookups[0].task.cancelled()
         assert self.own_zeroconfs[0].closed
 
+    async def test_eager_task_factory(self) -> None:
+        """A lookup answered at once is kept, even if it runs as soon as it starts."""
+        loop = asyncio.get_running_loop()
+        loop.set_task_factory(asyncio.eager_task_factory)
+        self.addCleanup(loop.set_task_factory, None)
+        speaker = network_device()
+        # As zeroconf answers a cached service, without waiting
+        self.known[f"speaker.{CAST_SERVICE}"] = speaker
+        task = await self.start(listen=0.3)
+        self.browsers[0].change(f"speaker.{CAST_SERVICE}", ServiceStateChange.Added)
+        assert await asyncio.wait_for(task, 5) == [speaker]
+
+    async def test_lookup_errors(self) -> None:
+        """Services that can't be looked up are left out, and their lookups end cleanly."""
+        tasks: list[asyncio.Task[object]] = []
+        create_task = asyncio.create_task
+
+        def track(coro: Coroutine[object, object, object]) -> asyncio.Task[object]:
+            tasks.append(create_task(coro))
+            return tasks[-1]
+
+        speaker = network_device()
+        self.failing[f"unreachable.{CAST_SERVICE}"] = OSError("Invented failure")
+        with patch("asyncio.create_task", side_effect=track):
+            task = await self.start(listen=0.3)
+            # zeroconf reports aliases of other types, which can't be looked up
+            self.browsers[0].change(
+                "alias._other._tcp.local.", ServiceStateChange.Added
+            )
+            await self.change(f"unreachable.{CAST_SERVICE}", ServiceStateChange.Added)
+            await self.change(f"speaker.{CAST_SERVICE}", ServiceStateChange.Added)
+            self.lookups[-1].describe(speaker)
+            assert await asyncio.wait_for(task, 5) == [speaker]
+        # No lookup ends with an error that nothing would retrieve
+        lookups = [task for task in tasks if task.get_coro().__name__ == "look_up"]  # type: ignore[union-attr]
+        assert len(lookups) == 3
+        assert all(
+            not task.cancelled() and task.exception() is None for task in lookups
+        )
+
     async def test_subtype_ignored(self) -> None:
         """Cast subtype services aren't looked up."""
-        task = await self.start(listen=0.05)
+        task = await self.start(listen=0.3)
         self.browsers[0].change(
             "Living room._sub._googlecast._tcp.local.", ServiceStateChange.Added
         )
         await asyncio.sleep(0)
         assert not self.lookups
         assert await asyncio.wait_for(task, 5) == []
+
+
+class AsyncRequestTests(IsolatedAsyncioTestCase):
+    """How one service is looked up before the discovery deadline."""
+
+    async def test_retries_while_time_remains(self) -> None:
+        """A service that doesn't answer is asked again, at most four times."""
+        zc = mock.NonCallableMock(name="Zeroconf")
+        service = FakeServiceInfo(CAST_SERVICE, f"speaker.{CAST_SERVICE}")
+        service.misses = 2
+        service.describe(network_device())
+        assert await _async_request(service, zc, time.monotonic() + 60)  # type: ignore[arg-type]
+        assert service.requests == [(zc, SERVICE_INFO_TIMEOUT)] * 3
+
+        service = FakeServiceInfo(CAST_SERVICE, f"speaker.{CAST_SERVICE}")
+        service.misses = 4
+        assert not await _async_request(service, zc, time.monotonic() + 60)  # type: ignore[arg-type]
+        assert len(service.requests) == 4
+
+    async def test_deadline(self) -> None:
+        """Lookups end by the deadline, then only zeroconf's cache answers."""
+        zc = mock.NonCallableMock(name="Zeroconf")
+        service = FakeServiceInfo(CAST_SERVICE, f"speaker.{CAST_SERVICE}")
+        service.describe(network_device())
+        assert await _async_request(service, zc, time.monotonic() + 1)  # type: ignore[arg-type]
+        assert 900 < service.requests[0][1] <= 1000
+
+        cached = network_device()
+        service = FakeServiceInfo(CAST_SERVICE, f"speaker.{CAST_SERVICE}")
+        service.cached = cached
+        assert await _async_request(service, zc, time.monotonic())  # type: ignore[arg-type]
+        assert not service.requests
+        assert service.properties[b"cd"] == cached.unique_id.encode()

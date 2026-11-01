@@ -152,11 +152,14 @@ def _google_ssl_context() -> ssl.SSLContext:
 _GOOGLE_SSL_CONTEXT: Final = _google_ssl_context()
 
 # The request gpsoauth 2.0.0 sends, which it can't send through another HTTP
-# client. Keep the fields and their order in step with gpsoauth.
+# client. Keep the fields and their order in step with gpsoauth. The headers
+# are those requests sends for gpsoauth, in the same order.
 _AUTH_HEADERS: Final = {
-    "Accept-Encoding": "identity",
-    "Content-type": "application/x-www-form-urlencoded",
     "User-Agent": gpsoauth.USER_AGENT,
+    "Accept-Encoding": "identity",
+    "Accept": "*/*",
+    "Connection": "keep-alive",
+    "Content-type": "application/x-www-form-urlencoded",
 }
 _GPSOAUTH_CLIENT_SIG: Final = "38918a453d07199354f8b19af05ec6562ced5788"
 
@@ -282,9 +285,9 @@ class Device:
 class GLocalAuthenticationTokens:
     """Client.
 
-    Each get_* method that asks Google has an async_* counterpart with the same
-    results and errors, except that the async methods raise aiohttp's errors
-    where the others raise requests' errors.
+    Each get_* method that asks Google, except get_google_devices_json(), has
+    an async_* counterpart with the same results and errors, except that the
+    async methods raise aiohttp's errors where the others raise requests' errors.
     """
 
     def __init__(
@@ -308,9 +311,9 @@ class GLocalAuthenticationTokens:
             verbose: Deprecated and ignored, configure logging in your application instead;
             oauth_token: `oauth_token` cookie from a browser sign-in, exchanged for
               a master token instead of logging in with the password;
-            session: The aiohttp session for the requests of the async_* methods,
-              which is never closed here. Without one, each request uses a new
-              session.
+            session: The aiohttp session for the HTTP requests of the async_*
+              methods, which is never closed here. Without one, each request
+              uses a new session. The home graph is fetched with gRPC instead.
 
         Raises ValueError if there are no credentials, or if master_token
         doesn't start with "aas_et/".
