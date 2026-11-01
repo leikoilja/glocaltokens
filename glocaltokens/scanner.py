@@ -323,16 +323,7 @@ async def async_discover_devices(
     finally:
         # A supplied instance belongs to the caller, who may still be using it.
         if own_zeroconf is not None:
-            # Closing finishes even if discovery is cancelled meanwhile
-            closing = asyncio.create_task(own_zeroconf.async_close())
-            try:
-                await _finish({closing})
-            except asyncio.CancelledError:
-                # The cancellation goes on; an error from closing is only logged
-                if not closing.cancelled() and (error := closing.exception()):
-                    LOGGER.debug("Failed to close the own Zeroconf: %s", error)
-                raise
-            closing.result()
+            await _close(own_zeroconf)
 
     return _wanted_devices(devices.values(), models_list)
 
@@ -351,6 +342,22 @@ async def _async_request(
         if await service.async_request(zc, lookup_timeout):
             return True
     return False
+
+
+async def _close(zeroconf: AsyncZeroconf) -> None:
+    """Close an own Zeroconf, finishing even if the caller is cancelled meanwhile.
+
+    A cancellation is raised once it has closed, and an error from closing is
+    then only logged. Otherwise an error from closing is raised.
+    """
+    closing = asyncio.create_task(zeroconf.async_close())
+    try:
+        await _finish({closing})
+    except asyncio.CancelledError:
+        if not closing.cancelled() and (error := closing.exception()):
+            LOGGER.debug("Failed to close the own Zeroconf: %s", error)
+        raise
+    closing.result()
 
 
 async def _finish(tasks: set[asyncio.Task[None]]) -> None:
