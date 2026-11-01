@@ -34,8 +34,8 @@ except ModuleNotFoundError as error:
         raise
     raise ModuleNotFoundError(
         "Discovering devices needs zeroconf: install glocaltokens[discovery], "
-        "or turn discovery off in the device methods with discover=False "
-        "(disable_discovery=True in the sync methods)",
+        "or turn discovery off in the device methods with disable_discovery=True "
+        "(discover=False in the async methods)",
         name="zeroconf",
     ) from error
 
