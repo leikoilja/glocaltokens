@@ -245,9 +245,10 @@ async def async_discover_devices(
 
     The options are those of discover_devices(), by name only, with models for
     models_list and no logging_level. zeroconf_instance must run on the calling
-    event loop, as Home Assistant's shared instance does. Without one, an
-    AsyncZeroconf is created and closed.
+    event loop, as Home Assistant's shared instance does, or ValueError is
+    raised. Without one, an AsyncZeroconf is created and closed.
     """
+    _check_loop(zeroconf_instance)
     LOGGER.debug("Discovering devices...")
     deadline = time.monotonic() + timeout
     devices: dict[str, NetworkDevice] = {}
@@ -329,6 +330,20 @@ async def async_discover_devices(
             await _close(own_zeroconf)
 
     return _wanted_devices(devices.values(), models)
+
+
+def _check_loop(zeroconf_instance: Zeroconf | None) -> None:
+    """Raise ValueError if the caller's Zeroconf runs on another event loop.
+
+    It would call back on its own loop, and start the lookups there, where
+    discovery couldn't wait for them to finish.
+    """
+    if (
+        zeroconf_instance is not None
+        and zeroconf_instance.loop is not asyncio.get_running_loop()
+    ):
+        msg = "zeroconf_instance must run on the calling event loop"
+        raise ValueError(msg)
 
 
 async def _async_request(

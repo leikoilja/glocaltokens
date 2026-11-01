@@ -520,17 +520,21 @@ class AsyncDiscoveryTests(IsolatedAsyncioTestCase):
             patcher = patch(target, side_effect=side_effect)
             patcher.start()
             self.addCleanup(patcher.stop)
-        self.caller_zeroconf: Zeroconf = mock.NonCallableMock(name="Zeroconf")
+        caller_zeroconf = mock.NonCallableMock(name="Zeroconf")
+        caller_zeroconf.loop = asyncio.get_running_loop()
+        self.caller_zeroconf: Zeroconf = caller_zeroconf
 
     async def start(
         self,
         listen: float = 10,
         max_devices: int | None = None,
         zeroconf_instance: Zeroconf | None = None,
+        models: list[str] | None = None,
     ) -> asyncio.Task[list[NetworkDevice]]:
         """Start discovery for listen seconds, and wait until it browses."""
         task = asyncio.create_task(
             async_discover_devices(
+                models=models,
                 timeout=listen,
                 max_devices=max_devices,
                 zeroconf_instance=zeroconf_instance,
@@ -576,6 +580,29 @@ class AsyncDiscoveryTests(IsolatedAsyncioTestCase):
         assert self.browsers[0].cancelled.is_set()
         assert not self.caller_zeroconf.mock_calls  # type: ignore[attr-defined]
         assert not self.own_zeroconfs
+
+    async def test_models(self) -> None:
+        """Only the models asked for are returned, and only they count towards max_devices."""
+        mini = network_device(model="Google Home Mini")
+        home = network_device(model="Google Home")
+        task = await self.start(max_devices=1, models=["Google Home"])
+        await self.change(f"mini.{CAST_SERVICE}", ServiceStateChange.Added)
+        self.lookups[0].describe(mini)
+        await self.until(lambda: self.lookups[0].task and self.lookups[0].task.done())
+        assert not task.done()
+        await self.change(f"home.{CAST_SERVICE}", ServiceStateChange.Added)
+        self.lookups[1].describe(home)
+        assert await asyncio.wait_for(task, 5) == [home]
+
+    async def test_zeroconf_on_another_loop(self) -> None:
+        """A Zeroconf running on another event loop is refused before browsing."""
+        other_loop = asyncio.new_event_loop()
+        self.addCleanup(other_loop.close)
+        zeroconf_instance = mock.NonCallableMock(name="Zeroconf")
+        zeroconf_instance.loop = other_loop
+        with pytest.raises(ValueError, match="calling event loop"):
+            await async_discover_devices(zeroconf_instance=zeroconf_instance)
+        assert not self.browsers
 
     async def test_timeout(self) -> None:
         """Without enough devices, discovery ends at the timeout and closes its own Zeroconf."""

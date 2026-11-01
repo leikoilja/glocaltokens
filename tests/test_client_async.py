@@ -981,6 +981,16 @@ class HomeGraphTests(HomeGraphTestCase):
 class DevicesTests(HomeGraphTestCase):
     """The device list and the home graph it comes from."""
 
+    @override
+    async def asyncSetUp(self) -> None:
+        """Also replace discovery, which finds nothing unless a test says so."""
+        await super().asyncSetUp()
+        discover_patcher = patch(
+            "glocaltokens.client.async_discover_devices", return_value=[]
+        )
+        self.m_discover: AsyncMock = discover_patcher.start()
+        self.addCleanup(discover_patcher.stop)
+
     async def test_full_membership(self) -> None:
         """Devices left out of the list are still in the home graph returned with it."""
         listed = faker.homegraph_device()
@@ -1016,6 +1026,7 @@ class DevicesTests(HomeGraphTestCase):
             discover=False, reload_home_graph=True
         )
         assert self.google.calls == 2
+        self.m_discover.assert_not_awaited()
 
     async def test_home_filter(self) -> None:
         """Only the devices of the home asked for, and the whole home graph."""
@@ -1064,15 +1075,13 @@ class DevicesTests(HomeGraphTestCase):
             unique_id=device.id.agent_info.unique_id,
         )
         zeroconf_instance = NonCallableMock(name="Zeroconf")
-        with patch(
-            "glocaltokens.client.async_discover_devices", return_value=[found]
-        ) as m_discover:
-            devices = await self.client.async_get_google_devices(
-                models=[device.hardware.model],
-                zeroconf_instance=zeroconf_instance,
-                discovery_timeout=1.5,
-            )
-        m_discover.assert_awaited_once_with(
+        self.m_discover.return_value = [found]
+        devices = await self.client.async_get_google_devices(
+            models=[device.hardware.model],
+            zeroconf_instance=zeroconf_instance,
+            discovery_timeout=1.5,
+        )
+        self.m_discover.assert_awaited_once_with(
             models=[device.hardware.model],
             timeout=1.5,
             zeroconf_instance=zeroconf_instance,

@@ -264,7 +264,7 @@ with clearer names for three of them:
 | `zeroconf_instance` | `None`  | `zeroconf_instance`      | A `zeroconf.Zeroconf` that runs on your event loop, such as Home Assistant's shared instance or an `AsyncZeroconf`'s `zeroconf`. |
 | `discovery_timeout` | `2`     | `discovery_timeout`      | How long to search the local network, in seconds.                                                                                |
 | `addresses`         | `None`  | `addresses`              | `{"device name": "IPv4 address"}`, used when discovery is off or finds nothing.                                                  |
-| `reload_home_graph` | `False` | `force_homegraph_reload` | Fetch new tokens from Google even if the cached ones are less than 24 hours old.                                                 |
+| `reload_home_graph` | `False` | `force_homegraph_reload` | Fetch a new home graph, with new device tokens, from Google even if the cached one is less than 24 hours old.                    |
 
 Without a `zeroconf_instance`, glocaltokens creates its own for discovery and closes it afterwards. It leaves yours open.
 
@@ -307,12 +307,13 @@ These errors from the libraries glocaltokens uses also reach your code:
   A request for a token also raises it when Google answers that you should try later (HTTP 5xx or 429).
   `get_master_token()`, `get_access_token()`, `get_email()` and the device methods raise it. Try again later.
 - `OSError` when network discovery cannot start, for example because no network interface is available.
-  Pass `disable_discovery=True` if you do not need IP addresses and ports.
+  Pass `disable_discovery=True` (`discover=False` to the async methods) if you do not need IP addresses and ports.
 - `OSError` when the certificate bundle that `REQUESTS_CA_BUNDLE` or `CURL_CA_BUNDLE` names can't be loaded. Each request for a token or the email address
   raises it; the home graph request, which uses gRPC's own certificates, doesn't. Correct or unset the variable.
 
 A mistake in your call raises `ValueError`: creating the client without credentials or with a `master_token` that doesn't start with `aas_et/`,
 or passing `addresses` that aren't a dictionary of IPv4 addresses to the device methods.
+The async device methods also raise it for a `zeroconf_instance` that runs on another event loop, before discovery starts.
 
 The async methods raise aiohttp's errors instead of `requests` errors:
 
