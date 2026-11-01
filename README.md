@@ -293,8 +293,8 @@ These errors from the libraries glocaltokens uses also reach your code:
   `get_master_token()`, `get_access_token()`, `get_email()` and the device methods raise it. Try again later.
 - `OSError` when network discovery cannot start, for example because no network interface is available.
   Pass `disable_discovery=True` if you do not need IP addresses and ports.
-- `OSError` when the certificate bundle that `REQUESTS_CA_BUNDLE` or `CURL_CA_BUNDLE` names can't be loaded. Each request to Google raises it.
-  Correct or unset the variable.
+- `OSError` when the certificate bundle that `REQUESTS_CA_BUNDLE` or `CURL_CA_BUNDLE` names can't be loaded. Each request for a token or the email address
+  raises it; the home graph request, which uses gRPC's own certificates, doesn't. Correct or unset the variable.
 
 A mistake in your call raises `ValueError`: creating the client without credentials or with a `master_token` that doesn't start with `aas_et/`,
 or passing `addresses` that aren't a dictionary of IPv4 addresses to the device methods.
