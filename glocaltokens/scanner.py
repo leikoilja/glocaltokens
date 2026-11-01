@@ -323,7 +323,10 @@ async def async_discover_devices(
     finally:
         # A supplied instance belongs to the caller, who may still be using it.
         if own_zeroconf is not None:
-            await own_zeroconf.async_close()
+            # Closing finishes even if discovery is cancelled meanwhile
+            closing = asyncio.create_task(own_zeroconf.async_close())
+            await _finish({closing})
+            closing.result()
 
     return _wanted_devices(devices.values(), models_list)
 

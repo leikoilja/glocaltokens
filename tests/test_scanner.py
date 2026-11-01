@@ -453,9 +453,19 @@ class FakeAsyncZeroconf:
         """Create an instance that isn't closed."""
         self.zeroconf = mock.NonCallableMock(name="OwnZeroconf")
         self.closed = False
+        self.closing = asyncio.Event()
+        # Set to hold closing until release_close is set
+        self.hold_close = False
+        self.release_close = asyncio.Event()
+        self.close_error: Exception | None = None
 
     async def async_close(self) -> None:
-        """Close the instance."""
+        """Close the instance, once released if it is held."""
+        self.closing.set()
+        if self.hold_close:
+            await self.release_close.wait()
+        if self.close_error is not None:
+            raise self.close_error
         self.closed = True
 
 
@@ -694,6 +704,33 @@ class AsyncDiscoveryTests(IsolatedAsyncioTestCase):
                     await asyncio.wait_for(task, 5)
                 assert held.task.cancelled()
                 assert self.own_zeroconfs[-1].closed
+
+    async def test_close_outlasts_repeated_cancellation(self) -> None:
+        """Cancelling discovery while it closes its own Zeroconf doesn't stop the closing.
+
+        The cancellation is raised once the Zeroconf is closed.
+        """
+        task = await self.start()
+        own = self.own_zeroconfs[0]
+        own.hold_close = True
+        task.cancel()
+        await own.closing.wait()
+        task.cancel()
+        await asyncio.sleep(0.01)
+        assert not task.done()
+        assert not own.closed
+
+        own.release_close.set()
+        with pytest.raises(asyncio.CancelledError):
+            await asyncio.wait_for(task, 5)
+        assert own.closed
+
+    async def test_close_error_raised(self) -> None:
+        """An error closing the own Zeroconf reaches the caller, as before."""
+        task = await self.start(listen=0.3)
+        self.own_zeroconfs[0].close_error = OSError("Invented failure")
+        with pytest.raises(OSError, match="Invented failure"):
+            await asyncio.wait_for(task, 5)
 
     async def test_cancelled(self) -> None:
         """Cancelling discovery stops browsing and the lookups, and closes its own Zeroconf."""
