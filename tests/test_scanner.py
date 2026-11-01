@@ -726,11 +726,26 @@ class AsyncDiscoveryTests(IsolatedAsyncioTestCase):
         assert own.closed
 
     async def test_close_error_raised(self) -> None:
-        """An error closing the own Zeroconf reaches the caller, as before."""
+        """An error closing the own Zeroconf reaches the caller, unless it was cancelled."""
         task = await self.start(listen=0.3)
         self.own_zeroconfs[0].close_error = OSError("Invented failure")
         with pytest.raises(OSError, match="Invented failure"):
             await asyncio.wait_for(task, 5)
+
+        # Cancelled while closing: the cancellation goes on, and the error is logged
+        self.browsers.clear()
+        task = await self.start()
+        own = self.own_zeroconfs[-1]
+        own.hold_close = True
+        own.close_error = OSError("Invented failure")
+        task.cancel()
+        await own.closing.wait()
+        task.cancel()
+        with self.assertLogs(LOGGER, logging.DEBUG) as logs:
+            own.release_close.set()
+            with pytest.raises(asyncio.CancelledError):
+                await asyncio.wait_for(task, 5)
+        assert any("Invented failure" in message for message in logs.output)
 
     async def test_cancelled(self) -> None:
         """Cancelling discovery stops browsing and the lookups, and closes its own Zeroconf."""

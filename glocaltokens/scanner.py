@@ -325,7 +325,13 @@ async def async_discover_devices(
         if own_zeroconf is not None:
             # Closing finishes even if discovery is cancelled meanwhile
             closing = asyncio.create_task(own_zeroconf.async_close())
-            await _finish({closing})
+            try:
+                await _finish({closing})
+            except asyncio.CancelledError:
+                # The cancellation goes on; an error from closing is only logged
+                if not closing.cancelled() and (error := closing.exception()):
+                    LOGGER.debug("Failed to close the own Zeroconf: %s", error)
+                raise
             closing.result()
 
     return _wanted_devices(devices.values(), models_list)
