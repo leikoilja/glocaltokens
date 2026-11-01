@@ -204,14 +204,15 @@ Both `get_google_devices()` and `get_google_devices_json()` accept these argumen
 | `home_id`                | `None`  | Only return the devices of the home with this ID. `None` returns the devices of every home.  |
 
 `get_google_devices_json()` also accepts `indent` for the JSON output (default `2`).
-`async_get_google_devices()` and `async_get_google_devices_and_home_graph()` accept the same arguments as `get_google_devices()` (see [Using asyncio](#using-asyncio)).
+`async_get_google_devices()` and `async_get_google_devices_and_home_graph()` take these options with clearer names (see [Async device options](#async-device-options)).
 
 ## Using asyncio
 
-Each method that asks Google has an async counterpart, except `get_google_devices_json()`: `async_get_master_token()`, `async_get_access_token()`,
-`async_get_email()`, `async_get_homegraph()`, `async_get_home_graph()` and `async_get_google_devices()`.
+The methods that ask Google have async counterparts: `async_get_master_token()`, `async_get_access_token()`, `async_get_email()`,
+`async_get_home_graph()` and `async_get_google_devices()`.
 They return the same results and raise the same glocaltokens errors, and they wait for Google and the network without blocking your event loop.
-For a JSON string of the devices, use `json.dumps([device.as_dict() for device in devices])`.
+Two methods have no async counterpart. Instead of `get_homegraph()`, which merges every home into one, use `async_get_home_graph()`.
+Instead of `get_google_devices_json()`, use `json.dumps([device.as_dict() for device in devices])`.
 
 To use your application's aiohttp session, pass it as `session`. glocaltokens never closes it. Without one, each request uses a new session that is closed afterwards.
 
@@ -233,9 +234,6 @@ async def main() -> None:
 including those the list leaves out, such as devices without a local authentication token.
 Use it rather than reading the home graph separately: another call can replace the cached home graph while discovery runs.
 
-For discovery, pass a `zeroconf_instance` that runs on your event loop, such as Home Assistant's shared instance or the `zeroconf` of an `AsyncZeroconf`.
-Without one, glocaltokens creates its own and closes it afterwards.
-
 The sync and async methods share the cached tokens and home graph. Don't use one client from several threads at once.
 
 How your session affects the requests to Google:
@@ -252,6 +250,23 @@ How your session affects the requests to Google:
 - They use your session's proxy settings. A session that glocaltokens creates follows the `HTTP_PROXY`, `HTTPS_PROXY` and `NO_PROXY` environment variables,
   but aiohttp ignores proxy addresses there that start with `https://`.
 - Don't pass a session with default `auth` credentials: they would be sent to Google.
+
+### Async device options
+
+`async_get_google_devices()` and `async_get_google_devices_and_home_graph()` take the [options](#options) of `get_google_devices()` by name only,
+with clearer names for three of them:
+
+| Option              | Default | Sync option              | Description                                                                                                                      |
+| ------------------- | ------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| `models`            | `None`  | `models_list`            | Only return these models. `None` returns all devices with valid local authentication tokens.                                     |
+| `home_id`           | `None`  | `home_id`                | Only return the devices of the home with this ID. `None` returns the devices of every home.                                      |
+| `discover`          | `True`  | `disable_discovery`      | Search the local network for device IP addresses and ports. `discover=False` is `disable_discovery=True`.                        |
+| `zeroconf_instance` | `None`  | `zeroconf_instance`      | A `zeroconf.Zeroconf` that runs on your event loop, such as Home Assistant's shared instance or an `AsyncZeroconf`'s `zeroconf`. |
+| `discovery_timeout` | `2`     | `discovery_timeout`      | How long to search the local network, in seconds.                                                                                |
+| `addresses`         | `None`  | `addresses`              | `{"device name": "IPv4 address"}`, used when discovery is off or finds nothing.                                                  |
+| `reload_home_graph` | `False` | `force_homegraph_reload` | Fetch new tokens from Google even if the cached ones are less than 24 hours old.                                                 |
+
+Without a `zeroconf_instance`, glocaltokens creates its own for discovery and closes it afterwards. It leaves yours open.
 
 ## Troubleshooting
 

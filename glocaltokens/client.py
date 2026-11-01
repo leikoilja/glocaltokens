@@ -315,9 +315,13 @@ class Device:
 class GLocalAuthenticationTokens:
     """Client.
 
-    Each get_* method that asks Google, except get_google_devices_json(), has
-    an async_* counterpart with the same results and errors, except that the
-    async methods raise aiohttp's errors where the others raise requests' errors.
+    Each get_* method that asks Google has an async_* counterpart with the same
+    results and errors, except that the async methods raise aiohttp's errors
+    where the others raise requests' errors. Two have none: get_homegraph(),
+    whose single merged home is a legacy form of get_home_graph(), and
+    get_google_devices_json(), which only formats get_google_devices(). The
+    async methods take their options by name only, and the device methods name
+    them more clearly.
     """
 
     def __init__(
@@ -718,14 +722,6 @@ class GLocalAuthenticationTokens:
         """
         return self._get_home_graphs(auth_attempts)[1]
 
-    async def async_get_homegraph(self, auth_attempts: int = 3) -> GetHomeGraphResponse:
-        """Return the entire Google Home Foyer V2 service, as get_homegraph().
-
-        Raises the errors of get_homegraph(), with aiohttp's errors as in
-        async_get_master_token().
-        """
-        return (await self._async_get_home_graphs(auth_attempts))[1]
-
     def get_home_graph(self, auth_attempts: int = 3) -> HomeGraph:
         """Return the home graph with each home of the account separately.
 
@@ -740,7 +736,7 @@ class GLocalAuthenticationTokens:
         """
         return self._get_home_graphs(auth_attempts)[0]
 
-    async def async_get_home_graph(self, auth_attempts: int = 3) -> HomeGraph:
+    async def async_get_home_graph(self, *, auth_attempts: int = 3) -> HomeGraph:
         """Return the home graph with each home separately, as get_home_graph().
 
         The sync and async methods share the stored home graph.
@@ -897,15 +893,32 @@ class GLocalAuthenticationTokens:
 
     async def async_get_google_devices_and_home_graph(
         self,
-        models_list: list[str] | None = None,
-        disable_discovery: bool = False,
-        addresses: dict[str, str] | None = None,
-        zeroconf_instance: Zeroconf | None = None,
-        force_homegraph_reload: bool = False,
-        discovery_timeout: float = DISCOVERY_TIMEOUT,
+        *,
+        models: list[str] | None = None,
         home_id: str | None = None,
+        discover: bool = True,
+        zeroconf_instance: Zeroconf | None = None,
+        discovery_timeout: float = DISCOVERY_TIMEOUT,
+        addresses: dict[str, str] | None = None,
+        reload_home_graph: bool = False,
     ) -> tuple[list[Device], HomeGraph]:
         """Return the devices of get_google_devices(), and the home graph they come from.
+
+        The options are those of get_google_devices(), by name only and named
+        more clearly:
+        models: Only return these models (models_list). None returns every model.
+        home_id: Only return the devices of the home with this ID, the home_id
+          of a Device or the id of a home in the home graph.
+        discover: Whether to search the local network for the devices' IP
+          addresses and ports (the opposite of disable_discovery).
+        zeroconf_instance: The Zeroconf to search with, which must run on the
+          calling event loop, as Home Assistant's shared instance does. Without
+          one, glocaltokens creates its own and closes it afterwards.
+        discovery_timeout: How long to search the local network, in seconds.
+        addresses: {"device name": "IPv4 address"}, used when discovery is off
+          or finds no devices.
+        reload_home_graph: Fetch a new home graph even if the stored one is less
+          than a day old (force_homegraph_reload).
 
         The home graph is the response that the devices were read from, with
         every device of every home, including those that the list leaves out,
@@ -913,19 +926,13 @@ class GLocalAuthenticationTokens:
         response even if another call fetches or drops the stored home graph
         meanwhile.
 
-        The arguments are those of get_google_devices(). zeroconf_instance must
-        run on the calling event loop, as Home Assistant's shared instance does.
-
         Raises the errors of get_google_devices(), with aiohttp's errors as in
         async_get_master_token().
         """
         _check_addresses(addresses)
+        models = models or []
 
-        # Set models_list to empty list if None
-        LOGGER.debug("Initializing models list if empty...")
-        models_list = models_list or []
-
-        if force_homegraph_reload:
+        if reload_home_graph:
             LOGGER.debug("Forcing homegraph reload")
             self.invalidate_homegraph()
 
@@ -933,42 +940,43 @@ class GLocalAuthenticationTokens:
         home_graph = await self.async_get_home_graph()
 
         network_devices: list[NetworkDevice] = []
-        if disable_discovery is False:
+        if discover:
             LOGGER.debug("Automatically discovering network devices...")
             network_devices = await async_discover_devices(
-                models_list,
+                models=models,
                 timeout=discovery_timeout,
                 zeroconf_instance=zeroconf_instance,
             )
         devices = _devices_from_home_graph(
-            home_graph, models_list, home_id, network_devices, addresses or {}
+            home_graph, models, home_id, network_devices, addresses or {}
         )
         return devices, home_graph
 
     async def async_get_google_devices(
         self,
-        models_list: list[str] | None = None,
-        disable_discovery: bool = False,
-        addresses: dict[str, str] | None = None,
-        zeroconf_instance: Zeroconf | None = None,
-        force_homegraph_reload: bool = False,
-        discovery_timeout: float = DISCOVERY_TIMEOUT,
+        *,
+        models: list[str] | None = None,
         home_id: str | None = None,
+        discover: bool = True,
+        zeroconf_instance: Zeroconf | None = None,
+        discovery_timeout: float = DISCOVERY_TIMEOUT,
+        addresses: dict[str, str] | None = None,
+        reload_home_graph: bool = False,
     ) -> list[Device]:
         """Return a list of Google devices, as get_google_devices().
 
-        To also get the home graph the devices come from, use
-        async_get_google_devices_and_home_graph(), which takes the same
-        arguments and raises the same errors.
+        It takes the options of async_get_google_devices_and_home_graph(), and
+        raises the same errors. Use that method to also get the home graph the
+        devices come from.
         """
         devices, _ = await self.async_get_google_devices_and_home_graph(
-            models_list=models_list,
-            disable_discovery=disable_discovery,
-            addresses=addresses,
-            zeroconf_instance=zeroconf_instance,
-            force_homegraph_reload=force_homegraph_reload,
-            discovery_timeout=discovery_timeout,
+            models=models,
             home_id=home_id,
+            discover=discover,
+            zeroconf_instance=zeroconf_instance,
+            discovery_timeout=discovery_timeout,
+            addresses=addresses,
+            reload_home_graph=reload_home_graph,
         )
         return devices
 

@@ -900,8 +900,9 @@ class HomeGraphTests(HomeGraphTestCase):
         assert self.m_secure_channel.call_args.args[0] == GOOGLE_HOME_FOYER_API
         m_token_credentials.assert_called_once_with(self.access_tokens[0])
 
-        # The merged form has the last home's name with every home's devices
-        homegraph = await self.client.async_get_homegraph()
+        # The sync methods share it, including the merged form, which has the
+        # last home's name with every home's devices
+        homegraph = self.client.get_homegraph()
         assert homegraph.home.home_name == "Office"
         assert len(homegraph.home.devices) == 2
         assert self.client.get_home_graph() is self.client.home_graph
@@ -1000,7 +1001,7 @@ class DevicesTests(HomeGraphTestCase):
         )
         self.google.queue(graph)
         devices, home_graph = await self.client.async_get_google_devices_and_home_graph(
-            disable_discovery=True
+            discover=False
         )
         assert [device.device_id for device in devices] == [listed.id.device_id]
         assert (devices[0].home_id, devices[0].home_name) == ("home-1", "Home")
@@ -1008,11 +1009,11 @@ class DevicesTests(HomeGraphTestCase):
         assert home_graph is self.client.home_graph
 
         # The stored home graph is used for a day, unless a new one is asked for
-        assert await self.client.async_get_google_devices(disable_discovery=True)
+        assert await self.client.async_get_google_devices(discover=False)
         assert self.google.calls == 1
         self.google.queue(HomeGraph())
         assert not await self.client.async_get_google_devices(
-            disable_discovery=True, force_homegraph_reload=True
+            discover=False, reload_home_graph=True
         )
         assert self.google.calls == 2
 
@@ -1030,12 +1031,12 @@ class DevicesTests(HomeGraphTestCase):
         )
         self.google.queue(graph)
         devices, home_graph = await self.client.async_get_google_devices_and_home_graph(
-            disable_discovery=True, home_id="home-2"
+            discover=False, home_id="home-2"
         )
         assert [device.device_id for device in devices] == [office_device.id.device_id]
         assert home_graph == graph
         devices = await self.client.async_get_google_devices(
-            disable_discovery=True, home_id="home-2"
+            discover=False, home_id="home-2"
         )
         assert [device.device_id for device in devices] == [office_device.id.device_id]
 
@@ -1044,7 +1045,7 @@ class DevicesTests(HomeGraphTestCase):
         device = faker.homegraph_device()
         self.google.queue(HomeGraph(homes=[HomeGraph.Home(devices=[device])]))
         devices, _ = await self.client.async_get_google_devices_and_home_graph(
-            disable_discovery=True, addresses={device.display_name: "192.0.2.20"}
+            discover=False, addresses={device.display_name: "192.0.2.20"}
         )
         assert (devices[0].ip_address, devices[0].port) == (
             "192.0.2.20",
@@ -1067,12 +1068,14 @@ class DevicesTests(HomeGraphTestCase):
             "glocaltokens.client.async_discover_devices", return_value=[found]
         ) as m_discover:
             devices = await self.client.async_get_google_devices(
-                models_list=[device.hardware.model],
+                models=[device.hardware.model],
                 zeroconf_instance=zeroconf_instance,
                 discovery_timeout=1.5,
             )
         m_discover.assert_awaited_once_with(
-            [device.hardware.model], timeout=1.5, zeroconf_instance=zeroconf_instance
+            models=[device.hardware.model],
+            timeout=1.5,
+            zeroconf_instance=zeroconf_instance,
         )
         assert (devices[0].ip_address, devices[0].port) == ("192.0.2.10", 8009)
 
@@ -1089,7 +1092,7 @@ class DevicesTests(HomeGraphTestCase):
         async def replace() -> None:
             self.google.queue(graph_b)
             await self.client.async_get_google_devices_and_home_graph(
-                disable_discovery=True, force_homegraph_reload=True
+                discover=False, reload_home_graph=True
             )
 
         async def drop() -> None:

@@ -234,16 +234,19 @@ def discover_devices(
 
 
 async def async_discover_devices(
-    models_list: list[str] | None = None,
+    *,
+    models: list[str] | None = None,
     max_devices: int | None = None,
     # How long to listen, as in discover_devices(), not a limit on the call
     timeout: float = DISCOVERY_TIMEOUT,  # noqa: ASYNC109
     zeroconf_instance: Zeroconf | None = None,
 ) -> list[NetworkDevice]:
-    """Discover devices without blocking the event loop.
+    """Discover devices without blocking the event loop, as discover_devices().
 
-    zeroconf_instance must run on the calling event loop, as Home Assistant's
-    shared instance does. Without one, an AsyncZeroconf is created and closed.
+    The options are those of discover_devices(), by name only, with models for
+    models_list and no logging_level. zeroconf_instance must run on the calling
+    event loop, as Home Assistant's shared instance does. Without one, an
+    AsyncZeroconf is created and closed.
     """
     LOGGER.debug("Discovering devices...")
     deadline = time.monotonic() + timeout
@@ -274,7 +277,7 @@ async def async_discover_devices(
             LOGGER.debug("Discovery failed to add %s, %s", type_, name)
             return
         devices[name] = device
-        if _found_enough(devices.values(), models_list, max_devices):
+        if _found_enough(devices.values(), models, max_devices):
             discovery_complete.set()
 
     def on_change(
@@ -325,7 +328,7 @@ async def async_discover_devices(
         if own_zeroconf is not None:
             await _close(own_zeroconf)
 
-    return _wanted_devices(devices.values(), models_list)
+    return _wanted_devices(devices.values(), models)
 
 
 async def _async_request(
