@@ -1075,6 +1075,7 @@ class DevicesTests(HomeGraphTestCase):
             unique_id=device.id.agent_info.unique_id,
         )
         zeroconf_instance = NonCallableMock(name="Zeroconf")
+        zeroconf_instance.loop = asyncio.get_running_loop()
         self.m_discover.return_value = [found]
         devices = await self.client.async_get_google_devices(
             models=[device.hardware.model],
@@ -1093,6 +1094,19 @@ class DevicesTests(HomeGraphTestCase):
         with pytest.raises(ValueError, match="Invalid dictionary structure"):
             await self.client.async_get_google_devices(addresses={"Kitchen": "kitchen"})
         assert self.google.calls == 0
+
+    async def test_zeroconf_on_another_loop(self) -> None:
+        """A Zeroconf running on another event loop is refused before any request."""
+        other_loop = asyncio.new_event_loop()
+        self.addCleanup(other_loop.close)
+        zeroconf_instance = NonCallableMock(name="Zeroconf")
+        zeroconf_instance.loop = other_loop
+        with pytest.raises(ValueError, match="calling event loop"):
+            await self.client.async_get_google_devices(
+                zeroconf_instance=zeroconf_instance
+            )
+        assert self.google.calls == 0
+        self.m_access_token.assert_not_awaited()
 
     async def test_home_graph_replaced_during_discovery(self) -> None:
         """The home graph returned is the list's, whatever replaces the stored one meanwhile."""

@@ -313,7 +313,7 @@ These errors from the libraries glocaltokens uses also reach your code:
 
 A mistake in your call raises `ValueError`: creating the client without credentials or with a `master_token` that doesn't start with `aas_et/`,
 or passing `addresses` that aren't a dictionary of IPv4 addresses to the device methods.
-The async device methods also raise it for a `zeroconf_instance` that runs on another event loop, before discovery starts.
+The async device methods also raise it for a `zeroconf_instance` that runs on another event loop, before any request.
 
 The async methods raise aiohttp's errors instead of `requests` errors:
 

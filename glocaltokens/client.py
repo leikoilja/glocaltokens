@@ -43,7 +43,12 @@ from .const import (
     USERINFO_URL,
 )
 from .exceptions import AuthenticationError, HomegraphError
-from .scanner import NetworkDevice, async_discover_devices, discover_devices
+from .scanner import (
+    NetworkDevice,
+    _check_loop,
+    async_discover_devices,
+    discover_devices,
+)
 from .utils import token as token_utils
 from .utils.logs import censor
 from .utils.network import is_valid_ipv4_address
@@ -912,8 +917,9 @@ class GLocalAuthenticationTokens:
         discover: Whether to search the local network for the devices' IP
           addresses and ports (the opposite of disable_discovery).
         zeroconf_instance: The Zeroconf to search with, which must run on the
-          calling event loop, as Home Assistant's shared instance does. Without
-          one, glocaltokens creates its own and closes it afterwards.
+          calling event loop, as Home Assistant's shared instance does, or
+          ValueError is raised. Without one, glocaltokens creates its own and
+          closes it afterwards.
         discovery_timeout: How long to search the local network, in seconds.
         addresses: {"device name": "IPv4 address"}, used when discovery is off
           or finds no devices.
@@ -929,7 +935,10 @@ class GLocalAuthenticationTokens:
         Raises the errors of get_google_devices(), with aiohttp's errors as in
         async_get_master_token().
         """
+        # Refuse the caller's mistakes before any request
         _check_addresses(addresses)
+        if discover:
+            _check_loop(zeroconf_instance)
         models = models or []
 
         if reload_home_graph:
