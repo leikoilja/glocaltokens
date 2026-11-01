@@ -24,17 +24,23 @@ Store the master token, not your password: with the master token alone, glocalto
 
 glocaltokens requires Python 3.12 or newer.
 
+To fill in the IP address and port of each device, glocaltokens looks for your devices on the local network.
+That needs the `discovery` extra, which installs zeroconf.
+
 Using uv:
 
 ```console
-$ uv add glocaltokens
+$ uv add "glocaltokens[discovery]"
 ```
 
 Using pip:
 
 ```console
-$ pip install glocaltokens
+$ pip install "glocaltokens[discovery]"
 ```
+
+You can install `glocaltokens` without the extra if you turn discovery off, for example because you only need the tokens or give the device addresses yourself
+(see [Finding devices on your network](#finding-devices-on-your-network)).
 
 ## Quickstart
 
@@ -189,6 +195,10 @@ google_devices = client.get_google_devices_json(
 
 Only IPv4 addresses are supported. If any entry is not a valid IPv4 address, the device methods raise `ValueError`.
 
+Discovery needs the `discovery` extra (see [Installation](#installation)). Without it, the device methods raise `ModuleNotFoundError` unless you turn discovery off as above,
+and importing `glocaltokens.scanner`, which has the discovery code, raises it too.
+`NetworkDevice`, the type of `Device.network_device`, can be imported from `glocaltokens.types` without the extra.
+
 ### Options
 
 Both `get_google_devices()` and `get_google_devices_json()` accept these arguments:
@@ -314,6 +324,9 @@ These errors from the libraries glocaltokens uses also reach your code:
 A mistake in your call raises `ValueError`: creating the client without credentials or with a `master_token` that doesn't start with `aas_et/`,
 or passing `addresses` that aren't a dictionary of IPv4 addresses to the device methods.
 The async device methods also raise it for a `zeroconf_instance` that runs on another event loop, before any request.
+
+Without the `discovery` extra, the device methods raise `ModuleNotFoundError` before any request if discovery is on.
+Install `glocaltokens[discovery]`, or pass `disable_discovery=True` (`discover=False` to the async methods).
 
 The async methods raise aiohttp's errors instead of `requests` errors:
 

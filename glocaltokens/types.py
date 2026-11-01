@@ -2,7 +2,20 @@
 
 from __future__ import annotations
 
-from typing import TypedDict
+from typing import NamedTuple, TypedDict
+
+
+class NetworkDevice(NamedTuple):
+    """Discovered Google device representation.
+
+    It needs nothing from zeroconf, so it can be imported without the discovery extra.
+    """
+
+    name: str
+    ip_address: str
+    port: int
+    model: str
+    unique_id: str
 
 
 class NetworkDeviceDict(TypedDict):

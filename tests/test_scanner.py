@@ -3,7 +3,10 @@
 from __future__ import annotations
 
 import asyncio
+import importlib
 import logging
+import pickle
+import sys
 from threading import Event
 import time
 from typing import TYPE_CHECKING, Protocol, override
@@ -15,6 +18,7 @@ from faker.providers import internet as internet_provider, python as python_prov
 import pytest
 from zeroconf import BadTypeInNameException, ServiceStateChange
 
+from glocaltokens import types as glocaltokens_types
 from glocaltokens.const import GOOGLE_CAST_GROUP, SERVICE_INFO_TIMEOUT
 from glocaltokens.scanner import (
     LOGGER,
@@ -24,6 +28,7 @@ from glocaltokens.scanner import (
     async_discover_devices,
     discover_devices,
 )
+from tests import without_zeroconf
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Coroutine
@@ -56,6 +61,27 @@ class NetworkDeviceTests(TestCase):
         assert (
             f"NetworkDevice(name='{name}', ip_address='{ip_address}', "
             f"port={port}, model='{model}', unique_id='{unique_id}')" == str(device)
+        )
+
+    def test_unpickle_from_scanner(self) -> None:
+        """A device pickled when NetworkDevice was defined in scanner still loads."""
+        # pickle.dumps(NetworkDevice("Kitchen speaker", "192.0.2.10", 8009,
+        # "Google Home", "invented-unique-id"), protocol=4) with glocaltokens
+        # 1.2.0, which names the class glocaltokens.scanner.NetworkDevice
+        data = (
+            b"\x80\x04\x95t\x00\x00\x00\x00\x00\x00\x00\x8c\x14glocaltokens.scanner"
+            b"\x94\x8c\rNetworkDevice\x94\x93\x94(\x8c\x0fKitchen speaker\x94\x8c\n"
+            b"192.0.2.10\x94MI\x1f\x8c\x0bGoogle Home\x94\x8c\x12invented-unique-id"
+            b"\x94t\x94\x81\x94."
+        )
+        device = pickle.loads(data)  # noqa: S301
+        assert isinstance(device, glocaltokens_types.NetworkDevice)
+        assert device == (
+            "Kitchen speaker",
+            "192.0.2.10",
+            8009,
+            "Google Home",
+            "invented-unique-id",
         )
 
     @patch("glocaltokens.scanner.LOGGER.error")
@@ -206,6 +232,27 @@ class NetworkDeviceTests(TestCase):
 
         # No devices should be added
         assert listener.count == 0
+
+
+class WithoutZeroconfTests(TestCase):
+    """Importing the scanner without zeroconf."""
+
+    def test_import(self) -> None:
+        """Without the discovery extra, the error says how to install it."""
+        with without_zeroconf(), pytest.raises(ModuleNotFoundError) as exc_info:
+            importlib.import_module("glocaltokens.scanner")
+        assert "glocaltokens[discovery]" in str(exc_info.value)
+        assert exc_info.value.name == "zeroconf"
+        assert isinstance(exc_info.value.__cause__, ModuleNotFoundError)
+
+    def test_import_inside_zeroconf(self) -> None:
+        """A module missing inside zeroconf isn't blamed on the extra."""
+        with patch.dict(sys.modules, {"zeroconf.asyncio": None}):
+            del sys.modules["glocaltokens.scanner"]
+            with pytest.raises(ModuleNotFoundError) as exc_info:
+                importlib.import_module("glocaltokens.scanner")
+        assert exc_info.value.name == "zeroconf.asyncio"
+        assert "glocaltokens[discovery]" not in str(exc_info.value)
 
 
 class DiscoverDevicesTests(TestCase):
