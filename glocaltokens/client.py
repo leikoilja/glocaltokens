@@ -1,19 +1,24 @@
 """Client."""
 
+# pylint: disable=too-many-lines
+
 from __future__ import annotations
 
-from contextlib import contextmanager
+from contextlib import asynccontextmanager, contextmanager
 from contextvars import ContextVar
 from datetime import UTC, datetime
 from http import HTTPStatus
 import json
 import logging
 import random
-from typing import TYPE_CHECKING, override
+import ssl
+from typing import TYPE_CHECKING, Final, override
+from urllib.parse import urlencode
 import warnings
 
+import aiohttp
 from ghome_foyer_api.api_pb2 import GetHomeGraphRequest, GetHomeGraphResponse, HomeGraph  # pylint: disable=no-name-in-module
-from ghome_foyer_api.home_graph import get_home_graph_bytes
+from ghome_foyer_api.home_graph import GET_HOME_GRAPH, get_home_graph_bytes
 from google.protobuf.message import DecodeError
 import gpsoauth
 from gpsoauth import exchange_token, perform_master_login, perform_oauth
@@ -36,13 +41,13 @@ from .const import (
     USERINFO_URL,
 )
 from .exceptions import AuthenticationError, HomegraphError
-from .scanner import NetworkDevice, discover_devices
+from .scanner import NetworkDevice, async_discover_devices, discover_devices
 from .utils import token as token_utils
 from .utils.logs import censor
 from .utils.network import is_valid_ipv4_address
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator, Mapping
+    from collections.abc import AsyncIterator, Iterator, Mapping
 
     from requests import PreparedRequest, Response
     from zeroconf import Zeroconf
@@ -50,6 +55,22 @@ if TYPE_CHECKING:
     from .types import DeviceDict
 
 LOGGER = logging.getLogger(__name__)
+
+_NO_CREDENTIALS: Final = (
+    "No master token, and no username and password or oauth_token to get one with"
+)
+_PASSWORD_TOO_LONG: Final = (
+    "Could not log in with the password to get a master "
+    "token, the username and password may be too long together"
+)
+
+
+def _is_busy(status: int) -> bool:
+    """Return whether an HTTP status means "try later" rather than an answer."""
+    return (
+        status >= HTTPStatus.INTERNAL_SERVER_ERROR
+        or status == HTTPStatus.TOO_MANY_REQUESTS
+    )
 
 
 # Timeout for gpsoauth requests made by glocaltokens; see _TimeoutAuthHTTPAdapter.
@@ -90,10 +111,7 @@ class _TimeoutAuthHTTPAdapter(gpsoauth.AuthHTTPAdapter):
             cert=cert,
             proxies=proxies,
         )
-        if own_timeout is not None and (
-            response.status_code >= HTTPStatus.INTERNAL_SERVER_ERROR
-            or response.status_code == HTTPStatus.TOO_MANY_REQUESTS
-        ):
+        if own_timeout is not None and _is_busy(response.status_code):
             # Read Google's answer, so the error keeps it, then close the
             # connection, as the error may be kept for long; gpsoauth mounts a
             # new adapter for each request.
@@ -116,6 +134,101 @@ def _request_timeout() -> Iterator[None]:
         yield
     finally:
         _gpsoauth_timeout.reset(token)
+
+
+def _google_ssl_context() -> ssl.SSLContext:
+    """Return the TLS settings of the async methods' requests to Google.
+
+    They check Google's certificate even if the caller's session doesn't check
+    certificates. Like gpsoauth, they offer no ALPN and allow TLS session
+    tickets, as gpsoauth found that Google refuses its logins otherwise.
+    """
+    context = ssl.create_default_context()
+    context.options &= ~ssl.OP_NO_TICKET  # pylint: disable=no-member
+    return context
+
+
+# Created on import, as loading the certificates blocks
+_GOOGLE_SSL_CONTEXT: Final = _google_ssl_context()
+
+# The request gpsoauth 2.0.0 sends, which it can't send through another HTTP
+# client. Keep the fields and their order in step with gpsoauth.
+_AUTH_HEADERS: Final = {
+    "Accept-Encoding": "identity",
+    "Content-type": "application/x-www-form-urlencoded",
+    "User-Agent": gpsoauth.USER_AGENT,
+}
+_GPSOAUTH_CLIENT_SIG: Final = "38918a453d07199354f8b19af05ec6562ced5788"
+
+
+def _master_token_data(
+    email: str, android_id: str, credentials: Mapping[str, str | bytes | int]
+) -> dict[str, str | bytes | int]:
+    """Return the fields of gpsoauth's perform_master_login() or exchange_token()."""
+    return {
+        "accountType": "HOSTED_OR_GOOGLE",
+        "Email": email,
+        "has_permission": 1,
+        "add_account": 1,
+        **credentials,
+        "service": "ac2dm",
+        "source": "android",
+        "androidId": android_id,
+        "device_country": "us",
+        "operatorCountry": "us",
+        "lang": "en",
+        "sdk_version": 17,
+        "google_play_services_version": 240913000,
+        "client_sig": _GPSOAUTH_CLIENT_SIG,
+        "callerSig": _GPSOAUTH_CLIENT_SIG,
+        "droidguard_results": "dummy123",
+    }
+
+
+def _oauth_data(
+    email: str, master_token: str, android_id: str, service: str
+) -> dict[str, str | bytes | int]:
+    """Return the fields of gpsoauth's perform_oauth() for glocaltokens' tokens."""
+    return {
+        "accountType": "HOSTED_OR_GOOGLE",
+        "Email": email,
+        "has_permission": 1,
+        "EncryptedPasswd": master_token,
+        "service": service,
+        "source": "android",
+        "androidId": android_id,
+        "app": ACCESS_TOKEN_APP_NAME,
+        "client_sig": ACCESS_TOKEN_CLIENT_SIGNATURE,
+        "device_country": "us",
+        "operatorCountry": "us",
+        "lang": "en",
+        "sdk_version": 17,
+        "google_play_services_version": 240913000,
+    }
+
+
+def _token(res: Mapping[str, str], key: str, name: str) -> str:
+    """Return the token Google gave, or raise AuthenticationError with its reason."""
+    if not res.get(key):
+        LOGGER.debug("Request response: %s", res)
+        raise AuthenticationError(f"Google gave no {name}", res.get("Error"))
+    return res[key]
+
+
+def _verified_email(user_info: Mapping[str, str]) -> str | None:
+    """Return the email address of a userinfo answer, if Google has verified it."""
+    if str(user_info.get("email_verified")).lower() != "true":
+        LOGGER.debug("Google gave no verified email address")
+        return None
+    return user_info.get("email") or None
+
+
+def _channel_credentials(access_token: str) -> grpc.ChannelCredentials:
+    """Return the credentials of a home graph request."""
+    return grpc.composite_channel_credentials(
+        grpc.ssl_channel_credentials(root_certificates=None),
+        grpc.access_token_call_credentials(access_token),
+    )
 
 
 class Device:
@@ -167,7 +280,12 @@ class Device:
 
 
 class GLocalAuthenticationTokens:
-    """Client."""
+    """Client.
+
+    Each get_* method that asks Google has an async_* counterpart with the same
+    results and errors, except that the async methods raise aiohttp's errors
+    where the others raise requests' errors.
+    """
 
     def __init__(
         self,
@@ -177,6 +295,8 @@ class GLocalAuthenticationTokens:
         android_id: str | None = None,
         verbose: bool | None = None,
         oauth_token: str | None = None,
+        *,
+        session: aiohttp.ClientSession | None = None,
     ):
         """Initialize a GLocalAuthenticationTokens instance with Google account credentials.
 
@@ -187,7 +307,10 @@ class GLocalAuthenticationTokens:
             android_id: The ID of an Android device. Will be randomly generated if not set;
             verbose: Deprecated and ignored, configure logging in your application instead;
             oauth_token: `oauth_token` cookie from a browser sign-in, exchanged for
-              a master token instead of logging in with the password.
+              a master token instead of logging in with the password;
+            session: The aiohttp session for the requests of the async_* methods,
+              which is never closed here. Without one, each request uses a new
+              session.
 
         Raises ValueError if there are no credentials, or if master_token
         doesn't start with "aas_et/".
@@ -207,6 +330,7 @@ class GLocalAuthenticationTokens:
         self.master_token: str | None = master_token
         self.oauth_token: str | None = oauth_token
         self.android_id: str | None = android_id
+        self.session = session
         # Email address Google returns when this client gets a master token
         self.email: str | None = None
         self.access_token: str | None = None
@@ -308,31 +432,55 @@ class GLocalAuthenticationTokens:
                     if isinstance(error, requests.RequestException):
                         raise
                     # gpsoauth encrypts the username and password together
-                    raise AuthenticationError(
-                        "Could not log in with the password to get a master "
-                        "token, the username and password may be too long together"
-                    ) from error
+                    raise AuthenticationError(_PASSWORD_TOO_LONG) from error
             else:
-                raise AuthenticationError(
-                    "No master token, and no username and password or "
-                    "oauth_token to get one with"
-                )
-            if not res.get("Token"):
-                LOGGER.debug("Request response: %s", res)
-                raise AuthenticationError(
-                    "Google gave no master token", res.get("Error")
-                )
-            self.master_token = res["Token"]
+                raise AuthenticationError(_NO_CREDENTIALS)
+            self.master_token = _token(res, "Token", "master token")
             self.email = res.get("Email") or None
         LOGGER.debug("Master token: %s", censor(self.master_token))
         return self.master_token
 
-    def get_access_token(self) -> str:
-        """Return existing or fetch access_token.
+    async def async_get_master_token(self) -> str:
+        """Return the stored master token, or get a new one, as get_master_token().
 
-        Raises AuthenticationError if Google gives no access token, or no
-        master token to get one with.
+        Raises the errors of get_master_token(), except that Google answering
+        with a 5xx or 429 raises aiohttp.ClientResponseError, and failing to
+        reach Google raises aiohttp.ClientError or TimeoutError.
         """
+        if not self.master_token:
+            username = self._escape_username(self.username or "")
+            credentials: dict[str, str | bytes | int]
+            if self.oauth_token:
+                LOGGER.debug(
+                    "There is no stored master_token, exchanging the oauth_token"
+                )
+                # Google doesn't need the email address to exchange the cookie
+                credentials = {"ACCESS_TOKEN": 1, "Token": self.oauth_token}
+            elif self.username and self.password:
+                LOGGER.debug(
+                    "There is no stored master_token, "
+                    "logging in using username and password"
+                )
+                try:
+                    signature = gpsoauth.google.construct_signature(
+                        username, self.password, gpsoauth.ANDROID_KEY_7_3_29
+                    )
+                except ValueError as error:
+                    # gpsoauth encrypts the username and password together
+                    raise AuthenticationError(_PASSWORD_TOO_LONG) from error
+                credentials = {"EncryptedPasswd": signature}
+            else:
+                raise AuthenticationError(_NO_CREDENTIALS)
+            res = await self._async_auth_request(
+                _master_token_data(username, self.get_android_id(), credentials)
+            )
+            self.master_token = _token(res, "Token", "master token")
+            self.email = res.get("Email") or None
+        LOGGER.debug("Master token: %s", censor(self.master_token))
+        return self.master_token
+
+    def _stored_access_token(self) -> str | None:
+        """Return the stored access token, unless there is none or it has expired."""
         if (
             self.access_token is None
             or self.access_token_date is None
@@ -342,30 +490,64 @@ class GLocalAuthenticationTokens:
                 "There is no access_token stored, "
                 "or it has expired, getting a new one..."
             )
-            master_token = self.get_master_token()
-            # Google doesn't need the email address once there is a master token
-            with _request_timeout():
-                res = perform_oauth(
-                    self._escape_username(self.username or ""),
-                    master_token,
-                    self.get_android_id(),
-                    app=ACCESS_TOKEN_APP_NAME,
-                    service=ACCESS_TOKEN_SERVICE,
-                    client_sig=ACCESS_TOKEN_CLIENT_SIGNATURE,
-                )
-            if not res.get("Auth"):
-                LOGGER.debug("Request response: %s", res)
-                raise AuthenticationError(
-                    "Google gave no access token", res.get("Error")
-                )
-            self.access_token = res["Auth"]
-            self.access_token_date = datetime.now(UTC)
+            return None
+        return self.access_token
+
+    def _store_access_token(self, res: Mapping[str, str]) -> str:
+        """Store the access token Google gave, or raise AuthenticationError."""
+        self.access_token = _token(res, "Auth", "access token")
+        self.access_token_date = datetime.now(UTC)
+        return self.access_token
+
+    def _log_access_token(self, access_token: str) -> str:
+        """Log the access token, censored, and return it."""
         LOGGER.debug(
             "Access token: %s, datetime %s",
-            censor(self.access_token),
+            censor(access_token),
             self.access_token_date,
         )
-        return self.access_token
+        return access_token
+
+    def get_access_token(self) -> str:
+        """Return existing or fetch access_token.
+
+        Raises AuthenticationError if Google gives no access token, or no
+        master token to get one with.
+        """
+        if (access_token := self._stored_access_token()) is not None:
+            return self._log_access_token(access_token)
+        master_token = self.get_master_token()
+        # Google doesn't need the email address once there is a master token
+        with _request_timeout():
+            res = perform_oauth(
+                self._escape_username(self.username or ""),
+                master_token,
+                self.get_android_id(),
+                app=ACCESS_TOKEN_APP_NAME,
+                service=ACCESS_TOKEN_SERVICE,
+                client_sig=ACCESS_TOKEN_CLIENT_SIGNATURE,
+            )
+        return self._log_access_token(self._store_access_token(res))
+
+    async def async_get_access_token(self) -> str:
+        """Return existing or fetch access_token, as get_access_token().
+
+        Raises the errors of get_access_token(), with aiohttp's errors as in
+        async_get_master_token().
+        """
+        if (access_token := self._stored_access_token()) is not None:
+            return self._log_access_token(access_token)
+        master_token = await self.async_get_master_token()
+        # Google doesn't need the email address once there is a master token
+        res = await self._async_auth_request(
+            _oauth_data(
+                self._escape_username(self.username or ""),
+                master_token,
+                self.get_android_id(),
+                ACCESS_TOKEN_SERVICE,
+            )
+        )
+        return self._log_access_token(self._store_access_token(res))
 
     def get_email(self) -> str | None:
         """Return the email address of the account, if Google gives it.
@@ -405,12 +587,84 @@ class GLocalAuthenticationTokens:
                 "Could not get the email address: HTTP %s", response.status_code
             )
             return None
-        user_info = response.json()
-        if str(user_info.get("email_verified")).lower() != "true":
-            LOGGER.debug("Google gave no verified email address")
+        return _verified_email(response.json())
+
+    async def async_get_email(self) -> str | None:
+        """Return the email address of the account, if Google gives it, as get_email().
+
+        Raises the errors of get_email(), with aiohttp's errors as in
+        async_get_master_token(). If the userinfo answer isn't JSON, raises
+        aiohttp.ContentTypeError for another content type, or
+        json.JSONDecodeError, where get_email() raises requests' JSONDecodeError.
+        """
+        master_token = await self.async_get_master_token()
+        if self.email is not None:
+            return self.email
+        res = await self._async_auth_request(
+            _oauth_data(
+                self._escape_username(self.username or ""),
+                master_token,
+                self.get_android_id(),
+                EMAIL_ACCESS_TOKEN_SERVICE,
+            )
+        )
+        if not res.get("Auth"):
+            LOGGER.debug("Could not get an access token for the email address")
+            LOGGER.debug("Request response: %s", res)
             return None
-        email: str | None = user_info.get("email") or None
-        return email
+        async with (
+            self._client_session() as session,
+            session.get(
+                USERINFO_URL,
+                # Send the token in a header: a URL ends up in debug logs and errors
+                headers={"Authorization": f"Bearer {res['Auth']}"},
+                ssl=_GOOGLE_SSL_CONTEXT,
+                timeout=aiohttp.ClientTimeout(total=REQUEST_TIMEOUT),
+                raise_for_status=False,
+            ) as response,
+        ):
+            if not response.ok:
+                LOGGER.debug(
+                    "Could not get the email address: HTTP %s", response.status
+                )
+                return None
+            return _verified_email(await response.json())
+
+    @asynccontextmanager
+    async def _client_session(self) -> AsyncIterator[aiohttp.ClientSession]:
+        """Yield the caller's session, or a new one that is closed afterwards."""
+        if self.session is not None:
+            yield self.session
+            return
+        # Like requests, follow the proxy environment variables
+        async with aiohttp.ClientSession(trust_env=True) as session:
+            yield session
+
+    async def _async_auth_request(
+        self, data: Mapping[str, str | bytes | int]
+    ) -> dict[str, str]:
+        """Send the request gpsoauth would send, and return Google's answer.
+
+        The caller's middlewares still apply, but not its raise_for_status: an
+        answer that means "try later" raises aiohttp.ClientResponseError, as
+        gpsoauth would read it as a login response, and other answers are read.
+        """
+        async with (
+            self._client_session() as session,
+            session.post(
+                gpsoauth.AUTH_URL,
+                data=urlencode(data).encode(),
+                headers=_AUTH_HEADERS,
+                ssl=_GOOGLE_SSL_CONTEXT,
+                timeout=aiohttp.ClientTimeout(total=REQUEST_TIMEOUT),
+                raise_for_status=False,
+            ) as response,
+        ):
+            text = await response.text(errors="replace")
+            if _is_busy(response.status):
+                LOGGER.debug("Request response: HTTP %s %s", response.status, text)
+                response.raise_for_status()
+        return gpsoauth.google.parse_auth_response(text)
 
     def get_homegraph(self, auth_attempts: int = 3) -> GetHomeGraphResponse:
         """Return the entire Google Home Foyer V2 service.
@@ -427,6 +681,14 @@ class GLocalAuthenticationTokens:
         """
         return self._get_home_graphs(auth_attempts)[1]
 
+    async def async_get_homegraph(self, auth_attempts: int = 3) -> GetHomeGraphResponse:
+        """Return the entire Google Home Foyer V2 service, as get_homegraph().
+
+        Raises the errors of get_homegraph(), with aiohttp's errors as in
+        async_get_master_token().
+        """
+        return (await self._async_get_home_graphs(auth_attempts))[1]
+
     def get_home_graph(self, auth_attempts: int = 3) -> HomeGraph:
         """Return the home graph with each home of the account separately.
 
@@ -441,10 +703,18 @@ class GLocalAuthenticationTokens:
         """
         return self._get_home_graphs(auth_attempts)[0]
 
-    def _get_home_graphs(
-        self, auth_attempts: int
-    ) -> tuple[HomeGraph, GetHomeGraphResponse]:
-        """Return the stored home graph in both forms, or fetch it."""
+    async def async_get_home_graph(self, auth_attempts: int = 3) -> HomeGraph:
+        """Return the home graph with each home separately, as get_home_graph().
+
+        The sync and async methods share the stored home graph.
+
+        Raises the errors of get_home_graph(), with aiohttp's errors as in
+        async_get_master_token().
+        """
+        return (await self._async_get_home_graphs(auth_attempts))[0]
+
+    def _stored_home_graphs(self) -> tuple[HomeGraph, GetHomeGraphResponse] | None:
+        """Return the stored home graph in both forms, unless it is missing or expired."""
         if (
             self.home_graph is None
             or self.homegraph is None
@@ -454,46 +724,86 @@ class GLocalAuthenticationTokens:
             LOGGER.debug(
                 "There is no stored homegraph, or it has expired, getting a new one..."
             )
-            log_prefix = "[GRPC]"
-            access_token = self.get_access_token()
-            try:
-                scc = grpc.ssl_channel_credentials(root_certificates=None)
-                tok = grpc.access_token_call_credentials(access_token)
-                channel_credentials = grpc.composite_channel_credentials(scc, tok)
-                with grpc.secure_channel(
-                    GOOGLE_HOME_FOYER_API, channel_credentials
-                ) as channel:
-                    request = GetHomeGraphRequest(string1="", num2="")
-                    LOGGER.debug("%s Fetching HomeGraph...", log_prefix)
-                    response = get_home_graph_bytes(
-                        channel, request, timeout=REQUEST_TIMEOUT
-                    )
-                # Parse it both ways: as one merged home, and home by home
-                try:
-                    homegraph = GetHomeGraphResponse.FromString(response)
-                    home_graph = HomeGraph.FromString(response)
-                except DecodeError as error:
-                    # gRPC used to report this as INTERNAL when it parsed the response
-                    raise HomegraphError(
-                        grpc.StatusCode.INTERNAL, str(error)
-                    ) from error
-                self.homegraph, self.home_graph = homegraph, home_graph
-                self.homegraph_date = datetime.now(UTC)
-            except grpc.RpcError as rpc_error:
-                code = rpc_error.code()  # pylint: disable=no-member
-                if code == grpc.StatusCode.UNAUTHENTICATED:
-                    self.invalidate_access_token()
-                    if auth_attempts > 1:
-                        LOGGER.warning(
-                            "%s The access token has expired. Getting a new one.",
-                            log_prefix,
-                        )
-                        return self._get_home_graphs(auth_attempts - 1)
-                raise HomegraphError(
-                    code,
-                    rpc_error.details(),  # pylint: disable=no-member
-                ) from rpc_error
+            return None
         return self.home_graph, self.homegraph
+
+    def _store_home_graphs(
+        self, response: bytes
+    ) -> tuple[HomeGraph, GetHomeGraphResponse]:
+        """Parse the response as one merged home and home by home, and store it."""
+        try:
+            homegraph = GetHomeGraphResponse.FromString(response)
+            home_graph = HomeGraph.FromString(response)
+        except DecodeError as error:
+            # gRPC used to report this as INTERNAL when it parsed the response
+            raise HomegraphError(grpc.StatusCode.INTERNAL, str(error)) from error
+        self.homegraph, self.home_graph = homegraph, home_graph
+        self.homegraph_date = datetime.now(UTC)
+        return home_graph, homegraph
+
+    def _check_auth_retry(self, rpc_error: grpc.RpcError, auth_attempts: int) -> None:
+        """Raise HomegraphError for a failed request, unless a new access token may help."""
+        code = rpc_error.code()  # pylint: disable=no-member
+        if code == grpc.StatusCode.UNAUTHENTICATED:
+            self.invalidate_access_token()
+            if auth_attempts > 1:
+                LOGGER.warning(
+                    "%s The access token has expired. Getting a new one.", "[GRPC]"
+                )
+                return
+        raise HomegraphError(
+            code,
+            rpc_error.details(),  # pylint: disable=no-member
+        ) from rpc_error
+
+    def _get_home_graphs(
+        self, auth_attempts: int
+    ) -> tuple[HomeGraph, GetHomeGraphResponse]:
+        """Return the stored home graph in both forms, or fetch it."""
+        if (stored := self._stored_home_graphs()) is not None:
+            return stored
+        access_token = self.get_access_token()
+        try:
+            with grpc.secure_channel(
+                GOOGLE_HOME_FOYER_API, _channel_credentials(access_token)
+            ) as channel:
+                request = GetHomeGraphRequest(string1="", num2="")
+                LOGGER.debug("%s Fetching HomeGraph...", "[GRPC]")
+                response = get_home_graph_bytes(
+                    channel, request, timeout=REQUEST_TIMEOUT
+                )
+        except grpc.RpcError as rpc_error:
+            self._check_auth_retry(rpc_error, auth_attempts)
+            return self._get_home_graphs(auth_attempts - 1)
+        return self._store_home_graphs(response)
+
+    async def _async_get_home_graphs(
+        self, auth_attempts: int
+    ) -> tuple[HomeGraph, GetHomeGraphResponse]:
+        """Return the stored home graph in both forms, or fetch it."""
+        if (stored := self._stored_home_graphs()) is not None:
+            return stored
+        access_token = await self.async_get_access_token()
+        try:
+            # A channel for each fetch, closed when it ends or is cancelled
+            async with grpc.aio.secure_channel(
+                GOOGLE_HOME_FOYER_API, _channel_credentials(access_token)
+            ) as channel:
+                call: grpc.aio.UnaryUnaryMultiCallable[GetHomeGraphRequest, bytes] = (
+                    channel.unary_unary(
+                        GET_HOME_GRAPH,
+                        request_serializer=GetHomeGraphRequest.SerializeToString,
+                        response_deserializer=None,
+                    )
+                )
+                LOGGER.debug("%s Fetching HomeGraph...", "[GRPC]")
+                response = await call(
+                    GetHomeGraphRequest(string1="", num2=""), timeout=REQUEST_TIMEOUT
+                )
+        except grpc.RpcError as rpc_error:
+            self._check_auth_retry(rpc_error, auth_attempts)
+            return await self._async_get_home_graphs(auth_attempts - 1)
+        return self._store_home_graphs(response)
 
     def get_google_devices(
         self,
@@ -523,19 +833,7 @@ class GLocalAuthenticationTokens:
         Raises ValueError if addresses isn't a dict of IPv4 addresses, and the
         errors of get_home_graph().
         """
-
-        def is_dict_with_valid_ipv4_addresses(data: dict[str, str]) -> bool:
-            # Validate the data structure is correct and that each entry contains a
-            # valid IPv4 address.
-            return isinstance(data, dict) and all(
-                isinstance(x, str) and is_valid_ipv4_address(x) for x in data.values()
-            )
-
-        if addresses and not is_dict_with_valid_ipv4_addresses(addresses):
-            raise ValueError(
-                "Invalid dictionary structure for addresses dictionary "
-                "argument. Correct structure is {'device_name': 'ipaddress'}"
-            )
+        _check_addresses(addresses)
 
         # Set models_list to empty list if None
         LOGGER.debug("Initializing models list if empty...")
@@ -548,7 +846,6 @@ class GLocalAuthenticationTokens:
         LOGGER.debug("Getting homegraph...")
         home_graph = self.get_home_graph()
 
-        devices: list[Device] = []
         network_devices: list[NetworkDevice] = []
         if disable_discovery is False:
             LOGGER.debug("Automatically discovering network devices...")
@@ -557,87 +854,85 @@ class GLocalAuthenticationTokens:
                 timeout=discovery_timeout,
                 zeroconf_instance=zeroconf_instance,
             )
+        return _devices_from_home_graph(
+            home_graph, models_list, home_id, network_devices, addresses or {}
+        )
 
-        def find_device(unique_id: str) -> NetworkDevice | None:
-            for device in network_devices:
-                if device.unique_id == unique_id:
-                    return device
-            return None
+    async def async_get_google_devices_and_home_graph(
+        self,
+        models_list: list[str] | None = None,
+        disable_discovery: bool = False,
+        addresses: dict[str, str] | None = None,
+        zeroconf_instance: Zeroconf | None = None,
+        force_homegraph_reload: bool = False,
+        discovery_timeout: float = DISCOVERY_TIMEOUT,
+        home_id: str | None = None,
+    ) -> tuple[list[Device], HomeGraph]:
+        """Return the devices of get_google_devices(), and the home graph they come from.
 
-        address_dict = addresses or {}
+        The home graph is the response that the devices were read from, with
+        every device of every home, including those that the list leaves out,
+        such as devices without a local authentication token. It stays that
+        response even if another call fetches or drops the stored home graph
+        meanwhile.
 
-        homes = [home for home in home_graph.homes if home_id in (None, home.id)]
-        items = [(home, item) for home in homes for item in home.devices]
-        LOGGER.debug("Iterating in %d homegraph devices", len(items))
-        for home, item in items:
-            if not item.local_auth_token:
-                LOGGER.debug(
-                    "'%s' local_auth_token is not found in Homegraph, skipping",
-                    item.display_name,
-                )
-                continue
-            # This checks if the current item is a valid model,
-            # only if there are models in models_list.
-            # If models_list is empty, the check should be omitted,
-            # and accept all items.
-            if models_list and item.hardware.model not in models_list:
-                LOGGER.debug("%s not in models_list", item.hardware.model)
-                continue
+        The arguments are those of get_google_devices(). zeroconf_instance must
+        run on the calling event loop, as Home Assistant's shared instance does.
 
-            network_device = None
-            unique_id = item.id.agent_info.unique_id
-            if network_devices:
-                LOGGER.debug(
-                    "Looking for '%s' (id=%s) in local network",
-                    item.display_name,
-                    unique_id,
-                )
-                network_device = find_device(unique_id)
-            elif item.display_name in address_dict:
-                network_device = NetworkDevice(
-                    name=item.display_name,
-                    ip_address=address_dict[item.display_name],
-                    port=DEFAULT_DISCOVERY_PORT,
-                    model=item.hardware.model,
-                    unique_id=unique_id,
-                )
+        Raises the errors of get_google_devices(), with aiohttp's errors as in
+        async_get_master_token().
+        """
+        _check_addresses(addresses)
 
-            log_prefix = f"[Device - {item.display_name}(id={item.id.device_id})]"
-            if not item.display_name:
-                LOGGER.error("%s device_name must be provided", log_prefix)
-                continue
-            if not token_utils.is_local_auth_token(item.local_auth_token):
-                # Only a device found on the network or given in addresses is
-                # known to be a Cast device; others, such as Google Wifi and
-                # Nest Wifi routers, get tokens of another format.
-                log = LOGGER.warning if network_device else LOGGER.debug
-                log(
-                    "%s local_auth_token isn't %d characters as expected for a "
-                    "Cast device, skipping it",
-                    log_prefix,
-                    LOCAL_AUTH_TOKEN_LENGTH,
-                )
-                continue
+        # Set models_list to empty list if None
+        LOGGER.debug("Initializing models list if empty...")
+        models_list = models_list or []
 
-            device = Device(
-                device_id=item.id.device_id,
-                device_name=item.display_name,
-                local_auth_token=item.local_auth_token,
-                network_device=network_device,
-                hardware=item.hardware.model,
-                cloud_device_id=unique_id or None,
-                home_id=home.id or None,
-                home_name=home.display_name or None,
+        if force_homegraph_reload:
+            LOGGER.debug("Forcing homegraph reload")
+            self.invalidate_homegraph()
+
+        LOGGER.debug("Getting homegraph...")
+        home_graph = await self.async_get_home_graph()
+
+        network_devices: list[NetworkDevice] = []
+        if disable_discovery is False:
+            LOGGER.debug("Automatically discovering network devices...")
+            network_devices = await async_discover_devices(
+                models_list,
+                timeout=discovery_timeout,
+                zeroconf_instance=zeroconf_instance,
             )
-            LOGGER.debug(
-                "Adding %s to devices list (IP %s, port %s)",
-                device.device_name,
-                device.ip_address,
-                device.port,
-            )
-            devices.append(device)
+        devices = _devices_from_home_graph(
+            home_graph, models_list, home_id, network_devices, addresses or {}
+        )
+        return devices, home_graph
 
-        LOGGER.debug("Successfully initialized %d Google Home devices", len(devices))
+    async def async_get_google_devices(
+        self,
+        models_list: list[str] | None = None,
+        disable_discovery: bool = False,
+        addresses: dict[str, str] | None = None,
+        zeroconf_instance: Zeroconf | None = None,
+        force_homegraph_reload: bool = False,
+        discovery_timeout: float = DISCOVERY_TIMEOUT,
+        home_id: str | None = None,
+    ) -> list[Device]:
+        """Return a list of Google devices, as get_google_devices().
+
+        To also get the home graph the devices come from, use
+        async_get_google_devices_and_home_graph(), which takes the same
+        arguments and raises the same errors.
+        """
+        devices, _ = await self.async_get_google_devices_and_home_graph(
+            models_list=models_list,
+            disable_discovery=disable_discovery,
+            addresses=addresses,
+            zeroconf_instance=zeroconf_instance,
+            force_homegraph_reload=force_homegraph_reload,
+            discovery_timeout=discovery_timeout,
+            home_id=home_id,
+        )
         return devices
 
     def get_google_devices_json(
@@ -699,3 +994,110 @@ class GLocalAuthenticationTokens:
         self.home_graph = None
         self.homegraph_date = None
         LOGGER.debug("Invalidated homegraph")
+
+
+def _check_addresses(addresses: dict[str, str] | None) -> None:
+    """Raise ValueError if addresses isn't a dict of IPv4 addresses."""
+    # Validate the data structure is correct and that each entry contains a
+    # valid IPv4 address.
+    if addresses and not (
+        isinstance(addresses, dict)
+        and all(
+            isinstance(x, str) and is_valid_ipv4_address(x) for x in addresses.values()
+        )
+    ):
+        raise ValueError(
+            "Invalid dictionary structure for addresses dictionary "
+            "argument. Correct structure is {'device_name': 'ipaddress'}"
+        )
+
+
+def _devices_from_home_graph(
+    home_graph: HomeGraph,
+    models_list: list[str],
+    home_id: str | None,
+    network_devices: list[NetworkDevice],
+    address_dict: dict[str, str],
+) -> list[Device]:
+    """Return the Cast devices of a home graph that have local authentication tokens."""
+
+    def find_device(unique_id: str) -> NetworkDevice | None:
+        for device in network_devices:
+            if device.unique_id == unique_id:
+                return device
+        return None
+
+    devices: list[Device] = []
+    homes = [home for home in home_graph.homes if home_id in (None, home.id)]
+    items = [(home, item) for home in homes for item in home.devices]
+    LOGGER.debug("Iterating in %d homegraph devices", len(items))
+    for home, item in items:
+        if not item.local_auth_token:
+            LOGGER.debug(
+                "'%s' local_auth_token is not found in Homegraph, skipping",
+                item.display_name,
+            )
+            continue
+        # This checks if the current item is a valid model,
+        # only if there are models in models_list.
+        # If models_list is empty, the check should be omitted,
+        # and accept all items.
+        if models_list and item.hardware.model not in models_list:
+            LOGGER.debug("%s not in models_list", item.hardware.model)
+            continue
+
+        network_device = None
+        unique_id = item.id.agent_info.unique_id
+        if network_devices:
+            LOGGER.debug(
+                "Looking for '%s' (id=%s) in local network",
+                item.display_name,
+                unique_id,
+            )
+            network_device = find_device(unique_id)
+        elif item.display_name in address_dict:
+            network_device = NetworkDevice(
+                name=item.display_name,
+                ip_address=address_dict[item.display_name],
+                port=DEFAULT_DISCOVERY_PORT,
+                model=item.hardware.model,
+                unique_id=unique_id,
+            )
+
+        log_prefix = f"[Device - {item.display_name}(id={item.id.device_id})]"
+        if not item.display_name:
+            LOGGER.error("%s device_name must be provided", log_prefix)
+            continue
+        if not token_utils.is_local_auth_token(item.local_auth_token):
+            # Only a device found on the network or given in addresses is
+            # known to be a Cast device; others, such as Google Wifi and
+            # Nest Wifi routers, get tokens of another format.
+            log = LOGGER.warning if network_device else LOGGER.debug
+            log(
+                "%s local_auth_token isn't %d characters as expected for a "
+                "Cast device, skipping it",
+                log_prefix,
+                LOCAL_AUTH_TOKEN_LENGTH,
+            )
+            continue
+
+        device = Device(
+            device_id=item.id.device_id,
+            device_name=item.display_name,
+            local_auth_token=item.local_auth_token,
+            network_device=network_device,
+            hardware=item.hardware.model,
+            cloud_device_id=unique_id or None,
+            home_id=home.id or None,
+            home_name=home.display_name or None,
+        )
+        LOGGER.debug(
+            "Adding %s to devices list (IP %s, port %s)",
+            device.device_name,
+            device.ip_address,
+            device.port,
+        )
+        devices.append(device)
+
+    LOGGER.debug("Successfully initialized %d Google Home devices", len(devices))
+    return devices

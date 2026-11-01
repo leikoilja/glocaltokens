@@ -204,6 +204,48 @@ Both `get_google_devices()` and `get_google_devices_json()` accept these argumen
 | `home_id`                | `None`  | Only return the devices of the home with this ID. `None` returns the devices of every home.  |
 
 `get_google_devices_json()` also accepts `indent` for the JSON output (default `2`).
+`async_get_google_devices()` and `async_get_google_devices_and_home_graph()` accept the same arguments as `get_google_devices()` (see [Using asyncio](#using-asyncio)).
+
+## Using asyncio
+
+Each method that asks Google has an async counterpart: `async_get_master_token()`, `async_get_access_token()`, `async_get_email()`,
+`async_get_homegraph()`, `async_get_home_graph()` and `async_get_google_devices()`.
+They return the same results and raise the same glocaltokens errors, and they wait for Google and the network without blocking your event loop.
+
+To use your application's aiohttp session, pass it as `session`. glocaltokens never closes it. Without one, each request uses a new session that is closed afterwards.
+
+```python
+import aiohttp
+
+from glocaltokens.client import GLocalAuthenticationTokens
+
+
+async def main() -> None:
+    async with aiohttp.ClientSession() as session:
+        client = GLocalAuthenticationTokens(
+            master_token="<YOUR_MASTER_TOKEN>", session=session
+        )
+        devices, home_graph = await client.async_get_google_devices_and_home_graph()
+```
+
+`async_get_google_devices_and_home_graph()` returns the device list and the home graph it came from, with every device of every home,
+including those the list leaves out, such as devices without a local authentication token.
+Use it rather than reading the home graph separately: another call can replace the cached home graph while discovery runs.
+
+For discovery, pass a `zeroconf_instance` that runs on your event loop, such as Home Assistant's shared instance or the `zeroconf` of an `AsyncZeroconf`.
+Without one, glocaltokens creates its own and closes it afterwards.
+
+The sync and async methods share the cached tokens and home graph. Don't use one client from several threads at once.
+
+How your session affects the requests to Google:
+
+- They check Google's certificate even if your session doesn't check certificates.
+- Your session's middlewares apply to them. An exception a middleware raises reaches your code.
+- Your session's `raise_for_status` setting doesn't apply to them: glocaltokens handles each answer itself, as described in [Errors](#errors).
+- Cookies in your session's cookie jar for Google's addresses are sent with them, and cookies Google sets are kept in the jar.
+- They use your session's proxy settings. A session that glocaltokens creates follows the `HTTP_PROXY`, `HTTPS_PROXY` and `NO_PROXY` environment variables,
+  but aiohttp only supports proxies with `http://` addresses.
+- Don't pass a session with default `auth` credentials: they would be sent to Google.
 
 ## Troubleshooting
 
@@ -248,6 +290,13 @@ These errors from the libraries glocaltokens uses also reach your code:
 
 A mistake in your call raises `ValueError`: creating the client without credentials or with a `master_token` that doesn't start with `aas_et/`,
 or passing `addresses` that aren't a dictionary of IPv4 addresses to the device methods.
+
+The async methods raise aiohttp's errors instead of `requests` errors:
+
+- `aiohttp.ClientResponseError` when Google answers a request for a token that you should try later (HTTP 5xx or 429). Its `status` attribute is the HTTP status.
+- `aiohttp.ClientError` or `TimeoutError` when a request to Google fails, for example without an internet connection or when Google does not reply within 10 seconds.
+- `async_get_email()` raises `json.JSONDecodeError`, or `aiohttp.ContentTypeError`, if Google's answer with the email address isn't JSON.
+  `get_email()` raises `requests.RequestException` for it.
 
 This example tells "sign in again" from "try again later". To keep it simple, it treats every `HomegraphError` as temporary;
 check its `code` to also handle `UNAUTHENTICATED` that keeps happening:
