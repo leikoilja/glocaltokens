@@ -317,9 +317,10 @@ async def async_discover_devices(
             await browser.async_cancel()
             for task in pending:
                 _cancel_once(task)
-            # ponytail: cancelling discovery again during this wait cancels
-            # the lookups again, cutting their cleanup short; shield the wait
-            # if that matters
+            # Each lookup is cancelled at most once, so it can finish its
+            # cleanup. If discovery itself is cancelled during this wait,
+            # gather() cancels the lookups once more, which can cut that
+            # cleanup short; that case isn't handled.
             await asyncio.gather(*pending, return_exceptions=True)
     finally:
         # A supplied instance belongs to the caller, who may still be using it.
