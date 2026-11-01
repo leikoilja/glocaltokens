@@ -317,11 +317,9 @@ async def async_discover_devices(
             await browser.async_cancel()
             for task in pending:
                 _cancel_once(task)
-            # Each lookup is cancelled at most once, so it can finish its
-            # cleanup. If discovery itself is cancelled during this wait,
-            # gather() cancels the lookups once more, which can cut that
-            # cleanup short; that case isn't handled.
-            await asyncio.gather(*pending, return_exceptions=True)
+            # Every lookup finishes its cleanup before the own Zeroconf closes
+            # or discovery ends, even if discovery is cancelled meanwhile
+            await _finish(pending)
     finally:
         # A supplied instance belongs to the caller, who may still be using it.
         if own_zeroconf is not None:
@@ -344,6 +342,22 @@ async def _async_request(
         if await service.async_request(zc, lookup_timeout):
             return True
     return False
+
+
+async def _finish(tasks: set[asyncio.Task[None]]) -> None:
+    """Wait until every task has finished, then raise any cancellation of the wait.
+
+    Unlike asyncio.gather(), cancelling the wait doesn't cancel the tasks again,
+    which would cut their cleanup short.
+    """
+    cancelled: asyncio.CancelledError | None = None
+    while unfinished := [task for task in tasks if not task.done()]:
+        try:
+            await asyncio.wait(unfinished)
+        except asyncio.CancelledError as error:
+            cancelled = error
+    if cancelled is not None:
+        raise cancelled
 
 
 def _cancel_once(task: asyncio.Task[None]) -> None:

@@ -653,6 +653,48 @@ class AsyncDiscoveryTests(IsolatedAsyncioTestCase):
                 )
                 assert self.own_zeroconfs[-1].closed
 
+    async def test_cleanup_outlasts_repeated_cancellation(self) -> None:
+        """Cancelling discovery while it waits for lookups to end doesn't cut them short.
+
+        The cancellation is raised once they have finished their cleanup and
+        the own Zeroconf is closed.
+        """
+
+        async def cancel_twice(task: asyncio.Task[list[NetworkDevice]]) -> None:
+            # Cancelled while listening, then again while it waits for lookups
+            task.cancel()
+            await self.lookups[0].cancelled.wait()
+            task.cancel()
+
+        async def cancel_after_timeout(task: asyncio.Task[list[NetworkDevice]]) -> None:
+            # A lookup that an update retired, then cancelled while it waits
+            await self.change(f"speaker.{CAST_SERVICE}", ServiceStateChange.Updated)
+            await self.lookups[0].cancelled.wait()
+            await self.browsers[0].cancelled.wait()
+            task.cancel()
+
+        for cancel, listen in ((cancel_twice, 10.0), (cancel_after_timeout, 0.3)):
+            with self.subTest(cancel=cancel.__name__):
+                self.browsers.clear()
+                self.lookups.clear()
+                task = await self.start(listen=listen)
+                await self.change(f"speaker.{CAST_SERVICE}", ServiceStateChange.Added)
+                held = self.lookups[0]
+                held.on_cancel = "hold"
+                await cancel(task)
+                await asyncio.sleep(0.01)
+                assert not task.done()
+                assert not self.own_zeroconfs[-1].closed
+                assert held.task is not None
+                assert not held.task.done()
+                assert held.task.cancelling() == 1
+
+                held.finish_cleanup.set()
+                with pytest.raises(asyncio.CancelledError):
+                    await asyncio.wait_for(task, 5)
+                assert held.task.cancelled()
+                assert self.own_zeroconfs[-1].closed
+
     async def test_cancelled(self) -> None:
         """Cancelling discovery stops browsing and the lookups, and closes its own Zeroconf."""
         task = await self.start()
