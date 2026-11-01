@@ -41,7 +41,8 @@ from glocaltokens.const import (
     HOMEGRAPH_DURATION,
 )
 from glocaltokens.exceptions import AuthenticationError, HomegraphError
-from glocaltokens.scanner import NetworkDevice
+from glocaltokens.types import NetworkDevice
+from tests import without_zeroconf
 from tests.factory.providers import HomegraphProvider
 
 if TYPE_CHECKING:
@@ -992,7 +993,7 @@ class DevicesTests(HomeGraphTestCase):
         """Also replace discovery, which finds nothing unless a test says so."""
         await super().asyncSetUp()
         discover_patcher = patch(
-            "glocaltokens.client.async_discover_devices", return_value=[]
+            "glocaltokens.scanner.async_discover_devices", return_value=[]
         )
         self.m_discover: AsyncMock = discover_patcher.start()
         self.addCleanup(discover_patcher.stop)
@@ -1126,6 +1127,35 @@ class DevicesTests(HomeGraphTestCase):
         assert self.google.calls == 0
         self.m_access_token.assert_not_awaited()
 
+    async def test_without_zeroconf(self) -> None:
+        """Without the discovery extra, discovery fails before any request, and addresses work."""
+        device = faker.homegraph_device()
+        graph = HomeGraph(homes=[HomeGraph.Home(devices=[device])])
+        self.google.queue(graph)
+        with without_zeroconf():
+            devices = await self.client.async_get_google_devices(
+                discover=False, addresses={device.display_name: "192.0.2.20"}
+            )
+            assert [d.ip_address for d in devices] == ["192.0.2.20"]
+            assert "glocaltokens.scanner" not in sys.modules
+
+            for get_devices in (
+                self.client.async_get_google_devices,
+                self.client.async_get_google_devices_and_home_graph,
+            ):
+                with self.subTest(get_devices.__name__):
+                    with pytest.raises(ModuleNotFoundError) as exc_info:
+                        await get_devices(reload_home_graph=True)
+                    message = str(exc_info.value)
+                    assert "glocaltokens[discovery]" in message
+                    assert "discover=False" in message
+        # Only the request without discovery reached Google, and the stored
+        # home graph wasn't dropped for the reload
+        assert self.google.calls == 1
+        assert self.m_access_token.await_count == 1
+        assert self.client.home_graph == graph
+        self.m_discover.assert_not_awaited()
+
     async def test_home_graph_replaced_during_discovery(self) -> None:
         """The home graph returned is the list's, whatever replaces the stored one meanwhile."""
         graph_b = HomeGraph(homes=[HomeGraph.Home(devices=[faker.homegraph_device()])])
@@ -1158,7 +1188,7 @@ class DevicesTests(HomeGraphTestCase):
             await release.wait()
             return []
 
-        with patch("glocaltokens.client.async_discover_devices", side_effect=discover):
+        with patch("glocaltokens.scanner.async_discover_devices", side_effect=discover):
             first = asyncio.create_task(
                 self.client.async_get_google_devices_and_home_graph()
             )

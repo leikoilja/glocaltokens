@@ -8,6 +8,7 @@ from contextlib import asynccontextmanager, contextmanager
 from contextvars import ContextVar
 from datetime import UTC, datetime
 from http import HTTPStatus
+import importlib
 import json
 import logging
 import os
@@ -43,12 +44,7 @@ from .const import (
     USERINFO_URL,
 )
 from .exceptions import AuthenticationError, HomegraphError
-from .scanner import (
-    NetworkDevice,
-    _check_loop,
-    async_discover_devices,
-    discover_devices,
-)
+from .types import NetworkDevice
 from .utils import token as token_utils
 from .utils.logs import censor
 from .utils.network import is_valid_ipv4_address
@@ -868,10 +864,15 @@ class GLocalAuthenticationTokens:
         home_id: Only return the devices of the home with this ID, the
           home_id of a Device or the id of a home in get_home_graph().
 
-        Raises ValueError if addresses isn't a dict of IPv4 addresses, and the
-        errors of get_home_graph().
+        Raises ValueError if addresses isn't a dict of IPv4 addresses,
+        ModuleNotFoundError if discovery is on without the glocaltokens[discovery]
+        extra (zeroconf), both before any request, and the errors of
+        get_home_graph().
         """
         _check_addresses(addresses)
+        if disable_discovery is False:
+            # Raises before any request if zeroconf isn't installed
+            importlib.import_module(".scanner", __package__)
 
         # Set models_list to empty list if None
         LOGGER.debug("Initializing models list if empty...")
@@ -886,6 +887,8 @@ class GLocalAuthenticationTokens:
 
         network_devices: list[NetworkDevice] = []
         if disable_discovery is False:
+            from .scanner import discover_devices  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
+
             LOGGER.debug("Automatically discovering network devices...")
             network_devices = discover_devices(
                 models_list,
@@ -938,6 +941,9 @@ class GLocalAuthenticationTokens:
         # Refuse the caller's mistakes before any request
         _check_addresses(addresses)
         if discover:
+            # Raises before any request if zeroconf isn't installed
+            from .scanner import _check_loop  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
+
             _check_loop(zeroconf_instance)
         models = models or []
 
@@ -950,6 +956,8 @@ class GLocalAuthenticationTokens:
 
         network_devices: list[NetworkDevice] = []
         if discover:
+            from .scanner import async_discover_devices  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
+
             LOGGER.debug("Automatically discovering network devices...")
             network_devices = await async_discover_devices(
                 models=models,

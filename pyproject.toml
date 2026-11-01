@@ -29,19 +29,23 @@ dynamic = ["version"]
 dependencies = [
     "ghome-foyer-api>=3.1.0,<4",
     "gpsoauth>=2.0.0",
-    # Note, we want to keep versions of aiohttp, grpcio, requests and zeroconf similar to Home Assistant
+    # Note, we want to keep versions of aiohttp, grpcio, requests and zeroconf (in the discovery extra) similar to Home Assistant
     # https://github.com/home-assistant/core/blob/2026.10.0/homeassistant/package_constraints.txt
     "aiohttp>=3.14.4",
     "grpcio>=1.83.1",
     "requests>=2.34.2",
-    "zeroconf>=0.151.5",
 ]
+
+[project.optional-dependencies]
+# Finding devices on the local network, which the device methods do by default
+discovery = ["zeroconf>=0.151.5"]
 
 [dependency-groups]
 dev = [
     "codespell>=2.4.3",
     "dprint-py>=0.63.0.0",
     "faker>=40.43.0",
+    "glocaltokens[discovery]",
     "mypy>=2.4.0",
     "pylint>=4.1.3",
     "pytest>=9.1.1",

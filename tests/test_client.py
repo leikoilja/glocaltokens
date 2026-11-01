@@ -8,6 +8,8 @@ from datetime import UTC, datetime, timedelta
 from http import HTTPStatus
 import json
 import logging
+import subprocess
+import sys
 from typing import override
 from unittest import TestCase, mock
 from unittest.mock import NonCallableMock, patch
@@ -33,7 +35,8 @@ from glocaltokens.const import (
     REQUEST_TIMEOUT,
 )
 from glocaltokens.exceptions import AuthenticationError, HomegraphError
-from glocaltokens.scanner import NetworkDevice
+from glocaltokens.types import NetworkDevice
+from tests import without_zeroconf
 from tests.assertions import DeviceAssertions, TypeAssertions
 from tests.factory.providers import HomegraphProvider, TokenProvider
 
@@ -944,7 +947,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         self.assertDevice(google_devices[0], homegraph_device)
         assert google_devices[0].as_dict()["cloud_device_id"] is None
 
-    @patch("glocaltokens.client.discover_devices")
+    @patch("glocaltokens.scanner.discover_devices")
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_home_graph")
     def test_get_google_devices__homegraph_error(
         self, m_get_home_graph: NonCallableMock, m_discover_devices: NonCallableMock
@@ -958,6 +961,39 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         with pytest.raises(HomegraphError):
             self.client.get_google_devices_json()
         m_discover_devices.assert_not_called()
+
+    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_home_graph")
+    def test_get_google_devices__without_zeroconf(
+        self, m_get_home_graph: NonCallableMock
+    ) -> None:
+        """Without the discovery extra, discovery fails before any request, and addresses work."""
+        device_name = faker.word()
+        homegraph_device = faker.homegraph_device(device_name=device_name)
+        m_get_home_graph.return_value.homes = [
+            HomeGraph.Home(devices=[homegraph_device])
+        ]
+        stored_graph = HomeGraph()
+        self.client.home_graph = stored_graph
+        with without_zeroconf():
+            for get_devices in (
+                self.client.get_google_devices,
+                self.client.get_google_devices_json,
+            ):
+                with self.subTest(get_devices.__name__):
+                    with pytest.raises(ModuleNotFoundError) as exc_info:
+                        get_devices(force_homegraph_reload=True)
+                    message = str(exc_info.value)
+                    assert "glocaltokens[discovery]" in message
+                    assert "disable_discovery=True" in message
+            m_get_home_graph.assert_not_called()
+            # The stored home graph wasn't dropped for the reload
+            assert self.client.home_graph is stored_graph
+
+            devices = self.client.get_google_devices(
+                disable_discovery=True, addresses={device_name: "192.0.2.10"}
+            )
+            assert "glocaltokens.scanner" not in sys.modules
+        assert [device.ip_address for device in devices] == ["192.0.2.10"]
 
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_home_graph")
     def test_get_google_devices__invalid_addresses(
@@ -1028,7 +1064,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         devices = self.client.get_google_devices(disable_discovery=True)
         assert (devices[0].home_id, devices[0].home_name) == (None, None)
 
-    @patch("glocaltokens.client.discover_devices")
+    @patch("glocaltokens.scanner.discover_devices")
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_home_graph")
     def test_get_google_devices_discovered(
         self, m_get_home_graph: NonCallableMock, m_discover_devices: NonCallableMock
@@ -1054,7 +1090,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         assert google_devices[0].network_device == network_device
         assert google_devices[0].ip_address == network_device.ip_address
 
-    @patch("glocaltokens.client.discover_devices")
+    @patch("glocaltokens.scanner.discover_devices")
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_home_graph")
     @patch("glocaltokens.client.LOGGER.warning")
     def test_get_google_devices__discovered_invalid_token(
@@ -1147,6 +1183,42 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         assert self.client._escape_username("login") == "login"
         # Such account should be impossible to create.
         assert self.client._escape_username("login+tag") == "login%2Btag"
+
+
+class WithoutZeroconfTests(TestCase):
+    """The client without the discovery extra, in a new interpreter."""
+
+    def test_import(self) -> None:
+        """The client and NetworkDevice import and pickle without loading zeroconf."""
+        script = """
+import pickle
+import sys
+
+# None makes importing zeroconf fail, as without the discovery extra
+sys.modules["zeroconf"] = None
+
+import glocaltokens.client
+from glocaltokens.types import NetworkDevice
+
+device = NetworkDevice("Kitchen speaker", "192.0.2.10", 8009, "Google Home", "unique-id")
+assert pickle.loads(pickle.dumps(device)) == device
+assert glocaltokens.client.NetworkDevice is NetworkDevice
+# The None above isn't a loaded zeroconf
+print(sorted(
+    name
+    for name, module in sys.modules.items()
+    if module is not None
+    and (name == "glocaltokens.scanner" or name.partition(".")[0] == "zeroconf")
+))
+"""
+        result = subprocess.run(
+            [sys.executable, "-c", script],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        assert result.returncode == 0, result.stderr
+        assert result.stdout == "[]\n"
 
 
 class DeviceClientTests(TypeAssertions, TestCase):

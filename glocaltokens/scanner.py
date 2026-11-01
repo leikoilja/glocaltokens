@@ -8,20 +8,36 @@ import ipaddress
 import logging
 from threading import Event
 import time
-from typing import TYPE_CHECKING, NamedTuple, override
+from typing import TYPE_CHECKING, override
 import warnings
 
-from zeroconf import (
-    Error as ZeroconfError,
-    ServiceBrowser,
-    ServiceInfo,
-    ServiceListener,
-    ServiceStateChange,
-    Zeroconf,
-)
-from zeroconf.asyncio import AsyncServiceBrowser, AsyncServiceInfo, AsyncZeroconf
-
 from .const import DISCOVERY_TIMEOUT, GOOGLE_CAST_GROUP, SERVICE_INFO_TIMEOUT
+
+# Re-exported for code that imports it from here: "as NetworkDevice" marks it
+# public for type checkers
+from .types import NetworkDevice as NetworkDevice  # noqa: PLC0414  # pylint: disable=useless-import-alias
+
+try:
+    from zeroconf import (
+        Error as ZeroconfError,
+        ServiceBrowser,
+        ServiceInfo,
+        ServiceListener,
+        ServiceStateChange,
+        Zeroconf,
+    )
+    from zeroconf.asyncio import AsyncServiceBrowser, AsyncServiceInfo, AsyncZeroconf
+except ModuleNotFoundError as error:
+    # Only a missing zeroconf means the extra isn't installed: let other
+    # errors, such as one inside zeroconf, through as they are
+    if error.name != "zeroconf":
+        raise
+    raise ModuleNotFoundError(
+        "Discovering devices needs zeroconf: install glocaltokens[discovery], "
+        "or turn discovery off in the device methods with disable_discovery=True "
+        "(discover=False in the async methods)",
+        name="zeroconf",
+    ) from error
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Collection, Iterable
@@ -37,16 +53,6 @@ def _is_reachable(address: str) -> bool:
     """
     ip = ipaddress.ip_address(address)
     return ip.version == 4 or not ip.is_link_local
-
-
-class NetworkDevice(NamedTuple):
-    """Discovered Google device representation."""
-
-    name: str
-    ip_address: str
-    port: int
-    model: str
-    unique_id: str
 
 
 class CastListener(ServiceListener):
