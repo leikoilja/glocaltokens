@@ -866,7 +866,7 @@ class HomeGraphTestCase(IsolatedAsyncioTestCase):
         )
         self.m_secure_channel = channel_patcher.start()
         self.addCleanup(channel_patcher.stop)
-        self.access_tokens = [f"ya29.invented-{n}" for n in range(5)]
+        self.access_tokens = [f"ya29.invented-{n}" for n in range(10)]
         self.client = GLocalAuthenticationTokens(master_token=faker.master_token())
         token_patcher = patch.object(
             self.client, "async_get_access_token", side_effect=self.access_tokens
@@ -931,6 +931,12 @@ class HomeGraphTests(HomeGraphTestCase):
         assert isinstance(exc_info.value.__cause__, grpc.RpcError)
         assert self.google.calls == 5
         assert self.client.home_graph is None
+
+        # With one attempt, the home graph queued for a second isn't fetched
+        self.google.queue(grpc.StatusCode.UNAUTHENTICATED, graph)
+        with pytest.raises(HomegraphError, match="UNAUTHENTICATED"):
+            await self.client.async_get_home_graph(auth_attempts=1)
+        assert self.google.calls == 6
 
     async def test_get_home_graph__errors(self) -> None:
         """Other failures raise HomegraphError with their code, without a retry."""
@@ -1027,6 +1033,18 @@ class DevicesTests(HomeGraphTestCase):
         )
         assert self.google.calls == 2
         self.m_discover.assert_not_awaited()
+
+    async def test_models(self) -> None:
+        """Only the devices of the models asked for are returned."""
+        speaker = faker.homegraph_device()
+        speaker.hardware.model = "Google Home"
+        display = faker.homegraph_device()
+        display.hardware.model = "Google Nest Hub"
+        self.google.queue(HomeGraph(homes=[HomeGraph.Home(devices=[speaker, display])]))
+        devices = await self.client.async_get_google_devices(
+            discover=False, models=["Google Home"]
+        )
+        assert [device.device_id for device in devices] == [speaker.id.device_id]
 
     async def test_home_filter(self) -> None:
         """Only the devices of the home asked for, and the whole home graph."""

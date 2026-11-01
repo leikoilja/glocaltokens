@@ -335,8 +335,9 @@ async def async_discover_devices(
 def _check_loop(zeroconf_instance: Zeroconf | None) -> None:
     """Raise ValueError if the caller's Zeroconf runs on another event loop.
 
-    It would call back on its own loop, and start the lookups there, where
-    discovery couldn't wait for them to finish.
+    It would call discovery back on its own loop's thread, so discovery would
+    start, cancel and wait for its lookups, and change its state, from two
+    threads at once, which asyncio doesn't support.
     """
     if (
         zeroconf_instance is not None
