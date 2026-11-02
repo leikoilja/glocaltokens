@@ -866,10 +866,10 @@ class GLocalAuthenticationTokens:
 
         Raises ValueError if addresses isn't a dict of IPv4 addresses,
         ModuleNotFoundError if discovery is on without the glocaltokens[discovery]
-        extra (zeroconf), RuntimeError if zeroconf_instance runs on this
-        thread's event loop, all before any request, the errors of
-        get_home_graph(), and those of discover_devices() if the event loop of
-        zeroconf_instance stalls or cancels discovery.
+        extra (zeroconf), RuntimeError if the event loop of zeroconf_instance
+        isn't running or is this thread's, all before any request, the errors
+        of get_home_graph(), and those of discover_devices() if that loop
+        stops, stalls or cancels discovery.
         """
         _check_addresses(addresses)
         if disable_discovery is False:

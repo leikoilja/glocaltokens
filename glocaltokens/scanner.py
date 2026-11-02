@@ -434,15 +434,22 @@ def _check_loop(zeroconf_instance: Zeroconf | None) -> None:
 
 
 def _check_sync_loop(zeroconf_instance: Zeroconf | None) -> None:
-    """Raise RuntimeError if the caller's Zeroconf runs on this thread's event loop.
+    """Raise RuntimeError if discovery can't run on the loop of the caller's Zeroconf.
 
-    Discovery would run on that loop, which a blocking call blocks.
+    Discovery runs on that loop, so it must be running, and must not be this
+    thread's, which a blocking call blocks.
     """
+    if zeroconf_instance is None:
+        return
+    if zeroconf_instance.loop is None or not zeroconf_instance.loop.is_running():
+        # As zeroconf's ServiceBrowser
+        msg = "The event loop is not running"
+        raise RuntimeError(msg)
     try:
         loop = asyncio.get_running_loop()
     except RuntimeError:
         return
-    if zeroconf_instance is not None and zeroconf_instance.loop is loop:
+    if zeroconf_instance.loop is loop:
         msg = (
             "zeroconf_instance runs on this thread's event loop, which a "
             "blocking call would block: use the async version, or run this "
