@@ -284,7 +284,7 @@ class FakeServiceInfo:
     cleanup until finish_cleanup is set and then raise, or "complete" with its
     answer once finish_cleanup is set, as a lookup that cancellation reaches
     too late would. Requests answer False at once while misses remain, and
-    raise error if it is set.
+    raise error if it is set. A lookup waits at most 10 seconds for the test.
     """
 
     def __init__(self, type_: str, name: str) -> None:
@@ -336,15 +336,29 @@ class FakeServiceInfo:
         if len(self.requests) <= self.misses:
             return False
         try:
-            await self.answer.wait()
+            await self.wait_for_test(self.answer, "an answer or cancellation")
         except asyncio.CancelledError:
             self.cancelled.set()
             if self.on_cancel == "raise":
                 raise
-            await self.finish_cleanup.wait()
+            await self.wait_for_test(self.finish_cleanup, "finish_cleanup")
             if self.on_cancel == "hold":
                 raise
         return True
+
+    async def wait_for_test(self, event: asyncio.Event, what: str) -> None:
+        """Wait until the test sets event, and fail after 10 seconds.
+
+        Discovery waits for every lookup to end, even when it is cancelled, so
+        a lookup left waiting would hang the test instead of failing it. The
+        tests' own waits are shorter, so they report what didn't happen.
+        """
+        try:
+            await asyncio.wait_for(event.wait(), 10)
+        except TimeoutError:
+            # TimeoutError is an OSError, which discovery takes for a failed lookup
+            msg = f"The lookup of {self.name} waited 10 seconds for {what}"
+            raise AssertionError(msg) from None
 
 
 class FakeBrowser:
@@ -553,7 +567,7 @@ class AsyncDiscoveryTests(DiscoveryTestCase):
         lookup = self.lookups[0]
         lookup.on_cancel = "complete"
         await self.change(f"speaker.{CAST_SERVICE}", ServiceStateChange.Removed)
-        await lookup.cancelled.wait()
+        await asyncio.wait_for(lookup.cancelled.wait(), 5)
         lookup.describe(network_device())
         lookup.finish_cleanup.set()
         assert await asyncio.wait_for(task, 5) == []
@@ -596,12 +610,12 @@ class AsyncDiscoveryTests(DiscoveryTestCase):
                 retired = self.lookups[0]
                 retired.on_cancel = "hold"
                 await self.change(f"speaker.{CAST_SERVICE}", retire)
-                await retired.cancelled.wait()
+                await asyncio.wait_for(retired.cancelled.wait(), 5)
                 if retire is ServiceStateChange.Updated:
                     self.lookups[1].describe(speaker)
 
                 # Past the timeout, discovery stops browsing, then waits
-                await self.browsers[0].cancelled.wait()
+                await asyncio.wait_for(self.browsers[0].cancelled.wait(), 5)
                 await asyncio.sleep(0.01)
                 assert not task.done()
                 assert not self.own_zeroconfs[-1].closed
@@ -630,14 +644,14 @@ class AsyncDiscoveryTests(DiscoveryTestCase):
         async def cancel_twice(task: asyncio.Task[list[NetworkDevice]]) -> None:
             # Cancelled while listening, then again while it waits for lookups
             task.cancel()
-            await self.lookups[0].cancelled.wait()
+            await asyncio.wait_for(self.lookups[0].cancelled.wait(), 5)
             task.cancel()
 
         async def cancel_after_timeout(task: asyncio.Task[list[NetworkDevice]]) -> None:
             # A lookup that an update retired, then cancelled while it waits
             await self.change(f"speaker.{CAST_SERVICE}", ServiceStateChange.Updated)
-            await self.lookups[0].cancelled.wait()
-            await self.browsers[0].cancelled.wait()
+            await asyncio.wait_for(self.lookups[0].cancelled.wait(), 5)
+            await asyncio.wait_for(self.browsers[0].cancelled.wait(), 5)
             task.cancel()
 
         for cancel, listen in ((cancel_twice, 10.0), (cancel_after_timeout, 0.3)):
@@ -671,7 +685,7 @@ class AsyncDiscoveryTests(DiscoveryTestCase):
         own = self.own_zeroconfs[0]
         own.hold_close = True
         task.cancel()
-        await own.closing.wait()
+        await asyncio.wait_for(own.closing.wait(), 5)
         task.cancel()
         await asyncio.sleep(0.01)
         assert not task.done()
@@ -696,7 +710,7 @@ class AsyncDiscoveryTests(DiscoveryTestCase):
         own.hold_close = True
         own.close_error = OSError("Invented failure")
         task.cancel()
-        await own.closing.wait()
+        await asyncio.wait_for(own.closing.wait(), 5)
         task.cancel()
         with self.assertLogs(LOGGER, logging.DEBUG) as logs:
             own.release_close.set()
@@ -710,7 +724,7 @@ class AsyncDiscoveryTests(DiscoveryTestCase):
         await self.change(f"speaker.{CAST_SERVICE}", ServiceStateChange.Added)
         task.cancel()
         with pytest.raises(asyncio.CancelledError):
-            await task
+            await asyncio.wait_for(task, 5)
         assert self.browsers[0].cancelled.is_set()
         assert self.lookups[0].task is not None
         assert self.lookups[0].task.cancelled()
@@ -1062,7 +1076,7 @@ class DiscoverDevicesTests(DiscoveryTestCase):
             await self.change(f"speaker.{CAST_SERVICE}", ServiceStateChange.Added)
             held = self.lookups[0]
             held.on_cancel = "hold"
-            # Teardown would otherwise wait forever on a lookup left uncancelled
+            # Teardown would otherwise wait 10 seconds on a lookup left uncancelled
             self.addCleanup(held.finish_cleanup.set)
             interrupt.set()
             await asyncio.wait_for(held.cancelled.wait(), 5)
