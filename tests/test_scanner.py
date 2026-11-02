@@ -1062,6 +1062,8 @@ class DiscoverDevicesTests(DiscoveryTestCase):
             await self.change(f"speaker.{CAST_SERVICE}", ServiceStateChange.Added)
             held = self.lookups[0]
             held.on_cancel = "hold"
+            # Teardown would otherwise wait forever on a lookup left uncancelled
+            self.addCleanup(held.finish_cleanup.set)
             interrupt.set()
             await asyncio.wait_for(held.cancelled.wait(), 5)
             await asyncio.sleep(0.01)

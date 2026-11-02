@@ -940,9 +940,10 @@ class GLocalAuthenticationTokens:
         response even if another call fetches or drops the stored home graph
         meanwhile.
 
-        Raises the errors of get_google_devices(), except the RuntimeError and
-        EventLoopBlocked of its discovery, with aiohttp's errors as in
-        async_get_master_token().
+        Raises the errors of get_google_devices(), except the RuntimeError,
+        EventLoopBlocked and concurrent.futures.CancelledError of its sync
+        discovery, with aiohttp's errors as in async_get_master_token().
+        Cancelling the call raises asyncio.CancelledError, as for any coroutine.
         """
         # Refuse the caller's mistakes before any request
         _check_addresses(addresses)
@@ -1024,7 +1025,8 @@ class GLocalAuthenticationTokens:
           ({"name": "ip_address"}). Only used when discovery is disabled
           or finds no devices.
         zeroconf_instance: If you already have an initialized zeroconf instance,
-          use it here.
+          use it here. It can't run on this thread's event loop: there, use
+          the async methods, or run this call in an executor.
         force_homegraph_reload: If the stored homegraph should be generated again.
         discovery_timeout: Timeout for zeroconf discovery in seconds.
         home_id: Only return the devices of the home with this ID, the
