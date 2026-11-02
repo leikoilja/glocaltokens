@@ -25,7 +25,7 @@ HOMEGRAPH_DURATION: Final = 24 * 60 * 60
 # Seconds to wait for a response from Google
 REQUEST_TIMEOUT: Final = 10
 
-DISCOVERY_TIMEOUT: Final = 2
+DISCOVERY_TIMEOUT: Final = 3
 # Milliseconds to wait for each zeroconf service lookup
 SERVICE_INFO_TIMEOUT: Final = 3000
 DEFAULT_DISCOVERY_PORT: Final = 0

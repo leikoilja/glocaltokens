@@ -1,22 +1,27 @@
 """Scanner specific tests."""
 
+# pylint: disable=too-many-lines
+
 from __future__ import annotations
 
 import asyncio
+import concurrent.futures
+import gc
 import importlib
 import logging
 import pickle
 import sys
-from threading import Event
+import threading
 import time
 from typing import TYPE_CHECKING, Protocol, override
 from unittest import IsolatedAsyncioTestCase, TestCase, mock
 from unittest.mock import NonCallableMock, patch
+import warnings
 
 from faker import Faker
 from faker.providers import internet as internet_provider, python as python_provider
 import pytest
-from zeroconf import BadTypeInNameException, ServiceStateChange
+from zeroconf import BadTypeInNameException, EventLoopBlocked, ServiceStateChange
 
 from glocaltokens import types as glocaltokens_types
 from glocaltokens.const import GOOGLE_CAST_GROUP, SERVICE_INFO_TIMEOUT
@@ -31,7 +36,7 @@ from glocaltokens.scanner import (
 from tests import without_zeroconf
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Coroutine
+    from collections.abc import Awaitable, Callable, Coroutine
 
     from zeroconf import Zeroconf
 
@@ -255,132 +260,6 @@ class WithoutZeroconfTests(TestCase):
         assert "glocaltokens[discovery]" not in str(exc_info.value)
 
 
-class DiscoverDevicesTests(TestCase):
-    """discover_devices specific tests."""
-
-    @patch("glocaltokens.scanner.ServiceBrowser")
-    @patch("glocaltokens.scanner.Zeroconf")
-    def test_zeroconf_closing(
-        self, m_zeroconf: NonCallableMock, m_service_browser: NonCallableMock
-    ) -> None:
-        """Close only the Zeroconf instance discovery created itself."""
-        # Like the real ServiceBrowser, keep the instance it was given as `zc`
-        m_service_browser.side_effect = lambda zc, *_: mock.Mock(zc=zc)
-
-        # Supplied instance stays open
-        zc = mock.Mock(name="Zeroconf")
-        discover_devices(timeout=0, zeroconf_instance=zc)
-        zc.close.assert_not_called()
-        m_zeroconf.assert_not_called()
-
-        # Own instance is closed
-        discover_devices(timeout=0)
-        m_zeroconf.return_value.close.assert_called_once_with()
-
-    @patch("glocaltokens.scanner.ServiceBrowser", mock.Mock())
-    @patch("glocaltokens.scanner.Zeroconf", mock.Mock())
-    def test_discovery__keeps_application_log_level(self) -> None:
-        """Discovery leaves the level to the application."""
-        package_logger = logging.getLogger("glocaltokens")
-        package_logger.setLevel(logging.CRITICAL)
-        try:
-            discover_devices(timeout=0)
-            package_logger.setLevel(logging.DEBUG)
-            assert LOGGER.level == logging.NOTSET
-            assert LOGGER.getEffectiveLevel() == logging.DEBUG
-
-            with pytest.warns(DeprecationWarning, match="logging_level is deprecated"):
-                discover_devices(timeout=0, logging_level=logging.ERROR)
-            assert LOGGER.level == logging.NOTSET
-        finally:
-            package_logger.setLevel(logging.NOTSET)
-
-    @patch("glocaltokens.scanner.ServiceBrowser")
-    @patch("glocaltokens.scanner.Zeroconf")
-    def test_zeroconf_closing__on_error(
-        self, m_zeroconf: NonCallableMock, m_service_browser: NonCallableMock
-    ) -> None:
-        """Close the own Zeroconf instance even if discovery fails."""
-        m_service_browser.side_effect = OSError("No network")
-        with pytest.raises(OSError, match="No network"):
-            discover_devices(timeout=0)
-        m_zeroconf.return_value.close.assert_called_once_with()
-
-    @patch("glocaltokens.scanner.Event")
-    @patch("glocaltokens.scanner.ServiceBrowser")
-    @patch("glocaltokens.scanner.Zeroconf", mock.Mock())
-    def test_max_devices__counts_device_added_on_update(
-        self, m_service_browser: NonCallableMock, m_event: NonCallableMock
-    ) -> None:
-        """A device that discovery first adds on an update counts towards max_devices."""
-        discovery_complete = m_event.return_value = Event()
-
-        def browse(_zc: object, _type: str, listener: CastListener) -> mock.Mock:
-            service = mock.Mock(name="Service")
-            service.port = 8009
-            service.properties = {b"fn": b"Home", b"md": b"Google Home", b"cd": b"id"}
-            zc = mock.Mock(name="Zeroconf")
-            zc.get_service_info.return_value = service
-            # Skipped, as a link-local IPv6 address can't be used
-            service.parsed_addresses.return_value = ["fe80::1"]
-            listener.add_service(zc, "type", "name")
-            # zeroconf sends an update when an IPv4 address arrives
-            service.parsed_addresses.return_value = [faker.ipv4_private()]
-            listener.update_service(zc, "type", "name")
-            return mock.Mock()
-
-        m_service_browser.side_effect = browse
-        discover_devices(max_devices=1, timeout=1)
-        assert discovery_complete.is_set()
-
-    @patch("glocaltokens.scanner.Event")
-    @patch("glocaltokens.scanner.ServiceBrowser")
-    @patch("glocaltokens.scanner.Zeroconf", mock.Mock())
-    def test_max_devices__counts_wanted_devices(
-        self, m_service_browser: NonCallableMock, m_event: NonCallableMock
-    ) -> None:
-        """Devices that discovery filters out do not count towards max_devices."""
-        discovery_complete = m_event.return_value = Event()
-        complete_after: list[bool] = []
-
-        def browse(_zc: object, _type: str, listener: CastListener) -> mock.Mock:
-            for unique_id, model in (
-                ("chromecast", "Chromecast"),
-                ("group", GOOGLE_CAST_GROUP),
-                ("home", "Google Home"),
-            ):
-                listener.devices[unique_id] = NetworkDevice(
-                    unique_id, faker.ipv4_private(), 8009, model, unique_id
-                )
-                assert listener.add_callback is not None
-                listener.add_callback()
-                complete_after.append(discovery_complete.is_set())
-            return mock.Mock()
-
-        m_service_browser.side_effect = browse
-        devices = discover_devices(
-            models_list=["Google Home", GOOGLE_CAST_GROUP], max_devices=1
-        )
-        assert complete_after == [False, False, True]
-        assert [device.unique_id for device in devices] == ["home"]
-
-    @patch("glocaltokens.scanner.Event")
-    @patch("glocaltokens.scanner.ServiceBrowser")
-    @patch("glocaltokens.scanner.Zeroconf")
-    def test_discovery_cleanup__interrupted(
-        self,
-        m_zeroconf: NonCallableMock,
-        m_service_browser: NonCallableMock,
-        m_event: NonCallableMock,
-    ) -> None:
-        """Stop the browser and close the own Zeroconf if the wait is interrupted."""
-        m_event.return_value.wait.side_effect = KeyboardInterrupt
-        with pytest.raises(KeyboardInterrupt):
-            discover_devices(timeout=0)
-        m_service_browser.return_value.cancel.assert_called_once_with()
-        m_zeroconf.return_value.close.assert_called_once_with()
-
-
 CAST_SERVICE = "_googlecast._tcp.local."
 
 
@@ -527,8 +406,8 @@ def network_device(model: str = "Google Nest Mini") -> NetworkDevice:
     )
 
 
-class AsyncDiscoveryTests(IsolatedAsyncioTestCase):
-    """async_discover_devices() with a fake browser and lookups."""
+class DiscoveryTestCase(IsolatedAsyncioTestCase):
+    """Discovery with a fake browser and lookups, on this test's event loop."""
 
     @override
     async def asyncSetUp(self) -> None:
@@ -571,6 +450,26 @@ class AsyncDiscoveryTests(IsolatedAsyncioTestCase):
         caller_zeroconf.loop = asyncio.get_running_loop()
         self.caller_zeroconf: Zeroconf = caller_zeroconf
 
+    @staticmethod
+    async def until(condition: Callable[[], object]) -> None:
+        """Let the event loop run until a condition holds, for up to 5 seconds."""
+        deadline = time.monotonic() + 5
+        while not condition():
+            if time.monotonic() > deadline:
+                raise AssertionError("condition never held")
+            await asyncio.sleep(0)
+
+    async def change(self, name: str, state_change: ServiceStateChange) -> None:
+        """Report a change, and let a lookup it starts begin."""
+        count = len(self.lookups)
+        self.browsers[0].change(name, state_change)
+        if state_change is not ServiceStateChange.Removed:
+            await self.until(lambda: len(self.lookups) > count)
+
+
+class AsyncDiscoveryTests(DiscoveryTestCase):
+    """async_discover_devices() with a fake browser and lookups."""
+
     async def start(
         self,
         listen: float = 10,
@@ -589,22 +488,6 @@ class AsyncDiscoveryTests(IsolatedAsyncioTestCase):
         )
         await self.until(lambda: bool(self.browsers))
         return task
-
-    @staticmethod
-    async def until(condition: Callable[[], object]) -> None:
-        """Let the event loop run until a condition holds."""
-        for _ in range(100):
-            if condition():
-                return
-            await asyncio.sleep(0)
-        raise AssertionError("condition never held")
-
-    async def change(self, name: str, state_change: ServiceStateChange) -> None:
-        """Report a change, and let a lookup it starts begin."""
-        count = len(self.lookups)
-        self.browsers[0].change(name, state_change)
-        if state_change is not ServiceStateChange.Removed:
-            await self.until(lambda: len(self.lookups) > count)
 
     async def test_found_devices(self) -> None:
         """The wanted devices found, using the caller's Zeroconf without closing it."""
@@ -882,6 +765,431 @@ class AsyncDiscoveryTests(IsolatedAsyncioTestCase):
         await asyncio.sleep(0)
         assert not self.lookups
         assert await asyncio.wait_for(task, 5) == []
+
+
+# Lowered from zeroconf's 10 seconds, to keep stalled-loop tests short
+ALLOWANCE = 0.2
+
+# What discover_devices() returns or raises in another thread
+type Outcome = concurrent.futures.Future[list[NetworkDevice]]
+
+
+class DiscoverDevicesTests(DiscoveryTestCase):
+    """discover_devices() from another thread, as an executor runs it.
+
+    The supplied Zeroconf, and the own one discovery creates, run on this
+    test's event loop, so discovery runs there with the fakes.
+    """
+
+    @override
+    async def asyncSetUp(self) -> None:
+        """Also replace the Zeroconf that discover_devices() creates."""
+        await super().asyncSetUp()
+        patcher = patch("glocaltokens.scanner.Zeroconf")
+        self.own_zeroconf = patcher.start()
+        self.addCleanup(patcher.stop)
+        self.own_zeroconf.return_value.loop = asyncio.get_running_loop()
+
+    @staticmethod
+    def discover(**options: object) -> Outcome:
+        """Run discover_devices() in another thread, and return its outcome."""
+        outcome: Outcome = concurrent.futures.Future()
+
+        def run() -> None:
+            try:
+                outcome.set_result(discover_devices(**options))  # type: ignore[arg-type]
+            except BaseException as error:  # noqa: BLE001  # pylint: disable=broad-exception-caught
+                outcome.set_exception(error)
+
+        # A daemon thread can't keep the tests from ending if discovery hangs
+        threading.Thread(target=run, daemon=True).start()
+        return outcome
+
+    async def run_both(
+        self,
+        scenario: Callable[[], Awaitable[list[NetworkDevice]]],
+        listen: float,
+        models: list[str] | None = None,
+        max_devices: int | None = None,
+    ) -> None:
+        """Run a scenario through both discovery functions, with fresh services each time.
+
+        The scenario reports and answers services, and returns the devices
+        discovery should find.
+        """
+        runs: dict[str, Callable[[], Awaitable[list[NetworkDevice]]]] = {
+            "async_discover_devices": lambda: asyncio.ensure_future(
+                async_discover_devices(
+                    models=models, max_devices=max_devices, timeout=listen
+                )
+            ),
+            "discover_devices": lambda: asyncio.wrap_future(
+                self.discover(
+                    models_list=models, max_devices=max_devices, timeout=listen
+                )
+            ),
+        }
+        for name, start in runs.items():
+            with self.subTest(name):
+                self.browsers.clear()
+                self.lookups.clear()
+                self.failing.clear()
+                discovery = start()
+                await self.until(lambda: bool(self.browsers))
+                expected = await scenario()
+                assert await asyncio.wait_for(discovery, 5) == expected
+                # No lookup outlives discovery
+                assert all(
+                    lookup.task is not None and lookup.task.done()
+                    for lookup in self.lookups
+                )
+        self.own_zeroconf.assert_called_once_with(use_asyncio=False)
+        self.own_zeroconf.return_value.close.assert_called_once_with()
+
+    async def report_until_timeout(self) -> list[NetworkDevice]:
+        """Report services of every kind, one at a time, without enough to stop early."""
+        speaker, group = network_device(), network_device(GOOGLE_CAST_GROUP)
+        earlier, later = network_device(), network_device()
+        self.failing[f"failing.{CAST_SERVICE}"] = OSError("Invented failure")
+
+        await self.change(f"speaker.{CAST_SERVICE}", ServiceStateChange.Added)
+        self.lookups[-1].describe(speaker)
+        await self.change(f"group.{CAST_SERVICE}", ServiceStateChange.Added)
+        self.lookups[-1].describe(group)
+        self.browsers[0].change(
+            f"Living room._sub.{CAST_SERVICE}", ServiceStateChange.Added
+        )
+        await self.change(f"unanswered.{CAST_SERVICE}", ServiceStateChange.Added)
+        await self.change(f"failing.{CAST_SERVICE}", ServiceStateChange.Added)
+
+        await self.change(f"removed.{CAST_SERVICE}", ServiceStateChange.Added)
+        found = self.lookups[-1]
+        found.describe(network_device())
+        await self.until(lambda: found.task is not None and found.task.done())
+        await self.change(f"removed.{CAST_SERVICE}", ServiceStateChange.Removed)
+
+        await self.change(f"updated.{CAST_SERVICE}", ServiceStateChange.Added)
+        first = self.lookups[-1]
+        first.on_cancel = "complete"
+        await self.change(f"updated.{CAST_SERVICE}", ServiceStateChange.Updated)
+        second = self.lookups[-1]
+        second.describe(later)
+        await self.until(lambda: second.task is not None and second.task.done())
+        # The earlier lookup answers last, and its answer isn't kept
+        first.describe(earlier)
+        first.finish_cleanup.set()
+
+        assert not [lookup for lookup in self.lookups if "._sub." in lookup.name]
+        # The group is found but not returned
+        return [speaker, later]
+
+    async def report_until_enough(self) -> list[NetworkDevice]:
+        """Report a model not asked for, then one asked for that is usable once updated."""
+        mini = network_device(model="Google Home Mini")
+        home = network_device(model="Google Home")
+
+        await self.change(f"mini.{CAST_SERVICE}", ServiceStateChange.Added)
+        self.lookups[-1].describe(mini)
+        await self.change(f"home.{CAST_SERVICE}", ServiceStateChange.Added)
+        # Only a link-local IPv6 address, which can't be used
+        first = self.lookups[-1]
+        first.describe(home._replace(ip_address="fe80::1"))
+        await self.until(lambda: first.task is not None and first.task.done())
+        # zeroconf reports an update when an IPv4 address arrives
+        await self.change(f"home.{CAST_SERVICE}", ServiceStateChange.Updated)
+        self.lookups[-1].describe(home)
+        return [home]
+
+    async def test_same_devices_as_async(self) -> None:
+        """discover_devices() finds what async_discover_devices() finds, in the same way."""
+        await self.run_both(self.report_until_timeout, listen=0.5)
+
+    async def test_stops_when_enough_found(self) -> None:
+        """Both stop before the timeout once enough wanted devices are found.
+
+        A model not asked for doesn't count, and a device first usable on an
+        update does. Not stopping would exceed the 5-second wait for discovery.
+        """
+        await self.run_both(
+            self.report_until_enough,
+            listen=10,
+            models=["Google Home"],
+            max_devices=1,
+        )
+
+    async def test_lookups_overlap(self) -> None:
+        """Lookups run at the same time, each asked for at most the time left.
+
+        No lookup answers until all four have been asked. Looked up one after
+        another, the first would wait until the timeout, and the rest would
+        never be asked.
+        """
+        devices = [network_device() for _ in range(4)]
+        outcome = self.discover(
+            max_devices=4, timeout=2, zeroconf_instance=self.caller_zeroconf
+        )
+        await self.until(lambda: bool(self.browsers))
+        for index in range(4):
+            await self.change(
+                f"speaker{index}.{CAST_SERVICE}", ServiceStateChange.Added
+            )
+        await self.until(lambda: all(lookup.requests for lookup in self.lookups))
+        assert not any(lookup.answer.is_set() for lookup in self.lookups)
+
+        for lookup, device in zip(self.lookups, devices, strict=True):
+            lookup.describe(device)
+        found = await asyncio.wait_for(asyncio.wrap_future(outcome), 5)
+        assert sorted(found) == sorted(devices)
+        assert all(
+            0 < timeout <= 2000
+            for lookup in self.lookups
+            for _, timeout in lookup.requests
+        )
+        assert not self.caller_zeroconf.mock_calls  # type: ignore[attr-defined]
+        self.own_zeroconf.assert_not_called()
+
+    async def test_error(self) -> None:
+        """An error from discovery is raised once the own Zeroconf is closed."""
+        with patch(
+            "glocaltokens.scanner.AsyncServiceBrowser",
+            side_effect=OSError("No network"),
+        ):
+            outcome = self.discover(timeout=10)
+            with pytest.raises(OSError, match="No network"):
+                await asyncio.wait_for(asyncio.wrap_future(outcome), 5)
+        self.own_zeroconf.return_value.close.assert_called_once_with()
+
+    async def test_keeps_application_log_level(self) -> None:
+        """Discovery leaves the level to the application."""
+        package_logger = logging.getLogger("glocaltokens")
+        package_logger.setLevel(logging.CRITICAL)
+        self.addCleanup(package_logger.setLevel, logging.NOTSET)
+        await asyncio.wait_for(asyncio.wrap_future(self.discover(timeout=0)), 5)
+        package_logger.setLevel(logging.DEBUG)
+        assert LOGGER.level == logging.NOTSET
+        assert LOGGER.getEffectiveLevel() == logging.DEBUG
+
+        with pytest.warns(DeprecationWarning, match="logging_level is deprecated"):
+            await asyncio.wait_for(
+                asyncio.wrap_future(
+                    self.discover(timeout=0, logging_level=logging.ERROR)
+                ),
+                5,
+            )
+        assert LOGGER.level == logging.NOTSET
+
+    @patch("glocaltokens.scanner._LOOP_ALLOWANCE", ALLOWANCE)
+    async def test_stalled_loop(self) -> None:
+        """A stalled loop gets EventLoopBlocked once the allowance has passed.
+
+        Discovery, frozen with the loop, stops when the loop runs again.
+        """
+        started = time.monotonic()
+        outcome = self.discover(zeroconf_instance=self.caller_zeroconf, timeout=0.2)
+        await self.until(lambda: bool(self.browsers))
+        await self.change(f"speaker.{CAST_SERVICE}", ServiceStateChange.Added)
+        # Blocks this test's loop until the call has raised
+        error = outcome.exception(timeout=5)
+        assert isinstance(error, EventLoopBlocked)
+        assert time.monotonic() - started >= 0.2 + ALLOWANCE
+        assert not self.caller_zeroconf.mock_calls  # type: ignore[attr-defined]
+
+        await asyncio.wait_for(self.browsers[0].cancelled.wait(), 5)
+        await self.until(lambda: asyncio.all_tasks() == {asyncio.current_task()})
+        assert self.lookups[0].task is not None
+        assert self.lookups[0].task.cancelled()
+
+    @patch("glocaltokens.scanner._LOOP_ALLOWANCE", ALLOWANCE)
+    async def test_stalled_before_discovery(self) -> None:
+        """Discovery that a stalled loop starts only after the call has raised doesn't browse."""
+        # Blocks this test's loop from before the call until it has raised
+        outcome = self.discover(zeroconf_instance=self.caller_zeroconf, timeout=0.2)
+        assert isinstance(outcome.exception(timeout=5), EventLoopBlocked)
+        await asyncio.sleep(0.05)
+        assert not self.browsers
+        assert asyncio.all_tasks() == {asyncio.current_task()}
+
+    async def test_gives_up_on_running_discovery(self) -> None:
+        """Discovery still running when the call raises EventLoopBlocked stops at once.
+
+        It doesn't go on until its own timeout. That happens when a slow loop
+        starts discovery late and the call then gives up waiting for it.
+        """
+        give_up = threading.Event()
+
+        def wait_given_up(futures: list[Outcome], _timeout: float) -> object:
+            give_up.wait(5)
+            return set(), set(futures)
+
+        with patch("concurrent.futures.wait", side_effect=wait_given_up):
+            outcome = self.discover(zeroconf_instance=self.caller_zeroconf, timeout=10)
+            await self.until(lambda: bool(self.browsers))
+            await self.change(f"speaker.{CAST_SERVICE}", ServiceStateChange.Added)
+            give_up.set()
+            await self.until(outcome.done)
+        assert isinstance(outcome.exception(), EventLoopBlocked)
+        await asyncio.wait_for(self.browsers[0].cancelled.wait(), 5)
+        await self.until(lambda: asyncio.all_tasks() == {asyncio.current_task()})
+        assert self.lookups[0].task is not None
+        assert self.lookups[0].task.cancelled()
+
+    async def test_cancelled_on_loop(self) -> None:
+        """Discovery that its loop cancels, as when the loop shuts down, raises CancelledError."""
+        outcome = self.discover(zeroconf_instance=self.caller_zeroconf, timeout=10)
+        await self.until(lambda: bool(self.browsers))
+        for task in asyncio.all_tasks() - {asyncio.current_task()}:
+            task.cancel()
+        await self.until(outcome.done)
+        assert isinstance(outcome.exception(), concurrent.futures.CancelledError)
+        assert self.browsers[0].cancelled.is_set()
+
+    async def test_interrupted(self) -> None:
+        """An interrupted wait stops discovery, and is raised once discovery has stopped."""
+        interrupt = threading.Event()
+        wait = concurrent.futures.wait
+        waits: list[float] = []
+
+        def wait_interrupted(futures: list[Outcome], timeout: float) -> object:
+            waits.append(timeout)
+            if len(waits) == 1:
+                interrupt.wait(5)
+                raise KeyboardInterrupt
+            return wait(futures, timeout)
+
+        with patch("concurrent.futures.wait", side_effect=wait_interrupted):
+            outcome = self.discover(timeout=10)
+            await self.until(lambda: bool(self.browsers))
+            await self.change(f"speaker.{CAST_SERVICE}", ServiceStateChange.Added)
+            held = self.lookups[0]
+            held.on_cancel = "hold"
+            # Teardown would otherwise wait forever on a lookup left uncancelled
+            self.addCleanup(held.finish_cleanup.set)
+            interrupt.set()
+            await asyncio.wait_for(held.cancelled.wait(), 5)
+            await asyncio.sleep(0.01)
+            assert not outcome.done()
+            self.own_zeroconf.return_value.close.assert_not_called()
+
+            held.finish_cleanup.set()
+            await self.until(outcome.done)
+        assert isinstance(outcome.exception(), KeyboardInterrupt)
+        assert self.browsers[0].cancelled.is_set()
+        self.own_zeroconf.return_value.close.assert_called_once_with()
+
+    @patch("glocaltokens.scanner._LOOP_ALLOWANCE", ALLOWANCE)
+    async def test_interrupted_while_stalled(self) -> None:
+        """An interrupted wait on a stalled loop is raised once the allowance has passed."""
+        wait = concurrent.futures.wait
+        waits: list[float] = []
+
+        def wait_interrupted(futures: list[Outcome], timeout: float) -> object:
+            waits.append(timeout)
+            if len(waits) == 1:
+                raise KeyboardInterrupt
+            return wait(futures, timeout)
+
+        with patch("concurrent.futures.wait", side_effect=wait_interrupted):
+            # Blocks this test's loop from before the call until it has raised
+            outcome = self.discover(zeroconf_instance=self.caller_zeroconf, timeout=10)
+            assert isinstance(outcome.exception(timeout=5), KeyboardInterrupt)
+        assert waits == [10 + ALLOWANCE, ALLOWANCE]
+        await asyncio.sleep(0.05)
+        assert not self.browsers
+        assert not self.caller_zeroconf.mock_calls  # type: ignore[attr-defined]
+
+    async def test_zeroconf_on_this_loop(self) -> None:
+        """A Zeroconf on the calling thread's event loop is refused, as the call would block it."""
+        with pytest.raises(RuntimeError, match="this thread's event loop"):
+            discover_devices(zeroconf_instance=self.caller_zeroconf)
+        assert not self.browsers
+        assert not self.caller_zeroconf.mock_calls  # type: ignore[attr-defined]
+        self.own_zeroconf.assert_not_called()
+
+    async def test_loop_not_running(self) -> None:
+        """A Zeroconf whose loop isn't running is refused, as zeroconf's ServiceBrowser does."""
+        loop = asyncio.new_event_loop()
+        self.addCleanup(loop.close)
+        zeroconf_instance = NonCallableMock(name="Zeroconf", loop=loop)
+        with pytest.raises(RuntimeError, match="The event loop is not running"):
+            discover_devices(zeroconf_instance=zeroconf_instance)
+        assert not self.browsers
+
+    async def test_loop_closed_before_discovery(self) -> None:
+        """A loop that closes as discovery is submitted refuses it, leaving nothing unawaited."""
+        loop = asyncio.new_event_loop()
+        loop.close()
+        zeroconf_instance = NonCallableMock(name="Zeroconf", loop=loop)
+        with (
+            patch.object(loop, "is_running", return_value=True),
+            warnings.catch_warnings(record=True) as caught,
+        ):
+            warnings.simplefilter("always")
+            with pytest.raises(RuntimeError, match="Event loop is closed"):
+                discover_devices(zeroconf_instance=zeroconf_instance)
+            gc.collect()
+        assert not caught
+
+    @patch("glocaltokens.scanner._LOOP_ALLOWANCE", ALLOWANCE)
+    async def test_loop_closed_during_discovery(self) -> None:
+        """A loop closed before it runs discovery gives EventLoopBlocked, not RuntimeError."""
+        loop = asyncio.new_event_loop()
+        blocking, submitted = threading.Event(), threading.Event()
+
+        def block() -> None:
+            blocking.set()
+            submitted.wait(5)
+            # Stops before running discovery, which was submitted meanwhile
+            loop.stop()
+
+        submit = asyncio.run_coroutine_threadsafe
+
+        def submit_and_tell(
+            coro: Coroutine[object, object, object], loop: asyncio.AbstractEventLoop
+        ) -> concurrent.futures.Future[object]:
+            future = submit(coro, loop)
+            submitted.set()
+            return future
+
+        loop.call_soon(block)
+        thread = threading.Thread(target=loop.run_forever, daemon=True)
+        thread.start()
+        blocking.wait(5)
+        # Not a mock, which would keep the coroutine it is called with
+        with patch("asyncio.run_coroutine_threadsafe", submit_and_tell):
+            outcome = self.discover(
+                zeroconf_instance=NonCallableMock(name="Zeroconf", loop=loop),
+                timeout=0.2,
+            )
+            thread.join(5)
+        # As asyncio warns of any coroutine that a closed loop never ran
+        with pytest.warns(RuntimeWarning, match="never awaited"):
+            loop.close()
+        with pytest.raises(EventLoopBlocked):
+            await asyncio.wait_for(asyncio.wrap_future(outcome), 5)
+
+    async def test_from_thread_with_event_loop(self) -> None:
+        """Called on a thread that runs an event loop, discovery runs on another one.
+
+        That is the own Zeroconf's loop, or the loop of a supplied Zeroconf.
+        """
+        other_loop = asyncio.new_event_loop()
+        running = threading.Event()
+        other_loop.call_soon(running.set)
+        thread = threading.Thread(target=other_loop.run_forever, daemon=True)
+        thread.start()
+        self.addCleanup(other_loop.close)
+        self.addCleanup(thread.join, 5)
+        self.addCleanup(other_loop.call_soon_threadsafe, other_loop.stop)
+        running.wait(5)
+
+        # Called on this test's loop, which waits meanwhile
+        supplied = NonCallableMock(name="Zeroconf", loop=other_loop)
+        assert discover_devices(zeroconf_instance=supplied, timeout=0) == []
+        assert self.browsers[0].zc is supplied
+        self.own_zeroconf.return_value.loop = other_loop
+        assert discover_devices(timeout=0) == []
+        assert self.browsers[1].zc is self.own_zeroconf.return_value
+        self.own_zeroconf.assert_called_once_with(use_asyncio=False)
 
 
 class AsyncRequestTests(IsolatedAsyncioTestCase):

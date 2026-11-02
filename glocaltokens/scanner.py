@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import concurrent.futures
 import contextlib
 import ipaddress
 import logging
@@ -20,7 +21,7 @@ from .types import NetworkDevice as NetworkDevice  # noqa: PLC0414  # pylint: di
 try:
     from zeroconf import (
         Error as ZeroconfError,
-        ServiceBrowser,
+        EventLoopBlocked,
         ServiceInfo,
         ServiceListener,
         ServiceStateChange,
@@ -40,9 +41,13 @@ except ModuleNotFoundError as error:
     ) from error
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Collection, Iterable
+    from collections.abc import Callable, Collection, Coroutine, Iterable
 
 LOGGER = logging.getLogger(__name__)
+
+# How much longer than its timeout discover_devices() waits for discovery on
+# the Zeroconf's event loop, in seconds, as zeroconf's own blocking calls do
+_LOOP_ALLOWANCE = 10
 
 
 def _is_reachable(address: str) -> bool:
@@ -57,6 +62,8 @@ def _is_reachable(address: str) -> bool:
 
 class CastListener(ServiceListener):
     """Zeroconf Cast Services collection.
+
+    Discovery no longer uses it; it is kept for code that does.
 
     Credit (pychromecast):
     https://github.com/home-assistant-libs/pychromecast/.
@@ -195,7 +202,19 @@ def discover_devices(
     zeroconf_instance: Zeroconf | None = None,
     logging_level: int | None = None,
 ) -> list[NetworkDevice]:
-    """Discover devices."""
+    """Discover devices.
+
+    Discovery runs on the event loop of zeroconf_instance, or of a Zeroconf
+    created and closed for the call, while this thread waits. So
+    zeroconf_instance can't run on this thread's event loop: RuntimeError is
+    then raised before discovery, as it is if its loop isn't running. Use
+    async_discover_devices() there, or run this call in an executor.
+
+    If the loop of zeroconf_instance stalls, zeroconf's EventLoopBlocked is
+    raised 10 seconds after the timeout, and discovery stops once the loop
+    runs again. If that loop cancels discovery, for example as it shuts down,
+    concurrent.futures.CancelledError is raised.
+    """
     if logging_level is not None:
         warnings.warn(
             "logging_level is deprecated and ignored, set the level of the "
@@ -203,40 +222,89 @@ def discover_devices(
             DeprecationWarning,
             stacklevel=2,
         )
+    _check_sync_loop(zeroconf_instance)
 
     LOGGER.debug("Discovering devices...")
-
-    def callback() -> None:
-        """Handle zeroconf adding or updating a device."""
-        if _found_enough(listener.devices.values(), models_list, max_devices):
-            discovery_complete.set()
-
-    LOGGER.debug("Creating new Event for discovery completion...")
-    discovery_complete = Event()
-    LOGGER.debug("Creating new CastListener...")
-    listener = CastListener(add_callback=callback, deadline=time.monotonic() + timeout)
     if not zeroconf_instance:
         LOGGER.debug("Creating new Zeroconf instance")
-        zc = Zeroconf()
+        # On zeroconf's own loop thread, even if this thread runs a loop
+        zc = Zeroconf(use_asyncio=False)
     else:
         LOGGER.debug("Using attribute Zeroconf instance")
         zc = zeroconf_instance
     try:
-        LOGGER.debug("Creating zeroconf service browser for _googlecast._tcp.local.")
-        service_browser = ServiceBrowser(zc, "_googlecast._tcp.local.", listener)
-        try:
-            # Wait for the timeout or the maximum number of devices
-            LOGGER.debug("Waiting for discovery completion...")
-            discovery_complete.wait(timeout)
-        finally:
-            # Stop discovery
-            service_browser.cancel()
+        return _discover_on_loop(zc, models_list, max_devices, timeout)
     finally:
         # A supplied instance belongs to the caller, who may still be using it.
         if not zeroconf_instance:
             zc.close()
 
-    return _wanted_devices(listener.devices.values(), models_list)
+
+def _discover_on_loop(
+    zc: Zeroconf,
+    models: list[str] | None,
+    max_devices: int | None,
+    timeout: float,
+) -> list[NetworkDevice]:
+    """Run discovery on the event loop of zc, and wait for it in this thread.
+
+    If the loop stalls, raise EventLoopBlocked once the timeout and
+    _LOOP_ALLOWANCE have passed, without waiting for discovery to stop: it
+    stops when the loop runs again, and if it hasn't started by then, it
+    doesn't browse. If the wait is interrupted, discovery is stopped and
+    given up to _LOOP_ALLOWANCE to finish, then the interruption is raised.
+    """
+    loop = zc.loop
+    if loop is None or not loop.is_running():
+        # As zeroconf's ServiceBrowser
+        msg = "The event loop is not running"
+        raise RuntimeError(msg)
+    abandoned = Event()
+    discovery_complete = asyncio.Event()
+
+    async def search() -> list[NetworkDevice]:
+        if abandoned.is_set():
+            return []
+        return await _discover(zc, models, max_devices, timeout, discovery_complete)
+
+    def abandon() -> None:
+        abandoned.set()
+        # A closed loop runs nothing more, so has no discovery to stop
+        with contextlib.suppress(RuntimeError):
+            loop.call_soon_threadsafe(discovery_complete.set)
+
+    future = _submit(search(), loop)
+    try:
+        done, _ = concurrent.futures.wait([future], timeout + _LOOP_ALLOWANCE)
+    except BaseException:
+        abandon()
+        concurrent.futures.wait([future], _LOOP_ALLOWANCE)
+        raise
+    if not done:
+        abandon()
+        msg = (
+            f"Discovery didn't end {_LOOP_ALLOWANCE} seconds after its timeout: "
+            "the Zeroconf's event loop is blocked or stopped. Discovery stops "
+            "once the loop runs again"
+        )
+        raise EventLoopBlocked(msg)
+    return future.result()
+
+
+def _submit(
+    coro: Coroutine[object, object, list[NetworkDevice]],
+    loop: asyncio.AbstractEventLoop,
+) -> concurrent.futures.Future[list[NetworkDevice]]:
+    """Run a coroutine on another thread's event loop.
+
+    If the loop has closed meanwhile, close the coroutine, which then never
+    runs, and raise RuntimeError. Otherwise only the loop keeps it.
+    """
+    try:
+        return asyncio.run_coroutine_threadsafe(coro, loop)
+    except RuntimeError:
+        coro.close()
+        raise
 
 
 async def async_discover_devices(
@@ -256,7 +324,34 @@ async def async_discover_devices(
     """
     _check_loop(zeroconf_instance)
     LOGGER.debug("Discovering devices...")
-    deadline = time.monotonic() + timeout
+    own_zeroconf: AsyncZeroconf | None = None
+    if zeroconf_instance is None:
+        LOGGER.debug("Creating new Zeroconf instance")
+        own_zeroconf = AsyncZeroconf()
+        zc = own_zeroconf.zeroconf
+    else:
+        zc = zeroconf_instance
+    try:
+        return await _discover(zc, models, max_devices, timeout, asyncio.Event())
+    finally:
+        # A supplied instance belongs to the caller, who may still be using it.
+        if own_zeroconf is not None:
+            await _close(own_zeroconf)
+
+
+async def _discover(
+    zc: Zeroconf,
+    models: list[str] | None,
+    max_devices: int | None,
+    listen: float,
+    discovery_complete: asyncio.Event,
+) -> list[NetworkDevice]:
+    """Discover devices with zc, which runs on this event loop.
+
+    Discovery ends after listening for listen seconds, once enough devices are
+    found, or when discovery_complete is set.
+    """
+    deadline = time.monotonic() + listen
     devices: dict[str, NetworkDevice] = {}
     # How many changes each service has had: only a lookup started for the
     # latest one may keep its answer
@@ -266,14 +361,13 @@ async def async_discover_devices(
     # Every lookup that hasn't finished, including ones whose answer is no
     # longer kept, so that none outlives discovery
     pending: set[asyncio.Task[None]] = set()
-    discovery_complete = asyncio.Event()
 
     async def look_up(zc: Zeroconf, type_: str, name: str, change: int) -> None:
         try:
             service = AsyncServiceInfo(type_, name)
             found = await _async_request(service, zc, deadline)
         except (OSError, ZeroconfError):
-            # As discover_devices(): give up on this service
+            # Give up on this service
             LOGGER.debug("Failed to look up %s, %s", type_, name, exc_info=True)
             return
         # A later update or removal of the service replaced this lookup
@@ -308,32 +402,18 @@ async def async_discover_devices(
         pending.add(task)
         task.add_done_callback(pending.discard)
 
-    own_zeroconf: AsyncZeroconf | None = None
-    if zeroconf_instance is None:
-        LOGGER.debug("Creating new Zeroconf instance")
-        own_zeroconf = AsyncZeroconf()
-        zc = own_zeroconf.zeroconf
-    else:
-        zc = zeroconf_instance
+    browser = AsyncServiceBrowser(zc, "_googlecast._tcp.local.", handlers=[on_change])
     try:
-        browser = AsyncServiceBrowser(
-            zc, "_googlecast._tcp.local.", handlers=[on_change]
-        )
-        try:
-            # Wait for the timeout or the maximum number of devices
-            with contextlib.suppress(TimeoutError):
-                await asyncio.wait_for(discovery_complete.wait(), timeout)
-        finally:
-            await browser.async_cancel()
-            for task in pending:
-                _cancel_once(task)
-            # Every lookup finishes its cleanup before the own Zeroconf closes
-            # or discovery ends, even if discovery is cancelled meanwhile
-            await _finish(pending)
+        # Wait for the timeout or the maximum number of devices
+        with contextlib.suppress(TimeoutError):
+            await asyncio.wait_for(discovery_complete.wait(), listen)
     finally:
-        # A supplied instance belongs to the caller, who may still be using it.
-        if own_zeroconf is not None:
-            await _close(own_zeroconf)
+        await browser.async_cancel()
+        for task in pending:
+            _cancel_once(task)
+        # Every lookup finishes its cleanup before the own Zeroconf closes
+        # or discovery ends, even if discovery is cancelled meanwhile
+        await _finish(pending)
 
     return _wanted_devices(devices.values(), models)
 
@@ -351,6 +431,24 @@ def _check_loop(zeroconf_instance: Zeroconf | None) -> None:
     ):
         msg = "zeroconf_instance must run on the calling event loop"
         raise ValueError(msg)
+
+
+def _check_sync_loop(zeroconf_instance: Zeroconf | None) -> None:
+    """Raise RuntimeError if the caller's Zeroconf runs on this thread's event loop.
+
+    Discovery would run on that loop, which a blocking call blocks.
+    """
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        return
+    if zeroconf_instance is not None and zeroconf_instance.loop is loop:
+        msg = (
+            "zeroconf_instance runs on this thread's event loop, which a "
+            "blocking call would block: use the async version, or run this "
+            "call in an executor"
+        )
+        raise RuntimeError(msg)
 
 
 async def _async_request(

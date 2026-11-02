@@ -8,7 +8,6 @@ from contextlib import asynccontextmanager, contextmanager
 from contextvars import ContextVar
 from datetime import UTC, datetime
 from http import HTTPStatus
-import importlib
 import json
 import logging
 import os
@@ -858,7 +857,8 @@ class GLocalAuthenticationTokens:
           ({"name": "ip_address"}). Only used when discovery is disabled
           or finds no devices.
         zeroconf_instance: If you already have an initialized zeroconf instance,
-          use it here.
+          use it here. It can't run on this thread's event loop: there, use
+          the async methods, or run this call in an executor.
         force_homegraph_reload: If the stored homegraph should be generated again.
         discovery_timeout: Timeout for zeroconf discovery in seconds.
         home_id: Only return the devices of the home with this ID, the
@@ -866,13 +866,18 @@ class GLocalAuthenticationTokens:
 
         Raises ValueError if addresses isn't a dict of IPv4 addresses,
         ModuleNotFoundError if discovery is on without the glocaltokens[discovery]
-        extra (zeroconf), both before any request, and the errors of
-        get_home_graph().
+        extra (zeroconf), RuntimeError if zeroconf_instance runs on this
+        thread's event loop, all before any request, the errors of
+        get_home_graph(), and those of discover_devices() if the event loop of
+        zeroconf_instance stalls or cancels discovery.
         """
         _check_addresses(addresses)
         if disable_discovery is False:
-            # Raises before any request if zeroconf isn't installed
-            importlib.import_module(".scanner", __package__)
+            # Raises before any request if zeroconf isn't installed, or if
+            # discovery can't run on the loop of zeroconf_instance
+            from .scanner import _check_sync_loop  # noqa: PLC0415  # pylint: disable=import-outside-toplevel
+
+            _check_sync_loop(zeroconf_instance)
 
         # Set models_list to empty list if None
         LOGGER.debug("Initializing models list if empty...")
@@ -935,8 +940,10 @@ class GLocalAuthenticationTokens:
         response even if another call fetches or drops the stored home graph
         meanwhile.
 
-        Raises the errors of get_google_devices(), with aiohttp's errors as in
-        async_get_master_token().
+        Raises the errors of get_google_devices(), except the RuntimeError,
+        EventLoopBlocked and concurrent.futures.CancelledError of its sync
+        discovery, with aiohttp's errors as in async_get_master_token().
+        Cancelling the call raises asyncio.CancelledError, as for any coroutine.
         """
         # Refuse the caller's mistakes before any request
         _check_addresses(addresses)
@@ -1018,7 +1025,8 @@ class GLocalAuthenticationTokens:
           ({"name": "ip_address"}). Only used when discovery is disabled
           or finds no devices.
         zeroconf_instance: If you already have an initialized zeroconf instance,
-          use it here.
+          use it here. It can't run on this thread's event loop: there, use
+          the async methods, or run this call in an executor.
         force_homegraph_reload: If the stored homegraph should be generated again.
         discovery_timeout: Timeout for zeroconf discovery in seconds.
         home_id: Only return the devices of the home with this ID, the
