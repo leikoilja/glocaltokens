@@ -210,9 +210,10 @@ Both `get_google_devices()` and `get_google_devices_json()` accept these argumen
 | `addresses`              | `None`  | `{"device name": "IPv4 address"}`, used when discovery is disabled or finds nothing.         |
 | `zeroconf_instance`      | `None`  | An existing `zeroconf.Zeroconf` instance to use for discovery. glocaltokens leaves it open.  |
 | `force_homegraph_reload` | `False` | Fetch new tokens from Google even if the cached ones are less than 24 hours old.             |
-| `discovery_timeout`      | `2`     | How long to search the local network, in seconds.                                            |
+| `discovery_timeout`      | `3`     | How long to search the local network, in seconds.                                            |
 | `home_id`                | `None`  | Only return the devices of the home with this ID. `None` returns the devices of every home.  |
 
+`zeroconf_instance` can't run on the calling thread's event loop (see [Errors](#errors)).
 `get_google_devices_json()` also accepts `indent` for the JSON output (default `2`).
 `async_get_google_devices()` and `async_get_google_devices_and_home_graph()` take these options with clearer names (see [Async device options](#async-device-options)).
 
@@ -274,7 +275,7 @@ with clearer names for three of them:
 | `home_id`           | `None`  | `home_id`                | Only return the devices of the home with this ID. `None` returns the devices of every home.                                      |
 | `discover`          | `True`  | `disable_discovery`      | Search the local network for device IP addresses and ports. `discover=False` is `disable_discovery=True`.                        |
 | `zeroconf_instance` | `None`  | `zeroconf_instance`      | A `zeroconf.Zeroconf` that runs on your event loop, such as Home Assistant's shared instance or an `AsyncZeroconf`'s `zeroconf`. |
-| `discovery_timeout` | `2`     | `discovery_timeout`      | How long to search the local network, in seconds.                                                                                |
+| `discovery_timeout` | `3`     | `discovery_timeout`      | How long to search the local network, in seconds.                                                                                |
 | `addresses`         | `None`  | `addresses`              | `{"device name": "IPv4 address"}`, used when discovery is off or finds nothing.                                                  |
 | `reload_home_graph` | `False` | `force_homegraph_reload` | Fetch a new home graph, with new device tokens, from Google even if the cached one is less than 24 hours old.                    |
 
@@ -320,12 +321,18 @@ These errors from the libraries glocaltokens uses also reach your code:
   `get_master_token()`, `get_access_token()`, `get_email()` and the device methods raise it. Try again later.
 - `OSError` when network discovery cannot start, for example because no network interface is available.
   Pass `disable_discovery=True` (`discover=False` to the async methods) if you do not need IP addresses and ports.
+- `zeroconf.EventLoopBlocked` from the sync device methods when the event loop of your `zeroconf_instance` is blocked or stopped during discovery:
+  they raise it 10 seconds after `discovery_timeout`. Discovery stops once that loop runs again; until then, it stays on the loop.
+  If that loop cancels discovery instead, for example as it shuts down, they raise `concurrent.futures.CancelledError`.
 - `OSError` when the certificate bundle that `REQUESTS_CA_BUNDLE` or `CURL_CA_BUNDLE` names can't be loaded. Each request for a token or the email address
   raises it; the home graph request, which uses gRPC's own certificates, doesn't. Correct or unset the variable.
 
 A mistake in your call raises `ValueError`: creating the client without credentials or with a `master_token` that doesn't start with `aas_et/`,
 or passing `addresses` that aren't a dictionary of IPv4 addresses to the device methods.
 The async device methods also raise it for a `zeroconf_instance` that runs on another event loop, before any request.
+The sync device methods raise `RuntimeError` before any request for a `zeroconf_instance` that runs on the calling thread's event loop,
+as discovery runs on that loop, which the call would block. They don't return the devices with only your `addresses` instead.
+On that loop, use the async methods, or run the whole sync call in an executor, as Home Assistant's `async_add_executor_job()` does.
 
 Without the `discovery` extra, the device methods raise `ModuleNotFoundError` before any request if discovery is on.
 Install `glocaltokens[discovery]`, or pass `disable_discovery=True` (`discover=False` to the async methods).

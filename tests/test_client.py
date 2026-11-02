@@ -4,6 +4,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from datetime import UTC, datetime, timedelta
 from http import HTTPStatus
 import json
@@ -994,6 +995,36 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
             )
             assert "glocaltokens.scanner" not in sys.modules
         assert [device.ip_address for device in devices] == ["192.0.2.10"]
+
+    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_home_graph")
+    def test_get_google_devices__zeroconf_on_this_loop(
+        self, m_get_home_graph: NonCallableMock
+    ) -> None:
+        """A Zeroconf on the calling thread's event loop is refused before any request.
+
+        Discovery would run on that loop, which the call blocks. The devices
+        with only the given addresses aren't returned instead.
+        """
+
+        async def call_on_loop() -> None:
+            zeroconf_instance = NonCallableMock(name="Zeroconf")
+            zeroconf_instance.loop = asyncio.get_running_loop()
+            for get_devices in (
+                self.client.get_google_devices,
+                self.client.get_google_devices_json,
+            ):
+                with (
+                    self.subTest(get_devices.__name__),
+                    pytest.raises(RuntimeError, match="this thread's event loop"),
+                ):
+                    get_devices(
+                        zeroconf_instance=zeroconf_instance,
+                        addresses={faker.word(): faker.ipv4()},
+                    )
+            assert not zeroconf_instance.mock_calls
+
+        asyncio.run(call_on_loop())
+        m_get_home_graph.assert_not_called()
 
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_home_graph")
     def test_get_google_devices__invalid_addresses(
