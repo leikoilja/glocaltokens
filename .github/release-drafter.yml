@@ -16,6 +16,12 @@ categories:
     semver-increment: "minor"
     when:
       label: "feature"
+  # Keep this above the other headings: exclusive stops later headings from
+  # matching, so a breaking PR is listed only here, even with other labels.
+  - title: "💥 Breaking Changes"
+    exclusive: true
+    when:
+      label: "breaking"
   - title: "🚀 Features"
     when:
       labels:
