@@ -857,8 +857,9 @@ class GLocalAuthenticationTokens:
           ({"name": "ip_address"}). Only used when discovery is disabled
           or finds no devices.
         zeroconf_instance: If you already have an initialized zeroconf instance,
-          use it here. It can't run on this thread's event loop: there, use
-          the async methods, or run this call in an executor.
+          use it here. Its event loop must be running, and can't be this
+          thread's: there, use the async methods, or run this call in an
+          executor.
         force_homegraph_reload: If the stored homegraph should be generated again.
         discovery_timeout: Timeout for zeroconf discovery in seconds.
         home_id: Only return the devices of the home with this ID, the
@@ -1025,8 +1026,9 @@ class GLocalAuthenticationTokens:
           ({"name": "ip_address"}). Only used when discovery is disabled
           or finds no devices.
         zeroconf_instance: If you already have an initialized zeroconf instance,
-          use it here. It can't run on this thread's event loop: there, use
-          the async methods, or run this call in an executor.
+          use it here. Its event loop must be running, and can't be this
+          thread's: there, use the async methods, or run this call in an
+          executor.
         force_homegraph_reload: If the stored homegraph should be generated again.
         discovery_timeout: Timeout for zeroconf discovery in seconds.
         home_id: Only return the devices of the home with this ID, the
