@@ -1027,6 +1027,33 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         m_get_home_graph.assert_not_called()
 
     @patch("glocaltokens.client.GLocalAuthenticationTokens.get_home_graph")
+    def test_get_google_devices__zeroconf_loop_not_running(
+        self, m_get_home_graph: NonCallableMock
+    ) -> None:
+        """A Zeroconf whose event loop isn't running is refused before any request.
+
+        Discovery couldn't run on that loop. The devices with only the given
+        addresses aren't returned instead.
+        """
+        loop = asyncio.new_event_loop()
+        self.addCleanup(loop.close)
+        zeroconf_instance = NonCallableMock(name="Zeroconf", loop=loop)
+        for get_devices in (
+            self.client.get_google_devices,
+            self.client.get_google_devices_json,
+        ):
+            with (
+                self.subTest(get_devices.__name__),
+                pytest.raises(RuntimeError, match="The event loop is not running"),
+            ):
+                get_devices(
+                    zeroconf_instance=zeroconf_instance,
+                    addresses={faker.word(): faker.ipv4()},
+                )
+        m_get_home_graph.assert_not_called()
+        assert not zeroconf_instance.mock_calls
+
+    @patch("glocaltokens.client.GLocalAuthenticationTokens.get_home_graph")
     def test_get_google_devices__invalid_addresses(
         self, m_get_home_graph: NonCallableMock
     ) -> None:
