@@ -213,7 +213,7 @@ Both `get_google_devices()` and `get_google_devices_json()` accept these argumen
 | `discovery_timeout`      | `3`     | How long to search the local network, in seconds.                                            |
 | `home_id`                | `None`  | Only return the devices of the home with this ID. `None` returns the devices of every home.  |
 
-`zeroconf_instance` can't run on the calling thread's event loop (see [Errors](#errors)).
+The event loop of `zeroconf_instance` must be running, and can't be the calling thread's (see [Errors](#errors)).
 `get_google_devices_json()` also accepts `indent` for the JSON output (default `2`).
 `async_get_google_devices()` and `async_get_google_devices_and_home_graph()` take these options with clearer names (see [Async device options](#async-device-options)).
 
@@ -333,6 +333,7 @@ The async device methods also raise it for a `zeroconf_instance` that runs on an
 The sync device methods raise `RuntimeError` before any request for a `zeroconf_instance` that runs on the calling thread's event loop,
 as discovery runs on that loop, which the call would block. They don't return the devices with only your `addresses` instead.
 On that loop, use the async methods, or run the whole sync call in an executor, as Home Assistant's `async_add_executor_job()` does.
+They also raise `RuntimeError` before any request if the event loop of your `zeroconf_instance` isn't running, for example after you closed a `Zeroconf` that runs its own loop.
 
 Without the `discovery` extra, the device methods raise `ModuleNotFoundError` before any request if discovery is on.
 Install `glocaltokens[discovery]`, or pass `disable_discovery=True` (`discover=False` to the async methods).
