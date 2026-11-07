@@ -14,6 +14,7 @@ import os
 from pathlib import Path
 import random
 import ssl
+import sys
 from typing import TYPE_CHECKING, Final, override
 from urllib.parse import urlencode
 import warnings
@@ -148,8 +149,14 @@ def _google_ssl_context() -> ssl.SSLContext:
     Like gpsoauth, they offer no ALPN and allow TLS session tickets, as gpsoauth
     found that Google refuses its logins otherwise.
     """
-    context = ssl.create_default_context()
-    context.options &= ~ssl.OP_NO_TICKET  # pylint: disable=no-member
+    context = gpsoauth.create_ssl_context()
+    # Keep the certificate policy of create_default_context(), which added
+    # strict validation and intermediate trust anchors in Python 3.13.
+    if sys.version_info >= (3, 13):
+        context.verify_flags |= (
+            ssl.VerifyFlags.VERIFY_X509_STRICT
+            | ssl.VerifyFlags.VERIFY_X509_PARTIAL_CHAIN
+        )
     bundle = (
         os.environ.get("REQUESTS_CA_BUNDLE")
         or os.environ.get("CURL_CA_BUNDLE")
@@ -181,63 +188,10 @@ try:
 except OSError as bundle_error:
     _GOOGLE_SSL_CONTEXT = bundle_error
 
-# The request gpsoauth 2.0.0 sends, which it can't send through another HTTP
-# client. Keep the fields and their order in step with gpsoauth. The headers
-# are those requests sends for gpsoauth, in the same order.
-_AUTH_HEADERS: Final = {
-    "User-Agent": gpsoauth.USER_AGENT,
-    "Accept-Encoding": "identity",
-    "Accept": "*/*",
-    "Connection": "keep-alive",
-    "Content-type": "application/x-www-form-urlencoded",
-}
-_GPSOAUTH_CLIENT_SIG: Final = "38918a453d07199354f8b19af05ec6562ced5788"
-
-
-def _master_token_data(
-    email: str, android_id: str, credentials: Mapping[str, str | bytes | int]
-) -> dict[str, str | bytes | int]:
-    """Return the fields of gpsoauth's perform_master_login() or exchange_token()."""
-    return {
-        "accountType": "HOSTED_OR_GOOGLE",
-        "Email": email,
-        "has_permission": 1,
-        "add_account": 1,
-        **credentials,
-        "service": "ac2dm",
-        "source": "android",
-        "androidId": android_id,
-        "device_country": "us",
-        "operatorCountry": "us",
-        "lang": "en",
-        "sdk_version": 17,
-        "google_play_services_version": 240913000,
-        "client_sig": _GPSOAUTH_CLIENT_SIG,
-        "callerSig": _GPSOAUTH_CLIENT_SIG,
-        "droidguard_results": "dummy123",
-    }
-
-
-def _oauth_data(
-    email: str, master_token: str, android_id: str, service: str
-) -> dict[str, str | bytes | int]:
-    """Return the fields of gpsoauth's perform_oauth() for glocaltokens' tokens."""
-    return {
-        "accountType": "HOSTED_OR_GOOGLE",
-        "Email": email,
-        "has_permission": 1,
-        "EncryptedPasswd": master_token,
-        "service": service,
-        "source": "android",
-        "androidId": android_id,
-        "app": ACCESS_TOKEN_APP_NAME,
-        "client_sig": ACCESS_TOKEN_CLIENT_SIGNATURE,
-        "device_country": "us",
-        "operatorCountry": "us",
-        "lang": "en",
-        "sdk_version": 17,
-        "google_play_services_version": 240913000,
-    }
+# Include requests' defaults as well as gpsoauth's explicit auth headers,
+# preserving their order and overriding caller defaults in the same way.
+_AUTH_HEADERS: Final = requests.utils.default_headers()
+_AUTH_HEADERS.update(gpsoauth.build_auth_headers())
 
 
 def _token(res: Mapping[str, str], key: str, name: str) -> str:
@@ -486,31 +440,29 @@ class GLocalAuthenticationTokens:
         """
         if not self.master_token:
             username = self._escape_username(self.username or "")
-            credentials: dict[str, str | bytes | int]
             if self.oauth_token:
                 LOGGER.debug(
                     "There is no stored master_token, exchanging the oauth_token"
                 )
                 # Google doesn't need the email address to exchange the cookie
-                credentials = {"ACCESS_TOKEN": 1, "Token": self.oauth_token}
+                data = gpsoauth.build_exchange_token_data(
+                    username, self.oauth_token, self.get_android_id()
+                )
             elif self.username and self.password:
                 LOGGER.debug(
                     "There is no stored master_token, "
                     "logging in using username and password"
                 )
                 try:
-                    signature = gpsoauth.google.construct_signature(
-                        username, self.password, gpsoauth.ANDROID_KEY_7_3_29
+                    data = gpsoauth.build_master_login_data(
+                        username, self.password, self.get_android_id()
                     )
                 except ValueError as error:
                     # gpsoauth encrypts the username and password together
                     raise AuthenticationError(_PASSWORD_TOO_LONG) from error
-                credentials = {"EncryptedPasswd": signature}
             else:
                 raise AuthenticationError(_NO_CREDENTIALS)
-            res = await self._async_auth_request(
-                _master_token_data(username, self.get_android_id(), credentials)
-            )
+            res = await self._async_auth_request(data)
             self.master_token = _token(res, "Token", "master token")
             self.email = res.get("Email") or None
         LOGGER.debug("Master token: %s", censor(self.master_token))
@@ -577,11 +529,13 @@ class GLocalAuthenticationTokens:
         master_token = await self.async_get_master_token()
         # Google doesn't need the email address once there is a master token
         res = await self._async_auth_request(
-            _oauth_data(
+            gpsoauth.build_oauth_data(
                 self._escape_username(self.username or ""),
                 master_token,
                 self.get_android_id(),
-                ACCESS_TOKEN_SERVICE,
+                service=ACCESS_TOKEN_SERVICE,
+                app=ACCESS_TOKEN_APP_NAME,
+                client_sig=ACCESS_TOKEN_CLIENT_SIGNATURE,
             )
         )
         return self._log_access_token(self._store_access_token(res))
@@ -638,11 +592,13 @@ class GLocalAuthenticationTokens:
         if self.email is not None:
             return self.email
         res = await self._async_auth_request(
-            _oauth_data(
+            gpsoauth.build_oauth_data(
                 self._escape_username(self.username or ""),
                 master_token,
                 self.get_android_id(),
-                EMAIL_ACCESS_TOKEN_SERVICE,
+                service=EMAIL_ACCESS_TOKEN_SERVICE,
+                app=ACCESS_TOKEN_APP_NAME,
+                client_sig=ACCESS_TOKEN_CLIENT_SIGNATURE,
             )
         )
         if not res.get("Auth"):

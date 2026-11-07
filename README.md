@@ -24,6 +24,12 @@ Store the master token, not your password: with the master token alone, glocalto
 
 glocaltokens requires Python 3.12 or newer.
 
+It also requires gpsoauth 3.0.0 or newer. If you use Google Keep Sync 1.1.0 in the same Home Assistant installation,
+keep glocaltokens at 2.0.0 until Google Keep Sync publishes a release that allows gpsoauth 3.
+Google Keep Sync 1.1.0 requires exactly gpsoauth 2.0.0, so its requirements cannot be satisfied together with this release's.
+The proposed fix is tracked in [Google Keep Sync #96](https://github.com/watkins-matt/home-assistant-google-keep-sync/pull/96);
+an open or merged pull request does not change the installed release's requirements.
+
 To fill in the IP address and port of each device, glocaltokens looks for your devices on the local network.
 That needs the `discovery` extra, which installs zeroconf.
 

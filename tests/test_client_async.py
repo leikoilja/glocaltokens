@@ -16,6 +16,7 @@ from tempfile import TemporaryDirectory
 from typing import TYPE_CHECKING, TypedDict, Unpack, override
 from unittest import IsolatedAsyncioTestCase
 from unittest.mock import AsyncMock, NonCallableMock, patch
+from urllib.parse import parse_qs
 
 import aiohttp
 from aiohttp import web
@@ -189,12 +190,14 @@ class SignInTests(AsyncClientTestCase):
         credentials: dict[str, Credentials] = {
             "password": {"username": username, "password": faker.password()},
             "oauth_token": {"username": username, "oauth_token": "oauth2_4/invented"},
+            "oauth_token without username": {"oauth_token": "oauth2_4/invented"},
             "access token": {"master_token": master_token},
             "email": {"master_token": master_token},
         }
         token_answers = {
             "password": f"Token={master_token}\n",
             "oauth_token": f"Token={master_token}\n",
+            "oauth_token without username": f"Token={master_token}\n",
             "access token": "Auth=ya29.invented\n",
             "email": "Auth=ya29.invented\n",
         }
@@ -242,6 +245,9 @@ class SignInTests(AsyncClientTestCase):
                         await client.async_get_master_token()
                 received = self.google.received[0]
 
+                self.assert_auth_parameters(
+                    case, received, kwargs, android_id, master_token
+                )
                 assert received.body == sent.body.encode()
                 # The same headers in the same order, after Host, which
                 # requests only adds when it sends the request. The test
@@ -250,6 +256,54 @@ class SignInTests(AsyncClientTestCase):
                     (name.lower(), value)
                     for name, value in list(received.headers.items())[1:]
                 ] == [(name.lower(), value) for name, value in sent.headers.items()]
+
+    def assert_auth_parameters(
+        self,
+        case: str,
+        received: Received,
+        kwargs: Credentials,
+        android_id: str,
+        master_token: str,
+    ) -> None:
+        """Check GLT's wire parameters independently of the shared builders."""
+        # These expectations are independent of the shared builders:
+        # GLT chooses the credentials, email escaping and OAuth scope.
+        fields = parse_qs(received.body.decode(), keep_blank_values=True)
+        assert fields["androidId"] == [android_id]
+        assert fields["Email"] == (
+            ["first.last%2Bhome@example.com"] if "username" in kwargs else [""]
+        )
+        if "username" in kwargs:
+            assert b"Email=first.last%252Bhome%40example.com" in received.body
+        if case == "password":
+            assert fields["EncryptedPasswd"] == ["AFcb4K-x_y=="]
+            assert b"EncryptedPasswd=AFcb4K-x_y%3D%3D" in received.body
+            assert "Token" not in fields
+        elif case.startswith("oauth_token"):
+            assert fields["Token"] == ["oauth2_4/invented"]
+            assert fields["ACCESS_TOKEN"] == ["1"]
+            assert "EncryptedPasswd" not in fields
+        else:
+            assert fields["EncryptedPasswd"] == [master_token]
+            assert fields["app"] == ["com.google.android.apps.chromecast.app"]
+            assert fields["client_sig"] == ["24bb24c05e47e0aefa68a58a766179d9b613a600"]
+        assert fields["service"] == [
+            {
+                "password": "ac2dm",
+                "oauth_token": "ac2dm",
+                "oauth_token without username": "ac2dm",
+                "access token": "oauth2:https://www.google.com/accounts/OAuthLogin",
+                "email": "oauth2:https://www.googleapis.com/auth/userinfo.email",
+            }[case]
+        ]
+        for name, value in {
+            "User-Agent": "GoogleAuth/1.4",
+            "Accept-Encoding": "identity",
+            "Accept": "*/*",
+            "Connection": "keep-alive",
+            "Content-Type": "application/x-www-form-urlencoded",
+        }.items():
+            assert received.headers[name] == value
 
     async def test_get_master_token(self) -> None:
         """A master token comes from the oauth_token, else from the password."""
@@ -605,11 +659,13 @@ class SessionTests(AsyncClientTestCase):
 class TLSTests(IsolatedAsyncioTestCase):
     """The TLS settings of the requests to Google."""
 
-    async def https_google(self) -> tuple[FakeGoogle, trustme.CA]:
+    async def https_google(
+        self, ca: trustme.CA | None = None, *, identity: str = "127.0.0.1"
+    ) -> tuple[FakeGoogle, trustme.CA]:
         """Start a fake Google whose certificate comes from an invented CA."""
-        ca = trustme.CA()
+        ca = ca or trustme.CA()
         server_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-        ca.issue_cert("127.0.0.1").configure_cert(server_context)
+        ca.issue_cert(identity).configure_cert(server_context)
         server_context.set_alpn_protocols(["http/1.1"])
         google = FakeGoogle()
         await google.start(server_context)
@@ -627,6 +683,16 @@ class TLSTests(IsolatedAsyncioTestCase):
         assert isinstance(_GOOGLE_SSL_CONTEXT, ssl.SSLContext)
         assert _GOOGLE_SSL_CONTEXT.verify_mode == ssl.CERT_REQUIRED
         assert _GOOGLE_SSL_CONTEXT.check_hostname
+        assert (
+            _GOOGLE_SSL_CONTEXT.verify_flags & ssl.VerifyFlags.VERIFY_X509_TRUSTED_FIRST
+        )
+        for flag in (
+            ssl.VerifyFlags.VERIFY_X509_STRICT,
+            ssl.VerifyFlags.VERIFY_X509_PARTIAL_CHAIN,
+        ):
+            assert bool(_GOOGLE_SSL_CONTEXT.verify_flags & flag) == (
+                sys.version_info >= (3, 13)
+            )
         assert not _GOOGLE_SSL_CONTEXT.options & ssl.OP_NO_TICKET  # pylint: disable=no-member
 
     async def test_certificate_checked_on_unchecked_session(self) -> None:
@@ -649,9 +715,98 @@ class TLSTests(IsolatedAsyncioTestCase):
 
             trusting = _google_ssl_context()
             ca.configure_trust(trusting)
+            # Even a client trying to enable ALPN cannot offer it to Google.
+            trusting.set_alpn_protocols(["http/1.1"])
             with patch("glocaltokens.client._GOOGLE_SSL_CONTEXT", trusting):
                 assert await client.async_get_master_token() == master_token
         assert google.received[0].alpn is None
+
+    async def test_wrong_hostname_rejected(self) -> None:
+        """Trusting the issuer does not allow a certificate for another hostname."""
+        google, ca = await self.https_google(identity="other.example.test")
+        trusting = _google_ssl_context()
+        ca.configure_trust(trusting)
+        client = GLocalAuthenticationTokens(
+            oauth_token="oauth2_4/invented", session=await self.unchecked_session()
+        )
+        with (
+            patch("gpsoauth.AUTH_URL", google.url("/auth")),
+            patch("glocaltokens.client._GOOGLE_SSL_CONTEXT", trusting),
+            pytest.raises(
+                aiohttp.ClientConnectorCertificateError, match="not valid for"
+            ),
+        ):
+            await client.async_get_master_token()
+        assert not google.received
+
+    async def test_intermediate_only_bundle(self) -> None:
+        """Intermediate trust anchors follow Python's existing version policy."""
+        root = trustme.CA()
+        intermediate = root.create_child_ca()
+        google, _ = await self.https_google(intermediate)
+        with (
+            intermediate.cert_pem.tempfile() as bundle,
+            trustme.CA().cert_pem.tempfile() as unrelated_system_bundle,
+            TemporaryDirectory() as empty_ca_directory,
+            patch.dict(
+                os.environ,
+                {
+                    "REQUESTS_CA_BUNDLE": bundle,
+                    "SSL_CERT_FILE": unrelated_system_bundle,
+                    "SSL_CERT_DIR": empty_ca_directory,
+                },
+            ),
+        ):
+            context = _google_ssl_context()
+        master_token = faker.master_token()
+        google.queue("/auth", text(f"Token={master_token}\n"))
+        client = GLocalAuthenticationTokens(
+            oauth_token="oauth2_4/invented", session=await self.unchecked_session()
+        )
+        with (
+            patch("gpsoauth.AUTH_URL", google.url("/auth")),
+            patch("glocaltokens.client._GOOGLE_SSL_CONTEXT", context),
+        ):
+            if sys.version_info >= (3, 13):
+                assert await client.async_get_master_token() == master_token
+            else:
+                with pytest.raises(aiohttp.ClientConnectorCertificateError):
+                    await client.async_get_master_token()
+                assert not google.received
+
+    async def test_system_and_requests_roots_remain_trusted(self) -> None:
+        """Both trust sources work across requests without rebuilding the context."""
+        system_google, system_ca = await self.https_google()
+        bundle_google, bundle_ca = await self.https_google()
+        with (
+            system_ca.cert_pem.tempfile() as system_bundle,
+            bundle_ca.cert_pem.tempfile() as requests_bundle,
+            TemporaryDirectory() as empty_ca_directory,
+            patch.dict(
+                os.environ,
+                {
+                    "SSL_CERT_FILE": system_bundle,
+                    "SSL_CERT_DIR": empty_ca_directory,
+                    "REQUESTS_CA_BUNDLE": requests_bundle,
+                },
+            ),
+        ):
+            context = _google_ssl_context()
+        session = await self.unchecked_session()
+        with (
+            patch("glocaltokens.client._GOOGLE_SSL_CONTEXT", context),
+            patch(
+                "gpsoauth.create_ssl_context", side_effect=AssertionError("CA reload")
+            ),
+        ):
+            for google in (system_google, bundle_google):
+                master_token = faker.master_token()
+                google.queue("/auth", text(f"Token={master_token}\n"))
+                client = GLocalAuthenticationTokens(
+                    oauth_token="oauth2_4/invented", session=session
+                )
+                with patch("gpsoauth.AUTH_URL", google.url("/auth")):
+                    assert await client.async_get_master_token() == master_token
 
     async def test_userinfo_certificate_checked(self) -> None:
         """The userinfo request, which carries an access token, checks the certificate too."""
