@@ -32,7 +32,7 @@ documentation:
               - "!**/*.py"
               - "!.github/**/*"
 
-test:
+testing:
   - all:
       - head-branch: ["^(?!dependabot/)"]
       - changed-files:
