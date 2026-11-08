@@ -41,7 +41,7 @@ categories:
         - "removal"
   - title: "🧰 Maintenance"
     when:
-      label: "test"
+      label: "testing"
   - title: "🧱 Dependency Updates"
     when:
       label: "dependencies"
