@@ -27,11 +27,10 @@ uv downloads a matching Python if you do not have one.
 
 ## Checks
 
-We use [ruff](https://docs.astral.sh/ruff/) and [dprint](https://dprint.dev/)
-to make sure the code follows the style, and mypy and pylint to check it.
-
-You can run all checks with [prek](https://prek.j178.dev/), a faster drop-in replacement for `pre-commit`,
-using the settings included in the repository.
+The checks run with [prek](https://prek.j178.dev/), a faster drop-in replacement for `pre-commit`, using the settings included in the repository.
+They format the code with [ruff](https://docs.astral.sh/ruff/) and [dprint](https://dprint.dev/), check it with ruff, mypy and pylint,
+run the tests with pytest, look for typos with codespell, and check the GitHub workflow and configuration files with check-jsonschema
+and [zizmor](https://docs.zizmor.sh/).
 
 Activate the `prek` git hook:
 
@@ -55,6 +54,14 @@ The checks above also run the tests. To run only the tests:
 $ uv run pytest
 ```
 
+A warning during the tests fails them. `filterwarnings` in `pyproject.toml` lists the few warnings that are ignored.
+
+On pull requests, CI runs the checks on Python 3.12 and 3.14, then the tests again with the lowest versions of the direct
+dependencies that `pyproject.toml` allows. It also builds the package on Linux, macOS and Windows, installs the wheel into a
+clean environment and imports it. It checks that the wheel contains the `py.typed` typing marker and the license's copyright
+notice, and that its runtime dependencies and Python requirement match the ones listed in `.github/workflows/build.yml`.
+If you change them in `pyproject.toml`, update that list too.
+
 When writing unittests please follow the good practises like:
 
 - Use `faker` to fake the data. See [examples](https://faker.readthedocs.io/en/master/)
@@ -74,6 +81,14 @@ The next release uses the biggest of these among the pull requests merged since 
 
 Pull requests that only change dependencies, documentation, tests or GitHub files are labelled automatically.
 Pull requests that change Python code need a label from a maintainer, such as `bug`, `feature` or `refactoring`.
+
+[Kodiak](https://kodiakhq.com/) squash-merges a pull request once a maintainer adds the `automerge` label and the required checks pass.
+It also merges Dependabot's minor and patch updates without the label; major updates wait for a maintainer.
+
+Publishing a GitHub release uploads the package to PyPI. The `Publish to PyPI` workflow builds the wheel and sdist once from
+the release tag, which sets their version, then uploads exactly those files from a separate job in the `release` environment.
+PyPI accepts them through [trusted publishing](https://docs.pypi.org/trusted-publishers/), so the repository holds no PyPI
+token.
 
 ## Report bugs using GitHub's [issues](../../issues)
 

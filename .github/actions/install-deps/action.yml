@@ -11,8 +11,9 @@ runs:
   steps:
     - name: Install uv
       uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+      # enable-cache stays at its default, "auto": the cache is on for CI and
+      # off for release events, so release builds don't restore a cache.
       with:
-        enable-cache: true
         python-version: ${{ inputs.python-version }}
         # Different jobs on the same Python version still compute the
         # same key and race to save it, so add the job name too.

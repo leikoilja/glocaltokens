@@ -34,3 +34,35 @@ jobs:
 
       - name: Check if package builds
         run: uv build
+
+      # Install the wheel into a new environment and import it with -I, so the
+      # source tree can't stand in for it. This catches a wrong package path, a
+      # missing typing marker or copyright notice, changed runtime dependencies
+      # and imports the declared dependencies don't cover. Bash expands the
+      # wheel's file name on Windows too.
+      - name: Check the built wheel
+        shell: bash
+        run: |
+          uv run --isolated --no-project --with dist/*.whl python -I - <<'EOF'
+          import pathlib
+          import sys
+          from importlib import metadata
+
+          import glocaltokens
+          import glocaltokens.client
+
+          dist = metadata.distribution("glocaltokens")
+          assert pathlib.Path(glocaltokens.__file__) == dist.locate_file("glocaltokens/__init__.py")
+          assert "glocaltokens/py.typed" in {str(path) for path in dist.files or ()}
+          assert set(dist.requires or ()) == {
+              "aiohttp>=3.14.4",
+              "ghome-foyer-api<4,>=3.1.0",
+              "gpsoauth>=3.0.0",
+              "grpcio>=1.83.1",
+              "requests>=2.34.2",
+              "zeroconf>=0.151.5; extra == 'discovery'",
+          }, dist.requires
+          assert dist.metadata["Requires-Python"] == ">=3.12"
+          assert "Copyright (c) 2021 Ilja Leiko" in (dist.read_text("licenses/LICENSE") or "")
+          print(f"glocaltokens {dist.version} on Python {sys.version}")
+          EOF
