@@ -59,8 +59,7 @@ A warning during the tests fails them. `filterwarnings` in `pyproject.toml` list
 On pull requests, CI runs the checks on Python 3.12 and 3.14, then the tests again with the lowest versions of the direct
 dependencies that `pyproject.toml` allows. It also builds the package on Linux, macOS and Windows, installs the wheel into a
 clean environment and imports it. It checks that the wheel contains the `py.typed` typing marker and the license's copyright
-notice, and that its runtime dependencies and Python requirement match the ones listed in `.github/workflows/build.yml`.
-If you change them in `pyproject.toml`, update that list too.
+notice, and that its runtime dependencies and Python requirement match those in `pyproject.toml`.
 
 When writing unittests please follow the good practises like:
 
