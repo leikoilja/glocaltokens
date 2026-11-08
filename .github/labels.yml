@@ -74,11 +74,7 @@
   description: Removes or deprecates a feature or unused code
   color: 9ae7ea
 
-# Was "test": from_name renames that label, so the pull requests that have it
-# keep it under the new name. Remove from_name after that first sync: while it
-# is set, the sync skips this label and never applies changes to it.
 - name: testing
-  from_name: test
   description: Changes tests or test tooling only
   color: b1fc6f
 
