@@ -72,9 +72,12 @@ jobs:
           requires = {Requirement(req) for req in dist.requires or ()}
           assert pathlib.Path(glocaltokens.__file__) == dist.locate_file("glocaltokens/__init__.py")
           assert "glocaltokens/py.typed" in {str(path) for path in dist.files or ()}
-          assert requires == expected, sorted(map(str, requires ^ expected))
-          python_requires = dist.metadata["Requires-Python"], project["requires-python"]
-          assert SpecifierSet(python_requires[0]) == SpecifierSet(python_requires[1]), python_requires
+          assert requires == expected, {
+              "wheel only": sorted(map(str, requires - expected)),
+              "pyproject.toml only": sorted(map(str, expected - requires)),
+          }
+          python_requires = {"wheel": dist.metadata["Requires-Python"], "pyproject.toml": project["requires-python"]}
+          assert SpecifierSet(python_requires["wheel"]) == SpecifierSet(python_requires["pyproject.toml"]), python_requires
           assert "Copyright (c) 2021 Ilja Leiko" in (dist.read_text("licenses/LICENSE") or "")
           print(f"glocaltokens {dist.version} on Python {sys.version}")
           EOF
