@@ -103,7 +103,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         GLocalAuthenticationTokens(oauth_token=faker.word())
 
         # With a master_token of another length than today's
-        GLocalAuthenticationTokens(master_token=f"aas_et/{faker.word()}")
+        GLocalAuthenticationTokens(master_token="aas_et/" + "a" * 236)
 
     @patch("glocaltokens.client.logging.basicConfig")
     def test_initialization__verbose_deprecated(
@@ -150,13 +150,51 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         with pytest.raises(ValueError, match=no_credentials):
             GLocalAuthenticationTokens()
 
-        # With invalid master_token
-        master_token = faker.password(length=40, special_chars=False)
-        with pytest.raises(ValueError, match="AAS_ET format") as exc_info:
-            GLocalAuthenticationTokens(
-                username=faker.word(), password=faker.word(), master_token=master_token
-            )
-        assert master_token not in str(exc_info.value)
+        # Malformed masters are rejected even with other credentials available.
+        for token in ("invalid-master-marker", "aas_et/" + "a" * 192):
+            with (
+                self.subTest(token_length=len(token)),
+                self.assertNoLogs(LOGGER, level=logging.DEBUG),
+                pytest.raises(ValueError, match="AAS_ET format") as exc_info,
+            ):
+                GLocalAuthenticationTokens(
+                    username="invented", password="invented", master_token=token
+                )
+            assert token not in str(exc_info.value)
+
+    def test_initialization__blank_tokens(self) -> None:
+        """Blanks are stored as empty strings and count as absent credentials."""
+        with pytest.raises(ValueError, match="You must either provide"):
+            GLocalAuthenticationTokens(master_token=" \t", oauth_token="\n")
+
+        client = GLocalAuthenticationTokens(
+            username=" invented ",
+            password=" password ",
+            master_token="\t",
+            oauth_token=" ",
+        )
+        assert client.master_token == client.oauth_token == ""
+        assert client.username == " invented "
+        assert client.password == " password "
+        assert self.client.master_token is None
+        assert self.client.oauth_token is None
+
+    def test_initialization__non_string_tokens(self) -> None:
+        """Reject falsey and truthy non-strings before logging or coercion."""
+        for token in (0, b"", b"invalid-type-marker"):
+            for field in ("master_token", "oauth_token"):
+                with (
+                    self.subTest(field=field, token_type=type(token)),
+                    self.assertNoLogs(LOGGER, level=logging.DEBUG),
+                    pytest.raises(
+                        ValueError, match=rf"^{field} must be a string or None$"
+                    ),
+                ):
+                    GLocalAuthenticationTokens(
+                        username="invented",
+                        password="invented",
+                        **{field: token},  # type: ignore[arg-type]
+                    )
 
     def test_get_android_id(self) -> None:
         """Test getting android id."""
@@ -191,7 +229,10 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         )
 
     @patch("glocaltokens.client.perform_master_login")
-    def test_get_master_token(self, m_perform_master_login: NonCallableMock) -> None:
+    @patch("glocaltokens.client.perform_oauth")
+    def test_get_master_token(
+        self, oauth: NonCallableMock, m_perform_master_login: NonCallableMock
+    ) -> None:
         """Test getting master token."""
         # No token in response
         m_perform_master_login.return_value = {"Error": "BadAuthentication"}
@@ -202,12 +243,6 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
             self.client.username, self.client.password, self.client.get_android_id()
         )
 
-        # No token and no reason in response, or an empty token
-        for response in ({}, {"Token": ""}):
-            m_perform_master_login.return_value = response
-            with pytest.raises(AuthenticationError) as exc_info:
-                self.client.get_master_token()
-            assert exc_info.value.error is None
         assert self.client.master_token is None
 
         # Reset mocks
@@ -217,7 +252,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         expected_master_token = faker.master_token()
         email = faker.email()
         m_perform_master_login.return_value = {
-            "Token": expected_master_token,
+            "Token": f" \t{expected_master_token}\n",
             "Email": email,
         }
         master_token = self.client.get_master_token()
@@ -230,6 +265,68 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         # Another request - must return the same token all the time
         master_token = self.client.get_master_token()
         assert expected_master_token == master_token
+        assert self.client.master_token == expected_master_token
+        oauth.return_value = {"Auth": "ya29.invented"}
+        assert self.client.get_access_token() == "ya29.invented"
+        assert oauth.call_args.args[1] == expected_master_token
+        m_perform_master_login.assert_called_once()
+
+    @patch("glocaltokens.client.perform_master_login")
+    def test_get_master_token__rejected_reply(self, login: NonCallableMock) -> None:
+        """Refuse invalid replies safely and leave the master and email intact."""
+        marker = "invented-secret-marker"
+        self.client.email = "previous@example.test"
+        for reply, message, reason in (
+            (
+                {"Error": "NeedsBrowser"},
+                "Google gave no master token: NeedsBrowser",
+                "NeedsBrowser",
+            ),
+            ({"Token": None, "Error": [marker]}, "Google gave no master token", None),
+            ({"Token": ""}, "Google gave no master token", None),
+            ({"Token": " \t"}, "Google gave an invalid master token", None),
+            (
+                {"Token": "aas_et/" + "a" * 192},
+                "Google gave an invalid master token",
+                None,
+            ),
+            ({"Token": marker}, "Google gave an invalid master token", None),
+            (
+                {"Token": "aas_et/" + "a" * 220 + "\x00"},
+                "Google gave an invalid master token",
+                None,
+            ),
+            ({"Token": 0}, "Google gave an invalid master token", None),
+            (
+                {"Token": [marker], "Error": marker},
+                "Google gave an invalid master token",
+                None,
+            ),
+        ):
+            with self.subTest(message=message, reason=reason):
+                login.return_value = {
+                    "Url": f"https://example.test/{marker}",
+                    "Email": "replacement@example.test",
+                    **reply,
+                }
+                with (
+                    self.assertLogs(LOGGER, level=logging.DEBUG) as logs,
+                    pytest.raises(AuthenticationError) as caught,
+                ):
+                    self.client.get_master_token()
+                assert str(caught.value) == message
+                assert caught.value.error == reason
+                assert all(marker not in line for line in logs.output)
+                assert self.client.master_token is None
+                assert self.client.email == "previous@example.test"
+
+        master = "aas_et/" + "a" * 236
+        login.return_value = {
+            "Token": f" {master} ",
+            "Email": "replacement@example.test",
+        }
+        assert self.client.get_master_token() == master
+        assert self.client.email == "replacement@example.test"
 
     @patch("glocaltokens.client.perform_master_login")
     def test_get_master_token__password_too_long(
@@ -358,7 +455,7 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         assert oauth_token not in message
         assert url not in message
 
-        master_token = faker.master_token()
+        master_token = "aas_et/" + "a" * 236
         m_perform_oauth.return_value = {"Error": "BadAuthentication"}
         client = GLocalAuthenticationTokens(master_token=master_token)
         with pytest.raises(AuthenticationError) as exc_info:
@@ -369,16 +466,21 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
 
     @patch("glocaltokens.client.perform_master_login")
     @patch("glocaltokens.client.exchange_token")
+    @patch("glocaltokens.client.perform_oauth")
     def test_get_master_token__oauth_token(
         self,
+        m_perform_oauth: NonCallableMock,
         m_exchange_token: NonCallableMock,
         m_perform_master_login: NonCallableMock,
     ) -> None:
         """Test getting a master token by exchanging an oauth_token cookie."""
-        oauth_token = faker.word()
+        oauth_token = "invented cookie"
         client = GLocalAuthenticationTokens(
-            username=faker.word(), password=faker.word(), oauth_token=oauth_token
+            username=faker.word(),
+            password=faker.word(),
+            oauth_token=f" \t{oauth_token}\n",
         )
+        assert client.oauth_token == oauth_token
 
         # Failed exchange
         m_exchange_token.return_value = {"Error": "BadAuthentication"}
@@ -388,8 +490,9 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
 
         # Successful exchange, preferred over the password
         expected_master_token = faker.master_token()
-        m_exchange_token.return_value = {"Token": expected_master_token}
+        m_exchange_token.return_value = {"Token": f" \t{expected_master_token} "}
         assert client.get_master_token() == expected_master_token
+        assert client.master_token == expected_master_token
         m_exchange_token.assert_called_with(
             client.username, oauth_token, client.get_android_id()
         )
@@ -398,6 +501,9 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         # The stored master token is used from now on
         m_exchange_token.reset_mock()
         assert client.get_master_token() == expected_master_token
+        m_perform_oauth.return_value = {"Auth": "ya29.invented"}
+        assert client.get_access_token() == "ya29.invented"
+        assert m_perform_oauth.call_args.args[1] == expected_master_token
         m_exchange_token.assert_not_called()
 
     @patch("glocaltokens.client.perform_oauth")
@@ -441,16 +547,53 @@ class GLocalAuthenticationTokensClientTests(DeviceAssertions, TypeAssertions, Te
         assert m_send.call_args.kwargs["timeout"] == REQUEST_TIMEOUT
 
     @patch("glocaltokens.client.perform_master_login")
-    def test_get_master_token__stored_without_password(
-        self, m_perform_master_login: NonCallableMock
+    @patch("glocaltokens.client.exchange_token")
+    def test_get_master_token__prefers_stored_master(
+        self, exchange: NonCallableMock, login: NonCallableMock
     ) -> None:
-        """Test a stored master token is returned without a password."""
+        """Prefer a normalized cached master to OAuth and password credentials."""
         master_token = faker.master_token()
         client = GLocalAuthenticationTokens(
-            username=faker.word(), master_token=master_token
+            username="invented",
+            password="invented",
+            master_token=f" \t{master_token}\n",
+            oauth_token="invented-cookie",
         )
+        assert client.master_token == master_token
         assert client.get_master_token() == master_token
-        m_perform_master_login.assert_not_called()
+        exchange.assert_not_called()
+        login.assert_not_called()
+
+    @patch("glocaltokens.client.exchange_token")
+    @patch("glocaltokens.client.perform_oauth")
+    def test_get_master_token__reassigned(
+        self, oauth: NonCallableMock, exchange: NonCallableMock
+    ) -> None:
+        """Normalize consumed reassigned values and reject malformed ones locally."""
+        master = "aas_et/" + "a" * 236
+        client = GLocalAuthenticationTokens(master_token=master)
+        client.master_token = f" \t{master}\n"
+        client.oauth_token = 0  # type: ignore[assignment]
+        oauth.return_value = {"Auth": "ya29.invented"}
+        assert client.get_access_token() == "ya29.invented"
+        assert client.master_token == master
+        assert oauth.call_args.args[1] == master
+        exchange.assert_not_called()
+
+        for bad_master in ("aas_et/short", 0, b""):
+            client.master_token = bad_master  # type: ignore[assignment]
+            with pytest.raises(ValueError, match="^master_token"):
+                client.get_master_token()
+        client.invalidate_master_token()
+        with pytest.raises(ValueError, match="^oauth_token"):
+            client.get_master_token()
+        exchange.assert_not_called()
+
+        client.oauth_token = " \tinvented cookie \n"
+        exchange.return_value = {"Token": f" {master} "}
+        assert client.get_master_token() == master
+        assert client.oauth_token == "invented cookie"
+        assert exchange.call_args.args[1] == "invented cookie"
 
     @patch("glocaltokens.client.perform_oauth")
     def test_get_access_token__without_username(

@@ -16,7 +16,7 @@ EMAIL_ACCESS_TOKEN_SERVICE: Final = (
 USERINFO_URL: Final = "https://openidconnect.googleapis.com/v1/userinfo"
 
 ANDROID_ID_LENGTH: Final = 16
-MASTER_TOKEN_LENGTH: Final = 216
+MASTER_TOKEN_LENGTH: Final = 216  # Historical payload length, excluding the prefix.
 LOCAL_AUTH_TOKEN_LENGTH: Final = 108
 
 GOOGLE_HOME_FOYER_API: Final = "googlehomefoyer-pa.googleapis.com:443"

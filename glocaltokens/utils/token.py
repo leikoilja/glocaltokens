@@ -1,14 +1,18 @@
 """Token utilities."""
 
-from ..const import LOCAL_AUTH_TOKEN_LENGTH, MASTER_TOKEN_LENGTH
+from .. import const
+from ..const import LOCAL_AUTH_TOKEN_LENGTH
+
+MASTER_TOKEN_LENGTH = const.MASTER_TOKEN_LENGTH  # Keep the existing import path.
 
 
 def is_aas_et(token: str) -> bool:
-    """AAS type token."""
+    """Check the master token's local shape after trimming outer whitespace."""
+    token = token.strip() if isinstance(token, str) else ""
     return (
-        isinstance(token, str)
+        len(token) >= 200
         and token.startswith("aas_et/")
-        and len(token) == len("aas_et/") + MASTER_TOKEN_LENGTH
+        and all("!" <= char <= "~" for char in token)
     )
 
 
