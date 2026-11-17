@@ -8,6 +8,7 @@ import asyncio
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 import json
+import logging
 import os
 import ssl
 import subprocess
@@ -32,6 +33,7 @@ from yarl import URL
 
 from glocaltokens.client import (
     _GOOGLE_SSL_CONTEXT,
+    LOGGER,
     GLocalAuthenticationTokens,
     _google_ssl_context,
 )
@@ -307,31 +309,47 @@ class SignInTests(AsyncClientTestCase):
 
     async def test_get_master_token(self) -> None:
         """A master token comes from the oauth_token, else from the password."""
-        master_token = faker.master_token()
+        master_token = "aas_et/" + "a" * 236
         email = faker.email()
         both = {
             "username": faker.email(),
             "password": faker.password(),
-            "oauth_token": "oauth2_4/invented",
+            "oauth_token": " \toauth2_4/invented cookie\u00a0",
         }
-        self.google.queue("/auth", text(f"Token={master_token}\nEmail={email}\n"))
+        self.google.queue("/auth", text(f"Token=\t {master_token} \r\nEmail={email}\n"))
         client = self.client(**both)
         assert await client.async_get_master_token() == master_token
         assert client.master_token == master_token
         assert client.email == email
-        assert b"Token=oauth2_4%2Finvented" in self.google.received[0].body
-        assert b"EncryptedPasswd" not in self.google.received[0].body
+        fields = parse_qs(self.google.received[0].body.decode())
+        assert fields["Token"] == ["oauth2_4/invented cookie"]
+        assert "EncryptedPasswd" not in fields
 
         # A stored master token needs no request
         assert await client.async_get_master_token() == master_token
         assert len(self.google.received) == 1
+        self.google.queue("/auth", text("Auth=ya29.invented\n"))
+        assert await client.async_get_access_token() == "ya29.invented"
+        assert parse_qs(self.google.received[1].body.decode())["EncryptedPasswd"] == [
+            master_token
+        ]
 
         # Without an oauth_token, the password
-        self.google.queue("/auth", text(f"Token={master_token}\n"))
-        client = self.client(username=both["username"], password=both["password"])
+        self.google.queue("/auth", text(f"Token= {master_token} \n"))
+        client = self.client(
+            username=both["username"], password=both["password"], oauth_token=" \t"
+        )
         assert await client.async_get_master_token() == master_token
-        assert b"EncryptedPasswd=" in self.google.received[1].body
+        assert client.master_token == master_token
+        assert b"EncryptedPasswd=" in self.google.received[2].body
         assert client.email is None
+        self.google.queue("/auth", text("Auth=ya29.email\n"))
+        self.google.queue("/userinfo", user_info(email))
+        assert await client.async_get_email() == email
+        assert parse_qs(self.google.received[3].body.decode())["EncryptedPasswd"] == [
+            master_token
+        ]
+        assert self.google.paths == ["/auth", "/auth", "/auth", "/auth", "/userinfo"]
 
     async def test_get_master_token__refused(self) -> None:
         """Google's reason for giving no master token is kept."""
@@ -341,6 +359,54 @@ class SignInTests(AsyncClientTestCase):
             await client.async_get_master_token()
         assert exc_info.value.error == "BadAuthentication"
         assert client.master_token is None
+
+    async def test_get_master_token__invalid_reply_and_retry(self) -> None:
+        """An invalid exchange reply is neither disclosed nor cached."""
+        marker = "invented-secret-marker"
+        client = self.client(oauth_token="old-cookie")
+        client.oauth_token = " \tinvented cookie\n"
+        self.google.queue(
+            "/auth",
+            text(f"Token={marker}\nEmail=invalid@example.test\nError={marker}\n"),
+        )
+        with (
+            self.assertLogs(LOGGER, level=logging.DEBUG) as logs,
+            pytest.raises(
+                AuthenticationError, match="^Google gave an invalid master token$"
+            ) as caught,
+        ):
+            await client.async_get_master_token()
+        assert caught.value.error is None
+        assert all(marker not in line for line in logs.output)
+        assert (client.master_token, client.email) == (None, None)
+
+        master = "aas_et/" + "a" * 193
+        self.google.queue(
+            "/auth", text(f"Token= {master} \nEmail=valid@example.test\n")
+        )
+        assert await client.async_get_master_token() == master
+        assert client.master_token == master
+        assert client.email == "valid@example.test"
+        assert client.oauth_token == "invented cookie"
+        assert [
+            parse_qs(request.body.decode())["Token"] for request in self.google.received
+        ] == [["invented cookie"], ["invented cookie"]]
+
+    async def test_get_master_token__reassigned(self) -> None:
+        """Check a reassigned master before returning it or trying to exchange."""
+        master = faker.master_token()
+        client = self.client(master_token=master)
+        client.master_token = f" \t{master}\n"
+        client.oauth_token = b""  # type: ignore[assignment]
+        assert await client.async_get_master_token() == master
+        assert client.master_token == master
+        client.master_token = "aas_et/short"
+        with pytest.raises(ValueError, match="AAS_ET format"):
+            await client.async_get_master_token()
+        client.invalidate_master_token()
+        with pytest.raises(ValueError, match="^oauth_token must be a string or None$"):
+            await client.async_get_master_token()
+        assert not self.google.received
 
     async def test_get_master_token__no_request_possible(self) -> None:
         """Without a way to get a master token, or with too long a password, nothing is sent."""

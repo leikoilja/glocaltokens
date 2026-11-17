@@ -114,6 +114,11 @@ email = client.get_email()
 Treat the `oauth_token` cookie like a password. If the exchange fails, sign in again to get a new cookie.
 After that, use the stored master token as shown above.
 
+The client trims leading and trailing whitespace from both tokens. A master token
+must start with `aas_et/`, have at least 200 characters including the prefix, and
+contain only visible ASCII characters with no spaces. A master token can pass
+this local check and still be refused by Google.
+
 ### Finding the account of a master token
 
 A master token doesn't say which Google account it belongs to. `get_email()` returns the account's email address,
@@ -308,10 +313,12 @@ An account without devices is not an error: `get_google_devices()` returns an em
 
 glocaltokens raises these errors when Google gives no tokens or devices. They are in `glocaltokens.exceptions` and are subclasses of `GLocalTokensError`, so you can catch both at once:
 
-- `AuthenticationError`: Google gave no master token or access token, the username and password are too long together to log in with,
+- `AuthenticationError`: Google gave no master or access token, returned a malformed master token, the username and password are too long together to log in with,
   or the client has no master token and neither an `oauth_token` nor a username and password to get one with.
   This usually means you need to sign in again (see [Authentication](#authentication)).
-  Its `error` attribute is the reason Google gave, such as `BadAuthentication` or `NeedsBrowser`, or `None` if there isn't one.
+  Its `error` attribute can contain a reason from Google, such as `BadAuthentication` or `NeedsBrowser`.
+  If Google gives no master token, the library keeps the reason when it is a string and sets `error` to `None` otherwise.
+  If Google returns a malformed master token, `error` is always `None`.
   `get_master_token()`, `get_access_token()`, `get_email()` and the device methods raise it.
 - `HomegraphError`: Google didn't return your devices. The device methods raise it.
   Its `code` attribute is the [gRPC status code](https://grpc.github.io/grpc/core/md_doc_statuscodes.html) of the failed request as a `grpc.StatusCode`.
@@ -331,7 +338,8 @@ These errors from the libraries glocaltokens uses also reach your code:
 - `OSError` when the certificate bundle that `REQUESTS_CA_BUNDLE` or `CURL_CA_BUNDLE` names can't be loaded. Each request for a token or the email address
   raises it; the home graph request, which uses gRPC's own certificates, doesn't. Correct or unset the variable.
 
-A mistake in your call raises `ValueError`: creating the client without credentials or with a `master_token` that doesn't start with `aas_et/`,
+A mistake in your call raises `ValueError`. This includes creating the client without credentials,
+passing a token that is neither a string nor `None`, supplying a nonempty master token that fails the local format check,
 or passing `addresses` that aren't a dictionary of IPv4 addresses to the device methods.
 The async device methods also raise it for a `zeroconf_instance` that runs on another event loop, before any request.
 The sync device methods raise `RuntimeError` before any request for a `zeroconf_instance` that runs on the calling thread's event loop,

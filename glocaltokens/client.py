@@ -202,6 +202,36 @@ def _token(res: Mapping[str, str], key: str, name: str) -> str:
     return res[key]
 
 
+def _strip_credential(token: object, name: str) -> str | None:
+    """Trim an optional caller credential, rejecting non-string values."""
+    if token is None:
+        return None
+    if not isinstance(token, str):
+        raise ValueError(f"{name} must be a string or None")  # noqa: TRY004
+    return token.strip()
+
+
+def _supplied_master_token(token: object) -> str | None:
+    """Normalize and check a master token supplied by the caller."""
+    master_token = _strip_credential(token, "master_token")
+    if master_token and not token_utils.is_aas_et(master_token):
+        raise ValueError("master_token doesn't follow the AAS_ET format")
+    return master_token
+
+
+def _reply_master_token(res: Mapping[str, object]) -> str:
+    """Extract a normalized master token without logging the reply."""
+    token = res.get("Token")
+    if token is None or (isinstance(token, str) and not token):
+        reason = res.get("Error")
+        raise AuthenticationError(
+            "Google gave no master token", reason if isinstance(reason, str) else None
+        )
+    if not isinstance(token, str) or not token_utils.is_aas_et(token):
+        raise AuthenticationError("Google gave an invalid master token")
+    return token.strip()
+
+
 def _verified_email(user_info: Mapping[str, str]) -> str | None:
     """Return the email address of a userinfo answer, if Google has verified it."""
     if str(user_info.get("email_verified")).lower() != "true":
@@ -303,8 +333,9 @@ class GLocalAuthenticationTokens:
               methods, which is never closed here. Without one, each request
               uses a new session. The home graph is fetched with gRPC instead.
 
-        Raises ValueError if there are no credentials, or if master_token
-        doesn't start with "aas_et/".
+        Leading and trailing whitespace is stripped from both tokens.
+        Raises ValueError for missing credentials, non-string tokens, or a
+        nonempty master token that fails the local AAS_ET format check.
         """
         if verbose is not None:
             warnings.warn(
@@ -312,6 +343,14 @@ class GLocalAuthenticationTokens:
                 "glocaltokens logger in your application instead",
                 DeprecationWarning,
                 stacklevel=2,
+            )
+
+        master_token = _supplied_master_token(master_token)
+        oauth_token = _strip_credential(oauth_token, "oauth_token")
+        if not (master_token or oauth_token or (username and password)):
+            raise ValueError(
+                "You must either provide google username with password, "
+                "oauth_token, or google master token"
             )
 
         LOGGER.debug("Initializing new GLocalAuthenticationTokens instance.")
@@ -346,18 +385,6 @@ class GLocalAuthenticationTokens:
             censor(android_id),
         )
 
-        # Validation
-        can_log_in = self.oauth_token or (self.username and self.password)
-        if not can_log_in and not self.master_token:
-            raise ValueError(
-                "You must either provide google username with password, "
-                "oauth_token, or google master token"
-            )
-        # Only check the prefix: is_aas_et() also checks today's length, which
-        # Google may change for the tokens get_master_token() gets
-        if self.master_token and not self.master_token.startswith("aas_et/"):
-            raise ValueError("master_token doesn't follow the AAS_ET format")
-
     @staticmethod
     def _generate_android_id() -> str:
         """Generate random 16 char long string."""
@@ -391,10 +418,13 @@ class GLocalAuthenticationTokens:
         A new master token comes from exchanging the oauth_token if one is set,
         otherwise from logging in with the password.
 
-        Raises AuthenticationError if Google gives no master token, or if there
-        is no oauth_token or username and password to get one with.
+        Raises AuthenticationError if Google gives no usable master token, or if
+        there is no oauth_token or username and password to get one with.
+        Raises ValueError if a reassigned credential used here is invalid.
         """
+        self.master_token = _supplied_master_token(self.master_token)
         if not self.master_token:
+            self.oauth_token = _strip_credential(self.oauth_token, "oauth_token")
             if self.oauth_token:
                 LOGGER.debug(
                     "There is no stored master_token, exchanging the oauth_token"
@@ -426,7 +456,7 @@ class GLocalAuthenticationTokens:
                     raise AuthenticationError(_PASSWORD_TOO_LONG) from error
             else:
                 raise AuthenticationError(_NO_CREDENTIALS)
-            self.master_token = _token(res, "Token", "master token")
+            self.master_token = _reply_master_token(res)
             self.email = res.get("Email") or None
         LOGGER.debug("Master token: %s", censor(self.master_token))
         return self.master_token
@@ -438,7 +468,9 @@ class GLocalAuthenticationTokens:
         with a 5xx or 429 raises aiohttp.ClientResponseError, and failing to
         reach Google raises aiohttp.ClientError or TimeoutError.
         """
+        self.master_token = _supplied_master_token(self.master_token)
         if not self.master_token:
+            self.oauth_token = _strip_credential(self.oauth_token, "oauth_token")
             username = self._escape_username(self.username or "")
             if self.oauth_token:
                 LOGGER.debug(
@@ -463,7 +495,7 @@ class GLocalAuthenticationTokens:
             else:
                 raise AuthenticationError(_NO_CREDENTIALS)
             res = await self._async_auth_request(data)
-            self.master_token = _token(res, "Token", "master token")
+            self.master_token = _reply_master_token(res)
             self.email = res.get("Email") or None
         LOGGER.debug("Master token: %s", censor(self.master_token))
         return self.master_token
@@ -500,8 +532,8 @@ class GLocalAuthenticationTokens:
     def get_access_token(self) -> str:
         """Return existing or fetch access_token.
 
-        Raises AuthenticationError if Google gives no access token, or no
-        master token to get one with.
+        Raises AuthenticationError if Google gives no access token. Fetching
+        a new access token can also raise the errors of get_master_token().
         """
         if (access_token := self._stored_access_token()) is not None:
             return self._log_access_token(access_token)
@@ -549,7 +581,7 @@ class GLocalAuthenticationTokens:
         address and asks Google's userinfo endpoint, which returns only an
         address Google has verified.
 
-        Raises AuthenticationError if Google gives no master token.
+        Can raise the same errors as get_master_token().
         """
         master_token = self.get_master_token()
         if self.email is not None:
