@@ -532,8 +532,8 @@ class GLocalAuthenticationTokens:
     def get_access_token(self) -> str:
         """Return existing or fetch access_token.
 
-        Raises AuthenticationError if Google gives no access token, or no
-        master token to get one with.
+        Raises AuthenticationError if Google gives no access token. Fetching
+        a new access token can also raise the errors of get_master_token().
         """
         if (access_token := self._stored_access_token()) is not None:
             return self._log_access_token(access_token)
@@ -581,7 +581,7 @@ class GLocalAuthenticationTokens:
         address and asks Google's userinfo endpoint, which returns only an
         address Google has verified.
 
-        Raises AuthenticationError if Google gives no master token.
+        Can raise the same errors as get_master_token().
         """
         master_token = self.get_master_token()
         if self.email is not None:

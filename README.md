@@ -316,7 +316,9 @@ glocaltokens raises these errors when Google gives no tokens or devices. They ar
 - `AuthenticationError`: Google gave no master or access token, returned a malformed master token, the username and password are too long together to log in with,
   or the client has no master token and neither an `oauth_token` nor a username and password to get one with.
   This usually means you need to sign in again (see [Authentication](#authentication)).
-  Its `error` attribute is the reason Google gave, such as `BadAuthentication` or `NeedsBrowser`, or `None` if there isn't one.
+  Its `error` attribute can contain a reason from Google, such as `BadAuthentication` or `NeedsBrowser`.
+  If Google gives no master token, the library keeps the reason when it is a string and sets `error` to `None` otherwise.
+  If Google returns a malformed master token, `error` is always `None`.
   `get_master_token()`, `get_access_token()`, `get_email()` and the device methods raise it.
 - `HomegraphError`: Google didn't return your devices. The device methods raise it.
   Its `code` attribute is the [gRPC status code](https://grpc.github.io/grpc/core/md_doc_statuscodes.html) of the failed request as a `grpc.StatusCode`.

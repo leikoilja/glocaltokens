@@ -20,7 +20,8 @@ class AuthenticationError(GLocalTokensError):
     """Google gave no usable master or access token, or there is no way to get one.
 
     error: Google's reason, such as "BadAuthentication" or "NeedsBrowser",
-      or None when there isn't one.
+      when available. A missing master token preserves the reason if it is a
+      string. A malformed master token always leaves this attribute as None.
     """
 
     def __init__(self, message: str, error: str | None = None) -> None:

@@ -4,9 +4,18 @@ from unittest import TestCase
 
 import pytest
 
+from glocaltokens.const import MASTER_TOKEN_LENGTH
 from glocaltokens.utils.logs import censor
 from glocaltokens.utils.network import is_valid_ipv4_address
-from glocaltokens.utils.token import is_aas_et
+from glocaltokens.utils.token import (
+    MASTER_TOKEN_LENGTH as COMPAT_MASTER_TOKEN_LENGTH,
+    is_aas_et,
+)
+
+
+def test_historical_master_token_length_imports() -> None:
+    """Keep the historical payload length available from both public paths."""
+    assert MASTER_TOKEN_LENGTH == COMPAT_MASTER_TOKEN_LENGTH == 216
 
 
 @pytest.mark.parametrize(
