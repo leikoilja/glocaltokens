@@ -54,7 +54,7 @@ The checks above also run the tests. To run only the tests:
 $ uv run pytest
 ```
 
-A warning during the tests fails them. `filterwarnings` in `pyproject.toml` lists the few warnings that are ignored.
+A warning during the tests fails them.
 
 On pull requests, CI runs the checks on Python 3.12 and 3.14, then the tests again with the lowest versions of the direct
 dependencies that `pyproject.toml` allows. It also builds the package on Linux, macOS and Windows, installs the wheel into a
